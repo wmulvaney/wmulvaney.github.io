@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Gothic&display=swap');
+
 .App {
   text-align: center;
 }
@@ -24,6 +26,14 @@
   color: white;
 }
 
+.site-title-text {
+  font-family: 'League Gothic', sans-serif;
+  text-transform: uppercase;
+  font-size: 50px;
+  text-align: center;
+  font-weight: 400;
+  letter-spacing: 4px;
+}
 .App-link {
   color: #61dafb;
 }
@@ -35,4 +45,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.content-area {
+  padding-bottom: 70px; /* Adjust this value based on your player's height */
 }
