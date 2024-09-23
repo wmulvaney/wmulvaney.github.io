@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.74d0ab0e.css",
+    "main.js": "/static/js/main.c6df9b62.js",
+    "static/js/453.93a03539.chunk.js": "/static/js/453.93a03539.chunk.js",
+    "static/media/willpower_header.png": "/static/media/willpower_header.5e09e9a961e014fac55b.png",
+    "static/media/wmulvaney.github.io.svg": "/static/media/wmulvaney.github.io.7a1835833a217522974fd67a18e1e9ba.svg",
+    "static/media/substack_wordmark.png": "/static/media/substack_wordmark.6ba6ca698e8709d2de7e.png",
+    "index.html": "/index.html",
+    "main.74d0ab0e.css.map": "/static/css/main.74d0ab0e.css.map",
+    "main.c6df9b62.js.map": "/static/js/main.c6df9b62.js.map",
+    "453.93a03539.chunk.js.map": "/static/js/453.93a03539.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.74d0ab0e.css",
+    "static/js/main.c6df9b62.js"
+  ]
+}
