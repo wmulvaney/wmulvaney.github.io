@@ -25,6 +25,7 @@ function App() {
     <div className="App">
       <header className="main-header">
         <img src={logo} alt="Willpower Logo" className="header-logo" />
+        <img src={require('./resources/willpower_header.png')} alt="Willpower Header" className="header-image" />
         <div className="header-content">
           <h1 className="site-title">Willpower</h1>
           <nav className="site-nav">
