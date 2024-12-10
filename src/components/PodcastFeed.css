@@ -1,0 +1,342 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Gothic&display=swap');
+
+/* Header Styles */
+.podcast-header {
+    background-color: #fff;
+    padding: 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.podcast-header-text {
+    font-family: 'League Gothic', sans-serif;
+    text-transform: uppercase;
+    font-size: 50px;
+    text-align: center;
+    font-weight: 400;
+    letter-spacing: 4px;
+}
+
+/* Podcast Links */
+.podcast-links {
+    text-align: center;
+    margin-bottom: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 101
+}
+
+/* Description Styles */
+.podcast-description {
+    font-size: 18px;
+    max-width: 100%; /* Make the description fill the screen width */
+    word-wrap: break-word;
+    overflow-x: hidden;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin-bottom: 30px;
+    color: #666;
+    line-height: 1.3;
+    white-space: normal; /* Ensure text wraps normally */
+}
+
+/* Episode List Styles */
+.episode-list {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    overflow-y: auto;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #fff;
+}
+
+/* Update Individual Episode Styles */
+.episode {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+.clickable-episode {
+    cursor: pointer;
+}
+
+.clickable-episode:hover {
+    background-color: #f5f5f5;
+}
+
+.episode-image {
+    width: 65px;
+    height: 65px;
+    border-radius: 8px;
+    margin: 15px;
+    flex-shrink: 0; /* Prevent image from shrinking */
+}
+
+/* Ensure title container shrinks properly */
+.episode-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Ensure flexbox can shrink */
+    flex-basis: 0; /* Allow the details to take remaining space */
+    word-wrap: break-word; /* Break long words */
+    overflow-wrap: break-word;
+    margin-right: 15px;
+}
+
+.episode-title {
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+    white-space: normal;
+}
+
+.episode-date {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Play button as a triangle */
+.play-button {
+    width: 0;
+    height: 0;
+    border-left: 21px solid #333;
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
+    margin-right: 15px;
+    flex-shrink: 0; /* Prevent the play button from shrinking */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.play-button:hover {
+    border-left-color: #a8a8a8;
+}
+
+.play-button.playing {
+    width: 14px; /* Reduced from 16px to 14px */
+    height: 28px;
+    border-left: 5px solid #333; /* Reduced from 6px to 5px */
+    border-right: 5px solid #333; /* Reduced from 6px to 5px */
+    border-top: none;
+    border-bottom: none;
+}
+
+.play-button.playing:hover {
+    border-left-color: #a8a8a8;
+    border-right-color: #a8a8a8;
+}
+
+/* Podcast Player Styles */
+.podcast-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f0f0f0;
+    border-top: 1px solid #ddd;
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1002; /* Ensure it's above the modal */
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 10px;
+}
+
+.player-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 8px;
+    margin-right: 15px;
+    margin-top: -150px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: #333;
+    margin-right: 20px;
+}
+
+audio {
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* Add these styles to your existing PodcastFeed.css file */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: -100px;
+    z-index: 1001;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    width: 60%;
+    height: 550px; /* Keep the existing fixed height */
+    position: relative; /* Ensure this is set for absolute positioning of child elements */
+    max-height: 80vh; /* Limit the height to 80% of the viewport height */
+    overflow-y: auto; /* Make it scrollable */
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.modal-image-and-title {
+    display: flex;
+    align-items: center;
+}
+
+.modal-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.modal-title-container {
+    flex-grow: 1;
+    white-space: normal;
+}
+
+.modal-play-button-wrapper {
+    flex-shrink: 0;
+    margin-left: 20px;
+}
+
+.modal-play-button-wrapper button {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 20px 0 20px 40px;
+    border-color: transparent transparent transparent #333;
+    background-color: transparent;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.modal-play-button-wrapper button:hover {
+    border-color: transparent transparent transparent #666;
+}
+
+.modal-play-button-wrapper button.playing {
+    width: 30px;
+    height: 40px;
+    border: none;
+    border-left: 10px solid #333;
+    border-right: 10px solid #333;
+}
+
+.modal-play-button-wrapper button.playing:hover {
+    border-left-color: #666;
+    border-right-color: #666;
+}
+
+@media screen and (max-width: 768px) {
+    .modal-play-button-wrapper button {
+        border-width: 15px 0 15px 30px;
+    }
+
+    .modal-play-button-wrapper button.playing {
+        width: 20px;
+        height: 30px;
+        border-left-width: 7px;
+        border-right-width: 7px;
+    }
+}
+
+.modal-scrollable-content {
+    overflow-y: auto; /* Allow this inner content to scroll if needed */
+}
+
+.modal-description {
+    font-size: 16px;
+    line-height: 1.4;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1001; /* Ensure it's above other elements */
+}
+
+/* Add styles for clickable timestamps */
+.timestamp {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.timestamp:hover {
+    color: #0056b3;
+}
+
+@media screen and (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+        margin-top: -50px;
+    }
+
+    .modal-image-and-play {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .modal-image {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 0;
+    }
+
+    .modal-play-button {
+        width: 60px;
+        height: 60px;
+        position: static;
+        margin-top: 10px;
+        top: 10px;
+        right: 10px;
+    }
+
+    /* ... other mobile styles ... */
+}

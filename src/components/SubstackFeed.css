@@ -1,0 +1,203 @@
+/* Substack Feed Styles */
+.substack-feed {
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.iframe-container {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  max-width: 100%;
+  z-index: 100;
+  background-color: white;
+  padding: 0;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.iframe-container iframe {
+  display: block;
+  width: 100%;
+  max-width: 480px; /* Match the original width */
+  height: 320px;
+  margin: 0 auto;
+  border: none;
+}
+
+/* Header Styles */
+.substack-header {
+  font-family: 'League Gothic', sans-serif;
+  text-transform: uppercase;
+  font-size: 50px;
+  text-align: center;
+  font-weight: 400;
+  letter-spacing: 4px;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+}
+
+/* Newsletter Description */
+.newsletter-description {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 20px;
+  text-align: center;
+  white-space: normal;
+}
+
+/* Article List Styles */
+.article-list {
+  border-top: none;
+  border-bottom: none;
+  overflow-y: auto;
+  width: 100%;
+  margin: 0 auto;
+  background-color: white;
+  padding: 0 20px; /* Add horizontal padding */
+}
+
+.article {
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+  margin-right: 20px;
+  cursor: pointer; /* Change the cursor to pointer to indicate it's clickable */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.article:first-child {
+  border-top: none;
+}
+
+.article:last-child {
+  border-bottom: none;
+}
+
+.article-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.article-description {
+  font-size: 14px;
+  color: #444;
+}
+
+.article-date {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Hover effect to change background color */
+.article:hover {
+  background-color: #f0f0f0; /* Light gray background on hover */
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  max-width: 80%;
+  max-height: 80%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: white; /* Change to white to match the modal content */
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+/* Close Button */
+.close-modal-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Open Substack Button using Image */
+.open-substack-btn {
+  width: 120px; /* Adjust width to fit the image */
+  height: 30px; /* Adjust height to fit the image */
+  background-image: url('../resources/substack_wordmark.png'); /* Use the image as background */
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  background-color: transparent; /* Remove any background color */
+  color: transparent; /* Make any text transparent */
+  font-size: 0; /* Ensure no text is visible */
+}
+
+/* Article Details */
+.article-details {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Article Title */
+.article-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #000;
+  white-space: normal;
+}
+
+/* Article Description in Modal */
+.article-description {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 15px;
+  white-space: normal;
+}
+
+/* Article Author */
+.article-author {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+/* Article Date */
+.article-date {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Article Content */
+.article-content {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+  white-space: normal; /* Ensure proper text wrapping */
+}
