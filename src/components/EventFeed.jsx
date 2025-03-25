@@ -1,25 +1,34 @@
 import React from 'react';
 import './EventFeed.css';
 
-const EventFeed = ({ activeComponent }) => {
+const EventFeed = ({ preview }) => {
+  if (preview) {
     return (
-        activeComponent === 'events' && (
-            <div className="event-feed">
-                <iframe
-                    className="event-feed-iframe"
-                    title="Event Feed"
-                    src="https://lu.ma/embed/calendar/cal-DEbnYgDbsEcgAcQ/events?"
-                    width="100%"
-                    height="100vh"
-                    frameBorder="0"
-                    allowFullScreen={true}
-                    aria-hidden="false"
-                    tabIndex="0"
-                    style={{ minHeight: '600px', height: '100vh', width: '100%' }}
-                ></iframe>
-            </div>
-        )
+      <div className="preview-event-list">
+        <p>Check out upcoming events on Luma</p>
+      </div>
     );
+  }
+
+  return (
+    <div className="event-feed">
+      <div className="event-header">
+        <h1 className="event-header-text">UPCOMING EVENTS</h1>
+      </div>
+      <div className="calendar-container">
+        <iframe
+          src="https://lu.ma/embed/calendar/cal-DEbnYgDbsEcgAcQ/events"
+          width="600"
+          height="450"
+          frameBorder="0"
+          title="Willpower Events Calendar"
+          allowFullScreen
+          aria-hidden="false"
+          tabIndex="0"
+        />
+      </div>
+    </div>
+  );
 };
 
 export default EventFeed;

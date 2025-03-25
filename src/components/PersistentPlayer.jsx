@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './PersistentPlayer.css';
 
-const PersistentPlayer = ({ episode, isPlaying, setIsPlaying, onClose }) => {
+const PersistentPlayer = ({ episode, isPlaying, setIsPlaying, onClose, currentTime: initialTime }) => {
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -21,9 +21,11 @@ const PersistentPlayer = ({ episode, isPlaying, setIsPlaying, onClose }) => {
   useEffect(() => {
     const loadAndPlayAudio = async () => {
       if (episode) {
+        const wasPlaying = isPlaying;
         audioRef.current.src = episode.audioUrl;
         audioRef.current.load();
-        if (isPlaying) {
+        audioRef.current.currentTime = initialTime || 0;
+        if (wasPlaying) {
           try {
             await audioRef.current.play();
           } catch (error) {
@@ -33,7 +35,7 @@ const PersistentPlayer = ({ episode, isPlaying, setIsPlaying, onClose }) => {
       }
     };
     loadAndPlayAudio();
-  }, [episode, isPlaying]);
+  }, [episode, isPlaying, initialTime]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -65,7 +67,14 @@ const PersistentPlayer = ({ episode, isPlaying, setIsPlaying, onClose }) => {
   }, [isPlaying]);
 
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
   };
 
   const handleProgressClick = (e) => {
@@ -80,31 +89,43 @@ const PersistentPlayer = ({ episode, isPlaying, setIsPlaying, onClose }) => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  const handleClose = () => {
+    audioRef.current.pause();
+    setIsPlaying(false);
+    onClose();
+  };
+
   if (!episode) {
     return null;
   }
 
   return (
     <div className="podcast-player">
-      <div className="player-info">
-        <img src={episode.imageUrl} alt="Podcast cover" className="player-image" />
-        <div className="episode-info">
-          <h4 className="episode-title">{episode.title}</h4>
+      <div className="player-content">
+        <div className="player-info">
+          <img src={episode.imageUrl} alt="Podcast cover" className="player-image" />
+          <div className="episode-info">
+            <h1 className="player-episode-title">{episode.title}</h1>
+          </div>
         </div>
-        <button className="close-btn" onClick={onClose}>✕</button>
-      </div>
-      <div className="progress-bar" onClick={handleProgressClick}>
-        <div className="progress" style={{ width: `${progress}%` }}></div>
-      </div>
-      <div className="controls">
-        <div
-          className={`play-button ${isPlaying ? 'playing' : ''}`}
-          onClick={handlePlayPause}
-        ></div>
-        <div className="time-display">
-          <span>{formatTime(currentTime)}</span>
-          <span>{formatTime(duration)}</span>
+        
+        <div className="player-controls">
+          <div className="progress-bar" onClick={handleProgressClick}>
+            <div className="progress" style={{ width: `${progress}%` }}></div>
+          </div>
+          <div className="controls">
+            <div
+              className={`player-play-button ${isPlaying ? 'playing' : ''}`}
+              onClick={handlePlayPause}
+            ></div>
+            <div className="time-display">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+          </div>
         </div>
+        
+        <button className="close-btn" onClick={handleClose}>✕</button>
       </div>
     </div>
   );

@@ -2,16 +2,24 @@ import React, { useEffect, useState, useRef } from 'react';
 import PodcastLinks from './PodcastLinks';  
 import './PodcastFeed.css';
 import he from 'he';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import PodcastModal from './PodcastModal';
 
-const PodcastFeed = ({ activeComponent }) => {
+const PodcastFeed = ({ 
+  preview = false,
+  limit = null,
+  currentEpisode, 
+  setCurrentEpisode, 
+  isPlaying, 
+  setIsPlaying,
+  setCurrentTime,
+}) => {
   const [episodes, setEpisodes] = useState([]);
   const [podcastDescription, setPodcastDescription] = useState('');
   const [loading, setLoading] = useState(true);
-  const [currentEpisode, setCurrentEpisode] = useState(null);
   const [selectedEpisode, setSelectedEpisode] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isAudioLoading, setIsAudioLoading] = useState(false);
-  const audioRef = useRef(null);
+  const [showDescription, setShowDescription] = useState(false);
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -38,7 +46,7 @@ const PodcastFeed = ({ activeComponent }) => {
           description: formatDescription(he.decode(item.getElementsByTagName('description')[0]?.textContent || "No description available")),
         }));
 
-        setEpisodes(episodes);
+        setEpisodes(limit ? episodes.slice(0, limit) : episodes);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching the podcast feed:", error);
@@ -47,82 +55,41 @@ const PodcastFeed = ({ activeComponent }) => {
     };
 
     fetchPodcastFeed();
-  }, []);
+  }, [limit]);
 
   const formatDescription = (description) => {
     let formattedDesc = description.replace(/\n/g, '<br>');
-    formattedDesc = formattedDesc.replace(/(\d{1,2}):(\d{2}):(\d{2})|(\d{1,2}):(\d{2})/g, (match, h, m, s, mm, ss) => {
-      if (h) {
-        return `<span class="timestamp" data-time="${h}:${m}:${s}">${match}</span>`;
-      } else {
-        return `<span class="timestamp" data-time="${mm}:${ss}">${match}</span>`;
-      }
+    formattedDesc = formattedDesc.replace(/(\d{1,2}):(\d{2}):(\d{2})|(\d{1,2}):(\d{2})/g, (match) => {
+      const parts = match.split(':');
+      const seconds = parts.length === 3 
+        ? parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2])
+        : parseInt(parts[0]) * 60 + parseInt(parts[1]);
+      return `<span class="timestamp" data-time="${seconds}">${match}</span>`;
     });
     return formattedDesc;
   };
 
-  const loadAudio = (episode) => {
-    return new Promise((resolve, reject) => {
-      if (!audioRef.current) {
-        console.warn("Audio element not found, creating a new one");
-        audioRef.current = new Audio();
-      }
-      audioRef.current.src = episode.audioUrl;
-      audioRef.current.load();
-      audioRef.current.oncanplaythrough = resolve;
-      audioRef.current.onerror = reject;
-    });
-  };
-
-  const handleTimestampClick = async (event) => {
+  const handleTimestampClick = (event) => {
     if (event.target.classList.contains('timestamp')) {
       event.preventDefault();
       event.stopPropagation();
-      const timeString = event.target.getAttribute('data-time');
-      const timeParts = timeString.split(':').map(Number);
-      let timeInSeconds;
       
-      if (timeParts.length === 3) {
-        timeInSeconds = timeParts[0] * 3600 + timeParts[1] * 60 + timeParts[2];
-      } else {
-        timeInSeconds = timeParts[0] * 60 + timeParts[1];
-      }
+      const timeInSeconds = parseInt(event.target.getAttribute('data-time'));
       
-      setIsAudioLoading(true);
-      
-      try {
-        if (currentEpisode !== selectedEpisode) {
-          setCurrentEpisode(selectedEpisode);
-          await loadAudio(selectedEpisode);
-        }
-        
-        if (audioRef.current) {
-          audioRef.current.currentTime = timeInSeconds;
-          await audioRef.current.play();
-          setIsPlaying(true);
-        } else {
-          console.error("Audio element still not available after loading");
-        }
-      } catch (error) {
-        console.error("Error playing audio:", error);
-      } finally {
-        setIsAudioLoading(false);
-      }
+      setCurrentEpisode(selectedEpisode, { 
+        time: timeInSeconds,
+        shouldPlay: true 
+      });
     }
   };
 
   const handleEpisodeSelect = (episode) => {
     setSelectedEpisode(episode);
-    // Remove the following lines to prevent changing the current episode
-    // if (currentEpisode !== episode) {
-    //   setCurrentEpisode(episode);
-    //   setIsPlaying(false);
-    // }
   };
 
   const handlePlayPause = (episode, e) => {
     e.stopPropagation();
-    if (currentEpisode === episode) {
+    if (currentEpisode?.audioUrl === episode.audioUrl) {
       setIsPlaying(!isPlaying);
     } else {
       setCurrentEpisode(episode);
@@ -135,8 +102,9 @@ const PodcastFeed = ({ activeComponent }) => {
     if (selectedEpisode === currentEpisode) {
       setIsPlaying(!isPlaying);
     } else {
-      setCurrentEpisode(selectedEpisode);
-      setIsPlaying(true);
+      setCurrentEpisode(selectedEpisode, { 
+        shouldPlay: true 
+      });
     }
   };
 
@@ -150,136 +118,89 @@ const PodcastFeed = ({ activeComponent }) => {
     }
   };
 
-  useEffect(() => {
-    const mainAudio = audioRef.current;
-
-    if (mainAudio) {
-      const handleCanPlay = () => {
-        setIsAudioLoading(false);
-        if (isPlaying) {
-          mainAudio.play().catch(error => console.error("Error playing audio:", error));
-        }
-      };
-
-      const handleError = (error) => {
-        console.error("Error loading audio:", error);
-        setIsAudioLoading(false);
-      };
-
-      mainAudio.addEventListener('canplay', handleCanPlay);
-      mainAudio.addEventListener('error', handleError);
-
-      return () => {
-        mainAudio.removeEventListener('canplay', handleCanPlay);
-        mainAudio.removeEventListener('error', handleError);
-      };
-    }
-  }, [isPlaying, currentEpisode]);
-
-  useEffect(() => {
-    if (audioRef.current && currentEpisode) {
-      if (isPlaying) {
-        audioRef.current.play().catch(error => console.error("Error playing audio:", error));
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  }, [isPlaying, currentEpisode]);
-
-  window.addEventListener('scroll', () => {
-    const podcastHeader = document.querySelector('.podcast-header');
-    const podcastLinks = document.querySelector('.podcast-links');
-    if (podcastLinks?.style) {
-      podcastLinks.style.top = `${podcastHeader.offsetHeight - 50}px`;
-    }
-});
-
   if (loading) {
     return <div>Loading...</div>;
   }
 
+  // Preview mode
+  if (preview) {
+    return (
+      <div className="preview-episode-list" style={{ width: '50%' }}>
+        {episodes.slice(0, 3).map((episode, index) => (
+          <div 
+          key={index} 
+          className="episode clickable-episode" 
+          onClick={() => handleEpisodeSelect(episode)}
+        >
+          <img src={episode.imageUrl} alt="Podcast cover" className="episode-image" />
+          <div className="episode-overlay">
+            <div className="episode-details">
+              <h3 className="episode-title">{episode.title}</h3>
+              <p className="episode-date">{episode.pubDate}</p>
+            </div>
+          </div>
+          <div 
+            className={`play-button ${currentEpisode?.audioUrl === episode.audioUrl && isPlaying ? 'playing' : ''}`}
+            onClick={(e) => handlePlayPause(episode, e)}
+          />
+        </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Full mode
   return (
     <div style={{ position: 'relative' }}>
-      {activeComponent === 'podcast' && (
-        <>
-          <div className="podcast-header">
+      <div className="podcast-header">
+        <div className="header-content">
+          <div className="title-with-info">
             <h1 className="podcast-header-text">THE WILLPOWER PODCAST</h1>
+            <button 
+              className="info-button"
+              onClick={() => setShowDescription(!showDescription)}
+              aria-label="Show podcast description"
+            >
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </button>
           </div>
-          <p className="podcast-description">{podcastDescription}</p>
-          <PodcastLinks />  
-          <div className="episode-list">
-            {episodes.map((episode, index) => (
-              <div key={index} className="episode clickable-episode" onClick={() => handleEpisodeSelect(episode)}>
-                <img src={episode.imageUrl} alt="Podcast cover" className="episode-image" />
-                <div className="episode-details">
-                  <h3 className="episode-title">{episode.title}</h3>
-                  <p className="episode-date">{episode.pubDate}</p>
-                </div>
-                <div 
-                  className={`play-button ${currentEpisode === episode && isPlaying ? 'playing' : ''}`} 
-                  onClick={(e) => handlePlayPause(episode, e)}
-                />
-              </div>
-            ))}
+          <div className={`description-popover ${showDescription ? 'visible' : ''}`}>
+            <p>{podcastDescription}</p>
           </div>
-
-          {selectedEpisode && (
-            <div className="modal" onClick={handleOutsideClick}>
-              <div className="modal-content" ref={modalRef}>
-                <button className="close-modal-btn" onClick={handleCloseModal}>✕</button>
-                <div className="modal-header">
-                  <div className="modal-image-and-title">
-                    <img src={selectedEpisode.imageUrl} alt="Podcast cover" className="modal-image" />
-                    <div className="modal-title-container">
-                      <h2 className="modal-title">{selectedEpisode.title}</h2>
-                      <p className="modal-date">{selectedEpisode.pubDate}</p>
-                    </div>
-                  </div>
-                  <div className="modal-play-button-wrapper">
-                    <button 
-                      className={isPlaying && selectedEpisode === currentEpisode ? 'playing' : ''}
-                      onClick={handleModalPlayPause}
-                      disabled={isAudioLoading}
-                      aria-label={isPlaying && selectedEpisode === currentEpisode ? 'Pause' : 'Play'}
-                    >
-                      {isAudioLoading ? 'Loading...' : ''}
-                    </button>
-                  </div>
-                </div>
-                <div className="modal-scrollable-content">
-                  <div 
-                    className="modal-description" 
-                    dangerouslySetInnerHTML={{ __html: selectedEpisode.description }}
-                    onClick={handleTimestampClick}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </>
-      )}
-
-      {currentEpisode && (
-        <div className="podcast-player">
-          <div className="player-info">
-            <img src={currentEpisode.imageUrl} alt="Podcast cover" className="player-image" />
-            <div className="episode-info">
-              <h4 className="episode-title">{currentEpisode.title}</h4>
-            </div>
-            <button className="close-btn" onClick={() => setCurrentEpisode(null)}>✕</button>
-          </div>
-          <audio 
-            ref={audioRef} 
-            controls
-            src={currentEpisode.audioUrl}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-            onLoadStart={() => setIsAudioLoading(true)}
-            onCanPlay={() => setIsAudioLoading(false)}
-          >
-            Your browser does not support the audio element.
-          </audio>
         </div>
+        <PodcastLinks />
+      </div>
+      <div className="episode-list">
+        {episodes.map((episode, index) => (
+          <div 
+            key={index} 
+            className="episode clickable-episode" 
+            onClick={() => handleEpisodeSelect(episode)}
+          >
+            <img src={episode.imageUrl} alt="Podcast cover" className="episode-image" />
+            <div className="episode-overlay">
+              <div className="episode-details">
+                <h3 className="episode-title">{episode.title}</h3>
+                <p className="episode-date">{episode.pubDate}</p>
+              </div>
+            </div>
+            <div 
+              className={`play-button ${currentEpisode?.audioUrl === episode.audioUrl && isPlaying ? 'playing' : ''}`}
+              onClick={(e) => handlePlayPause(episode, e)}
+            />
+          </div>
+        ))}
+      </div>
+
+      {selectedEpisode && (
+        <PodcastModal
+          episode={selectedEpisode}
+          onClose={handleCloseModal}
+          onPlayPause={handleModalPlayPause}
+          isPlaying={isPlaying}
+          isCurrentEpisode={selectedEpisode === currentEpisode}
+          onTimestampClick={handleTimestampClick}
+        />
       )}
     </div>
   );
