@@ -22,7 +22,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "./node_modules/.bin/vite build --base=./",
+    "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist --no-history"
