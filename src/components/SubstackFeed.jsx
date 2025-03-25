@@ -11,6 +11,7 @@ const SubstackFeed = ({ preview = false, limit = null }) => {
   const [description, setDescription] = useState('');
   const [showDescription, setShowDescription] = useState(false);
   const modalRef = useRef(null);
+  const observerRef = useRef();
 
   useEffect(() => {
     console.log('SubstackFeed mounted, preview:', preview, 'limit:', limit);
@@ -90,6 +91,34 @@ const SubstackFeed = ({ preview = false, limit = null }) => {
 
     fetchSubstackFeed();
   }, [limit]);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observerRef.current.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px'
+      }
+    );
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const elements = document.querySelectorAll('.clickable-article:not(.visible)');
+    elements.forEach(el => observerRef.current.observe(el));
+  }, [articles]);
 
   // Handle article click to open the modal reader
   const handleArticleClick = (article) => {

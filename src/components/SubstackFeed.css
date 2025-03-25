@@ -370,10 +370,14 @@
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  opacity: 0;
+}
+
+.clickable-article.visible {
+  animation: fadeInUp 2s ease forwards;
 }
 
 .clickable-article:hover {
@@ -406,4 +410,15 @@
 .article-date {
   font-size: 0.875rem;
   color: #666;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(500px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

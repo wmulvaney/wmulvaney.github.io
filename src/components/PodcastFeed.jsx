@@ -21,6 +21,7 @@ const PodcastFeed = ({
   const [selectedEpisode, setSelectedEpisode] = useState(null);
   const [showDescription, setShowDescription] = useState(false);
   const modalRef = useRef(null);
+  const observerRef = useRef();
 
   useEffect(() => {
     const fetchPodcastFeed = async () => {
@@ -56,6 +57,34 @@ const PodcastFeed = ({
 
     fetchPodcastFeed();
   }, [limit]);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observerRef.current.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px'
+      }
+    );
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const elements = document.querySelectorAll('.episode:not(.visible)');
+    elements.forEach(el => observerRef.current.observe(el));
+  }, [episodes]);
 
   const formatDescription = (description) => {
     let formattedDesc = description.replace(/\n/g, '<br>');

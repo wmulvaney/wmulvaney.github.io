@@ -88,9 +88,13 @@
     overflow: hidden;
     aspect-ratio: 16 / 9;
     background: white;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: center;
     box-shadow: 0 2px 8px rgba(71, 157, 194, 0.1);
+    opacity: 0;
+}
+
+.episode.visible {
+    animation: fadeInUp 2s ease forwards;
 }
 
 .clickable-episode {
@@ -429,4 +433,15 @@ audio {
 
 .article:hover .play-button-overlay {
     opacity: 1;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(500px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
