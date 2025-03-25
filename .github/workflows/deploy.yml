@@ -22,9 +22,7 @@ jobs:
         echo "VITE_YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}" >> .env
         
     - name: Install Dependencies
-      run: |
-        npm install
-        npm install -g vite
+      run: npm ci
         
     - name: Build
       run: npm run build
