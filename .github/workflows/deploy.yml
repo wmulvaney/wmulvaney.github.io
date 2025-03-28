@@ -24,9 +24,9 @@ jobs:
       run: npm ci
       
     - name: Check vite binary
-      run: ls -la node_modules
-    - name: Change to project directory
-      run: cd src && npm run build
+      run: ls -la node_modules/.bin
+    - name: build
+      run: npm run build
         
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5

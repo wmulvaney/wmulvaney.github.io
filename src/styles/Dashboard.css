@@ -14,8 +14,8 @@
   border-radius: 24px;
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(71, 157, 194, 0.1);
-  background: url('/src/resources/willpower_header.png') no-repeat right -50px center;
-  background-size: contain;
+  background: url('/src/resources/willpower_header.png') no-repeat right -50px bottom;
+  background-size: 110%;
 }
 
 .logo-container {

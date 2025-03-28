@@ -5,11 +5,13 @@ import PodcastFeed from './components/PodcastFeed';
 import SubstackFeed from './components/SubstackFeed';
 import EventFeed from './components/EventFeed';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faMicrophone, faNewspaper, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faMicrophone, faNewspaper, faCalendar, faBook, faBriefcase } from '@fortawesome/free-solid-svg-icons';
 import PersistentPlayer from './components/PersistentPlayer';
 import LatestVideo from './components/LatestVideo';
 import YoutubeShorts from './components/YoutubeShorts';
 import AboutMe from './components/AboutMe';
+import ReadingList from './components/ReadingList';
+import Business from './components/Business';
 
 function App() {
   const [activeComponent, setActiveComponent] = useState(() => {
@@ -115,6 +117,22 @@ function App() {
             <FontAwesomeIcon icon={faCalendar} className="nav-icon" />
             <span className="nav-text">EVENTS</span>
           </button>
+
+          <button 
+            className={`nav-item ${activeComponent === 'reading' ? 'active' : ''}`}
+            onClick={() => setActiveComponent('reading')}
+          >
+            <FontAwesomeIcon icon={faBook} className="nav-icon" />
+            <span className="nav-text">READING</span>
+          </button>
+
+          <button 
+            className={`nav-item ${activeComponent === 'business' ? 'active' : ''}`}
+            onClick={() => setActiveComponent('business')}
+          >
+            <FontAwesomeIcon icon={faBriefcase} className="nav-icon" />
+            <span className="nav-text">BUSINESS</span>
+          </button>
         </nav>
       </div>
 
@@ -159,6 +177,8 @@ function App() {
         )}
         {activeComponent === 'substack' && <SubstackFeed />}
         {activeComponent === 'events' && <EventFeed />}
+        {activeComponent === 'reading' && <ReadingList />}
+        {activeComponent === 'business' && <Business />}
       </div>
 
       {currentEpisode && (
