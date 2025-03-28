@@ -15,7 +15,8 @@
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(71, 157, 194, 0.1);
   background: url('/src/resources/willpower_header.png') no-repeat right -50px bottom;
-  background-size: 110%;
+  background-size: contain;
+  overflow: hidden;
 }
 
 .logo-container {
@@ -175,14 +176,14 @@
 @media (max-width: 768px) {
   .dashboard {
     flex-direction: column;
-    padding: 1rem;
   }
 
   .nav-box {
     width: 100%;
     padding: 1rem;
-    background-position: right -200px bottom;
-    background-size: 150%;
+    background-position: right -50px bottom;
+    background-size: contain;
+    overflow: hidden;
   }
 
   .nav-list {
