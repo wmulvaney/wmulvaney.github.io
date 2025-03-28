@@ -1,0 +1,87 @@
+.reading-list {
+  padding: 2rem;
+}
+
+.reading-list h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+.reading-intro {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.book-card {
+  display: flex;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.book-image {
+  width: 120px;
+  min-width: 120px;
+  padding: 1rem;
+}
+
+.book-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.book-info {
+  padding: 1rem;
+  flex: 1;
+}
+
+.book-info h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+}
+
+.book-info .author {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.book-info .description {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .reading-list {
+    padding: 1rem 0.5rem;
+  }
+  
+  .books-grid {
+    gap: 1rem;
+  }
+  
+  .book-card {
+    flex-direction: row;
+  }
+} 

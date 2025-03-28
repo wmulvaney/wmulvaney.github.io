@@ -15,7 +15,7 @@
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(71, 157, 194, 0.1);
   background: url('/src/resources/willpower_header.png') no-repeat right -50px bottom;
-  background-size: contain;
+  background-size: 110%;
 }
 
 .logo-container {
@@ -181,7 +181,8 @@
   .nav-box {
     width: 100%;
     padding: 1rem;
-    background-position: right -150px bottom;
+    background-position: right -200px bottom;
+    background-size: 150%;
   }
 
   .nav-list {
