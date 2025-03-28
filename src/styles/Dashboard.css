@@ -2,7 +2,7 @@
   display: flex;
   gap: 1.5rem;
   min-height: 100vh;
-  background-color: #f0f6f9;
+  background-color: #e8f0f4;
   padding: 1.5rem;
 }
 
@@ -15,7 +15,7 @@
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(71, 157, 194, 0.1);
   background: url('/src/resources/willpower_header.png') no-repeat right -50px bottom;
-  background-size: 110%;
+  background-size: contain;
 }
 
 .logo-container {
@@ -69,12 +69,12 @@
 }
 
 .nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.7);
   color: #1a1a1a;
 }
 
 .nav-item.active {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.7);
   color: #1a1a1a;
   font-weight: 500;
 }
@@ -181,7 +181,7 @@
   .nav-box {
     width: 100%;
     padding: 1rem;
-    background-position: right 20px center;
+    background-position: right -150px bottom;
   }
 
   .nav-list {
