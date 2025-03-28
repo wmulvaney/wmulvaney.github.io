@@ -21,12 +21,12 @@ jobs:
         echo "VITE_YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}" >> .env
         
     - name: Install Dependencies
-      run: npm ci
+      run: npm install
       
     - name: Check vite binary
       run: ls -la node_modules
-    - name: build
-      run: npm run build
+    - name: Build with Vite directly
+      run: node node_modules/vite/bin/vite.js build
         
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5
