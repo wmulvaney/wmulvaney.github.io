@@ -24,7 +24,7 @@ jobs:
       run: npm ci
       
     - name: Check vite binary
-      run: ls -la node_modules/.bin
+      run: ls -la node_modules
     - name: build
       run: npm run build
         
