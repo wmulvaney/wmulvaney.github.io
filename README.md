@@ -1,6 +1,6 @@
 # William Mulvaney — Personal Website
 
-Welcome to the source for [williammulvaney.com](https://williammulvaney.com), the personal site of William Mulvaney. This site highlights my work as a podcast host, entrepreneur, software engineer, and fitness coach.
+Welcome to the source for [williammulvaney.com](https://williammulvaney.com), the personal site of William Mulvaney. This site highlights my work as a podcast host, entrepreneur, software engineer, and writer.
 
 ##  Features
 
