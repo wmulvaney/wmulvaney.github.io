@@ -24,10 +24,9 @@ function Business() {
 
   return (
     <div className="business">
-      <h1>Business Ventures</h1>
+      <h1>Entrepreneurial Ventures</h1>
       
       <div className="business-intro">
-        <h2>Entrepreneurial Ventures</h2>
         <p>
           I've always been driven by the excitement of bringing new ideas to life. 
           This section showcases my current entrepreneurial ventures - projects where 
