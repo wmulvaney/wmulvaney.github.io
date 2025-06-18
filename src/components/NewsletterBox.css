@@ -1,0 +1,114 @@
+.newsletter-box {
+  background: white;
+  border-radius: 24px;
+  padding: 2rem;
+  margin: 0;
+  box-shadow: 0 4px 20px rgba(71, 157, 194, 0.1);
+  width: 100%;
+}
+
+.newsletter-content {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.newsletter-content h2 {
+  font-family: 'League Gothic', sans-serif;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.newsletter-content p {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(71, 157, 194, 0.2);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.newsletter-input:focus {
+  outline: none;
+  border-color: #479DC2;
+}
+
+.newsletter-button {
+  background: #479DC2;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.newsletter-button:hover {
+  background: #3a7d9d;
+}
+
+.success-message {
+  color: #2ecc71;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.error-message {
+  color: #e74c3c;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.newsletter-embed {
+  width: 100%;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(71, 157, 194, 0.1);
+}
+
+.newsletter-embed iframe {
+  width: 100%;
+  border: none;
+  background: transparent;
+}
+
+@media (max-width: 768px) {
+  .newsletter-box {
+    padding: 1.5rem;
+  }
+  
+  .newsletter-form {
+    flex-direction: column;
+  }
+  
+  .newsletter-button {
+    width: 100%;
+  }
+  
+  .newsletter-content h2 {
+    font-size: 1.75rem;
+  }
+  
+  .newsletter-content p {
+    font-size: 0.9rem;
+  }
+  
+  .newsletter-embed {
+    margin-bottom: 1rem;
+  }
+} 
