@@ -16,6 +16,7 @@ import ReadingList from './components/ReadingList';
 import Business from './components/Business';
 import NewsletterBox from './components/NewsletterBox';
 import ContactForm from './components/ContactForm';
+import QualiaNotificationBanner from './components/QualiaNotificationBanner';
 
 // Title component that updates based on current route
 const PageTitle = () => {
@@ -95,6 +96,7 @@ const PageHeader = ({ title }) => (
 const Home = ({ currentEpisode, handleEpisodeSelect, isPlaying, setIsPlaying }) => (
   <div className="home-content">
     <PageHeader title="Welcome to William Mulvaney's Official Website" />
+    <QualiaNotificationBanner />
     <div className="about-me-container">
       <AboutMe />
     </div>
