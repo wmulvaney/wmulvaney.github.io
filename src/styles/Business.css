@@ -100,6 +100,29 @@
   color: white;
 }
 
+.venture-status {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.venture-card .venture-status[data-status="paused"] {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.venture-card .venture-status[data-status="active"] {
+  background: #0066cc;
+  color: white;
+}
+
+.venture-card .venture-status[data-status="development"] {
+  background: #fff3cd;
+  color: #856404;
+}
+
 @media (max-width: 768px) {
   .business {
     padding: 1rem;

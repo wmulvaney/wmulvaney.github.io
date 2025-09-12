@@ -2,6 +2,7 @@ import React from 'react';
 import '../styles/Business.css';
 import proCalLogo from '../resources/procal_logo.png';
 import completeCanineLogo from '../resources/Complete_Canine.png';
+import qualiaLogo from '../resources/Qualia.png';
 
 function Business() {
   const ventures = [
@@ -9,16 +10,23 @@ function Business() {
       name: "ProCal",
       logo: proCalLogo,
       description: "Your personal AI nutrition coach that provides customized meal plans and real-time guidance to help you achieve your fitness and health goals.",
-      status: "In Development",
-      statusType: "development"
+      status: "Paused",
+      statusType: "paused"
     },
     {
       name: "Complete Canine",
       logo: completeCanineLogo,
       description: "A comprehensive all-in-one liquid dog supplement designed to provide your canine companion with all the essential nutrients they need for optimal health.",
-      status: "Order Today",
+      status: "Paused",
+      statusType: "paused"
+    },
+    {
+      name: "Qualia",
+      logo: qualiaLogo,
+      description: "An AI-powered life quality tracking app that helps you understand how your daily habits impact your wellbeing. Track mood, energy, mental clarity, and more with personalized insights and behavioral analysis.",
+      status: "Early Access",
       statusType: "active",
-      link: "https://completecanine.shop"
+      link: "https://livequalia.app"
     }
   ];
 
@@ -44,13 +52,15 @@ function Business() {
             onClick={() => venture.link && window.open(venture.link, '_blank')}
             style={{ cursor: venture.link ? 'pointer' : 'default' }}
           >
-            <div className="venture-logo">
-              <img src={venture.logo} alt={`${venture.name} logo`} />
-            </div>
+            {venture.logo && (
+              <div className="venture-logo">
+                <img src={venture.logo} alt={`${venture.name} logo`} />
+              </div>
+            )}
             <div className="venture-info">
               <h3>{venture.name}</h3>
               <p className="venture-description">{venture.description}</p>
-              <span className="venture-status">{venture.status}</span>
+              <span className="venture-status" data-status={venture.statusType}>{venture.status}</span>
             </div>
           </div>
         ))}

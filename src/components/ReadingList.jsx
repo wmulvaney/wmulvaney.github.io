@@ -79,6 +79,13 @@ function ReadingList() {
       image: "https://images-na.ssl-images-amazon.com/images/P/0812974492.01.L.jpg",
       link: "https://www.amazon.com/Unbroken-World-Survival-Resilience-Redemption/dp/0812974492",
       description: "The incredible true story of Louis Zamperini's journey from Olympic runner to WWII survivor, demonstrating the triumph of the human spirit"
+    },
+    {
+      title: "Anna Karenina",
+      author: "Leo Tolstoy",
+      image: "https://images-na.ssl-images-amazon.com/images/P/B0C3SJDLK8.01.L.jpg",
+      link: "https://www.amazon.com/Anna-Karenina-Leo-Tolstoy-ebook/dp/B0C3SJDLK8",
+      description: "A masterpiece of Russian literature exploring love, society, and the human condition through the tragic story of Anna Karenina"
     }
   ];
 

@@ -118,7 +118,6 @@ const Home = ({ currentEpisode, handleEpisodeSelect, isPlaying, setIsPlaying }) 
       <SubstackFeed preview={true} limit={1} />
     </div>
     <LatestVideo />
-    <h2>Latest Shorts</h2>
     <YoutubeShorts preview={true} limit={3} />
   </div>
 );

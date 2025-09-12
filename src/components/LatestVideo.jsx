@@ -59,27 +59,15 @@ const LatestVideo = () => {
   // Helper function to parse YouTube duration format (PT1H2M10S) to seconds
   const parseDuration = (duration) => {
     const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+    if (!match) return 0;
     const hours = (parseInt(match[1]) || 0);
     const minutes = (parseInt(match[2]) || 0);
     const seconds = (parseInt(match[3]) || 0);
     return hours * 3600 + minutes * 60 + seconds;
   };
 
-  if (loading) return (
-    <div className="latest-video-container">
-      <div className="loading-state">Loading latest video from YouTube...</div>
-    </div>
-  );
-  if (error) return (
-    <div className="latest-video-container">
-      <div className="error-state">
-        Unable to load video: {error}
-        <br />
-        Channel ID: {channelId}
-      </div>
-    </div>
-  );
-  if (!latestVideo) return <div className="latest-video-container">No video found</div>;
+  if (loading) return null;
+  if (error || !latestVideo) return null;
 
   return (
     <div className="latest-video-container">

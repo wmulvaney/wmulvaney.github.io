@@ -29,6 +29,17 @@ const YoutubeShorts = ({ preview = false, limit = null }) => {
         }
         
         const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(data.error.message || 'YouTube API error');
+        }
+        
+        if (!data.items || data.items.length === 0) {
+          setShorts([]);
+          setLoading(false);
+          return;
+        }
+        
         const shortsData = data.items.map(item => ({
           id: item.snippet.resourceId.videoId,
           title: item.snippet.title,
@@ -40,6 +51,7 @@ const YoutubeShorts = ({ preview = false, limit = null }) => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching YouTube shorts:', error);
+        setShorts([]);
         setLoading(false);
       }
     };
@@ -47,11 +59,16 @@ const YoutubeShorts = ({ preview = false, limit = null }) => {
     fetchShorts();
   }, [limit]);
 
-  if (loading) return <div>Loading shorts...</div>;
+  if (loading) return null;
 
   if (preview) {
+    if (shorts.length === 0) {
+      return null;
+    }
+    
     return (
       <>
+        <h2>Latest Shorts</h2>
         <div className="shorts-preview">
           {shorts.map(short => (
             <div 
