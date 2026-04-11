@@ -27,6 +27,12 @@ jobs:
       run: ls -la node_modules
     - name: Build with Vite directly
       run: node node_modules/vite/bin/vite.js build
+    
+    - name: Setup 404.html and .nojekyll for SPA routing
+      run: |
+        echo 'williammulvaney.com' > dist/CNAME
+        cp dist/index.html dist/404.html
+        touch dist/.nojekyll
         
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5

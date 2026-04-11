@@ -26,7 +26,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "predeploy": "npm run build && echo 'williammulvaney.com' > dist/CNAME",
+    "predeploy": "npm run build && echo 'williammulvaney.com' > dist/CNAME && cp dist/index.html dist/404.html && touch dist/.nojekyll",
     "deploy": "gh-pages -d dist --no-history"
   },
   "eslintConfig": {

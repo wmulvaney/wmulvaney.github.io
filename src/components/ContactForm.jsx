@@ -1,16 +1,18 @@
 import React from 'react';
 import './ContactForm.css';
 
-const ContactForm = () => {
+const ContactForm = ({ compact = false }) => {
   return (
     <div className="contact-form-container">
-      <div className="contact-form-header">
-        <h2>Get In Touch</h2>
-        <p>
-          If you know someone who should be on the show or need to reach me for any other reason, 
-          don't hesitate to get in touch. I'd love to hear from you!
-        </p>
-      </div>
+      {!compact && (
+        <div className="contact-form-header">
+          <h2>Get In Touch</h2>
+          <p>
+            If you know someone who should be on the show or need to reach me for any other reason,
+            don&apos;t hesitate to get in touch. I&apos;d love to hear from you!
+          </p>
+        </div>
+      )}
       
       <form 
         action="https://formsubmit.co/8e1ece6d01afba749223e8cba5624874" 

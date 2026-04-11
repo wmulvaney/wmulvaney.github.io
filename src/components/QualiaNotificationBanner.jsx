@@ -17,7 +17,7 @@ const QualiaNotificationBanner = () => {
   };
 
   const handleLearnMore = () => {
-    window.open('https://livequalia.app', '_blank', 'noopener,noreferrer');
+    window.open('https://mygrooves.app', '_blank', 'noopener,noreferrer');
   };
 
   if (!isVisible) {
@@ -28,7 +28,7 @@ const QualiaNotificationBanner = () => {
     <div className="qualia-banner">
       <div className="qualia-banner-content">
         <div className="qualia-banner-text">
-          <h3>Introducing Qualia</h3>
+          <h3>Introducing Grooves</h3>
           <p>Discover habits that make you feel fulfilled, energized, and truly alive. Track what matters for your well-being.</p>
         </div>
         <div className="qualia-banner-actions">

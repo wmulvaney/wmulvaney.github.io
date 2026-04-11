@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../styles/ReadingList.css';
 
-function ReadingList() {
+function ReadingList({ compact = false, limit = null }) {
+  const railRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
   const books = [
     {
       title: "Deep Work",
@@ -89,13 +93,85 @@ function ReadingList() {
     }
   ];
 
+  const visibleBooks = limit ? books.slice(0, limit) : books;
+
+  const updateScrollState = () => {
+    const rail = railRef.current;
+    if (!rail || !compact) {
+      setCanScrollLeft(false);
+      setCanScrollRight(false);
+      return;
+    }
+
+    const maxScrollLeft = rail.scrollWidth - rail.clientWidth;
+    setCanScrollLeft(rail.scrollLeft > 8);
+    setCanScrollRight(rail.scrollLeft < maxScrollLeft - 8);
+  };
+
+  useEffect(() => {
+    updateScrollState();
+
+    if (!compact) {
+      return undefined;
+    }
+
+    const rail = railRef.current;
+    if (!rail) {
+      return undefined;
+    }
+
+    const handleScroll = () => updateScrollState();
+    const handleResize = () => updateScrollState();
+
+    rail.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      rail.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [compact, visibleBooks.length]);
+
+  const scrollBooks = (direction) => {
+    const rail = railRef.current;
+    if (!rail) {
+      return;
+    }
+
+     const firstCard = rail.querySelector('.book-card');
+     const railStyles = window.getComputedStyle(rail);
+     const gap = parseFloat(railStyles.columnGap || railStyles.gap || '0') || 0;
+     const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : rail.clientWidth;
+
+    rail.scrollBy({
+      left: direction * (cardWidth + gap),
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <div className="reading-list">
-      <h1>Reading List</h1>
-      <p className="reading-intro">A curated selection of books that have shaped my thinking and perspective.</p>
-      
-      <div className="books-grid">
-        {books.map((book, index) => (
+      {!compact && (
+        <>
+          <h1>Reading List</h1>
+          <p className="reading-intro">A curated selection of books that have shaped my thinking and perspective.</p>
+        </>
+      )}
+
+      <div className={`books-rail-shell ${compact ? 'is-compact' : ''}`}>
+        {compact && canScrollLeft && (
+          <button
+            type="button"
+            className="books-rail-control books-rail-control-left"
+            aria-label="Scroll books left"
+            onClick={() => scrollBooks(-1)}
+          >
+            ‹
+          </button>
+        )}
+
+        <div ref={railRef} className={`books-grid ${compact ? 'books-grid-compact' : ''}`}>
+          {visibleBooks.map((book, index) => (
           <a 
             href={book.link} 
             target="_blank" 
@@ -112,7 +188,19 @@ function ReadingList() {
               <p className="description">{book.description}</p>
             </div>
           </a>
-        ))}
+          ))}
+        </div>
+
+        {compact && canScrollRight && (
+          <button
+            type="button"
+            className="books-rail-control books-rail-control-right"
+            aria-label="Scroll books right"
+            onClick={() => scrollBooks(1)}
+          >
+            ›
+          </button>
+        )}
       </div>
     </div>
   );

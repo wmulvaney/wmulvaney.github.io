@@ -9,6 +9,7 @@ import PodcastModal from './PodcastModal';
 const PodcastFeed = ({ 
   preview = false,
   limit = null,
+  showHeader = true,
   currentEpisode, 
   setCurrentEpisode, 
   isPlaying, 
@@ -154,8 +155,8 @@ const PodcastFeed = ({
   // Preview mode
   if (preview) {
     return (
-      <div className="preview-episode-list" style={{ width: '50%' }}>
-        {episodes.slice(0, 3).map((episode, index) => (
+      <div className="preview-episode-list">
+        {episodes.map((episode, index) => (
           <div 
           key={index} 
           className="episode clickable-episode" 
@@ -181,24 +182,26 @@ const PodcastFeed = ({
   // Full mode
   return (
     <div style={{ position: 'relative' }}>
-      <div className="podcast-header">
-        <div className="header-content">
-          <div className="title-with-info">
-            <h1 className="podcast-header-text">THE WILLPOWER PODCAST</h1>
-            <button 
-              className="info-button"
-              onClick={() => setShowDescription(!showDescription)}
-              aria-label="Show podcast description"
-            >
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </button>
+      {showHeader && (
+        <div className="podcast-header">
+          <div className="header-content">
+            <div className="title-with-info">
+              <h1 className="podcast-header-text">THE WILLPOWER PODCAST</h1>
+              <button 
+                className="info-button"
+                onClick={() => setShowDescription(!showDescription)}
+                aria-label="Show podcast description"
+              >
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </button>
+            </div>
+            <div className={`description-popover ${showDescription ? 'visible' : ''}`}>
+              <p>{podcastDescription}</p>
+            </div>
           </div>
-          <div className={`description-popover ${showDescription ? 'visible' : ''}`}>
-            <p>{podcastDescription}</p>
-          </div>
+          <PodcastLinks />
         </div>
-        <PodcastLinks />
-      </div>
+      )}
       <div className="episode-list">
         {episodes.map((episode, index) => (
           <div 

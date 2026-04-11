@@ -3,7 +3,44 @@ import './SubstackFeed.css'; // Import the CSS file
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
-const SubstackFeed = ({ preview = false, limit = null }) => {
+const CONTENT_NS = 'http://purl.org/rss/1.0/modules/content/';
+const MEDIA_NS = 'http://search.yahoo.com/mrss/';
+const DEFAULT_SUBSTACK_IMAGE = 'https://substackcdn.com/image/fetch/w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7c64c3cd-dcf7-482a-8beb-77af1dd7e752_1600x1600.jpeg';
+
+const getNodeText = (parent, tagName, namespace) => {
+  if (!parent) return '';
+
+  if (namespace) {
+    const namespacedNode = parent.getElementsByTagNameNS(namespace, tagName)[0];
+    if (namespacedNode?.textContent) return namespacedNode.textContent;
+  }
+
+  return parent.getElementsByTagName(tagName)[0]?.textContent || '';
+};
+
+const getImageUrlFromNode = (parent) => {
+  if (!parent) return '';
+
+  const mediaContent = parent.getElementsByTagNameNS(MEDIA_NS, 'content')[0]?.getAttribute('url');
+  if (mediaContent) return mediaContent;
+
+  const mediaThumbnail = parent.getElementsByTagNameNS(MEDIA_NS, 'thumbnail')[0]?.getAttribute('url');
+  if (mediaThumbnail) return mediaThumbnail;
+
+  const enclosureImage = Array.from(parent.getElementsByTagName('enclosure')).find(
+    (node) => (node.getAttribute('type') || '').startsWith('image/')
+  )?.getAttribute('url');
+  if (enclosureImage) return enclosureImage;
+
+  const description = getNodeText(parent, 'description');
+  const encodedContent = getNodeText(parent, 'encoded', CONTENT_NS) || getNodeText(parent, 'content:encoded');
+  const html = `${encodedContent}\n${description}`;
+  const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+
+  return imgMatch?.[1] || '';
+};
+
+const SubstackFeed = ({ preview = false, limit = null, showHeader = true }) => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,12 +77,11 @@ const SubstackFeed = ({ preview = false, limit = null }) => {
           setDescription(description);
           const items = Array.from(xml.getElementsByTagName("item"));
           const articles = items.map(item => {
-            const content = item.getElementsByTagName('content:encoded')[0]?.textContent || '';
-            const description = item.getElementsByTagName('description')[0]?.textContent || '';
+            const content = getNodeText(item, 'encoded', CONTENT_NS) || getNodeText(item, 'content:encoded');
+            const description = getNodeText(item, 'description');
             const cleanContent = content.replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1');
             const cleanDescription = description.replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1');
-            const imgMatch = cleanContent.match(/<img[^>]+src="([^"]+)"/);
-            const defaultImage = 'https://substackcdn.com/image/fetch/w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7c64c3cd-dcf7-482a-8beb-77af1dd7e752_1600x1600.jpeg';
+            const imageUrl = getImageUrlFromNode(item) || DEFAULT_SUBSTACK_IMAGE;
             const rawTitle = item.getElementsByTagName('title')[0]?.textContent || "No title";
             const title = rawTitle.replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1');
             const subtitle = cleanDescription.split('\n')[0].replace(/<[^>]+>/g, '').trim();
@@ -56,8 +92,8 @@ const SubstackFeed = ({ preview = false, limit = null }) => {
               link: item.getElementsByTagName('link')[0]?.textContent || "#",
               description: cleanDescription,
               content: cleanContent,
-              hasImage: !!imgMatch,
-              image: imgMatch?.[1] || defaultImage
+              hasImage: !!imageUrl,
+              image: imageUrl
             };
           });
           setArticles(limit ? articles.slice(0, limit) : articles);
@@ -172,35 +208,37 @@ const SubstackFeed = ({ preview = false, limit = null }) => {
   // Full mode
   return (
     <div style={{ position: 'relative' }}>
-      <div className="substack-header">
-        <div className="header-content">
-          <div className="title-section">
-            <div className="title-with-info">
-              <h1 className="substack-header-text">THE WILLPOWER SUBSTACK</h1>
-              <button 
-                className="info-button"
-                onClick={() => setShowDescription(!showDescription)}
-                aria-label="Show Substack description"
-              >
-                <FontAwesomeIcon icon={faInfoCircle} />
-              </button>
-            </div>
-            <div className={`description-popover ${showDescription ? 'visible' : ''}`}>
-              <p>{description}</p>
-            </div>
-            <div className="subscription-container">
-              <iframe 
-                src="https://williammulvaney.substack.com/embed" 
-                width="480" 
-                height="150" 
-                frameBorder="0" 
-                scrolling="no"
-                title="Subscribe to Willpower Substack"
-              />
+      {showHeader && (
+        <div className="substack-header">
+          <div className="header-content">
+            <div className="title-section">
+              <div className="title-with-info">
+                <h1 className="substack-header-text">THE WILLPOWER SUBSTACK</h1>
+                <button 
+                  className="info-button"
+                  onClick={() => setShowDescription(!showDescription)}
+                  aria-label="Show Substack description"
+                >
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                </button>
+              </div>
+              <div className={`description-popover ${showDescription ? 'visible' : ''}`}>
+                <p>{description}</p>
+              </div>
+              <div className="subscription-container">
+                <iframe 
+                  src="https://williammulvaney.substack.com/embed" 
+                  width="480" 
+                  height="150" 
+                  frameBorder="0" 
+                  scrolling="no"
+                  title="Subscribe to Willpower Substack"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="article-list">
         {articles.map((article, index) => (
