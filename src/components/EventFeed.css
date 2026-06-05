@@ -12,16 +12,35 @@
   letter-spacing: -0.05em;
 }
 
-.calendar-container iframe {
+.luma-embed-shell {
   width: 100%;
-  min-height: 70vh;
-  border: 1px solid rgba(24, 24, 24, 0.1);
-  border-radius: 24px;
-  background: white;
+  overflow: hidden;
 }
 
-.preview-event-list {
-  min-height: 180px;
-  display: flex;
+.luma-embed-shell iframe {
+  display: block;
+  min-height: 340px;
+}
+
+.event-feed-footer {
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(10, 30, 50, 0.08);
+  margin-top: 0.5rem;
+}
+
+.event-view-all {
+  display: inline-flex;
   align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--accent, #479dc2);
+  transition: opacity 180ms ease;
+}
+
+.event-view-all:hover {
+  opacity: 0.75;
 }

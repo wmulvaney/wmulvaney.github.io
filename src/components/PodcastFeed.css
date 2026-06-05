@@ -72,6 +72,12 @@
   aspect-ratio: 1 / 1;
 }
 
+@media (min-width: 769px) {
+  .preview-episode-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .preview-episode-list .episode-overlay {
   padding: 0.9rem;
 }
@@ -94,8 +100,8 @@
   overflow: hidden;
   min-height: 280px;
   border-radius: 24px;
-  background: #16120f;
-  box-shadow: 0 24px 50px rgba(23, 20, 17, 0.12);
+  background: #0a1825;
+  box-shadow: 0 24px 50px rgba(10, 25, 40, 0.14);
   opacity: 0;
   transform: translateY(18px);
   transition: transform 200ms ease, box-shadow 200ms ease;
@@ -112,7 +118,7 @@
 
 .episode:hover {
   transform: translateY(-2px);
-  box-shadow: 0 30px 60px rgba(23, 20, 17, 0.16);
+  box-shadow: 0 30px 60px rgba(10, 25, 40, 0.20);
 }
 
 .episode-image {
@@ -176,7 +182,7 @@
   transform: translate(-50%, -50%);
   width: 0;
   height: 0;
-  border-left: 12px solid #171411;
+  border-left: 12px solid #0d1e2b;
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
 }

@@ -57,8 +57,8 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: rgba(31, 107, 92, 0.45);
-  box-shadow: 0 0 0 4px rgba(31, 107, 92, 0.08);
+  border-color: rgba(71, 157, 194, 0.55);
+  box-shadow: 0 0 0 4px rgba(71, 157, 194, 0.12);
   background: #fff;
 }
 
@@ -67,8 +67,7 @@
   min-height: 50px;
   padding: 0.9rem 1.35rem;
   border: none;
-  border-radius: 999px;
-  background: #171411;
+  background: #479dc2;
   color: #fff;
   font-size: 0.78rem;
   font-weight: 700;

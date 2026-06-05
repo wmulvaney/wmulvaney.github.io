@@ -2,32 +2,31 @@ import React from 'react';
 import './EventFeed.css';
 
 const EventFeed = ({ preview, showHeader = true }) => {
-    if (preview) {
-      return (
-      <div className="preview-event-list">
-        <p>Events coming soon on Sweat Pals.</p>
-      </div>
-      );
-    }
-
   return (
     <div className="event-feed">
-      {showHeader && (
+      {!preview && showHeader && (
         <div className="event-header">
           <h1 className="event-header-text">UPCOMING EVENTS</h1>
         </div>
       )}
-      <div className="calendar-container">
+      <div className="luma-embed-shell">
         <iframe
-          src="https://lu.ma/embed/calendar/cal-DEbnYgDbsEcgAcQ/events"
-          width="600"
-          height="450"
+          src="https://luma.com/embed/calendar/cal-DEbnYgDbsEcgAcQ/events"
           frameBorder="0"
-          title="Willpower Events Calendar"
+          style={{ border: 'none', width: '100%' }}
           allowFullScreen
-          aria-hidden="false"
-          tabIndex="0"
+          title="Upcoming Events"
         />
+      </div>
+      <div className="event-feed-footer">
+        <a
+          href="https://lu.ma/willpower"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="event-view-all"
+        >
+          View all events →
+        </a>
       </div>
     </div>
   );

@@ -25,6 +25,8 @@ jobs:
       
     - name: Check vite binary
       run: ls -la node_modules
+    - name: Generate Substack feed JSON
+      run: node scripts/generate-substack-feed.mjs
     - name: Build with Vite directly
       run: node node_modules/vite/bin/vite.js build
     

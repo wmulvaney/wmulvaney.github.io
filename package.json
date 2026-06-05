@@ -23,8 +23,9 @@
     "xml2js": "^0.6.2"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "generate:substack": "node scripts/generate-substack-feed.mjs",
+    "dev": "npm run generate:substack && vite",
+    "build": "npm run generate:substack && vite build",
     "preview": "vite preview",
     "predeploy": "npm run build && echo 'williammulvaney.com' > dist/CNAME && cp dist/index.html dist/404.html && touch dist/.nojekyll",
     "deploy": "gh-pages -d dist --no-history"

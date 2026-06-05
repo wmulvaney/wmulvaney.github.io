@@ -105,11 +105,43 @@ const YoutubeShorts = ({ preview = false, limit = null }) => {
     );
   }
 
-  // Full view implementation here...
+  // Full view
   return (
-    <div className="shorts-grid">
-      {/* Similar to preview but with more shorts */}
-    </div>
+    <>
+      <div className="shorts-preview">
+        {shorts.map(short => (
+          <div
+            key={short.id}
+            className="short-preview"
+            onClick={() => handleShortClick(short)}
+          >
+            <div className="short-thumbnail-container">
+              <img src={short.thumbnail} alt={short.title} className="short-thumbnail" />
+              <div className="short-overlay">
+                <h3 className="short-title">{short.title}</h3>
+                <p className="short-date">{short.publishedAt}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {selectedShort && (
+        <div className="shorts-modal" onClick={handleCloseModal}>
+          <div
+            className="shorts-modal-content"
+            onClick={e => e.stopPropagation()}
+          >
+            <button className="close-modal-btn" onClick={handleCloseModal}>✕</button>
+            <iframe
+              src={`https://www.youtube.com/embed/${selectedShort.id}?autoplay=1`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+              allowFullScreen
+              title={selectedShort.title}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

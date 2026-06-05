@@ -3,43 +3,6 @@ import './SubstackFeed.css'; // Import the CSS file
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
-const CONTENT_NS = 'http://purl.org/rss/1.0/modules/content/';
-const MEDIA_NS = 'http://search.yahoo.com/mrss/';
-const DEFAULT_SUBSTACK_IMAGE = 'https://substackcdn.com/image/fetch/w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7c64c3cd-dcf7-482a-8beb-77af1dd7e752_1600x1600.jpeg';
-
-const getNodeText = (parent, tagName, namespace) => {
-  if (!parent) return '';
-
-  if (namespace) {
-    const namespacedNode = parent.getElementsByTagNameNS(namespace, tagName)[0];
-    if (namespacedNode?.textContent) return namespacedNode.textContent;
-  }
-
-  return parent.getElementsByTagName(tagName)[0]?.textContent || '';
-};
-
-const getImageUrlFromNode = (parent) => {
-  if (!parent) return '';
-
-  const mediaContent = parent.getElementsByTagNameNS(MEDIA_NS, 'content')[0]?.getAttribute('url');
-  if (mediaContent) return mediaContent;
-
-  const mediaThumbnail = parent.getElementsByTagNameNS(MEDIA_NS, 'thumbnail')[0]?.getAttribute('url');
-  if (mediaThumbnail) return mediaThumbnail;
-
-  const enclosureImage = Array.from(parent.getElementsByTagName('enclosure')).find(
-    (node) => (node.getAttribute('type') || '').startsWith('image/')
-  )?.getAttribute('url');
-  if (enclosureImage) return enclosureImage;
-
-  const description = getNodeText(parent, 'description');
-  const encodedContent = getNodeText(parent, 'encoded', CONTENT_NS) || getNodeText(parent, 'content:encoded');
-  const html = `${encodedContent}\n${description}`;
-  const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["']/i);
-
-  return imgMatch?.[1] || '';
-};
-
 const SubstackFeed = ({ preview = false, limit = null, showHeader = true }) => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,64 +14,24 @@ const SubstackFeed = ({ preview = false, limit = null, showHeader = true }) => {
   const observerRef = useRef();
 
   useEffect(() => {
-    console.log('SubstackFeed mounted, preview:', preview, 'limit:', limit);
-    const proxies = [
-      url => `https://corsproxy.io/?${url}`,
-      url => `https://thingproxy.freeboard.io/fetch/${url}`,
-      url => `https://api.codetabs.com/v1/proxy/?quest=${url}`,
-    ];
-    const substackUrl = 'https://williammulvaney.substack.com/feed';
+    const fetchGeneratedFeed = async () => {
+      try {
+        const response = await fetch(`/substack-feed.json?ts=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const payload = await response.json();
+        const nextArticles = Array.isArray(payload.articles) ? payload.articles : [];
 
-    const fetchWithProxies = async () => {
-      let lastError = null;
-      for (const proxy of proxies) {
-        try {
-          const proxiedUrl = proxy(encodeURIComponent(substackUrl));
-          const response = await fetch(proxiedUrl);
-          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-          const text = await response.text();
-          const parser = new DOMParser();
-          const xml = parser.parseFromString(text, "application/xml");
-          const parseError = xml.querySelector('parsererror');
-          if (parseError) throw new Error('XML parsing error: ' + parseError.textContent);
-          const channel = xml.getElementsByTagName("channel")[0];
-          if (!channel) throw new Error('No channel element found in feed');
-          const description = channel.getElementsByTagName("description")[0]?.textContent || "No description available";
-          setDescription(description);
-          const items = Array.from(xml.getElementsByTagName("item"));
-          const articles = items.map(item => {
-            const content = getNodeText(item, 'encoded', CONTENT_NS) || getNodeText(item, 'content:encoded');
-            const description = getNodeText(item, 'description');
-            const cleanContent = content.replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1');
-            const cleanDescription = description.replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1');
-            const imageUrl = getImageUrlFromNode(item) || DEFAULT_SUBSTACK_IMAGE;
-            const rawTitle = item.getElementsByTagName('title')[0]?.textContent || "No title";
-            const title = rawTitle.replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1');
-            const subtitle = cleanDescription.split('\n')[0].replace(/<[^>]+>/g, '').trim();
-            return {
-              title: title,
-              subtitle: subtitle,
-              pubDate: new Date(item.getElementsByTagName('pubDate')[0]?.textContent || "").toDateString(),
-              link: item.getElementsByTagName('link')[0]?.textContent || "#",
-              description: cleanDescription,
-              content: cleanContent,
-              hasImage: !!imageUrl,
-              image: imageUrl
-            };
-          });
-          setArticles(limit ? articles.slice(0, limit) : articles);
-          setLoading(false);
-          setError(null);
-          return;
-        } catch (err) {
-          lastError = err;
-          continue;
-        }
+        setDescription(payload.description || 'No description available');
+        setArticles(limit ? nextArticles.slice(0, limit) : nextArticles);
+        setLoading(false);
+        setError(null);
+      } catch (err) {
+        setError(err?.message || 'Unknown error');
+        setLoading(false);
       }
-      setError(lastError ? lastError.message : 'Unknown error');
-      setLoading(false);
     };
-    fetchWithProxies();
+
+    fetchGeneratedFeed();
   }, [limit]);
 
   useEffect(() => {
@@ -161,15 +84,28 @@ const SubstackFeed = ({ preview = false, limit = null, showHeader = true }) => {
   }
 
   if (error) {
-    // If there's an error, only show the subscribe iframe (no article block)
-    if (preview) return null;
+    if (preview) {
+      return (
+        <div className="substack-fallback">
+          <p className="substack-fallback-text">Essays on discipline, performance, and building.</p>
+          <a
+            href="https://williammulvaney.substack.com"
+            target="_blank"
+            rel="noreferrer"
+            className="substack-fallback-link"
+          >
+            Read on Substack →
+          </a>
+        </div>
+      );
+    }
     return (
       <div className="subscription-container">
-        <iframe 
-          src="https://williammulvaney.substack.com/embed" 
-          width="480" 
-          height="150" 
-          frameBorder="0" 
+        <iframe
+          src="https://williammulvaney.substack.com/embed"
+          width="480"
+          height="150"
+          frameBorder="0"
           scrolling="no"
           title="Subscribe to Willpower Substack"
         />

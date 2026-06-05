@@ -14,11 +14,12 @@ import PersistentPlayer from './components/PersistentPlayer';
 import ReadingList from './components/ReadingList';
 import Business from './components/Business';
 import ContactForm from './components/ContactForm';
+import TestPage from './components/TestPage';
 import './styles/Dashboard.css';
 
 const heroMetrics = [
-  { label: 'Episodes', value: '95+' },
-  { label: 'Installs', value: '100+' },
+  { label: 'Episodes', value: '100+' },
+  { label: 'Installs', value: '400+' },
   { label: 'Failed startups', value: '5' }
 ];
 
@@ -347,7 +348,7 @@ const FullPageScrollManager = ({ activeSection, onActiveChange, suspendObserverR
       }
 
       lockedRef.current = true;
-      cooldownUntilRef.current = Date.now() + 1800;
+      cooldownUntilRef.current = Date.now() + 2400;
       if (suspendObserverRef) {
         suspendObserverRef.current = true;
       }
@@ -365,14 +366,14 @@ const FullPageScrollManager = ({ activeSection, onActiveChange, suspendObserverR
         if (wheelSettledRef.current) {
           lockedRef.current = false;
         }
-      }, 1500);
+      }, 2050);
 
       window.clearTimeout(cooldownTimerRef.current);
       cooldownTimerRef.current = window.setTimeout(() => {
         if (suspendObserverRef) {
           suspendObserverRef.current = false;
         }
-      }, 1650);
+      }, 2200);
     };
 
     const onWheel = (event) => {
@@ -625,8 +626,8 @@ const Home = ({ currentEpisode, handleEpisodeSelect, isPlaying, setIsPlaying, on
           Building habit systems, documenting the journey, and sharing actionable stories about discipline, tech, and personal performance.
         </p>
         <div className="hero-actions">
-          <Link to="/#grooves" className="hero-button primary">Open Grooves</Link>
-          <Link to="/#podcast" className="hero-button secondary">Open Podcast</Link>
+          <Link to="/#grooves" className="hero-button primary">Try Grooves</Link>
+          <Link to="/#podcast" className="hero-action-link">Hear the podcast <FontAwesomeIcon icon={faArrowRight} /></Link>
         </div>
       </div>
 
@@ -687,10 +688,7 @@ const Home = ({ currentEpisode, handleEpisodeSelect, isPlaying, setIsPlaying, on
             </p>
           </div>
           <div className="grooves-visual" aria-hidden="true">
-            <div className="grooves-visual-card">
-              <img src="/wellness%20score.png" alt="" className="grooves-visual-image grooves-visual-image-primary" />
-            </div>
-            <img src="/impacts.png" alt="" className="grooves-visual-image grooves-visual-image-impact" />
+            <img src="/phones.png" alt="Grooves app statistics screen" className="grooves-visual-image grooves-visual-image-primary" />
           </div>
         </section>
 
@@ -758,7 +756,7 @@ const Home = ({ currentEpisode, handleEpisodeSelect, isPlaying, setIsPlaying, on
 
     <StorySection
       id="community"
-      className={`depth-stage ${getDepthClass('community')}`}
+      className={`depth-stage community-section ${getDepthClass('community')}`}
       number="03"
       label="Community"
       title="Events, contact, and community"
@@ -790,7 +788,7 @@ const Home = ({ currentEpisode, handleEpisodeSelect, isPlaying, setIsPlaying, on
       description="My background, interests, and the books I've enjoyed most."
     >
       <div className="feature-stack">
-        <div className="feature-card">
+        <div className="feature-card about-card">
           <AboutMe />
         </div>
         <div className="feature-card">
@@ -894,14 +892,8 @@ function App() {
           </header>
           <main className="site-main">
             <Routes>
-              <Route
-                path="/"
-                element={<Home currentEpisode={currentEpisode} handleEpisodeSelect={handleEpisodeSelect} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onActiveSectionChange={setActiveSection} />}
-              />
-              <Route
-                path="*"
-                element={<Home currentEpisode={currentEpisode} handleEpisodeSelect={handleEpisodeSelect} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onActiveSectionChange={setActiveSection} />}
-              />
+              <Route path="/" element={<TestPage />} />
+              <Route path="*" element={<TestPage />} />
             </Routes>
           </main>
           {currentEpisode && (

@@ -4,18 +4,18 @@ import './AboutMe.css';
 const AboutMe = () => {
   return (
     <div className="about-section">
+      <p className="mini-kicker" style={{ color: 'var(--muted)', marginBottom: '0.85rem' }}>About me</p>
       <div className="about-content">
-        <h1>About Me</h1>
         <p>
-          Hey! I'm Will, a software engineer based in Austin, TX. When I'm not coding, 
-          you can find me recording episodes for my podcast, working out, or spending quality 
-          time with my dog. I'm passionate about personal development, technology, and connecting 
-          with other driven individuals who are committed to growth.
+          I'm Will — software engineer in Austin, TX. I started the Willpower Podcast to have honest
+          conversations about discipline, performance, and building a life on your own terms.
+          100+ episodes later, it's become a community of people who take their growth seriously.
         </p>
         <p>
-          Through my content, I explore topics like willpower, discipline, and what it takes to 
-          build a meaningful life. I believe in the power of community and continuous learning.
+          Outside the mic, I'm building Grooves — a habit intelligence app I made because I wanted to
+          understand what actually moves the needle for me, not just copy someone else's morning routine.
         </p>
+        <p className="about-tagline">Engineering by day. Building by choice.</p>
       </div>
     </div>
   );

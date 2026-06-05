@@ -1,10 +1,10 @@
 .qualia-banner {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0d2535 0%, #143450 100%);
   color: white;
-  padding: 1rem;
-  border-radius: 8px;
+  padding: 1rem 1.35rem;
+  border: 1px solid rgba(71, 157, 194, 0.22);
   margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 28px rgba(10, 25, 40, 0.18);
   animation: slideIn 0.3s ease-out;
 }
 
@@ -17,16 +17,19 @@
 }
 
 .qualia-banner-text h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.2rem;
-  font-weight: 600;
+  margin: 0 0 0.35rem 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(71, 157, 194, 0.9);
 }
 
 .qualia-banner-text p {
   margin: 0;
-  font-size: 0.95rem;
-  opacity: 0.9;
-  line-height: 1.4;
+  font-size: 0.92rem;
+  color: rgba(248, 244, 238, 0.8);
+  line-height: 1.5;
 }
 
 .qualia-banner-actions {
@@ -37,45 +40,45 @@
 }
 
 .qualia-btn-primary {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  background: rgba(71, 157, 194, 0.15);
+  color: rgba(248, 244, 238, 0.92);
+  border: 1px solid rgba(71, 157, 194, 0.35);
+  padding: 0.55rem 1.1rem;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
 .qualia-btn-primary:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(71, 157, 194, 0.28);
+  border-color: rgba(71, 157, 194, 0.6);
   transform: translateY(-1px);
 }
 
 .qualia-btn-dismiss {
   background: none;
-  color: white;
+  color: rgba(248, 244, 238, 0.45);
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
-  border-radius: 4px;
   opacity: 0.7;
-  transition: opacity 0.2s ease;
+  transition: opacity 180ms ease, color 180ms ease;
   line-height: 1;
 }
 
 .qualia-btn-dismiss:hover {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.1);
+  color: rgba(248, 244, 238, 0.9);
 }
 
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-12px);
   }
   to {
     opacity: 1;
