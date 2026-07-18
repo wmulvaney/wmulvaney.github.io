@@ -13,8 +13,13 @@
       <stop offset="1" stop-color="#ffd166"/>
     </radialGradient>
   </defs>
+  <mask id="cres">
+    <rect width="512" height="512" fill="#000"/>
+    <circle cx="356" cy="150" r="66" fill="#fff"/>
+    <circle cx="394" cy="120" r="58" fill="#000"/>
+  </mask>
   <rect width="512" height="512" rx="110" fill="url(#bg)"/>
-  <circle cx="356" cy="150" r="66" fill="url(#sun)"/>
+  <circle cx="356" cy="150" r="66" fill="url(#sun)" mask="url(#cres)"/>
   <path d="M92 400 L204 262 L268 322 L420 150" fill="none" stroke="url(#line)" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M92 400 L204 262 L268 322 L420 150" fill="none" stroke="#ffffff" stroke-opacity=".25" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
   <circle cx="130" cy="120" r="7" fill="#eef2ff" opacity=".85"/>

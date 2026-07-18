@@ -1,5 +1,5 @@
 /* ============================================================
-   RISE — game engine
+   SLEEPER — game engine
    Owns the save state, the day loop, training math, the game
    sim, and career progression (youth → HS → college → pro).
    Sleep & recovery are the master multipliers on everything.
@@ -14,7 +14,7 @@ import {
   simulateNight, computeRecovery, recoveryMult, energyFromRecovery, describeScore,
 } from './sleep.js';
 
-const SAVE_KEY = 'rise.save.v1';
+const SAVE_KEY = 'sleeper.save.v1';
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const rnd = (lo, hi) => lo + Math.random() * (hi - lo);
 const irnd = (lo, hi) => Math.round(rnd(lo, hi));
@@ -42,7 +42,7 @@ export function resetGame() { S = null; localStorage.removeItem(SAVE_KEY); }
 export const exportSave = () => JSON.stringify(S, null, 2);
 export function importSave(json) {
   const parsed = JSON.parse(json);
-  if (!parsed || !parsed.athlete || !parsed.meta) throw new Error('Not a RISE save file');
+  if (!parsed || !parsed.athlete || !parsed.meta) throw new Error('Not a SLEEPER save file');
   S = parsed; save();
 }
 

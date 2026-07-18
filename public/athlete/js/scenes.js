@@ -1,5 +1,5 @@
 /* ============================================================
-   RISE — era scene art (hand-built layered SVG)
+   SLEEPER — era scene art (hand-built layered SVG)
    Each scene is a wide illustration used as the dashboard hero
    and in story modals. If you later generate raster art (e.g.
    with Gemini/Imagen), drop files at img/scene-<era>.jpg and

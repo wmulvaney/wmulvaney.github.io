@@ -1,5 +1,5 @@
 /* ============================================================
-   RISE — UI layer
+   SLEEPER — UI layer
    Renders all screens into #app, modals into #modal-root.
    Event delegation via [data-action] attributes.
    ============================================================ */
@@ -112,7 +112,7 @@ function obIntro() {
     <div>
       <p class="ob-kicker">A career in your hands</p>
       <h1>Every legend started as a kid who loved to play.</h1>
-      <p class="ob-lede mt-8">RISE is a life-of-an-athlete story game with one twist: <b>your sleep is the engine.</b>
+      <p class="ob-lede mt-8">SLEEPER is a life-of-an-athlete story game with one twist: <b>your sleep is the engine.</b>
       Every night of real rest becomes energy, training power, and Rest Points. Sleep like a pro, become a pro.</p>
     </div>
     <div class="card">
@@ -169,7 +169,7 @@ function obDevice() {
     <div>
       <p class="ob-kicker">The secret weapon</p>
       <h1>Connect your sleep.</h1>
-      <p class="ob-lede mt-8">Choose how RISE reads your nights. You can switch anytime in the Sleep tab.</p>
+      <p class="ob-lede mt-8">Choose how SLEEPER reads your nights. You can switch anytime in the Sleep tab.</p>
     </div>
     <div class="stack">
       ${Object.entries(PROVIDERS).map(([id, p]) => `
@@ -207,7 +207,7 @@ export function render() {
   $app().innerHTML = `
     <div class="app-grid">
       <nav class="tabbar">
-        <div class="tabbar-brand"><span style="font-size:20px">🌅</span><strong>RISE</strong></div>
+        <div class="tabbar-brand"><span style="font-size:20px">🌙</span><strong>SLEEPER</strong></div>
         ${TABS.map((t) => `
           <button class="tab ${currentTab === t.id ? 'active' : ''}" data-action="tab" data-id="${t.id}">
             <span class="tab-ico">${t.ico}</span><span>${t.label}</span>
@@ -662,7 +662,7 @@ function tabJournal() {
         <button class="btn small" data-action="import-save">⬆️ Import save</button>
       </div>
       <button class="btn small danger block mt-8" data-action="reset-confirm">🗑️ Reset career</button>
-      <p class="xs faint mt-8">RISE v1.0 · an installable web app — use your browser's “Add to Home Screen” / “Install” to get the mobile & desktop app. Saves live on this device.</p>
+      <p class="xs faint mt-8">SLEEPER v1.0 · an installable web app — use your browser's “Add to Home Screen” / “Install” to get the mobile & desktop app. Saves live on this device.</p>
     </div>`;
 }
 
@@ -1000,7 +1000,7 @@ function handleAction(el, e) {
       const blob = new Blob([E.exportSave()], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const aEl = document.createElement('a');
-      aEl.href = url; aEl.download = `rise-save-${S.athlete.name.replace(/\s+/g, '-')}.json`;
+      aEl.href = url; aEl.download = `sleeper-save-${S.athlete.name.replace(/\s+/g, '-')}.json`;
       aEl.click(); URL.revokeObjectURL(url);
       break;
     }
@@ -1011,7 +1011,7 @@ function handleAction(el, e) {
         const f = inp.files[0]; if (!f) return;
         f.text().then((t) => {
           try { E.importSave(t); toast('Save loaded!', 'good', '💾'); render(); }
-          catch (e) { toast('Not a valid RISE save.', 'bad', '⚠️'); }
+          catch (e) { toast('Not a valid SLEEPER save.', 'bad', '⚠️'); }
         });
       };
       inp.click(); break;

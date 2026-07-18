@@ -1,5 +1,5 @@
-/* RISE service worker — precache app shell, runtime-cache the rest. */
-const VERSION = 'rise-v1';
+/* SLEEPER service worker — precache app shell, runtime-cache the rest. */
+const VERSION = 'sleeper-v1';
 const SHELL = [
   './',
   'index.html',

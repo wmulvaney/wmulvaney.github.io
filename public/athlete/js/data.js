@@ -1,5 +1,5 @@
 /* ============================================================
-   RISE — game content database
+   SLEEPER — game content database
    Sports, positions, attributes, drills, shop, story events.
    Everything the player picks here changes real math in engine.js.
    ============================================================ */

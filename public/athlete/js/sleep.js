@@ -1,5 +1,5 @@
 /* ============================================================
-   RISE — sleep engine
+   SLEEPER — sleep engine
    A night of sleep is normalized to:
      { hours, efficiency (0-1), deepPct, remPct, consistency (0-1),
        restingHR, source }
@@ -11,7 +11,7 @@
    ============================================================ */
 
 export const PROVIDERS = {
-  demo:   { name: 'RISE Band (simulated)', ico: '⌚', desc: 'A simulated sleep wearable. Life events and habits move the numbers — great for playing through a career fast.' },
+  demo:   { name: 'Sleeper Band (simulated)', ico: '⌚', desc: 'A simulated sleep wearable. Life events and habits move the numbers — great for playing through a career fast.' },
   manual: { name: 'Morning Log', ico: '📝', desc: 'Log bedtime, wake time and how you feel each morning. Works with any tracker on your nightstand.' },
   import: { name: 'Device Import (CSV)', ico: '📥', desc: 'Paste a CSV export from Whoop, Oura, Fitbit or Apple Health. Each row becomes one night.' },
 };
