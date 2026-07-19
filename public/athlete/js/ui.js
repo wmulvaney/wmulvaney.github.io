@@ -9,7 +9,7 @@ import {
   ATTRS, PHYS_KEYS, YOUTH_SPORTS, SPORTS, ERA_INFO, ERAS,
   COACHES, FACILITIES, GEAR, SERVICES,
 } from './data.js';
-import { PROVIDERS, nightFromManual, parseSleepCSV, describeScore } from './sleep.js';
+import { PROVIDERS, parseSleepCSV, describeScore } from './sleep.js';
 import * as E from './engine.js';
 import * as W from './world.js';
 import { sceneArt, vignette } from './scenes.js';
@@ -42,8 +42,7 @@ function ring(value, max, label, sub, color) {
       <svg width="92" height="92" viewBox="0 0 92 92">
         <circle class="ring-track" cx="46" cy="46" r="${r}" fill="none" stroke-width="8"/>
         <circle class="ring-val" cx="46" cy="46" r="${r}" fill="none" stroke="${color}" stroke-width="8"
-          stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"
-          style="filter: drop-shadow(0 0 6px ${color}66)"/>
+          stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"/>
       </svg>
       <div class="ring-center"><b>${value}</b><span>${sub}</span></div>
     </div>
@@ -103,13 +102,13 @@ function renderOnboarding() {
   document.body.className = 'era-youth';
   hideWorld();
   const ob = onboarding;
-  const steps = [obIntro, obName, obSports, obDevice];
+  const steps = [obIntro, obName, obSports];
   $app().style.display = '';
   $app().innerHTML = `<div class="onboard">${steps[ob.step]()}</div>`;
 }
 
 function obProgress(n) {
-  return `<div class="ob-progress">${[0, 1, 2, 3].map((i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div>`;
+  return `<div class="ob-progress">${[0, 1, 2].map((i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div>`;
 }
 
 function obIntro() {
@@ -164,28 +163,9 @@ function obSports() {
           <span class="p-sub" style="color:var(--green)">${Object.entries(s.grow).map(([k, v]) => `+${Math.round(v * 100)}% ${ATTRS[k].name}`).join(' · ')}</span>
         </div>`).join('')}
     </div>
-    <button class="btn primary block" data-action="ob-sports-next" ${picks.length === 3 && picks.some((p) => YOUTH_SPORTS[p].main) ? '' : 'disabled'}>
-      ${picks.length}/3 selected — Let's play
+    <button class="btn primary block" data-action="ob-start" ${picks.length === 3 && picks.some((p) => YOUTH_SPORTS[p].main) ? '' : 'disabled'}>
+      ${picks.length}/3 selected — Start my career
     </button>`;
-}
-
-function obDevice() {
-  return `
-    ${obProgress(3)}
-    <div>
-      <p class="ob-kicker">The secret weapon</p>
-      <h1>Connect your sleep.</h1>
-      <p class="ob-lede mt-8">Choose how SLEEPER reads your nights. You can switch anytime at Home.</p>
-    </div>
-    <div class="stack">
-      ${Object.entries(PROVIDERS).map(([id, p]) => `
-        <div class="row selectable ${onboarding.provider === id ? 'selected' : ''}" data-action="ob-provider" data-id="${id}">
-          <div class="row-ico">${p.ico}</div>
-          <div class="row-main"><b>${p.name}</b><span class="sub">${p.desc}</span></div>
-          ${onboarding.provider === id ? '<span class="tag accent">✓</span>' : ''}
-        </div>`).join('')}
-    </div>
-    <button class="btn primary block" data-action="ob-start">Start my career 🌅</button>`;
 }
 
 /* ---------------- world shell + HUD ---------------- */
@@ -321,38 +301,68 @@ function handleInteract(iid) {
   }
 }
 
+/* Floating "+1.0 Speed" text over the world while the character works */
+function gainPop(gains) {
+  Object.entries(gains || {}).slice(0, 4).forEach(([k, v], i) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'attr-delta-pop';
+      el.textContent = `${ATTRS[k].name} +${v}`;
+      el.style.left = `calc(50% + ${i % 2 ? 30 : -80}px)`;
+      el.style.top = '19%';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1150);
+    }, i * 240);
+  });
+}
+
+/* Which animation fits a drill */
+function poseForDrill(d) {
+  const keys = Object.keys(d.targets);
+  if (keys.some((k) => !PHYS_KEYS.includes(k))) return 'dribble';
+  if (keys.includes('str')) return 'lift';
+  if (keys.includes('spd') || keys.includes('agi') || keys.includes('end')) return 'sprint';
+  if (keys.includes('iq')) return 'sit';
+  return 'stretch';
+}
+
 /* The run-chooser: official game, pickup runs for energy, or practice */
 function openBallModal(sportId) {
   const S = E.getState();
   const spec = SPORTS[sportId];
   const meta = spec || YOUTH_SPORTS[sportId] || { name: 'Ball', ico: '🏀' };
   const gameday = E.isGameDay() && !S.athlete.injury && (!S.athlete.mainSport || sportId === S.athlete.mainSport);
+  const verb = spec ? 'run' : 'session';
   showModal(`
     <p class="modal-kicker">${meta.ico} ${esc(meta.name)}</p>
-    <h2>${gameday ? 'Game day — but there’s always time for a run.' : 'Who’s got next?'}</h2>
-    <p class="modal-body">Pickup runs cost energy instead of session slots — live reps grow your ${spec ? 'game skills' : 'athleticism'} and morale. Recovery still multiplies everything.</p>
+    <h2>${gameday ? 'Game day' : spec ? 'Pickup run' : 'Open session'}</h2>
+    <p class="modal-body">Live reps build ${spec ? 'game skills' : 'athleticism'} and morale. Recovery multiplies the gains — and playing tired risks injury.</p>
     <div class="modal-actions">
-      ${gameday ? `<button class="btn primary" data-action="play-game-modal">🏟️ Play the official game</button>` : ''}
+      ${gameday ? `<button class="btn primary" data-action="play-game-modal">Play today's game</button>` : ''}
       <button class="choice-btn" data-action="pickup" data-id="${sportId}" data-size="quick" ${S.athlete.energy < 5 ? 'disabled style="opacity:.4"' : ''}>
-        <b>Pickup run <span class="spark">⚡5</span></b><span>A few games to 11. Quick reps, quick fun.</span>
+        <b>Quick ${verb} · ⚡5</b><span>About an hour of work.</span>
       </button>
       <button class="choice-btn" data-action="pickup" data-id="${sportId}" data-size="full" ${S.athlete.energy < 10 ? 'disabled style="opacity:.4"' : ''}>
-        <b>Full run <span class="spark">⚡10</span></b><span>Games to 21 all afternoon. Double the reps, double the fatigue.</span>
+        <b>Full ${verb} · ⚡10</b><span>The whole afternoon. Double the reps, double the fatigue.</span>
       </button>
       ${spec ? `<button class="choice-btn" data-action="practice-drills" data-id="${sportId}">
-        <b>Practice drills</b><span>Structured work — uses training session slots instead.</span>
+        <b>Practice drills</b><span>Structured work on specific skills.</span>
       </button>` : ''}
     </div>`);
 }
 
 function showPickupResult(r) {
-  const gainTxt = Object.entries(r.gains).map(([k, v]) => `${ATTRS[k].ico} ${ATTRS[k].name} +${v}`).join('<br>') || 'Nothing stuck today.';
+  const meta = SPORTS[r.sport] || YOUTH_SPORTS[r.sport] || { ico: '🎽' };
+  const where = E.getState().athlete.era === 'youth' ? 'the park' : 'the stadium';
+  const gainRows = Object.entries(r.gains)
+    .map(([k, v]) => `<div class="gain-row"><span>${ATTRS[k].ico} ${ATTRS[k].name}</span><b>+${v}</b></div>`)
+    .join('') || '<p class="small muted">Nothing stuck today.</p>';
   showModal(`
-    <p class="modal-kicker">🏙️ ${esc(r.sportName)} at the ${E.getState().athlete.era === 'youth' ? 'park' : 'stadium'}</p>
-    <h2>${r.win ? `Won ${r.my}–${r.their}` : `Lost ${r.their}–${r.my}`}</h2>
-    <div class="result-banner ${r.win ? 'win' : 'loss'}">${r.win ? 'GOT NEXT' : 'RUN IT BACK'}</div>
-    <p class="modal-body">${gainTxt}<br><br>+${r.rp} ✦ RP · morale up${r.injury ? `<br><b style="color:var(--red)">🤕 ${r.injury.name} — out ${r.injury.daysLeft} day(s)</b>` : ''}</p>
-    <button class="btn primary block" data-action="close-modal">Respect.</button>`, { dismissable: false });
+    <p class="modal-kicker">${meta.ico} ${esc(r.sportName)} · ${where}</p>
+    <h2>${r.session ? 'Session complete' : r.win ? `Won ${r.my}–${r.their}` : `Lost ${r.their}–${r.my}`}</h2>
+    <div class="gain-list">${gainRows}</div>
+    <p class="small muted mt-8">+${r.rp} ✦ RP · morale up · −${r.cost} energy${r.injury ? `<br><b style="color:var(--red)">${r.injury.name} — out ${r.injury.daysLeft} day(s)</b>` : ''}</p>
+    <button class="btn primary block mt-12" data-action="close-modal">Done</button>`, { dismissable: false });
 }
 
 function openDrillPanel(keys, title, ico) {
@@ -520,11 +530,11 @@ function tabSleep() {
     </div>`;
 }
 
-function drillGridHtml(drills, recommended, sessionsLeft, a) {
+function drillGridHtml(drills, recommended, a) {
   return `
     <div class="drill-grid">
       ${drills.map((d) => {
-        const cantAfford = a.energy < d.energy || sessionsLeft === 0 || (a.injury && d.intensity > 1);
+        const cantAfford = a.energy < d.energy || (a.injury && d.intensity > 1);
         return `
         <div class="drill ${d.locked || cantAfford ? 'disabled' : ''}" data-action="train" data-id="${d.id}">
           <span class="d-ico">${d.ico}</span>
@@ -537,11 +547,11 @@ function drillGridHtml(drills, recommended, sessionsLeft, a) {
     </div>`;
 }
 
-function sessionLineHtml(S, a, sessionsLeft) {
+function sessionLineHtml(S, a) {
   return `
     <div class="card">
-      <div class="card-title"><h3>Today's session</h3>
-        <span class="hint">${sessionsLeft} slot${sessionsLeft === 1 ? '' : 's'} · ${energyPips(a.energy)}</span>
+      <div class="card-title"><h3>Today</h3>
+        <span class="hint">⚡${a.energy} energy · ${energyPips(a.energy)}</span>
       </div>
       <p class="small muted">Recovery multiplier: <b style="color:var(--green)">×${(0.4 + S.today.recovery / 100 * 1.1).toFixed(2)}</b>
         · Facility: <b>${FACILITIES[S.owned.facility].name}</b>
@@ -556,16 +566,15 @@ function tabDrills() {
   const keys = new Set(drillCtx?.keys || []);
   const drills = E.availableDrills().filter((d) => Object.keys(d.targets).some((k) => keys.has(k)));
   const recommended = E.recommendDrills().slice(0, 3).map((d) => d.id);
-  const sessionsLeft = S.today.sessionsMax - S.today.trained.length;
   const relevant = [...keys].filter((k) => ATTRS[k]);
   return `
-    ${sessionLineHtml(S, a, sessionsLeft)}
+    ${sessionLineHtml(S, a)}
     <div class="card">
       ${relevant.map((k) => bar(ATTRS[k].name, a.attrs[k], a.caps[k], ATTRS[k].ico)).join('')}
     </div>
     <div class="card">
       <div class="card-title"><h3>Drills here</h3><span class="hint">⭐ = best value for your build</span></div>
-      ${drillGridHtml(drills, recommended, sessionsLeft, a)}
+      ${drillGridHtml(drills, recommended, a)}
     </div>`;
 }
 
@@ -575,7 +584,6 @@ function tabTrain() {
   const a = S.athlete;
   const drills = E.availableDrills();
   const recommended = E.recommendDrills().slice(0, 3).map((d) => d.id);
-  const sessionsLeft = S.today.sessionsMax - S.today.trained.length;
 
   const physBars = PHYS_KEYS.map((k) => bar(ATTRS[k].name, a.attrs[k], a.caps[k], ATTRS[k].ico)).join('');
   const sportsCards = a.youthSports.map((sid) => {
@@ -595,9 +603,9 @@ function tabTrain() {
   }).join('');
 
   return `
-    ${sessionLineHtml(S, a, sessionsLeft)}
+    ${sessionLineHtml(S, a)}
     <div class="card">
-      <button class="btn block" data-action="auto-train" ${sessionsLeft === 0 ? 'disabled' : ''}>🤖 Auto-train (best value)</button>
+      <button class="btn block" data-action="auto-train" ${a.energy < 1 ? 'disabled' : ''}>Auto-train (best value)</button>
     </div>
 
     <div class="card">
@@ -608,7 +616,7 @@ function tabTrain() {
 
     <div class="card">
       <div class="card-title"><h3>All drills</h3><span class="hint">⭐ = best value for your build</span></div>
-      ${drillGridHtml(drills, recommended, sessionsLeft, a)}
+      ${drillGridHtml(drills, recommended, a)}
     </div>`;
 }
 
@@ -1009,21 +1017,6 @@ function openDecision() {
 }
 
 /* ---------------- sleep input modals ---------------- */
-function openManualLog() {
-  showModal(`
-    <p class="modal-kicker">📝 Morning log</p>
-    <h2>How did you sleep?</h2>
-    <div class="field-inline mt-12">
-      <div class="field"><label>Bedtime</label><input id="ml-bed" type="time" value="22:30"></div>
-      <div class="field"><label>Wake time</label><input id="ml-wake" type="time" value="07:00"></div>
-    </div>
-    <div class="field"><label>Quality (1–5): <b id="ml-qv">3</b></label>
-      <input id="ml-q" type="range" min="1" max="5" value="3" oninput="document.getElementById('ml-qv').textContent=this.value"></div>
-    <div class="field"><label>Times you woke up</label><input id="ml-wk" type="number" min="0" max="9" value="1"></div>
-    <button class="btn primary block" data-action="manual-submit">Log & start the day</button>
-  `, { dismissable: true });
-}
-
 function openImport() {
   showModal(`
     <p class="modal-kicker">📥 Device import</p>
@@ -1105,6 +1098,7 @@ function handleAction(el, e) {
 
   switch (act) {
     case 'close-backdrop': if (e && e.target === el) closeModal(); break;
+    case 'close-modal': closeModal(); break;
 
     /* onboarding */
     case 'ob-next': onboarding.step = 1; renderOnboarding(); break;
@@ -1120,8 +1114,6 @@ function handleAction(el, e) {
       else toast('Three sports max — swap one out.', '', '⚖️');
       renderOnboarding(); break;
     }
-    case 'ob-sports-next': onboarding.step = 3; renderOnboarding(); break;
-    case 'ob-provider': onboarding.provider = id; renderOnboarding(); break;
     case 'ob-start': {
       E.createGame({ name: onboarding.name, youthSports: onboarding.picks, provider: onboarding.provider });
       toast(`Welcome to your island, ${onboarding.name}!`, 'good', '🗺️');
@@ -1137,20 +1129,7 @@ function handleAction(el, e) {
     /* day loop */
     case 'next-day': {
       if (S.pendingDecision) { openDecision(); return; }
-      if (S.sleep.provider === 'manual') { openManualLog(); return; }
       sleepFlow();
-      break;
-    }
-    case 'manual-submit': {
-      const night = nightFromManual({
-        bedtime: document.getElementById('ml-bed').value || '23:00',
-        waketime: document.getElementById('ml-wake').value || '07:00',
-        quality: +document.getElementById('ml-q').value,
-        wakeups: +document.getElementById('ml-wk').value,
-        age: S.athlete.age,
-      });
-      $modal().innerHTML = '';
-      sleepFlow(night);
       break;
     }
     case 'sim-week': {
@@ -1185,16 +1164,19 @@ function handleAction(el, e) {
     case 'train': {
       const r = E.train(id);
       if (r.error) { toast(r.error, 'bad', '⚠️'); return; }
-      const gainTxt = Object.entries(r.gains).map(([k, v]) => `${ATTRS[k].name} +${v}`).join(', ');
-      toast(gainTxt || 'Session done.', 'good', r.drill.ico);
-      if (r.injury) toast(`Injury! ${r.injury.name} — out ${r.injury.daysLeft} days`, 'bad', '🤕');
+      if (worldReady) W.playAction(poseForDrill(r.drill), 1.7);
+      gainPop(r.gains);
+      if (r.injury) toast(`Injury: ${r.injury.name} — out ${r.injury.daysLeft} days`, 'bad', '🤕');
       render(); break;
     }
     case 'auto-train': {
       const rs = E.autoTrain();
-      if (!rs.length) { toast('No energy or sessions left.', 'bad', '😴'); return; }
-      toast(`Trained: ${rs.map((r) => r.drill.name).join(', ')}`, 'good', '🤖');
-      if (rs.some((r) => r.injury)) toast('Picked up a knock in training!', 'bad', '🤕');
+      if (!rs.length) { toast('Out of energy — sleep to recharge.', 'bad', '😴'); return; }
+      if (worldReady && rs.length) W.playAction(poseForDrill(rs[0].drill), 1.7);
+      const total = {};
+      for (const r of rs) for (const [k, v] of Object.entries(r.gains)) total[k] = Math.round(((total[k] || 0) + v) * 10) / 10;
+      gainPop(total);
+      if (rs.some((r) => r.injury)) toast('Picked up a knock in training.', 'bad', '🤕');
       render(); break;
     }
     case 'play-game': gameFlow(); break;
@@ -1202,9 +1184,16 @@ function handleAction(el, e) {
       const r = E.playPickup(id, el.dataset.size);
       if (r.error) { toast(r.error, 'bad', '⚠️'); return; }
       $modal().innerHTML = '';
-      if (worldReady && r.win) W.shakeCelebrate();
       updateHUD();
-      queueModals([() => showPickupResult(r)]);
+      (async () => {
+        if (worldReady) {
+          closePanel(false);
+          await W.playAction(r.session ? 'sprint' : 'dribble', 2.0);
+          if (r.win) W.shakeCelebrate();
+        }
+        gainPop(r.gains);
+        queueModals([() => showPickupResult(r)]);
+      })();
       break;
     }
     case 'practice-drills': {

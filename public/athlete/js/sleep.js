@@ -11,9 +11,8 @@
    ============================================================ */
 
 export const PROVIDERS = {
-  demo:   { name: 'Sleeper Band (simulated)', ico: '⌚', desc: 'A simulated sleep wearable. Life events and habits move the numbers — great for playing through a career fast.' },
-  manual: { name: 'Morning Log', ico: '📝', desc: 'Log bedtime, wake time and how you feel each morning. Works with any tracker on your nightstand.' },
-  import: { name: 'Device Import (CSV)', ico: '📥', desc: 'Paste a CSV export from Whoop, Oura, Fitbit or Apple Health. Each row becomes one night.' },
+  demo:   { name: 'Sleeper Band', ico: '⌚', desc: 'Automatic — a night syncs on its own every time you sleep. Life events and habits move the numbers.' },
+  import: { name: 'Device data (CSV)', ico: '📥', desc: 'Feed in real nights from a Whoop, Oura, Fitbit or Apple Health export. Each row becomes one night; the band fills any gaps.' },
 };
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -64,32 +63,6 @@ export function simulateNight({ age, era, sleepMod = 0, gearSleepBonus = 0, habi
     bonus: gearSleepBonus,
     ageHint: age,
     source: 'demo',
-  };
-  night.score = scoreNight(night);
-  return night;
-}
-
-/* ---------- Manual provider ---------- */
-export function nightFromManual({ bedtime, waketime, quality, wakeups, age }) {
-  // bedtime/waketime: "HH:MM" strings
-  const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
-  let dur = toMin(waketime) - toMin(bedtime);
-  if (dur <= 0) dur += 24 * 60;
-  const hours = dur / 60;
-  const q = clamp((quality - 1) / 4, 0, 1); // 1-5 stars
-  const wk = clamp(wakeups ?? 0, 0, 9);
-  // Bedtime consistency proxy: earlier & conventional bedtimes score higher
-  const bt = toMin(bedtime);
-  const late = bt > 3 * 60 && bt < 12 * 60 ? 0.2 : bt >= 12 * 60 && bt <= 21.5 * 60 ? 0.9 : bt <= 23.5 * 60 || bt <= 60 ? 0.8 : 0.45;
-  const night = {
-    hours: Math.round(hours * 10) / 10,
-    efficiency: clamp(0.95 - wk * 0.04 - (1 - q) * 0.1, 0.5, 0.98),
-    deepPct: 0.10 + 0.10 * q,
-    remPct: 0.12 + 0.10 * q,
-    consistency: late,
-    restingHR: null,
-    ageHint: age,
-    source: 'manual',
   };
   night.score = scoreNight(night);
   return night;

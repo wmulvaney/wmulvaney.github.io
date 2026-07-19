@@ -967,7 +967,15 @@ function loop() {
         character.position.y = Math.abs(Math.sin(w)) * 0.05;
       }
     } else {
-      const pose = charState.pose || 'dribble';
+      if (charState.action) {
+        charState.action.t -= dt;
+        if (charState.action.t <= 0) {
+          const done = charState.action.resolve;
+          charState.action = null;
+          if (done) done();
+        }
+      }
+      const pose = charState.action?.pose || charState.pose || 'dribble';
       if (pose === 'dribble') {
         u.legL.rotation.x *= 0.85; u.legR.rotation.x *= 0.85;
         u.armL.rotation.x *= 0.85;
@@ -983,6 +991,18 @@ function loop() {
         u.legL.rotation.x = -1.35; u.legR.rotation.x = -1.35;
         u.armL.rotation.x = -0.35; u.armR.rotation.x = -0.35 + Math.sin(t * 1.6) * 0.06;
         character.position.y = 0.18 + Math.sin(t * 2) * 0.01;
+      } else if (pose === 'sprint') {
+        const w = t * 13;
+        u.legL.rotation.x = Math.sin(w) * 0.9;
+        u.legR.rotation.x = -Math.sin(w) * 0.9;
+        u.armL.rotation.x = -Math.sin(w) * 0.7;
+        u.armR.rotation.x = Math.sin(w) * 0.7;
+        character.position.y = Math.abs(Math.sin(w)) * 0.07;
+      } else if (pose === 'stretch') {
+        const reach = Math.PI * 0.8 + Math.sin(t * 1.6) * 0.35;
+        u.armL.rotation.x = reach; u.armR.rotation.x = reach;
+        u.legL.rotation.x = 0; u.legR.rotation.x = 0;
+        character.position.y = Math.max(0, Math.sin(t * 1.6)) * 0.04;
       } else if (pose === 'sleep') {
         u.legL.rotation.x = 0.15; u.legR.rotation.x = 0.15;
         u.armL.rotation.x = 0.2; u.armR.rotation.x = 0.2;
@@ -1833,4 +1853,14 @@ export function triggerPrompt() {
   } else if (onInteractCb) {
     onInteractCb(currentPrompt.id);
   }
+}
+
+/* Play a short activity animation (lift, sprint, stretch, dribble, sit)
+   and resolve when it finishes — the visual beat for "doing stuff". */
+export function playAction(pose, seconds = 1.6) {
+  if (!character || !charState) return Promise.resolve();
+  if (charState.action?.resolve) charState.action.resolve();
+  return new Promise((resolve) => {
+    charState.action = { pose, t: seconds, resolve };
+  });
 }

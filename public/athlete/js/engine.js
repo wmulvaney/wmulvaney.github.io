@@ -82,7 +82,7 @@ export function createGame({ name, youthSports, provider }) {
     },
     rp: 30,
     sleep: { provider: provider || 'demo', history: [], streak: 0, pendingMod: 0, importQueue: [] },
-    today: { recovery: 70, sleepScore: 75, trained: [], gamePlayed: false, sessionsMax: 3 },
+    today: { recovery: 70, sleepScore: 75, trained: [], gamePlayed: false },
     owned: { coaches: {}, facility: 0, gear: {} },
     season: { games: 0, wins: 0, losses: 0, statA: 0, statB: 0, statC: 0, lastResult: null, perfSum: 0 },
     career: { games: 0, wins: 0, statA: 0, statB: 0, statC: 0, seasons: [], trophies: [], awards: [] },
@@ -186,7 +186,7 @@ export function advanceDay(nightOverride) {
   night.day = a.day; night.recovery = recovery; night.rpEarn = rpEarn;
   S.sleep.history.push(night);
   if (S.sleep.history.length > 60) S.sleep.history.shift();
-  S.today = { recovery, sleepScore: night.score, trained: [], gamePlayed: false, sessionsMax: 3, rpEarn };
+  S.today = { recovery, sleepScore: night.score, trained: [], gamePlayed: false, rpEarn };
 
   // Injury countdown
   if (a.injury) {
@@ -400,7 +400,6 @@ export function train(drillId) {
   const a = S.athlete;
   const d = DRILLS.find((x) => x.id === drillId);
   if (!d) return { error: 'Unknown drill' };
-  if (S.today.trained.length >= S.today.sessionsMax) return { error: 'No sessions left today. Sleep on it.' };
   if (a.energy < d.energy) return { error: 'Not enough energy today.' };
   if (a.injury && d.intensity > 1) return { error: `Injured (${a.injury.name}) — only light work allowed.` };
 
@@ -450,7 +449,7 @@ export function autoTrain() {
   const plan = recommendDrills();
   const results = [];
   for (const d of plan) {
-    if (S.today.trained.length >= S.today.sessionsMax) break;
+    if (S.today.trained.length >= 3) break; // auto-train keeps a sane daily volume
     if (S.athlete.energy < d.energy) continue;
     if (S.athlete.injury && d.intensity > 1) continue;
     if (S.athlete.fatigue > 68 && d.intensity >= 2) continue; // protect the body when running hot
@@ -781,11 +780,14 @@ export function playPickup(sportId, size = 'quick') {
     for (const k of Object.keys(grow)) { const g = applyGain(k, 0.5 * intensity); if (g > 0) gains[k] = g; }
   }
 
-  // flavor scoreline + light rewards
-  const edge = (S.today.recovery - 55) / 180 + (a.morale - 50) / 400;
-  const win = Math.random() < 0.5 + edge;
-  const my = size === 'full' ? irnd(15, 21) : irnd(9, 11);
-  const their = win ? my - irnd(2, 6) : my + irnd(1, 4);
+  // ball sports get a scoreline; athletics sports are a session, not a game
+  let win = null, my = 0, their = 0;
+  if (spec) {
+    const edge = (S.today.recovery - 55) / 180 + (a.morale - 50) / 400;
+    win = Math.random() < 0.5 + edge;
+    my = size === 'full' ? irnd(15, 21) : irnd(9, 11);
+    their = win ? my - irnd(2, 6) : my + irnd(1, 4);
+  }
   a.fatigue = clamp(a.fatigue + (size === 'full' ? 11 : 6), 0, 100);
   a.morale = clamp(a.morale + (size === 'full' ? 7 : 4) + (win ? 2 : 0), 0, 100);
   const rp = irnd(2, 5) + (win ? 3 : 0);
@@ -801,7 +803,10 @@ export function playPickup(sportId, size = 'quick') {
   }
 
   const name = spec ? spec.name : YOUTH_SPORTS[sportId]?.name || 'sports';
-  logJournal(`${size === 'full' ? 'Full run' : 'Pickup'} at the ${a.era === 'youth' ? 'park' : 'stadium'} — ${win ? `won ${my}–${their}` : `lost ${their}–${my}`} playing ${name}.${injury ? ` Came home with a ${injury.name}.` : ''}`);
+  const where = a.era === 'youth' ? 'park' : 'stadium';
+  logJournal(spec
+    ? `${size === 'full' ? 'Full run' : 'Pickup'} at the ${where} — ${win ? `won ${my}–${their}` : `lost ${their}–${my}`} playing ${name}.${injury ? ` Came home with a ${injury.name}.` : ''}`
+    : `${name} session at the ${where}.${injury ? ` Came home with a ${injury.name}.` : ''}`);
   save();
-  return { win, my, their, gains, rp, injury, sport: sportId, sportName: name, cost };
+  return { session: !spec, win, my, their, gains, rp, injury, sport: sportId, sportName: name, cost };
 }
