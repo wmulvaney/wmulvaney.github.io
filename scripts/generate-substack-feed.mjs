@@ -8,6 +8,10 @@ const OUTPUT_PATH = path.resolve(process.cwd(), 'public', 'substack-feed.json');
 const DEFAULT_SUBSTACK_IMAGE = 'https://substackcdn.com/image/fetch/w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7c64c3cd-dcf7-482a-8beb-77af1dd7e752_1600x1600.jpeg';
 
 const parser = new Parser({
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36',
+    Accept: 'application/rss+xml, application/xml;q=0.9, */*;q=0.8'
+  },
   customFields: {
     item: [
       ['content:encoded', 'contentEncoded'],
@@ -64,8 +68,16 @@ const run = async () => {
   console.log(`Wrote ${articles.length} Substack articles to ${OUTPUT_PATH}`);
 };
 
-run().catch((error) => {
+run().catch(async (error) => {
   console.error('Failed to generate Substack feed JSON');
   console.error(error);
-  process.exit(1);
+  // Substack intermittently 403s CI runners. The committed feed is a good
+  // fallback — keep it and let the build continue rather than failing the deploy.
+  try {
+    await fs.access(OUTPUT_PATH);
+    console.warn(`Keeping existing ${OUTPUT_PATH}`);
+    process.exit(0);
+  } catch {
+    process.exit(1);
+  }
 });
