@@ -202,13 +202,15 @@ function obSports() {
 }
 
 /* ---------------- world shell + HUD ---------------- */
+const isTouch = () => ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
 function ensureWorld() {
   $app().style.display = 'none';
   if (document.getElementById('world-wrap')) {
     document.getElementById('world-wrap').style.display = '';
     document.getElementById('hud').style.display = '';
     const joy = document.getElementById('joystick');
-    if (joy) joy.style.display = '';
+    if (joy) joy.style.display = isTouch() ? 'block' : '';
     return;
   }
   const wrap = document.createElement('div');
@@ -235,6 +237,9 @@ function ensureWorld() {
   const panelRoot = document.createElement('div');
   panelRoot.id = 'panel-root';
   document.body.append(wrap, hud, joy, fadeEl, panelRoot);
+  // CSS shows the joystick via pointer:coarse; some in-app browsers misreport
+  // that, so force it whenever the device can actually touch.
+  if (isTouch()) joy.style.display = 'block';
   W.initWorld(wrap, { onEnter: enterBuildingFlow, onInteract: handleInteract, onPrompt });
   attachJoystick(joy);
   worldReady = true;

@@ -1,5 +1,5 @@
 /* SLEEPER service worker — precache app shell, runtime-cache the rest. */
-const VERSION = 'sleeper-v4';
+const VERSION = 'sleeper-v5';
 const BASE = new URL('./', self.location).pathname;
 const SHELL = [
   './',

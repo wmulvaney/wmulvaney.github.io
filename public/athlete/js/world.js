@@ -714,7 +714,7 @@ function attachControls() {
     }
     const dx = e.clientX - down.x, dy = e.clientY - down.y;
     if (Math.abs(dx) + Math.abs(dy) > 7) moved = true;
-    orbit.theta = down.theta - dx * 0.0055;
+    orbit.theta = down.theta + dx * 0.0055; // grab-and-drag: world follows the finger
     orbit.phi = Math.max(0.55, Math.min(1.25, down.phi - dy * 0.004));
   });
   el.addEventListener('pointerup', (e) => {
