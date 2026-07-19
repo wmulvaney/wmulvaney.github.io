@@ -1,5 +1,6 @@
 /* SLEEPER service worker — precache app shell, runtime-cache the rest. */
-const VERSION = 'sleeper-v3';
+const VERSION = 'sleeper-v4';
+const BASE = new URL('./', self.location).pathname;
 const SHELL = [
   './',
   'index.html',
@@ -35,7 +36,7 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
 
-  if (url.origin === location.origin && url.pathname.startsWith('/athlete')) {
+  if (url.origin === location.origin && url.pathname.startsWith(BASE)) {
     e.respondWith(
       fetch(e.request)
         .then((res) => {
