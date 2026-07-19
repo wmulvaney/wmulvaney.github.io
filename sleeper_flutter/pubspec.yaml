@@ -1,0 +1,27 @@
+name: sleeper
+description: SLEEPER — live the life of an athlete. Your real sleep decides how far you go.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Full-screen webview + tiny localhost server that serves the bundled game.
+  flutter_inappwebview: ^6.1.5
+  # Apple Health (iOS) / Health Connect (Android) — real sleep, no manual input.
+  health: ^11.1.1
+
+dev_dependencies:
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/www/
+    - assets/www/css/
+    - assets/www/js/
+    - assets/www/js/vendor/
+    - assets/www/icons/
