@@ -340,4 +340,3 @@ export const OPPONENTS = {
   pro: ['Meridian Comets', 'Harbor City Kings', 'Ashland Wolves', 'Solano Heat', 'Ironport Chargers', 'Summit Stags', 'Northgate FC', 'Union Verde'],
 };
 
-export const FIRST_NAMES_HINT = ['Alex', 'Jordan', 'Riley', 'Sam', 'Casey', 'Devon', 'Morgan', 'Jules'];

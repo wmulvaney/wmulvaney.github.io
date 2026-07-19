@@ -1,5 +1,5 @@
 /* SLEEPER service worker — precache app shell, runtime-cache the rest. */
-const VERSION = 'sleeper-v1';
+const VERSION = 'sleeper-v2';
 const SHELL = [
   './',
   'index.html',
@@ -11,6 +11,9 @@ const SHELL = [
   'js/data.js',
   'js/sleep.js',
   'js/scenes.js',
+  'js/world.js',
+  'js/vendor/three.module.min.js',
+  'js/vendor/three.core.min.js',
   'icons/icon.svg',
 ];
 
@@ -50,6 +53,6 @@ self.addEventListener('fetch', (e) => {
       const copy = res.clone();
       caches.open(VERSION).then((c) => c.put(e.request, copy));
       return res;
-    }).catch(() => m))
+    }).catch(() => new Response('', { status: 504 })))
   );
 });

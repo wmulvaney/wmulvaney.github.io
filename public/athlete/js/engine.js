@@ -11,7 +11,7 @@ import {
   CHOICE_EVENTS, OPPONENTS,
 } from './data.js';
 import {
-  simulateNight, computeRecovery, recoveryMult, energyFromRecovery, describeScore,
+  simulateNight, computeRecovery, recoveryMult, energyFromRecovery,
 } from './sleep.js';
 
 const SAVE_KEY = 'sleeper.save.v1';
@@ -74,7 +74,7 @@ export function createGame({ name, youthSports, provider }) {
       era: 'youth',
       youthSports, mainSport: null, position: null, college: null, proTeam: null, draft: null,
       attrs, caps, growthBonus: grow,
-      energy: 8, maxEnergyBonus: 0,
+      energy: 8,
       fatigue: 10, morale: 70, form: 60, reputation: 0,
       injury: null,
       habit: 0, // sleep hygiene drift −20..+20
@@ -84,11 +84,10 @@ export function createGame({ name, youthSports, provider }) {
     sleep: { provider: provider || 'demo', history: [], streak: 0, pendingMod: 0, importQueue: [] },
     today: { recovery: 70, sleepScore: 75, trained: [], gamePlayed: false, sessionsMax: 3 },
     owned: { coaches: {}, facility: 0, gear: {} },
-    season: { games: 0, wins: 0, losses: 0, statA: 0, statB: 0, statC: 0, playoffs: null, lastResult: null },
+    season: { games: 0, wins: 0, losses: 0, statA: 0, statB: 0, statC: 0, lastResult: null, perfSum: 0 },
     career: { games: 0, wins: 0, statA: 0, statB: 0, statC: 0, seasons: [], trophies: [], awards: [] },
     journal: [],
     pendingDecision: null,
-    pendingEvents: [],
   };
   logJournal(`${name}'s story begins in the backyard, age 8. Three sports, endless summer.`, true);
   save();
@@ -223,7 +222,6 @@ export function advanceDay(nightOverride) {
     maybeChoiceEvent(morning);
   }
 
-  S.pendingEvents = morning;
   save();
   return { night, recovery, rpEarn, morning };
 }
@@ -358,8 +356,7 @@ export function availableDrills() {
     return true;
   }).map((d) => ({
     ...d,
-    locked: ERAS.indexOf(ERAS[d.era]) > eraIdx || d.fac > S.owned.facility
-      || (d.era > eraIdx),
+    locked: d.era > eraIdx || d.fac > S.owned.facility,
     lockReason: d.era > eraIdx ? `Unlocks in ${ERA_INFO[ERAS[d.era]].name}` : d.fac > S.owned.facility ? `Needs ${FACILITIES[d.fac].name}` : null,
   }));
 }
@@ -566,7 +563,7 @@ export function lineText(sport, line, labels) {
 
 /* ---------------- Season wrap ---------------- */
 function resetSeason() {
-  S.season = { games: 0, wins: 0, losses: 0, statA: 0, statB: 0, statC: 0, playoffs: null, lastResult: null, perfSum: 0 };
+  S.season = { games: 0, wins: 0, losses: 0, statA: 0, statB: 0, statC: 0, lastResult: null, perfSum: 0 };
 }
 
 function endOfSeason(morning) {
@@ -746,4 +743,3 @@ export function queueImportedNights(nights) {
   S.sleep.importQueue.push(...nights);
   save();
 }
-export { describeScore };
