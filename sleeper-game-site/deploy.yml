@@ -1,0 +1,85 @@
+name: Sync and deploy SLEEPER
+
+# Lives in the wmulvaney/sleeper repo (as .github/workflows/deploy.yml).
+# Pulls the game from wmulvaney/wmulvaney.github.io, commits it here, and
+# publishes it to GitHub Pages at game.williammulvaney.com. Runs on push,
+# once a day, and on demand.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '23 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  sync-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the game from the main site repo
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          repository: wmulvaney/wmulvaney.github.io
+          path: _src
+          fetch-depth: 0
+
+      - name: Copy the game into this repo
+        run: |
+          # Until the game branch merges to main, fall back to it.
+          if [ -d _src ] && [ ! -d _src/public/athlete ]; then
+            git -C _src checkout origin/claude/athlete-career-sleep-app-n1ksdr -- public/athlete || true
+          fi
+          if [ -d _src/public/athlete ]; then
+            rsync -a --delete \
+              --exclude .git --exclude .github --exclude _src \
+              --exclude README.md \
+              _src/public/athlete/ ./
+          fi
+          rm -rf _src
+
+      - name: Commit synced files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "Sync game from wmulvaney.github.io"
+            git push
+          fi
+
+      - name: Enable GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Point Pages at game.williammulvaney.com
+        run: |
+          curl -sS -X PUT \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages" \
+            -d '{"cname":"game.williammulvaney.com"}' || true
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
