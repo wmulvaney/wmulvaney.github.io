@@ -8,7 +8,7 @@
 import {
   ATTRS, PHYS_KEYS, YOUTH_SPORTS, SPORTS, DRILLS, ERAS, ERA_INFO,
   COACHES, FACILITIES, GEAR, SERVICES, COLLEGES, PRO_LEAGUE,
-  CHOICE_EVENTS, OPPONENTS,
+  CHOICE_EVENTS, OPPONENTS, RIVAL_NAMES,
 } from './data.js';
 import {
   simulateNight, computeRecovery, recoveryMult,
@@ -37,6 +37,7 @@ export function load() {
     const raw = localStorage.getItem(SAVE_KEY);
     if (raw) S = JSON.parse(raw);
   } catch (e) { S = null; }
+  migrate();
   return S;
 }
 export function resetGame() { S = null; localStorage.removeItem(SAVE_KEY); }
@@ -47,7 +48,7 @@ export function importSave(json) {
   S = parsed; save();
 }
 
-export function createGame({ name, youthSports, provider }) {
+export function createGame({ name, youthSports, provider, look }) {
   const attrs = {};
   const caps = {};
   for (const k of Object.keys(ATTRS)) {
@@ -74,6 +75,7 @@ export function createGame({ name, youthSports, provider }) {
       name, age: 8, dayOfYear: 1, day: 1,
       era: 'youth',
       youthSports, mainSport: null, position: null, college: null, proTeam: null, draft: null,
+      look: look || null,
       attrs, caps, growthBonus: grow,
       energy: 8,
       fatigue: 10, morale: 70, form: 60, reputation: 0,
@@ -89,10 +91,32 @@ export function createGame({ name, youthSports, provider }) {
     career: { games: 0, wins: 0, statA: 0, statB: 0, statC: 0, seasons: [], trophies: [], awards: [] },
     journal: [],
     pendingDecision: null,
+    rival: { name: pick(RIVAL_NAMES), w: 0, l: 0 },
+    goals: null,
+    goalNews: [],
+    tutorial: 0,
+    settings: { sound: true, notify: false },
+    sync: { url: '', token: '', lastDate: '', status: '' },
   };
+  S.goals = newGoals();
+  initSeasonTable();
   logJournal(`${name}'s story begins in the backyard, age 8. Three sports, endless summer.`, true);
+  logJournal(`A kid named ${S.rival.name} from across town plays all the same sports. You two are going to see a lot of each other.`, true);
   save();
   return S;
+}
+
+/* Older saves gain the new systems on load */
+function migrate() {
+  if (!S) return;
+  if (!S.rival) S.rival = { name: pick(RIVAL_NAMES), w: 0, l: 0 };
+  if (!S.goals) S.goals = newGoals();
+  if (!S.goalNews) S.goalNews = [];
+  if (S.tutorial === undefined) S.tutorial = -1; // existing players skip the intro
+  if (!S.settings) S.settings = { sound: true, notify: false };
+  if (!S.sync) S.sync = { url: '', token: '', lastDate: '', status: '' };
+  if (!S.season.table) initSeasonTable();
+  if (!S.athlete.look) S.athlete.look = null;
 }
 
 export function logJournal(text, milestone = false) {
@@ -184,6 +208,8 @@ export function advanceDay(nightOverride) {
   a.form = Math.round(clamp(a.form * 0.7 + recovery * 0.3, 0, 100));
   a.morale = clamp(a.morale + (58 - a.morale) * 0.05, 0, 100); // drift back to baseline
 
+  goalProgress('sleep', night.score);
+  goalProgress('streak', S.sleep.streak);
   night.day = a.day; night.recovery = recovery; night.rpEarn = rpEarn;
   S.sleep.history.push(night);
   if (S.sleep.history.length > 60) S.sleep.history.shift();
@@ -211,6 +237,14 @@ export function advanceDay(nightOverride) {
     birthdayGrowth(morning);
     const newEra = eraOfAge(a.age);
     if (newEra !== a.era) eraTransition(newEra, morning);
+  }
+
+  // Fresh coach goals every 7 game days
+  if (S.goals && a.day - S.goals.setDay >= 7) {
+    const cleared = S.goals.items.filter((g) => g.done).length;
+    S.goals = newGoals();
+    S.goals.setDay = a.day;
+    if (cleared) logJournal(`New week, new goals from coach (${cleared}/3 cleared last week).`);
   }
 
   // Scheduled + random events for the new day
@@ -263,10 +297,12 @@ function eraTransition(newEra, morning) {
   const a = S.athlete;
   a.era = newEra;
   resetSeason();
+  initSeasonTable();
   if (newEra === 'hs') {
     S.pendingDecision = { type: 'sport' };
     morning.push({ type: 'decision', decision: 'sport' });
     logJournal('First day of high school. Time to choose a path.', true);
+    logJournal(`${S.rival.name} enrolled across town at your future rivals. Of course.`, true);
   } else if (newEra === 'college') {
     const offers = generateOffers();
     S.pendingDecision = { type: 'college', offers };
@@ -275,6 +311,8 @@ function eraTransition(newEra, morning) {
   } else if (newEra === 'pro') {
     const result = runDraft();
     morning.push({ type: 'draft', result });
+    const ahead = S.rival.w >= S.rival.l;
+    logJournal(`${S.rival.name} ${ahead ? 'went one pick before you. One.' : 'slipped to the second round. You noticed.'}`, true);
   }
 }
 
@@ -426,6 +464,7 @@ export function train(drillId) {
   }
 
   a.energy -= d.energy;
+  goalProgress('drill');
   a.fatigue = clamp(a.fatigue + d.intensity * 2.2, 0, 100);
   if (d.recovery) a.fatigue = clamp(a.fatigue - d.recovery, 0, 100);
   S.today.trained.push(d.id);
@@ -497,7 +536,7 @@ function oppRating() {
   return base + ramp + collegeMod + rnd(-4, 4);
 }
 
-export function playGame() {
+export function playGame(meterBonus = 0) {
   syncEnergy();
   const a = S.athlete;
   if (!isGameDay()) return { error: 'No game scheduled today.' };
@@ -505,6 +544,7 @@ export function playGame() {
   if (a.energy < 2) return { error: 'Too exhausted to play (need 2 energy).' };
 
   a.energy -= 2;
+  const rivalGame = Math.random() < 0.24;
   const isYouth = a.era === 'youth';
   const sport = isYouth ? pick(a.youthSports.filter((s) => SPORTS[s])) || 'basketball' : a.mainSport;
   const spec = SPORTS[sport];
@@ -518,9 +558,10 @@ export function playGame() {
     * (0.97 + a.form / 1500)
     * (1 - a.fatigue / 450)
     * (0.97 + energyPct * 0.06)
-    + rnd(-6, 6);
+    + rnd(-6, 6)
+    + meterBonus;
 
-  const opp = oppRating();
+  const opp = oppRating() + (rivalGame ? 3 : 0);
   const winProb = 1 / (1 + Math.exp(-(perf - opp) / 7));
   const win = Math.random() < winProb;
   const bias = (!isYouth && a.position) ? spec.positions[a.position].statBias : { a: 1, b: 1, c: 1 };
@@ -540,15 +581,22 @@ export function playGame() {
   S.today.gamePlayed = true;
 
   const opponent = nextOpponent();
+  if (rivalGame) {
+    if (win) S.rival.w++; else S.rival.l++;
+  }
+  tickSeasonTable(win);
+  goalProgress('win', win ? 1 : 0);
   const result = {
     win, sport, perf: Math.round(perf), opp: Math.round(opp), line,
     labels: spec.statLabels, opponent, rp: rpWin,
     star: perf > opp + 10,
+    rival: rivalGame ? { name: S.rival.name, w: S.rival.w, l: S.rival.l, won: win } : null,
+    meterBonus,
   };
   S.season.lastResult = result;
   S.season.perfSum = (S.season.perfSum || 0) + perf;
 
-  logJournal(`${win ? 'W' : 'L'} vs ${opponent} — ${lineText(sport, line, spec.statLabels)}.`);
+  logJournal(`${win ? 'W' : 'L'} vs ${opponent}${rivalGame ? ` (${S.rival.name} on the other side)` : ''} — ${lineText(sport, line, spec.statLabels)}.`);
   save();
   return result;
 }
@@ -586,6 +634,7 @@ export function lineText(sport, line, labels) {
 /* ---------------- Season wrap ---------------- */
 function resetSeason() {
   S.season = { games: 0, wins: 0, losses: 0, statA: 0, statB: 0, statC: 0, lastResult: null, perfSum: 0 };
+  initSeasonTable();
 }
 
 function endOfSeason(morning) {
@@ -597,12 +646,16 @@ function endOfSeason(morning) {
   let trophy = null, award = null;
 
   // Playoffs: good record earns a shot (not in youth)
+  let bracket = null;
   if (a.era !== 'youth' && winPct >= 0.55) {
     let alive = true; const rounds = a.era === 'pro' ? 3 : 2; let won = 0;
+    bracket = [];
+    const roundNames = a.era === 'pro' ? ['Semifinal', 'Conference Final', 'Championship'] : ['Semifinal', 'Final'];
     for (let i = 0; i < rounds && alive; i++) {
       const perf = computeRating() * (0.8 + 0.3 * Math.random()) + avgPerf * 0.2;
       const opp = oppRating() + 6 + i * 4;
       alive = perf + rnd(-5, 8) > opp;
+      bracket.push({ round: roundNames[i], opponent: nextOpponent(), win: alive });
       if (alive) won++;
     }
     if (alive) {
@@ -631,9 +684,12 @@ function endOfSeason(morning) {
     trophy, award, sport: a.mainSport,
   });
 
+  const table = standings();
+  const place = table.findIndex((r) => r.you) + 1;
   morning.push({
     type: 'season', record: `${s.wins}–${s.losses}`, trophy, award,
     perGame: Math.round(perGame * 10) / 10,
+    bracket, place, teams: table.length,
   });
 
   // Pro contract & retirement checks
@@ -736,6 +792,82 @@ export function useService(id) {
   return { ok: true };
 }
 
+/* ---------------- Weekly coach goals ----------------
+   Three rotating objectives per game-week; each pays RP, and
+   clearing all three pays a bonus. Progress hooks live in
+   advanceDay / playGame / train / playPickup.               */
+const GOAL_TEMPLATES = [
+  { id: 'sleep80', text: 'Post two 80+ sleep scores', target: 2, rp: 30, on: 'sleep', test: (v) => v >= 80 },
+  { id: 'sleep70', text: 'Post three 70+ sleep scores', target: 3, rp: 25, on: 'sleep', test: (v) => v >= 70 },
+  { id: 'win1', text: 'Win a game', target: 1, rp: 30, on: 'win' },
+  { id: 'train4', text: 'Finish four training drills', target: 4, rp: 25, on: 'drill' },
+  { id: 'pickup2', text: 'Play two pickup runs', target: 2, rp: 25, on: 'pickup' },
+  { id: 'streak3', text: 'Hold a 3-night sleep streak', target: 3, rp: 35, on: 'streak', test: (v) => v >= 3, absolute: true },
+];
+
+function newGoals() {
+  const picks = [...GOAL_TEMPLATES].sort(() => Math.random() - 0.5).slice(0, 3);
+  return {
+    setDay: S ? S.athlete.day : 1,
+    items: picks.map((g) => ({ ...g, progress: 0, done: false })),
+  };
+}
+
+function goalProgress(kind, value = 1) {
+  if (!S.goals) return;
+  for (const g of S.goals.items) {
+    if (g.done || g.on !== kind) continue;
+    if (g.test) {
+      if (g.absolute) g.progress = g.test(value) ? g.target : g.progress;
+      else if (g.test(value)) g.progress += 1;
+    } else {
+      g.progress += value;
+    }
+    if (g.progress >= g.target) {
+      g.done = true;
+      S.rp += g.rp;
+      S.goalNews.push(`Goal complete: ${g.text} (+${g.rp} RP)`);
+      logJournal(`Coach's goal cleared — ${g.text}.`);
+    }
+  }
+  if (S.goals.items.every((g) => g.done) && !S.goals.bonusPaid) {
+    S.goals.bonusPaid = true;
+    S.rp += 40;
+    S.goalNews.push('All three goals cleared — coach bonus +40 RP');
+  }
+}
+
+export function consumeGoalNews() {
+  const news = S?.goalNews || [];
+  if (S) S.goalNews = [];
+  return news;
+}
+
+/* ---------------- Season standings ----------------
+   Five named opponents track a record alongside yours, so the
+   season is a table you climb rather than a lonely win count. */
+function initSeasonTable() {
+  const era = S.athlete.era;
+  const names = [...OPPONENTS[era]].sort(() => Math.random() - 0.5).slice(0, 5);
+  S.season.table = names.map((n) => ({ name: n, w: 0, l: 0 }));
+}
+
+function tickSeasonTable(playerWon) {
+  if (!S.season.table) initSeasonTable();
+  // opponents play each other; two random rows get a result
+  const rows = S.season.table;
+  const i = Math.floor(Math.random() * rows.length);
+  let j = Math.floor(Math.random() * rows.length);
+  if (j === i) j = (j + 1) % rows.length;
+  if (Math.random() < 0.5) { rows[i].w++; rows[j].l++; } else { rows[j].w++; rows[i].l++; }
+  void playerWon;
+}
+
+export function standings() {
+  const rows = [...(S.season.table || []), { name: 'You', w: S.season.wins, l: S.season.losses, you: true }];
+  return rows.sort((a, b) => b.w - a.w || a.l - b.l);
+}
+
 /* ---------------- Choice events ---------------- */
 function maybeChoiceEvent(morning) {
   if (Math.random() > 0.30) return;
@@ -760,6 +892,13 @@ export function resolveChoice(ev, key) {
 
 /* ---------------- Sleep provider management ---------------- */
 export function setProvider(p) { S.sleep.provider = p; save(); }
+export function setSetting(key, value) { S.settings[key] = value; save(); }
+export function setSync(url, token) { S.sync.url = url.trim(); S.sync.token = token.trim(); S.sync.status = ''; save(); }
+export function noteSync(status, lastDate) {
+  S.sync.status = status;
+  if (lastDate) S.sync.lastDate = lastDate;
+  save();
+}
 export function queueImportedNights(nights) {
   S.sleep.importQueue.push(...nights);
   save();
@@ -803,6 +942,7 @@ export function playPickup(sportId, size = 'quick') {
     my = size === 'full' ? irnd(15, 21) : irnd(9, 11);
     their = win ? my - irnd(2, 6) : my + irnd(1, 4);
   }
+  goalProgress('pickup');
   a.fatigue = clamp(a.fatigue + (size === 'full' ? 11 : 6), 0, 100);
   a.morale = clamp(a.morale + (size === 'full' ? 7 : 4) + (win ? 2 : 0), 0, 100);
   const rp = irnd(2, 5) + (win ? 3 : 0);

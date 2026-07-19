@@ -1,5 +1,5 @@
 /* SLEEPER service worker — precache app shell, runtime-cache the rest. */
-const VERSION = 'sleeper-v2';
+const VERSION = 'sleeper-v3';
 const SHELL = [
   './',
   'index.html',
@@ -12,6 +12,7 @@ const SHELL = [
   'js/sleep.js',
   'js/scenes.js',
   'js/world.js',
+  'js/sound.js',
   'js/vendor/three.module.min.js',
   'js/vendor/three.core.min.js',
   'icons/icon.svg',

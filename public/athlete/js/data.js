@@ -340,3 +340,6 @@ export const OPPONENTS = {
   pro: ['Meridian Comets', 'Harbor City Kings', 'Ashland Wolves', 'Solano Heat', 'Ironport Chargers', 'Summit Stags', 'Northgate FC', 'Union Verde'],
 };
 
+
+/* Rival names — one is generated per career and grows alongside you */
+export const RIVAL_NAMES = ['Marcus Bell', 'Dakota Reeves', 'TJ Okafor', 'Sasha Volkov', 'Reggie Lamar', 'Kai Watanabe', 'Dre Simmons', 'Nico Ferraro'];

@@ -342,17 +342,19 @@ function schoolBuilding(era) {
 }
 
 /* ---------------- character ---------------- */
-function buildCharacter(accent) {
+function buildCharacter(accent, look) {
   const g = new THREE.Group();
-  const skin = 0xc98e5a, dark = 0x22283b;
-  const jersey = new THREE.MeshStandardMaterial({ color: accent, flatShading: true, roughness: 0.8 });
+  const skin = look?.skin ?? 0xc98e5a;
+  const hairC = look?.hair ?? 0x2a1e14;
+  const dark = 0x22283b;
+  const jersey = new THREE.MeshStandardMaterial({ color: look?.jersey ?? accent, flatShading: true, roughness: 0.8 });
 
   const body = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.5, 8), jersey);
   body.position.y = 0.72; body.castShadow = true;
 
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), mat(skin));
   head.position.y = 1.14; head.castShadow = true;
-  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.175, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2.6), mat(0x2a1e14));
+  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.175, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2.6), mat(hairC));
   hair.position.y = 1.17;
 
   const mkLimb = (isLeg, side) => {
@@ -479,10 +481,25 @@ function buildWorld(state) {
 
   // era flavor extras
   if (era !== 'youth') {
-    // billboard celebrating the athlete
+    // your name in lights
     const bb = new THREE.Group();
     const p1 = cyl(0.08, 0.08, 2.2, 6, 0x4a5164); p1.position.y = 1.1;
-    const face = box(2.6, 1.3, 0.1, 0x10162a, { emissive: cfg.accent, emissiveIntensity: 0.25 });
+    const c2d = document.createElement('canvas');
+    c2d.width = 512; c2d.height = 256;
+    const g2 = c2d.getContext('2d');
+    g2.fillStyle = '#10162a'; g2.fillRect(0, 0, 512, 256);
+    g2.strokeStyle = `#${cfg.accent.toString(16).padStart(6, '0')}`;
+    g2.lineWidth = 10; g2.strokeRect(8, 8, 496, 240);
+    g2.fillStyle = '#eef2ff'; g2.textAlign = 'center';
+    const num = state.athlete.look?.number ?? '';
+    g2.font = '800 92px system-ui, sans-serif';
+    g2.fillText(`${num !== '' ? '#' + num + ' ' : ''}${(state.athlete.name || '').split(' ')[0].toUpperCase()}`, 256, 128);
+    g2.font = '600 40px system-ui, sans-serif';
+    g2.fillStyle = '#9aa5c4';
+    g2.fillText(era === 'pro' ? 'THE SHOW' : era === 'college' ? 'GAME DAY SATURDAY' : 'FRIDAY NIGHTS', 256, 196);
+    const tex = new THREE.CanvasTexture(c2d);
+    const face = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.3, 0.1),
+      new THREE.MeshStandardMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.35, flatShading: true }));
     face.position.y = 2.6;
     bb.add(p1, face);
     bb.position.set(R * 0.1, 0, -R * 0.62);
@@ -537,12 +554,12 @@ function buildWorld(state) {
 
   // character
   if (!character) {
-    character = buildCharacter(cfg.accent);
+    character = buildCharacter(cfg.accent, state.athlete.look);
     scene.add(character);
     character.position.set(0, 0, 3.4); // start at the plaza
     charState = { mode: 'idle', target: null, resolve: null, t: 0 };
-  } else {
-    // recolor jersey to era accent
+  } else if (!state.athlete.look?.jersey) {
+    // no custom jersey: follow the era accent
     character.userData.body.material = new THREE.MeshStandardMaterial({ color: cfg.accent, flatShading: true, roughness: 0.8 });
     character.userData.armL.children.find((c) => c.geometry?.type === 'CylinderGeometry').material = character.userData.body.material;
     character.userData.armR.children.find((c) => c.geometry?.type === 'CylinderGeometry').material = character.userData.body.material;
@@ -562,7 +579,7 @@ function stadiumName(era) {
 
 function worldHash(state) {
   const a = state.athlete;
-  return [a.retired ? 'pro' : a.era, state.owned.facility, houseLevel(state), a.mainSport].join('|');
+  return [a.retired ? 'pro' : a.era, state.owned.facility, houseLevel(state), a.mainSport, JSON.stringify(a.look || 0)].join('|');
 }
 
 function disposeGroup(g) {

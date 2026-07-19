@@ -12,11 +12,15 @@ import {
 import { PROVIDERS, parseSleepCSV, describeScore } from './sleep.js';
 import * as E from './engine.js';
 import * as W from './world.js';
+import { sfx, buzz, setSoundEnabled } from './sound.js';
 import { sceneArt, vignette } from './scenes.js';
 
 const $app = () => document.getElementById('app');
 const $modal = () => document.getElementById('modal-root');
-let onboarding = { step: 0, name: '', picks: [], provider: 'demo' };
+let onboarding = { step: 0, name: '', picks: [], provider: 'demo', look: { skin: 0xc98e5a, hair: 0x2a1e14, jersey: 0xe25c4a, number: 23 } };
+const SKIN_TONES = [0xf2cfa8, 0xc98e5a, 0x9c6a3f, 0x5f4028];
+const HAIR_COLORS = [0x2a1e14, 0x0e0c0a, 0x7a4b21, 0xb8b0a4];
+const JERSEY_COLORS = [0xe25c4a, 0x3a6fd8, 0x2f9e57, 0xf2c14e, 0x8a5ad8, 0x22283b];
 let panelOpen = null;
 let worldReady = false;
 let busy = false; // guards the sleep/walk flows
@@ -102,13 +106,13 @@ function renderOnboarding() {
   document.body.className = 'era-youth';
   hideWorld();
   const ob = onboarding;
-  const steps = [obIntro, obName, obSports];
+  const steps = [obIntro, obName, obLook, obSports];
   $app().style.display = '';
   $app().innerHTML = `<div class="onboard">${steps[ob.step]()}</div>`;
 }
 
 function obProgress(n) {
-  return `<div class="ob-progress">${[0, 1, 2].map((i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div>`;
+  return `<div class="ob-progress">${[0, 1, 2, 3].map((i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div>`;
 }
 
 function obIntro() {
@@ -143,10 +147,39 @@ function obName() {
     <button class="btn primary block" data-action="ob-name-next">That's me</button>`;
 }
 
+function swatches(colors, key, selected) {
+  return `<div class="swatch-row">${colors.map((c) => `
+    <button class="swatch ${selected === c ? 'on' : ''}" data-action="ob-look" data-key="${key}" data-val="${c}"
+      style="background:#${c.toString(16).padStart(6, '0')}"></button>`).join('')}</div>`;
+}
+
+function obLook() {
+  const L = onboarding.look;
+  return `
+    ${obProgress(2)}
+    <div>
+      <p class="ob-kicker">Your athlete</p>
+      <h1>Make them yours.</h1>
+    </div>
+    <div class="card">
+      <p class="small muted mb-8">Skin</p>
+      ${swatches(SKIN_TONES, 'skin', L.skin)}
+      <p class="small muted mb-8 mt-12">Hair</p>
+      ${swatches(HAIR_COLORS, 'hair', L.hair)}
+      <p class="small muted mb-8 mt-12">Jersey</p>
+      ${swatches(JERSEY_COLORS, 'jersey', L.jersey)}
+      <div class="field mt-12" style="max-width:130px">
+        <label>Number</label>
+        <input id="ob-num" type="number" min="0" max="99" value="${L.number}">
+      </div>
+    </div>
+    <button class="btn primary block" data-action="ob-look-next">Looks right</button>`;
+}
+
 function obSports() {
   const picks = onboarding.picks;
   return `
-    ${obProgress(2)}
+    ${obProgress(3)}
     <div>
       <p class="ob-kicker">Multi-sport kid</p>
       <h1>Pick 3 sports to grow up playing.</h1>
@@ -370,6 +403,30 @@ function openDrillPanel(keys, title, ico) {
   openPanel('drills');
 }
 
+const TUTORIAL_STEPS = [
+  { hint: 'Coach: head to The Park and play something', done: 'That’s it — live reps build you fastest.' },
+  { hint: 'Coach: hit the Gym and run one drill', done: 'Good work. Drills target exactly what you pick.' },
+  { hint: 'Coach: now go home and sleep — that’s your superpower', done: null },
+];
+function tut(step) {
+  const S = E.getState();
+  if (!S || S.tutorial !== step) return;
+  S.tutorial = step + 1;
+  E.save();
+  const done = TUTORIAL_STEPS[step].done;
+  if (done) toast(done, 'good', '🧢');
+  if (S.tutorial >= TUTORIAL_STEPS.length) {
+    S.tutorial = -1;
+    E.save();
+    queueModals([() => showModal(`
+      <p class="modal-kicker">🧢 Coach</p>
+      <h2>You know the loop now.</h2>
+      <p class="modal-body">Sleep fills your energy — and it refills faster all day after a good night. Spend it on drills, pickup runs and games. Check my weekly goals at the stadium scoreboard. The rest is on you, kid.</p>
+      <button class="btn primary block" data-action="close-modal">Got it</button>`, { dismissable: false })]);
+  }
+  updateHUD();
+}
+
 let promptUI = null;
 function onPrompt(info) {
   promptUI = info;
@@ -404,7 +461,9 @@ function updateHUD() {
 
   const inside = worldReady ? W.inInterior() : null;
   const banner = hud.querySelector('.hud-banner');
-  if (S.pendingDecision) {
+  if (S.tutorial >= 0 && S.tutorial < TUTORIAL_STEPS.length && !S.pendingDecision) {
+    banner.innerHTML = `<button class="hud-banner-btn" data-action="noop">${esc(TUTORIAL_STEPS[S.tutorial].hint)}</button>`;
+  } else if (S.pendingDecision) {
     banner.innerHTML = `<button class="hud-banner-btn" data-action="open-decision">⚡ Decision time — tap to choose</button>`;
   } else if (gameDay && !inside) {
     banner.innerHTML = `<button class="hud-banner-btn gold" data-action="goto-game">🏟️ Game day vs ${esc(E.nextOpponent())} — tap to play</button>`;
@@ -515,6 +574,14 @@ function tabSleep() {
     </div>
 
     <div class="card">
+      <div class="card-title"><h3>Auto-sync</h3><span class="hint">${S.sync.status ? esc(S.sync.status) : 'not connected'}</span></div>
+      <p class="small muted mb-8">Point SLEEPER at a companion sync server and real nights flow in automatically — zero input. (Server setup lives in the repo: <b>sleeper-sync-worker</b>.)</p>
+      <div class="field"><label>Server URL</label><input id="sync-url" type="url" placeholder="https://your-worker.workers.dev" value="${esc(S.sync.url)}"></div>
+      <div class="field"><label>Access token</label><input id="sync-token" type="password" placeholder="token" value="${esc(S.sync.token)}"></div>
+      <button class="btn block" data-action="sync-connect">${S.sync.url ? 'Save & sync now' : 'Connect'}</button>
+    </div>
+
+    <div class="card">
       <div class="card-title"><h3>Sleep boosts active</h3></div>
       <p class="small muted">Gear & staff: <b class="spark">+${gear.sleep}</b> sleep score · <b class="spark">+${gear.recovery}</b> recovery · <b class="spark">+${gear.energy}</b> energy.
       ${S.athlete.habit !== 0 ? `<br>Lifestyle habits: <b style="color:${S.athlete.habit > 0 ? 'var(--green)' : 'var(--red)'}">${S.athlete.habit > 0 ? '+' : ''}${Math.round(S.athlete.habit)}</b> to nightly baseline (built by your story choices).` : ''}</p>
@@ -607,6 +674,7 @@ function tabTrain() {
 
   return `
     ${sessionLineHtml(S, a)}
+    ${goalsCard(S)}
     <div class="card">
       <button class="btn block" data-action="auto-train" ${a.energy < 1 ? 'disabled' : ''}>Auto-train (best value)</button>
     </div>
@@ -620,6 +688,20 @@ function tabTrain() {
     <div class="card">
       <div class="card-title"><h3>All drills</h3><span class="hint">⭐ = best value for your build</span></div>
       ${drillGridHtml(drills, recommended, a)}
+    </div>`;
+}
+
+function goalsCard(S) {
+  if (!S.goals) return '';
+  return `
+    <div class="card">
+      <div class="card-title"><h3>Coach's goals</h3><span class="hint">reset weekly</span></div>
+      ${S.goals.items.map((g) => `
+        <div class="goal-row ${g.done ? 'done' : ''}">
+          <span class="g-check">${g.done ? '✓' : ''}</span>
+          <span class="g-text">${esc(g.text)}</span>
+          <span class="g-rp">${g.done ? 'paid' : `${Math.min(g.progress, g.target)}/${g.target} · +${g.rp}✦`}</span>
+        </div>`).join('')}
     </div>`;
 }
 
@@ -647,8 +729,27 @@ function tabSeason() {
         }).join('')}
         <span class="xs faint">day ${a.dayOfYear} of ${yearLen}</span>
       </div>
-      ${E.isGameDay() && !a.injury ? `<button class="btn primary block mt-12" data-action="play-game">🏟️ Play today's game vs ${esc(E.nextOpponent())}</button>` : ''}
-      ${a.injury ? `<p class="small mt-8" style="color:var(--red)">🤕 Out ${a.injury.daysLeft} more day(s) — ${a.injury.name}</p>` : ''}
+      ${E.isGameDay() && !a.injury ? `<button class="btn primary block mt-12" data-action="play-game">Play today's game vs ${esc(E.nextOpponent())}</button>` : ''}
+      ${a.injury ? `<p class="small mt-8" style="color:var(--red)">Out ${a.injury.daysLeft} more day(s) — ${a.injury.name}</p>` : ''}
+    </div>
+
+    ${goalsCard(S)}
+
+    <div class="card">
+      <div class="card-title"><h3>Standings</h3><span class="hint">${ERA_INFO[a.era].name}</span></div>
+      <div class="table-row head"><span>#</span><span>Team</span><b>W</b><b>L</b></div>
+      ${E.standings().map((r, i) => `
+        <div class="table-row ${r.you ? 'you' : ''}"><span>${i + 1}</span><span>${esc(r.name)}</span><b>${r.w}</b><b>${r.l}</b></div>`).join('')}
+    </div>
+
+    <div class="card">
+      <div class="card-title"><h3>Rivalry</h3><span class="hint">since age 8</span></div>
+      <div class="boxline">
+        <div><b>${S.rival.w}</b><span>You</span></div>
+        <div><b>—</b><span>vs</span></div>
+        <div><b>${S.rival.l}</b><span>${esc(S.rival.name.split(' ')[0])}</span></div>
+      </div>
+      <p class="xs faint center">${esc(S.rival.name)} keeps showing up in the biggest games. ${S.rival.w > S.rival.l ? 'You own the matchup — for now.' : S.rival.w < S.rival.l ? 'They own the matchup. Fix that.' : 'Dead even. Someone has to break it.'}</p>
     </div>
 
     ${lastR ? `
@@ -827,7 +928,21 @@ function tabJournal() {
 
 /* ---------------- SETTINGS panel (the dresser) ---------------- */
 function tabSettings() {
+  const S = E.getState();
   return `
+    <div class="card">
+      <div class="card-title"><h3>Sound & alerts</h3></div>
+      <div class="row selectable" data-action="toggle-sound">
+        <div class="row-ico">${S.settings.sound ? '🔊' : '🔇'}</div>
+        <div class="row-main"><b>Sound & haptics</b><span class="sub">Game effects and vibration.</span></div>
+        <span class="tag ${S.settings.sound ? 'green' : ''}">${S.settings.sound ? 'ON' : 'OFF'}</span>
+      </div>
+      <div class="row selectable mt-8" data-action="toggle-notify">
+        <div class="row-ico">🔔</div>
+        <div class="row-main"><b>Notifications</b><span class="sub">Alert when your energy tank is full (while the app is in the background).</span></div>
+        <span class="tag ${S.settings.notify ? 'green' : ''}">${S.settings.notify ? 'ON' : 'OFF'}</span>
+      </div>
+    </div>
     <div class="card">
       <div class="card-title"><h3>Save</h3></div>
       <div class="grid-2">
@@ -879,6 +994,7 @@ function renderRetired() {
 export function render() {
   const S = E.getState();
   if (!S) { renderOnboarding(); return; }
+  for (const news of E.consumeGoalNews()) { toast(news, 'good', '🧢'); sfx('gain'); }
   if (S.athlete.retired) { renderRetired(); return; }
   document.body.className = `era-${S.athlete.era}`;
   ensureWorld();
@@ -942,8 +1058,13 @@ function eventModalFns(events) {
       showModal(`
         ${ev.trophy ? `<div class="modal-art">${vignette('trophy')}</div>` : ''}
         <p class="modal-kicker">📊 Season complete</p>
-        <h2>${ev.record} record</h2>
-        <p class="modal-body">${ev.trophy ? `🏆 ${ev.trophy}! ` : ''}${ev.award ? `🎖️ Named ${ev.award}. ` : ''}Averaged ${ev.perGame} per game.</p>
+        <h2>${ev.record}${ev.place ? ` · ${ev.place}${['st', 'nd', 'rd'][ev.place - 1] || 'th'} of ${ev.teams}` : ''}</h2>
+        ${ev.bracket ? `
+        <div class="gain-list">
+          ${ev.bracket.map((b) => `
+            <div class="gain-row"><span>${esc(b.round)} vs ${esc(b.opponent)}</span><b style="color:${b.win ? 'var(--green)' : 'var(--red)'}">${b.win ? 'W' : 'L'}</b></div>`).join('')}
+        </div>` : '<p class="small muted">Missed the playoffs — better sleep, better seasons.</p>'}
+        <p class="modal-body">${ev.trophy ? `${ev.trophy}! ` : ''}${ev.award ? `Named ${ev.award}. ` : ''}Averaged ${ev.perGame} per game.</p>
         <button class="btn primary block" data-action="close-modal">Next season</button>`, { dismissable: false });
     } else if (ev.type === 'decision') {
       openDecision();
@@ -1030,6 +1151,120 @@ function openImport() {
   `);
 }
 
+/* ---------------- shot meter ----------------
+   A timing bar before every official game: your key skill widens
+   the sweet spot, your tap adds up to +7 to the performance sim.
+   Three attempts, averaged. Skippable (bonus 0).               */
+function meterLabels(sport) {
+  return sport === 'soccer' ? 'Penalty kick' : sport === 'football' ? 'Two-minute drill' : 'Free throws';
+}
+function keySkillValue(S) {
+  const a = S.athlete;
+  const sport = a.mainSport || a.youthSports.find((x) => SPORTS[x]) || 'basketball';
+  const key = sport === 'soccer' ? 'strike' : sport === 'football' ? (a.position === 'qb' ? 'arm' : 'hands') : 'shoot';
+  return a.attrs[key] || 20;
+}
+function runShotMeter() {
+  const S = E.getState();
+  const zone = 8 + Math.min(24, keySkillValue(S) / 4); // sweet-spot half-width, % of bar
+  const sport = S.athlete.mainSport || 'basketball';
+  return new Promise((resolve) => {
+    let attempt = 0, results = [], pos = 0, dir = 1, raf = null, done = false;
+    const root = document.createElement('div');
+    root.id = 'meter';
+    root.innerHTML = `
+      <div class="meter-box">
+        <p class="modal-kicker">${SPORTS[sport]?.ico || '🏀'} ${meterLabels(sport)}</p>
+        <h2 class="meter-count">1 / 3</h2>
+        <div class="meter-bar">
+          <div class="meter-zone" style="left:${50 - zone}%; width:${zone * 2}%"></div>
+          <div class="meter-mark"></div>
+        </div>
+        <p class="small muted center mt-8">Tap when the marker is in the zone</p>
+        <button class="btn ghost small block mt-8" data-meter="skip">Skip warmup</button>
+      </div>`;
+    document.body.appendChild(root);
+    const mark = root.querySelector('.meter-mark');
+    const count = root.querySelector('.meter-count');
+    const speed = 1.7;
+    let last = performance.now();
+    const step = (now) => {
+      const dt = (now - last) / 1000; last = now;
+      pos += dir * speed * dt * 100;
+      if (pos >= 100) { pos = 100; dir = -1; }
+      if (pos <= 0) { pos = 0; dir = 1; }
+      mark.style.left = pos + '%';
+      if (!done) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    const finish = () => {
+      done = true;
+      cancelAnimationFrame(raf);
+      root.remove();
+      const avg = results.length ? results.reduce((x, y) => x + y, 0) / results.length : 0;
+      resolve(Math.round(avg * 7 * 10) / 10); // 0..+7 perf bonus
+    };
+    const tap = (ev) => {
+      if (ev.target.dataset?.meter === 'skip') { results = []; finish(); return; }
+      const dist = Math.abs(pos - 50);
+      const quality = Math.max(0, 1 - dist / (zone * 1.6));
+      results.push(quality);
+      sfx(quality > 0.75 ? 'swish' : 'meterTick');
+      mark.classList.add(quality > 0.75 ? 'hit' : 'miss');
+      setTimeout(() => mark.classList.remove('hit', 'miss'), 180);
+      attempt++;
+      if (attempt >= 3) setTimeout(finish, 220);
+      else count.textContent = `${attempt + 1} / 3`;
+    };
+    root.addEventListener('pointerdown', tap);
+    const keyTap = (ev) => {
+      if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); tap(ev); }
+      if (done) window.removeEventListener('keydown', keyTap);
+    };
+    window.addEventListener('keydown', keyTap);
+  });
+}
+
+/* ---------------- device auto-sync ----------------
+   Pull normalized nights from the companion server; each becomes
+   the next in-game night. Silent when unconfigured.            */
+async function fetchSyncNights(verbose = false) {
+  const S = E.getState();
+  if (!S || !S.sync?.url) return;
+  try {
+    const url = `${S.sync.url.replace(/\/$/, '')}/nights${S.sync.lastDate ? `?since=${encodeURIComponent(S.sync.lastDate)}` : ''}`;
+    const res = await fetch(url, { headers: S.sync.token ? { Authorization: `Bearer ${S.sync.token}` } : {} });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const nights = (data.nights || []).map((n) => ({
+      date: n.date || null,
+      hours: n.hours ?? 7.5,
+      efficiency: n.efficiency > 1.5 ? n.efficiency / 100 : (n.efficiency ?? 0.88),
+      deepPct: n.deep > 1.5 ? n.deep / 100 : (n.deep ?? 0.15),
+      remPct: n.rem > 1.5 ? n.rem / 100 : (n.rem ?? 0.18),
+      consistency: 0.75,
+      restingHR: n.restingHR ?? null,
+      ageHint: S.athlete.age,
+      score: n.score ?? undefined,
+      source: 'sync',
+    }));
+    for (const n of nights) if (n.score === undefined) delete n.score;
+    if (nights.length) {
+      E.queueImportedNights(nights);
+      E.setProvider('import');
+      const last = nights[nights.length - 1].date || new Date().toISOString().slice(0, 10);
+      E.noteSync(`synced ${nights.length} night(s)`, last);
+      if (verbose) toast(`Synced ${nights.length} night(s) from your device`, 'good', '⌚');
+    } else {
+      E.noteSync('up to date', null);
+      if (verbose) toast('Sync connected — no new nights yet', 'good', '⌚');
+    }
+  } catch (err) {
+    E.noteSync(`error: ${err.message}`, null);
+    if (verbose) toast(`Sync failed: ${err.message}`, 'bad', '⚠️');
+  }
+}
+
 /* ---------------- the sleep flow (walk home → night → morning) ---------------- */
 async function sleepFlow(night) {
   const S = E.getState();
@@ -1046,6 +1281,7 @@ async function sleepFlow(night) {
     }
     const res = night ? E.advanceDay(night) : E.advanceDay();
     if (res.error) { toast(res.error, 'bad', '⚠️'); return; }
+    sfx('sleep');
     if (worldReady) {
       W.setSleeping(true);
       await W.nightTransition(); // resolves at deepest night
@@ -1055,6 +1291,7 @@ async function sleepFlow(night) {
     }
     updateHUD();
     queueModals([() => showMorningReport(res), ...eventModalFns(res.morning)]);
+    tut(2);
   } finally {
     busy = false;
   }
@@ -1072,8 +1309,11 @@ async function gameFlow() {
       await W.walkTo('stadium');
       await fade(true); W.enterInterior('stadium'); updateHUD(); await fade(false);
     }
-    const g = E.playGame();
+    const bonus = await runShotMeter();
+    const g = E.playGame(bonus);
     if (g.error) { toast(g.error, 'bad', '⚠️'); return; }
+    sfx(g.win ? 'win' : 'loss');
+    buzz(g.win ? [30, 40, 60] : 60);
     if (g.win && worldReady) W.shakeCelebrate();
     updateHUD();
     queueModals([() => showModal(`
@@ -1086,6 +1326,8 @@ async function gameFlow() {
         <div><b>${g.line.c}</b><span>${g.labels.c}</span></div>
         <div><b>+${g.rp}✦</b><span>RP</span></div>
       </div>
+      ${g.rival ? `<p class="small" style="color:var(--gold)">${esc(g.rival.name)} was on the other side. Head-to-head: ${g.rival.w}–${g.rival.l} ${g.rival.won ? '— this one’s yours.' : '— they got you tonight.'}</p>` : ''}
+      ${g.meterBonus > 3 ? '<p class="small" style="color:var(--green)">Warmup was dialed in: +' + g.meterBonus + ' to your night.</p>' : ''}
       <p class="modal-body">${g.star ? 'You were the best player on the floor. People noticed.' : g.win ? 'Winning fixes everything.' : 'Sleep on it — literally. Tomorrow is another rep.'}</p>
       <button class="btn primary block" data-action="close-modal">Continue</button>`, { dismissable: false })]);
   } finally {
@@ -1110,6 +1352,14 @@ function handleAction(el, e) {
       if (!v) { toast('Give your athlete a name!', 'bad', '✏️'); return; }
       onboarding.name = v; onboarding.step = 2; renderOnboarding(); break;
     }
+    case 'ob-look': {
+      onboarding.look[el.dataset.key] = +el.dataset.val;
+      renderOnboarding(); break;
+    }
+    case 'ob-look-next': {
+      onboarding.look.number = Math.max(0, Math.min(99, +document.getElementById('ob-num').value || 0));
+      onboarding.step = 3; renderOnboarding(); break;
+    }
     case 'ob-pick': {
       const i = onboarding.picks.indexOf(id);
       if (i >= 0) onboarding.picks.splice(i, 1);
@@ -1118,9 +1368,14 @@ function handleAction(el, e) {
       renderOnboarding(); break;
     }
     case 'ob-start': {
-      E.createGame({ name: onboarding.name, youthSports: onboarding.picks, provider: onboarding.provider });
-      toast(`Welcome to your island, ${onboarding.name}!`, 'good', '🗺️');
-      render(); break;
+      E.createGame({ name: onboarding.name, youthSports: onboarding.picks, provider: onboarding.provider, look: onboarding.look });
+      render();
+      queueModals([() => showModal(`
+        <p class="modal-kicker">🧢 Coach</p>
+        <h2>Welcome to the island, ${esc(onboarding.name.split(' ')[0])}.</h2>
+        <p class="modal-body">Everything here runs on your sleep — good nights fill your energy and make every rep count more. Let me show you around. First: head to The Park and play something.</p>
+        <button class="btn primary block" data-action="close-modal">Let's go</button>`, { dismissable: false })]);
+      break;
     }
 
     /* navigation */
@@ -1168,8 +1423,10 @@ function handleAction(el, e) {
       const r = E.train(id);
       if (r.error) { toast(r.error, 'bad', '⚠️'); return; }
       if (worldReady) W.playAction(poseForDrill(r.drill), 1.7);
+      sfx('gain');
       gainPop(r.gains);
-      if (r.injury) toast(`Injury: ${r.injury.name} — out ${r.injury.daysLeft} days`, 'bad', '🤕');
+      if (r.injury) { sfx('injury'); toast(`Injury: ${r.injury.name} — out ${r.injury.daysLeft} days`, 'bad', '🤕'); }
+      tut(1);
       render(); break;
     }
     case 'auto-train': {
@@ -1191,11 +1448,14 @@ function handleAction(el, e) {
       (async () => {
         if (worldReady) {
           closePanel(false);
+          sfx('bounce');
           await W.playAction(r.session ? 'sprint' : 'dribble', 2.0);
-          if (r.win) W.shakeCelebrate();
+          if (r.win) { W.shakeCelebrate(); sfx('win'); buzz([30, 40, 60]); }
+          else if (r.win === false) sfx('loss');
         }
         gainPop(r.gains);
         queueModals([() => showPickupResult(r)]);
+        tut(0);
       })();
       break;
     }
@@ -1236,14 +1496,19 @@ function handleAction(el, e) {
     }
 
     /* economy */
-    case 'buy-coach': { const r = E.buyCoach(id); r.error ? toast(r.error, 'bad', '✦') : toast('Staff upgraded!', 'good', '🧑‍🏫'); render(); break; }
-    case 'buy-facility': { const r = E.buyFacility(); r.error ? toast(r.error, 'bad', '✦') : toast('Your gym just got bigger — check the island!', 'good', '🏟️'); render(); break; }
-    case 'buy-gear': { const r = E.buyGear(id); r.error ? toast(r.error, 'bad', '✦') : toast('Gear acquired — your house is upgrading!', 'good', '📦'); render(); break; }
+    case 'buy-coach': { const r = E.buyCoach(id); if (r.error) toast(r.error, 'bad', '✦'); else { sfx('buy'); buzz(25); toast('Staff upgraded', 'good', '🧑‍🏫'); } render(); break; }
+    case 'buy-facility': { const r = E.buyFacility(); if (r.error) toast(r.error, 'bad', '✦'); else { sfx('buy'); buzz(25); toast('Your gym just got bigger — check the island', 'good', '🏟️'); } render(); break; }
+    case 'buy-gear': { const r = E.buyGear(id); if (r.error) toast(r.error, 'bad', '✦'); else { sfx('buy'); buzz(25); toast('Gear acquired — your house is upgrading', 'good', '📦'); } render(); break; }
     case 'use-service': { const r = E.useService(id); r.error ? toast(r.error, 'bad', '✦') : toast('Feeling fresher already.', 'good', '💆'); render(); break; }
 
     /* sleep providers */
     case 'set-provider': E.setProvider(id); toast(`Sleep source: ${PROVIDERS[id].name}`, 'good', PROVIDERS[id].ico); render(); break;
     case 'open-import': openImport(); break;
+    case 'sync-connect': {
+      E.setSync(document.getElementById('sync-url').value, document.getElementById('sync-token').value);
+      fetchSyncNights(true);
+      renderPanel(); break;
+    }
     case 'import-csv': {
       const txt = document.getElementById('imp-csv').value;
       const r = parseSleepCSV(txt, S.athlete.age);
@@ -1273,6 +1538,25 @@ function handleAction(el, e) {
         });
       };
       inp.click(); break;
+    }
+    case 'toggle-sound': {
+      E.setSetting('sound', !S.settings.sound);
+      setSoundEnabled(S.settings.sound);
+      if (S.settings.sound) sfx('click');
+      renderPanel(); break;
+    }
+    case 'toggle-notify': {
+      if (!S.settings.notify && 'Notification' in window) {
+        Notification.requestPermission().then((perm) => {
+          E.setSetting('notify', perm === 'granted');
+          if (perm !== 'granted') toast('Notifications blocked by the browser.', 'bad', '🔕');
+          renderPanel();
+        });
+      } else {
+        E.setSetting('notify', false);
+        renderPanel();
+      }
+      break;
     }
     case 'reset-confirm': {
       showModal(`
@@ -1304,13 +1588,24 @@ export function init() {
   render();
   const S = E.getState();
   if (S && S.pendingDecision) setTimeout(openDecision, 500);
+  let notifiedFull = false;
   setInterval(() => {
     const st = E.getState();
-    if (st && !st.athlete.retired && !document.hidden && document.getElementById('hud')) {
+    if (!st || st.athlete.retired) return;
+    E.syncEnergy();
+    const full = st.athlete.energy >= 9.99;
+    if (full && !notifiedFull && st.settings.notify && document.hidden && Notification.permission === 'granted') {
+      try { new Notification('SLEEPER', { body: 'Energy tank full — time to train.', icon: 'icons/icon-192.png' }); } catch (err) { /* SW-only platforms */ }
+    }
+    notifiedFull = full;
+    if (!document.hidden && document.getElementById('hud')) {
       updateHUD();
       if (panelOpen === 'train' || panelOpen === 'drills') renderPanel();
     }
   }, 20000);
+  setInterval(fetchSyncNights, 10 * 60 * 1000);
+  fetchSyncNights();
+  if (E.getState()) setSoundEnabled(E.getState().settings.sound);
   // QA hook: lets automated tests drive canvas-only interactions
   window.__sleeper = {
     openBuilding: enterBuildingFlow,
