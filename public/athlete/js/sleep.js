@@ -124,5 +124,10 @@ export function computeRecovery({ score, fatigue = 0, gearRecoveryBonus = 0, str
 /* Training effectiveness multiplier from recovery: 0.4× to 1.5× */
 export const recoveryMult = (recovery) => 0.4 + (recovery / 100) * 1.1;
 
-/* Energy for the day from recovery (plus gear bonuses added by engine) */
-export const energyFromRecovery = (recovery) => Math.max(2, Math.round(2 + recovery / 12));
+/* ---------- Energy ----------
+   Energy depends on sleep, and only sleep: the score fills the
+   morning tank AND sets how fast it refills through the real day.
+   Elite night ≈ 1 energy every ~2 min; rough night ≈ every ~8 min. */
+export const ENERGY_CAP = 10;
+export const energyFromSleep = (score) => clamp(Math.round(score / 10), 2, ENERGY_CAP);
+export const regenPerMinute = (score) => 0.08 + (score / 100) * 0.42;

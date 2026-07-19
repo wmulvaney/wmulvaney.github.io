@@ -11,7 +11,8 @@ import {
   CHOICE_EVENTS, OPPONENTS,
 } from './data.js';
 import {
-  simulateNight, computeRecovery, recoveryMult, energyFromRecovery,
+  simulateNight, computeRecovery, recoveryMult,
+  ENERGY_CAP, energyFromSleep, regenPerMinute,
 } from './sleep.js';
 
 const SAVE_KEY = 'sleeper.save.v1';
@@ -82,7 +83,7 @@ export function createGame({ name, youthSports, provider }) {
     },
     rp: 30,
     sleep: { provider: provider || 'demo', history: [], streak: 0, pendingMod: 0, importQueue: [] },
-    today: { recovery: 70, sleepScore: 75, trained: [], gamePlayed: false },
+    today: { recovery: 70, sleepScore: 75, trained: [], gamePlayed: false, regen: regenPerMinute(75), energyAt: Date.now() },
     owned: { coaches: {}, facility: 0, gear: {} },
     season: { games: 0, wins: 0, losses: 0, statA: 0, statB: 0, statC: 0, lastResult: null, perfSum: 0 },
     career: { games: 0, wins: 0, statA: 0, statB: 0, statC: 0, seasons: [], trophies: [], awards: [] },
@@ -101,15 +102,15 @@ export function logJournal(text, milestone = false) {
 
 /* ---------------- Derived values ---------------- */
 export function gearBonuses() {
-  let sleep = 0, recovery = 0, energy = 0;
+  let sleep = 0, recovery = 0;
   for (const g of GEAR) {
     if (S.owned.gear[g.id]) {
-      sleep += g.sleep || 0; recovery += g.recovery || 0; energy += g.energy || 0;
+      sleep += g.sleep || 0; recovery += g.recovery || 0;
     }
   }
   const sc = S.owned.coaches['c_sleep'] || 0;
   if (sc > 0) recovery += COACHES.find((c) => c.id === 'c_sleep').tiers[sc - 1].bonus;
-  return { sleep, recovery, energy };
+  return { sleep, recovery };
 }
 
 export function activeWeights() {
@@ -179,14 +180,14 @@ export function advanceDay(nightOverride) {
   a.fatigue = clamp(a.fatigue - recovery / 8 + 2, 0, 100);
   const rpEarn = Math.floor(night.score / 10) + (S.sleep.streak >= 7 ? 6 : S.sleep.streak >= 3 ? 2 : 0);
   S.rp += rpEarn;
-  a.energy = energyFromRecovery(recovery) + gear.energy;
+  a.energy = energyFromSleep(night.score);
   a.form = Math.round(clamp(a.form * 0.7 + recovery * 0.3, 0, 100));
   a.morale = clamp(a.morale + (58 - a.morale) * 0.05, 0, 100); // drift back to baseline
 
   night.day = a.day; night.recovery = recovery; night.rpEarn = rpEarn;
   S.sleep.history.push(night);
   if (S.sleep.history.length > 60) S.sleep.history.shift();
-  S.today = { recovery, sleepScore: night.score, trained: [], gamePlayed: false, rpEarn };
+  S.today = { recovery, sleepScore: night.score, trained: [], gamePlayed: false, rpEarn, regen: regenPerMinute(night.score), energyAt: Date.now() };
 
   // Injury countdown
   if (a.injury) {
@@ -375,6 +376,18 @@ export function coachMultFor(attrKey) {
   return mult;
 }
 
+/* Energy refills through the real day; faster after better nights. */
+export function syncEnergy() {
+  if (!S || S.athlete.retired || !S.today.energyAt) return;
+  const now = Date.now();
+  const mins = Math.max(0, (now - S.today.energyAt) / 60000);
+  S.today.energyAt = now;
+  if (mins === 0 || S.athlete.energy >= ENERGY_CAP) return;
+  const before = S.athlete.energy;
+  S.athlete.energy = Math.min(ENERGY_CAP, S.athlete.energy + mins * (S.today.regen || 0.2));
+  if (Math.floor(S.athlete.energy) !== Math.floor(before)) save();
+}
+
 /* One attribute gain with every modifier applied (recovery, facility,
    morale, age curve, childhood growth bonuses, potential cap, coaches). */
 function applyGain(k, base) {
@@ -397,6 +410,7 @@ function applyGain(k, base) {
 }
 
 export function train(drillId) {
+  syncEnergy();
   const a = S.athlete;
   const d = DRILLS.find((x) => x.id === drillId);
   if (!d) return { error: 'Unknown drill' };
@@ -484,6 +498,7 @@ function oppRating() {
 }
 
 export function playGame() {
+  syncEnergy();
   const a = S.athlete;
   if (!isGameDay()) return { error: 'No game scheduled today.' };
   if (a.injury) return { error: 'You’re injured — no game today.' };
@@ -710,7 +725,6 @@ export function useService(id) {
   const sv = SERVICES.find((x) => x.id === id);
   if (S.rp < sv.cost) return { error: 'Not enough RP.' };
   const a = S.athlete;
-  if (sv.effect === 'energy') a.energy += sv.amount;
   if (sv.effect === 'fatigue') a.fatigue = clamp(a.fatigue - sv.amount, 0, 100);
   if (sv.effect === 'injury') {
     if (!a.injury) return { error: 'You’re healthy — save it for when it hurts.' };
@@ -757,6 +771,7 @@ export function queueImportedNights(nights) {
    little injury risk come along. Youth sports without a skill tree
    (track, swimming, ...) train their physical growth attributes.     */
 export function playPickup(sportId, size = 'quick') {
+  syncEnergy();
   const a = S.athlete;
   const cost = size === 'full' ? 10 : 5;
   if (a.retired) return { error: 'Career over.' };

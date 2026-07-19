@@ -233,14 +233,14 @@ export const GEAR = [
   { id: 'g_curtain', name: 'Blackout Curtains',  ico: '🪟', cost: 80,  sleep: 3, era: 0, desc: '+3 to every sleep score. Darkness is a weapon.' },
   { id: 'g_gun',     name: 'Massage Gun',        ico: '🔫', cost: 160, recovery: 4, era: 1, desc: '+4 recovery every night.' },
   { id: 'g_matt',    name: 'Performance Mattress', ico: '🛏️', cost: 300, sleep: 5, era: 1, desc: '+5 to every sleep score.' },
-  { id: 'g_nutrition', name: 'Nutrition Plan',   ico: '🥗', cost: 260, energy: 1, era: 1, desc: '+1 max energy every day.' },
+  { id: 'g_nutrition', name: 'Nutrition Plan',   ico: '🥗', cost: 260, recovery: 3, era: 1, desc: '+3 recovery every night.' },
   { id: 'g_icebath', name: 'Cold Plunge',        ico: '🧊', cost: 500, recovery: 6, era: 2, desc: '+6 recovery every night. Hurts so good.' },
-  { id: 'g_chef',    name: 'Personal Chef',      ico: '👨‍🍳', cost: 900, energy: 2, era: 3, desc: '+2 max energy every day. Fuel like a pro.' },
+  { id: 'g_chef',    name: 'Personal Chef',      ico: '👨‍🍳', cost: 900, recovery: 5, era: 3, desc: '+5 recovery every night. Fuel like a pro.' },
 ];
 
 export const SERVICES = [
-  { id: 's_massage', name: 'Massage Session', ico: '💆', cost: 25, effect: 'energy', amount: 3, desc: 'Restore 3 energy right now.' },
-  { id: 's_spa',     name: 'Recovery Day',    ico: '🛁', cost: 40, effect: 'fatigue', amount: 25, desc: 'Clear 25 fatigue.' },
+  { id: 's_massage', name: 'Massage Session', ico: '💆', cost: 25, effect: 'fatigue', amount: 15, desc: 'Clear 15 fatigue right now.' },
+  { id: 's_spa',     name: 'Recovery Day',    ico: '🛁', cost: 40, effect: 'fatigue', amount: 30, desc: 'Clear 30 fatigue.' },
   { id: 's_physio',  name: 'Physio Session',  ico: '🩹', cost: 60, effect: 'injury', amount: 2, desc: 'Shave 2 days off an injury.' },
 ];
 

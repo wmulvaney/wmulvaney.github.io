@@ -51,9 +51,9 @@ function ring(value, max, label, sub, color) {
 }
 
 function energyPips(energy) {
-  const max = Math.max(energy, 10);
+  const whole = Math.floor(energy);
   let out = '<span class="energy-pips">';
-  for (let i = 0; i < Math.min(max, 14); i++) out += `<i class="${i < energy ? 'on' : ''}"></i>`;
+  for (let i = 0; i < 10; i++) out += `<i class="${i < whole ? 'on' : ''}"></i>`;
   return out + '</span>';
 }
 
@@ -381,6 +381,8 @@ function onPrompt(info) {
 
 function updateHUD() {
   const S = E.getState();
+  if (!S) return;
+  E.syncEnergy();
   const a = S.athlete;
   const hud = document.getElementById('hud');
   if (!hud) return;
@@ -521,6 +523,7 @@ function tabSleep() {
     <div class="card">
       <div class="card-title"><h3>Why it matters</h3></div>
       <p class="small muted">
+        Energy comes from sleep alone: the score fills your morning tank and sets how fast it refills through the day (an elite night refills ~5× faster than a rough one).<br>
         Training gains scale <b>0.4× to 1.5×</b> with recovery.<br>
         Game performance uses recovery, fatigue and energy.<br>
         Poor recovery + high fatigue = <b style="color:var(--red)">injury risk</b>.<br>
@@ -551,7 +554,7 @@ function sessionLineHtml(S, a) {
   return `
     <div class="card">
       <div class="card-title"><h3>Today</h3>
-        <span class="hint">⚡${a.energy} energy · ${energyPips(a.energy)}</span>
+        <span class="hint">⚡${Math.floor(a.energy)} energy · ${energyPips(a.energy)}</span>
       </div>
       <p class="small muted">Recovery multiplier: <b style="color:var(--green)">×${(0.4 + S.today.recovery / 100 * 1.1).toFixed(2)}</b>
         · Facility: <b>${FACILITIES[S.owned.facility].name}</b>
@@ -1301,6 +1304,13 @@ export function init() {
   render();
   const S = E.getState();
   if (S && S.pendingDecision) setTimeout(openDecision, 500);
+  setInterval(() => {
+    const st = E.getState();
+    if (st && !st.athlete.retired && !document.hidden && document.getElementById('hud')) {
+      updateHUD();
+      if (panelOpen === 'train' || panelOpen === 'drills') renderPanel();
+    }
+  }, 20000);
   // QA hook: lets automated tests drive canvas-only interactions
   window.__sleeper = {
     openBuilding: enterBuildingFlow,
