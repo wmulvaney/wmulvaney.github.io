@@ -302,6 +302,7 @@ async function enterBuildingFlow(id) {
 function handleInteract(iid) {
   const S = E.getState();
   if (!S || busy) return;
+  if (iid.startsWith('pickup:')) { openBallModal(iid.slice(7)); return; }
   switch (iid) {
     case 'bed': sleepFlow(); break;
     case 'nightstand': openPanel('sleep'); break;
@@ -312,19 +313,46 @@ function handleInteract(iid) {
     case 'mat': openDrillPanel(['cor', 'end'], 'Mobility Corner', '🧘'); break;
     case 'screen': case 'board': openDrillPanel(['iq'], 'Film & Study', '🎬'); break;
     case 'clipboard': openPanel('train'); break;
-    case 'ball': {
-      if (E.isGameDay() && !S.athlete.injury) { gameFlow(); break; }
-      const skills = S.athlete.mainSport
-        ? SPORTS[S.athlete.mainSport].skills
-        : [...new Set(S.athlete.youthSports.filter((x) => SPORTS[x]).flatMap((x) => SPORTS[x].skills))];
-      openDrillPanel(skills, 'Practice Session', S.athlete.mainSport ? SPORTS[S.athlete.mainSport].ico : '🏀');
-      break;
-    }
+    case 'ball': openBallModal(S.athlete.mainSport); break;
     case 'scoreboard': openPanel('season'); break;
     case 'shelf': openPanel('gear'); break;
     case 'counter': openPanel('staff'); break;
     case 'massage': openPanel('services'); break;
   }
+}
+
+/* The run-chooser: official game, pickup runs for energy, or practice */
+function openBallModal(sportId) {
+  const S = E.getState();
+  const spec = SPORTS[sportId];
+  const meta = spec || YOUTH_SPORTS[sportId] || { name: 'Ball', ico: '🏀' };
+  const gameday = E.isGameDay() && !S.athlete.injury && (!S.athlete.mainSport || sportId === S.athlete.mainSport);
+  showModal(`
+    <p class="modal-kicker">${meta.ico} ${esc(meta.name)}</p>
+    <h2>${gameday ? 'Game day — but there’s always time for a run.' : 'Who’s got next?'}</h2>
+    <p class="modal-body">Pickup runs cost energy instead of session slots — live reps grow your ${spec ? 'game skills' : 'athleticism'} and morale. Recovery still multiplies everything.</p>
+    <div class="modal-actions">
+      ${gameday ? `<button class="btn primary" data-action="play-game-modal">🏟️ Play the official game</button>` : ''}
+      <button class="choice-btn" data-action="pickup" data-id="${sportId}" data-size="quick" ${S.athlete.energy < 5 ? 'disabled style="opacity:.4"' : ''}>
+        <b>Pickup run <span class="spark">⚡5</span></b><span>A few games to 11. Quick reps, quick fun.</span>
+      </button>
+      <button class="choice-btn" data-action="pickup" data-id="${sportId}" data-size="full" ${S.athlete.energy < 10 ? 'disabled style="opacity:.4"' : ''}>
+        <b>Full run <span class="spark">⚡10</span></b><span>Games to 21 all afternoon. Double the reps, double the fatigue.</span>
+      </button>
+      ${spec ? `<button class="choice-btn" data-action="practice-drills" data-id="${sportId}">
+        <b>Practice drills</b><span>Structured work — uses training session slots instead.</span>
+      </button>` : ''}
+    </div>`);
+}
+
+function showPickupResult(r) {
+  const gainTxt = Object.entries(r.gains).map(([k, v]) => `${ATTRS[k].ico} ${ATTRS[k].name} +${v}`).join('<br>') || 'Nothing stuck today.';
+  showModal(`
+    <p class="modal-kicker">🏙️ ${esc(r.sportName)} at the ${E.getState().athlete.era === 'youth' ? 'park' : 'stadium'}</p>
+    <h2>${r.win ? `Won ${r.my}–${r.their}` : `Lost ${r.their}–${r.my}`}</h2>
+    <div class="result-banner ${r.win ? 'win' : 'loss'}">${r.win ? 'GOT NEXT' : 'RUN IT BACK'}</div>
+    <p class="modal-body">${gainTxt}<br><br>+${r.rp} ✦ RP · morale up${r.injury ? `<br><b style="color:var(--red)">🤕 ${r.injury.name} — out ${r.injury.daysLeft} day(s)</b>` : ''}</p>
+    <button class="btn primary block" data-action="close-modal">Respect.</button>`, { dismissable: false });
 }
 
 function openDrillPanel(keys, title, ico) {
@@ -550,9 +578,21 @@ function tabTrain() {
   const sessionsLeft = S.today.sessionsMax - S.today.trained.length;
 
   const physBars = PHYS_KEYS.map((k) => bar(ATTRS[k].name, a.attrs[k], a.caps[k], ATTRS[k].ico)).join('');
-  const skillKeys = a.mainSport ? SPORTS[a.mainSport].skills
-    : [...new Set(a.youthSports.filter((s) => SPORTS[s]).flatMap((s) => SPORTS[s].skills))];
-  const skillBars = skillKeys.map((k) => bar(ATTRS[k].name, a.attrs[k], a.caps[k], ATTRS[k].ico)).join('');
+  const sportsCards = a.youthSports.map((sid) => {
+    const ys = YOUTH_SPORTS[sid];
+    const spec = SPORTS[sid];
+    const tag = a.mainSport === sid ? '<span class="tag accent">MAIN</span>'
+      : a.mainSport && spec ? '<span class="tag">CHILDHOOD</span>'
+      : !spec ? '<span class="tag gold">CROSS-TRAIN</span>' : '';
+    const body = spec
+      ? spec.skills.map((k) => bar(ATTRS[k].name, a.attrs[k], a.caps[k], ATTRS[k].ico)).join('')
+      : `<p class="small muted">${Object.entries(ys.grow).map(([k, v]) => `+${Math.round(v * 100)}% ${ATTRS[k].name} growth`).join(' · ')}<br><span class="faint xs">Motor patterns from ${ys.name} boost every relevant session, forever.</span></p>`;
+    return `
+      <div class="card">
+        <div class="card-title"><h3>${ys.ico} ${ys.name}</h3>${tag}</div>
+        ${body}
+      </div>`;
+  }).join('');
 
   return `
     ${sessionLineHtml(S, a, sessionsLeft)}
@@ -560,16 +600,11 @@ function tabTrain() {
       <button class="btn block" data-action="auto-train" ${sessionsLeft === 0 ? 'disabled' : ''}>🤖 Auto-train (best value)</button>
     </div>
 
-    <div class="cols-2">
-      <div class="card">
-        <div class="card-title"><h3>Athleticism</h3><span class="hint">grey = potential</span></div>
-        ${physBars}
-      </div>
-      <div class="card">
-        <div class="card-title"><h3>${a.mainSport ? SPORTS[a.mainSport].name + ' skills' : 'Sport skills'}</h3></div>
-        ${skillBars || '<p class="muted small">Pick sports first.</p>'}
-      </div>
+    <div class="card">
+      <div class="card-title"><h3>Athleticism</h3><span class="hint">grey = potential</span></div>
+      ${physBars}
     </div>
+    ${sportsCards}
 
     <div class="card">
       <div class="card-title"><h3>All drills</h3><span class="hint">⭐ = best value for your build</span></div>
@@ -1163,6 +1198,21 @@ function handleAction(el, e) {
       render(); break;
     }
     case 'play-game': gameFlow(); break;
+    case 'pickup': {
+      const r = E.playPickup(id, el.dataset.size);
+      if (r.error) { toast(r.error, 'bad', '⚠️'); return; }
+      $modal().innerHTML = '';
+      if (worldReady && r.win) W.shakeCelebrate();
+      updateHUD();
+      queueModals([() => showPickupResult(r)]);
+      break;
+    }
+    case 'practice-drills': {
+      $modal().innerHTML = '';
+      const spec = SPORTS[id];
+      if (spec) openDrillPanel(spec.skills, `${spec.name} Practice`, spec.ico);
+      break;
+    }
     case 'play-game-modal': $modal().innerHTML = ''; gameFlow(); break;
 
     /* choices & decisions */

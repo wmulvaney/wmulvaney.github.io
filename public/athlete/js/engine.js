@@ -375,6 +375,27 @@ export function coachMultFor(attrKey) {
   return mult;
 }
 
+/* One attribute gain with every modifier applied (recovery, facility,
+   morale, age curve, childhood growth bonuses, potential cap, coaches). */
+function applyGain(k, base) {
+  const a = S.athlete;
+  const rMult = recoveryMult(S.today.recovery);
+  const fMult = 1 + FACILITIES[S.owned.facility].mult;
+  const moraleMult = 0.9 + (a.morale / 100) * 0.2;
+  const isSkill = !PHYS_KEYS.includes(k);
+  // Golden age of skill learning: kids learn skills fast, adults slower
+  const ageCurve = isSkill
+    ? (a.age < 15 ? 1.3 : a.age < 22 ? 1.1 : a.age < 28 ? 0.9 : 0.7)
+    : (a.age < 12 ? 0.8 : a.age < 27 ? 1.1 : 0.75);
+  const growth = 1 + (a.growthBonus[k] || 0);
+  const cap = a.caps[k];
+  const capMult = Math.max(0.05, 1 - Math.pow(a.attrs[k] / cap, 3));
+  let g = base * rMult * fMult * moraleMult * ageCurve * growth * capMult * coachMultFor(k);
+  g = Math.round(g * 10) / 10;
+  if (g > 0) a.attrs[k] = clamp(a.attrs[k] + g, 1, cap);
+  return g;
+}
+
 export function train(drillId) {
   const a = S.athlete;
   const d = DRILLS.find((x) => x.id === drillId);
@@ -383,25 +404,12 @@ export function train(drillId) {
   if (a.energy < d.energy) return { error: 'Not enough energy today.' };
   if (a.injury && d.intensity > 1) return { error: `Injured (${a.injury.name}) — only light work allowed.` };
 
-  const recovery = S.today.recovery;
-  const rMult = recoveryMult(recovery);
-  const fMult = 1 + FACILITIES[S.owned.facility].mult;
   const posCoach = S.owned.coaches['c_position'] || 0;
   const posMult = d.pos && posCoach ? 1 + COACHES.find((c) => c.id === 'c_position').tiers[posCoach - 1].mult : 1;
-  const moraleMult = 0.9 + (a.morale / 100) * 0.2;
-  // Golden age of skill learning: kids learn skills fast, adults slower
   const gains = {};
   for (const [k, base] of Object.entries(d.targets)) {
-    const isSkill = !PHYS_KEYS.includes(k);
-    const ageCurve = isSkill
-      ? (a.age < 15 ? 1.3 : a.age < 22 ? 1.1 : a.age < 28 ? 0.9 : 0.7)
-      : (a.age < 12 ? 0.8 : a.age < 27 ? 1.1 : 0.75);
-    const growth = 1 + (a.growthBonus[k] || 0);
-    const cap = a.caps[k];
-    const capMult = Math.max(0.05, 1 - Math.pow(a.attrs[k] / cap, 3));
-    let g = base * rMult * fMult * posMult * moraleMult * ageCurve * growth * capMult * coachMultFor(k);
-    g = Math.round(g * 10) / 10;
-    if (g > 0) { a.attrs[k] = clamp(a.attrs[k] + g, 1, cap); gains[k] = g; }
+    const g = applyGain(k, base * posMult);
+    if (g > 0) gains[k] = g;
   }
 
   a.energy -= d.energy;
@@ -411,7 +419,7 @@ export function train(drillId) {
 
   // Injury roll: intensity × fatigue × poor recovery
   let injury = null;
-  const risk = d.intensity * (a.fatigue / 130) * (1 - recovery / 130) * 0.05;
+  const risk = d.intensity * (a.fatigue / 130) * (1 - S.today.recovery / 130) * 0.05;
   if (Math.random() < risk) {
     injury = { name: pick(['ankle sprain', 'hamstring strain', 'shin splints', 'shoulder tweak', 'knee tendinitis']), daysLeft: irnd(2, 6) };
     a.injury = injury;
@@ -742,4 +750,58 @@ export function setProvider(p) { S.sleep.provider = p; save(); }
 export function queueImportedNights(nights) {
   S.sleep.importQueue.push(...nights);
   save();
+}
+
+/* ---------------- Pickup games ----------------
+   Spend energy on an unscheduled run at the court/park. Skills grow
+   (recovery still multiplies everything), morale rises, fatigue and a
+   little injury risk come along. Youth sports without a skill tree
+   (track, swimming, ...) train their physical growth attributes.     */
+export function playPickup(sportId, size = 'quick') {
+  const a = S.athlete;
+  const cost = size === 'full' ? 10 : 5;
+  if (a.retired) return { error: 'Career over.' };
+  if (a.injury) return { error: `Injured (${a.injury.name}) — no pickup runs.` };
+  if (a.energy < cost) return { error: `Not enough energy (needs ${cost}).` };
+
+  a.energy -= cost;
+  const intensity = size === 'full' ? 2.2 : 1;
+  const spec = SPORTS[sportId];
+  const gains = {};
+
+  if (spec) {
+    // 2 random sport skills + 1 physical attribute get live-play reps
+    const skills = [...spec.skills].sort(() => Math.random() - 0.5).slice(0, 2);
+    const phys = pick(['spd', 'agi', 'end', 'cor']);
+    for (const k of skills) { const g = applyGain(k, 0.55 * intensity); if (g > 0) gains[k] = g; }
+    const gp = applyGain(phys, 0.35 * intensity); if (gp > 0) gains[phys] = gp;
+  } else {
+    // pure-athletics youth sport: train its growth attributes directly
+    const grow = YOUTH_SPORTS[sportId]?.grow || { end: 0.1 };
+    for (const k of Object.keys(grow)) { const g = applyGain(k, 0.5 * intensity); if (g > 0) gains[k] = g; }
+  }
+
+  // flavor scoreline + light rewards
+  const edge = (S.today.recovery - 55) / 180 + (a.morale - 50) / 400;
+  const win = Math.random() < 0.5 + edge;
+  const my = size === 'full' ? irnd(15, 21) : irnd(9, 11);
+  const their = win ? my - irnd(2, 6) : my + irnd(1, 4);
+  a.fatigue = clamp(a.fatigue + (size === 'full' ? 11 : 6), 0, 100);
+  a.morale = clamp(a.morale + (size === 'full' ? 7 : 4) + (win ? 2 : 0), 0, 100);
+  const rp = irnd(2, 5) + (win ? 3 : 0);
+  S.rp += rp;
+
+  // playing tired on bad sleep can bite
+  let injury = null;
+  const risk = intensity * (a.fatigue / 130) * (1 - S.today.recovery / 130) * 0.05;
+  if (Math.random() < risk) {
+    injury = { name: pick(['rolled ankle', 'tweaked hamstring', 'jammed finger']), daysLeft: irnd(1, 4) };
+    a.injury = injury;
+    a.morale = clamp(a.morale - 6, 0, 100);
+  }
+
+  const name = spec ? spec.name : YOUTH_SPORTS[sportId]?.name || 'sports';
+  logJournal(`${size === 'full' ? 'Full run' : 'Pickup'} at the ${a.era === 'youth' ? 'park' : 'stadium'} — ${win ? `won ${my}–${their}` : `lost ${their}–${my}`} playing ${name}.${injury ? ` Came home with a ${injury.name}.` : ''}`);
+  save();
+  return { win, my, their, gains, rp, injury, sport: sportId, sportName: name, cost };
 }

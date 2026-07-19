@@ -7,6 +7,7 @@
    ============================================================ */
 
 import * as THREE from './vendor/three.module.min.js';
+import { YOUTH_SPORTS } from './data.js';
 
 /* ---------------- module state ---------------- */
 let renderer, scene, camera, raycaster, clock;
@@ -1237,8 +1238,127 @@ function gymInterior(tier) {
   return g;
 }
 
+/* A compact play zone for one childhood sport — the youth park shows
+   one per sport you picked, so your whole athletic life is visible. */
+function parkZone(sportId) {
+  const g = new THREE.Group();
+  const pad = (c) => { const p = box(4.6, 0.1, 3.6, c); p.receiveShadow = true; g.add(p); };
+  if (sportId === 'basketball') {
+    pad(0xc98d4e);
+    const pole = cyl(0.07, 0.07, 1.9, 6, 0x5a5a5a); pole.position.set(1.8, 0.95, 0);
+    const board = box(0.06, 0.5, 0.75, 0xf2f2f2); board.position.set(1.8, 1.85, 0);
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.03, 6, 12), mat(0xe8503a));
+    rim.rotation.x = Math.PI / 2; rim.position.set(1.55, 1.62, 0);
+    const key = box(1.4, 0.02, 1.1, 0xb87c3e); key.position.set(1.1, 0.07, 0);
+    g.add(pole, board, rim, key);
+  } else if (sportId === 'soccer') {
+    pad(0x3f8a44);
+    // white boundary + mow stripe so the pitch pops against park grass
+    for (const [w, d, x, z] of [[4.4, 0.07, 0, 1.7], [4.4, 0.07, 0, -1.7], [0.07, 3.4, -2.15, 0], [0.07, 3.4, 2.15, 0]]) {
+      const l = box(w, 0.02, d, 0xf2f2f2); l.position.set(x, 0.07, z); g.add(l);
+    }
+    const stripe = box(1.4, 0.005, 3.4, 0x4a9a4f); stripe.position.set(-0.8, 0.065, 0); g.add(stripe);
+    const posts = new THREE.Group();
+    for (const pz of [-0.9, 0.9]) { const p = cyl(0.05, 0.05, 1.1, 6, 0xf2f2f2); p.position.set(0, 0.55, pz); posts.add(p); }
+    const bar = cyl(0.05, 0.05, 1.85, 6, 0xf2f2f2); bar.rotation.x = Math.PI / 2; bar.position.y = 1.1;
+    posts.add(bar);
+    posts.position.x = 1.8;
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), mat(0xf2f2f2)); ball.position.set(0.3, 0.2, 0.4);
+    g.add(posts, ball);
+  } else if (sportId === 'football') {
+    pad(0x4f9a48);
+    const base = cyl(0.05, 0.05, 1.1, 6, 0xf2c14e); base.position.set(1.8, 0.55, 0);
+    const cross = cyl(0.04, 0.04, 1.5, 6, 0xf2c14e); cross.rotation.x = Math.PI / 2; cross.position.set(1.8, 1.1, 0);
+    const u1 = cyl(0.04, 0.04, 1.0, 6, 0xf2c14e); u1.position.set(1.8, 1.65, -0.75);
+    const u2 = u1.clone(); u2.position.z = 0.75;
+    const fb = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 6), mat(0x7c4a21)); fb.scale.set(1.4, 0.9, 0.9); fb.position.set(0, 0.16, 0.3);
+    g.add(base, cross, u1, u2, fb);
+  } else if (sportId === 'baseball') {
+    pad(0xc9a06a);
+    const dirt = cyl(1.5, 1.5, 0.02, 10, 0xb0854e); dirt.position.set(0, 0.07, 0);
+    const tee = cyl(0.04, 0.05, 0.9, 6, 0x3a4258); tee.position.set(0, 0.45, 0);
+    const bb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 6), mat(0xf2f2f2)); bb.position.set(0, 0.95, 0);
+    const bat = cyl(0.045, 0.028, 0.85, 6, 0xc9a06a); bat.rotation.z = 1.2; bat.position.set(0.7, 0.16, 0.5);
+    for (const [bx, bz] of [[1.4, 0], [0, 1.4], [-1.4, 0], [0, -1.4]]) {
+      const bs = box(0.3, 0.03, 0.3, 0xf2f2f2); bs.position.set(bx, 0.09, bz); bs.rotation.y = Math.PI / 4; g.add(bs);
+    }
+    g.add(dirt, tee, bb, bat);
+  } else if (sportId === 'track') {
+    pad(0xb85c40);
+    for (let i = 0; i < 4; i++) {
+      const lane = box(4.4, 0.02, 0.05, 0xf2f2f2); lane.position.set(0, 0.07, -1.35 + i * 0.9); g.add(lane);
+    }
+    const hurdle = new THREE.Group();
+    const hb = box(0.06, 0.5, 0.9, 0x3a4258); hb.position.y = 0.25;
+    const ht = box(0.08, 0.06, 1.0, 0xe8503a); ht.position.y = 0.52;
+    hurdle.add(hb, ht); hurdle.position.set(0.8, 0, -0.45);
+    g.add(hurdle);
+  } else if (sportId === 'swimming') {
+    const pool = box(4.2, 0.35, 3.2, 0xd9d2c2); pool.position.y = 0.17; g.add(pool);
+    const water = box(3.8, 0.06, 2.8, 0x5cc4e8, { roughness: 0.15 }); water.position.y = 0.36; g.add(water);
+    for (let i = 0; i < 3; i++) {
+      const lane = box(3.7, 0.02, 0.04, 0xf2f2f2); lane.position.set(0, 0.4, -0.9 + i * 0.9); g.add(lane);
+    }
+  } else if (sportId === 'tennis') {
+    pad(0x4a8fd8);
+    const netP1 = cyl(0.04, 0.04, 0.55, 6, 0x3a4258); netP1.position.set(0, 0.27, -1.6);
+    const netP2 = netP1.clone(); netP2.position.z = 1.6;
+    const net = box(0.04, 0.45, 3.2, 0xf2f2f2, { transparent: true, opacity: 0.55 }); net.position.y = 0.28;
+    const lineC = box(0.05, 0.02, 3.2, 0xf2f2f2); lineC.position.set(0, 0.07, 0);
+    g.add(netP1, netP2, net, lineC);
+  } else { // martial arts
+    const matPad = box(3.6, 0.08, 3.6, 0xe25c4a); matPad.position.y = 0.04; matPad.receiveShadow = true;
+    const matIn = box(2.6, 0.02, 2.6, 0xf2e2c9); matIn.position.y = 0.1;
+    const dummyB = cyl(0.22, 0.28, 1.1, 8, 0xc9a06a); dummyB.position.set(1.2, 0.55, -0.8);
+    const dummyH = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 6), mat(0xc9a06a)); dummyH.position.set(1.2, 1.3, -0.8);
+    g.add(matPad, matIn, dummyB, dummyH);
+  }
+  return g;
+}
+
+/* The youth park: one zone per childhood sport */
+function parkInterior(youthSports, seedR) {
+  const g = new THREE.Group();
+  const base = box(26, 0.14, 18, 0x74b45c); base.position.y = -0.02; base.receiveShadow = true;
+  g.add(base);
+  // fence + trees around the edge
+  for (let i = 0; i < 14; i++) {
+    const fx = -12 + i * 1.85;
+    const post = box(0.12, 0.9, 0.12, 0x8a5a33); post.position.set(fx, 0.45, -8.6);
+    const rail = box(1.85, 0.1, 0.08, 0x8a5a33); rail.position.set(fx + 0.9, 0.75, -8.6);
+    g.add(post, rail);
+  }
+  for (let i = 0; i < 6; i++) {
+    const tr = tree(0.9 + seedR() * 0.5, seedR() > 0.5);
+    tr.position.set(-11 + seedR() * 22, 0, -7.4 + seedR() * 1.6);
+    g.add(tr);
+  }
+  const bench = box(1.8, 0.12, 0.5, 0x8a5a33); bench.position.set(9.5, 0.5, 5.5);
+  const benchL = box(1.6, 0.4, 0.4, 0x6b4b2a); benchL.position.set(9.5, 0.2, 5.5);
+  g.add(bench, benchL);
+
+  const spots = [[-6.2, -3.0], [0, -4.4], [6.2, -3.0]];
+  youthSports.forEach((sportId, i) => {
+    const zone = parkZone(sportId);
+    const [zx, zz] = spots[i] || [0, 0];
+    zone.position.set(zx, 0.06, zz);
+    g.add(zone);
+    const meta = YOUTH_SPORTS[sportId] || {};
+    tagInteract(g, [zone], `pickup:${sportId}`, `Play ${meta.name || sportId}`, meta.ico || '🎽', new THREE.Vector3(zx, 0, zz + 2.6), 2.8);
+  });
+
+  g.userData.bounds = { x: 12, z: 8 };
+  g.userData.charAnchor = new THREE.Vector3(0, 0, 2.4);
+  g.userData.charPose = 'dribble';
+  g.userData.indoor = false;
+  g.userData.viewRadius = 16;
+  g.userData.flatView = true; // zones are laid out left-to-right — face them head-on
+  return g;
+}
+
 /* ---------- playing surface (sport + era) ---------- */
-function courtInterior(sport, era, seedR) {
+function courtInterior(sport, era, seedR, youthSports) {
+  if (era === 'youth') return parkInterior(youthSports || [], seedR);
   const g = new THREE.Group();
   const big = era === 'pro' ? 1.25 : era === 'college' ? 1.1 : era === 'hs' ? 1.0 : 0.85;
   const lineM = mat(0xf2f2f2);
@@ -1608,7 +1728,7 @@ export function enterInterior(id) {
   const seedFn = rng(4242 + ERA_CFG[era].R);
   const group =
     id === 'gym' ? gymInterior(lastState.owned.facility)
-    : id === 'stadium' ? courtInterior(lastState.athlete.mainSport, era, seedFn)
+    : id === 'stadium' ? courtInterior(lastState.athlete.mainSport, era, seedFn, lastState.athlete.youthSports)
     : id === 'house' ? houseInterior(lastState)
     : id === 'school' ? schoolInterior(era)
     : shopInterior(lastState);
@@ -1632,8 +1752,9 @@ export function enterInterior(id) {
   } else {
     const vr = group.userData.viewRadius || 18;
     orbit.min = vr * 0.5; orbit.max = vr * 2.0;
-    orbit.radius = vr * (portrait ? 1.35 : 0.95);
-    orbit.phi = 0.95; orbit.theta = Math.PI * 0.28;
+    orbit.radius = vr * (portrait ? (group.userData.flatView ? 1.5 : 1.35) : 0.95);
+    orbit.phi = 0.95;
+    orbit.theta = Math.PI * (group.userData.flatView ? 0.5 : 0.28);
     orbit.target = new THREE.Vector3(0, 0.5, 0);
   }
 
