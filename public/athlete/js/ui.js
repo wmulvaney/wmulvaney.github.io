@@ -209,13 +209,30 @@ function ensureWorld() {
     <div class="hud-banner"></div>
     <div class="hud-bottom">
       <div class="hud-hint"></div>
-      <div class="dock"></div>
+      <div class="hud-context"></div>
     </div>`;
+  const fadeEl = document.createElement('div');
+  fadeEl.id = 'scene-fade';
   const panelRoot = document.createElement('div');
   panelRoot.id = 'panel-root';
-  document.body.append(wrap, hud, panelRoot);
+  document.body.append(wrap, hud, fadeEl, panelRoot);
   W.initWorld(wrap, { onBuilding: onBuildingClick });
   worldReady = true;
+}
+
+function fade(show) {
+  const f = document.getElementById('scene-fade');
+  if (!f) return Promise.resolve();
+  f.style.opacity = show ? '1' : '0';
+  return new Promise((r) => setTimeout(r, 300));
+}
+
+async function leaveInterior() {
+  if (!worldReady || !W.inInterior()) return;
+  await fade(true);
+  W.exitInterior();
+  updateHUD();
+  await fade(false);
 }
 
 function hideWorld() {
@@ -238,7 +255,13 @@ async function onBuildingClick(id) {
   const S = E.getState();
   if (!S || S.pendingDecision) { if (S?.pendingDecision) openDecision(); return; }
   busy = true;
-  try { await W.walkTo(id); } finally { busy = false; }
+  try {
+    await W.walkTo(id);
+    await fade(true);
+    W.enterInterior(id);
+    updateHUD();
+    await fade(false);
+  } finally { busy = false; }
   openPanel(BUILDING_PANEL[id] || 'journal');
 }
 
@@ -263,32 +286,35 @@ function updateHUD() {
     ${S.sleep.streak >= 2 ? `<span class="hud-stat">🔥 <b>${S.sleep.streak}</b></span>` : ''}
     ${a.injury ? `<span class="hud-stat bad">🤕 <b>${a.injury.daysLeft}d</b></span>` : ''}`;
 
+  const inside = worldReady ? W.inInterior() : null;
   const banner = hud.querySelector('.hud-banner');
   if (S.pendingDecision) {
     banner.innerHTML = `<button class="hud-banner-btn" data-action="open-decision">⚡ Decision time — tap to choose</button>`;
-  } else if (gameDay) {
+  } else if (gameDay && !inside) {
     banner.innerHTML = `<button class="hud-banner-btn gold" data-action="goto-game">🏟️ Game day vs ${esc(E.nextOpponent())} — tap to play</button>`;
   } else {
     banner.innerHTML = '';
   }
 
-  hud.querySelector('.hud-hint').textContent = 'Tap a building to walk there · drag to look around';
-  hud.querySelector('.dock').innerHTML = `
-    <button class="dock-btn sleep" data-action="next-day"><span>🌙</span>Sleep</button>
-    <button class="dock-btn" data-action="open-panel" data-id="train"><span>🏋️</span>Train<em>${S.today.sessionsMax - S.today.trained.length}</em></button>
-    <button class="dock-btn" data-action="open-panel" data-id="season"><span>🏟️</span>Play${gameDay ? '<i class="dot"></i>' : ''}</button>
-    <button class="dock-btn" data-action="open-panel" data-id="club"><span>🛒</span>Shop</button>
-    <button class="dock-btn" data-action="open-panel" data-id="journal"><span>📖</span>Story</button>
-    ${S.sleep.provider === 'demo' ? `<button class="dock-btn" data-action="sim-week"><span>⏩</span>Sim 7d</button>` : ''}`;
+  const place = inside ? PANEL_META[BUILDING_PANEL[inside]] : null;
+  hud.querySelector('.hud-hint').textContent = inside
+    ? place.title
+    : 'Tap a building to enter · drag to look around';
+  hud.querySelector('.hud-context').innerHTML = inside ? `
+    <button class="hud-cta" data-action="leave-interior">← Island</button>
+    ${panelOpen ? '' : `<button class="hud-cta accent" data-action="open-panel" data-id="${BUILDING_PANEL[inside]}">${place.ico} Open menu</button>`}` : '';
 }
 
 /* ---------------- panels ---------------- */
 function openPanel(id) {
   panelOpen = id;
+  if (worldReady) W.setPanelShift(true);
   renderPanel();
+  updateHUD();
 }
 function closePanel(rerender = true) {
   panelOpen = null;
+  if (worldReady) W.setPanelShift(false);
   const pr = document.getElementById('panel-root');
   if (pr) pr.innerHTML = '';
   if (rerender && E.getState() && !E.getState().athlete.retired) updateHUD();
@@ -319,8 +345,9 @@ function tabSleep() {
 
   return `
     <div class="card" style="border-color:color-mix(in srgb, var(--accent) 45%, transparent)">
-      <p class="small muted mb-8">End the day: your athlete heads to bed, and tonight's sleep sets tomorrow's energy, training power, and RP.</p>
+      <p class="small muted mb-8">End the day: your athlete gets in bed, and tonight's sleep sets tomorrow's energy, training power, and RP.</p>
       <button class="btn primary block" data-action="next-day">🌙 Sleep → Next day</button>
+      ${S.sleep.provider === 'demo' ? '<button class="btn ghost block small mt-8" data-action="sim-week">⏩ Quick-sim 7 days (auto train & play)</button>' : ''}
     </div>
 
     <div class="card">
@@ -844,10 +871,21 @@ async function sleepFlow(night) {
   busy = true;
   closePanel(false);
   try {
-    if (worldReady) await W.walkTo('house');
+    // head home and get in bed
+    if (worldReady && W.inInterior() !== 'house') {
+      if (W.inInterior()) { await fade(true); W.exitInterior(); await fade(false); }
+      await W.walkTo('house');
+      await fade(true); W.enterInterior('house'); updateHUD(); await fade(false);
+    }
     const res = night ? E.advanceDay(night) : E.advanceDay();
     if (res.error) { toast(res.error, 'bad', '⚠️'); return; }
-    if (worldReady) await W.nightTransition(); // resolves at deepest night
+    if (worldReady) {
+      W.setSleeping(true);
+      await W.nightTransition(); // resolves at deepest night
+      W.setSleeping(false);
+      // wake up back out on the island as dawn breaks
+      await fade(true); W.exitInterior(); await fade(false);
+    }
     updateHUD();
     queueModals([() => showMorningReport(res), ...eventModalFns(res.morning)]);
   } finally {
@@ -861,7 +899,12 @@ async function gameFlow() {
   busy = true;
   closePanel(false);
   try {
-    if (worldReady) await W.walkTo('stadium');
+    // take the court
+    if (worldReady && W.inInterior() !== 'stadium') {
+      if (W.inInterior()) { await fade(true); W.exitInterior(); await fade(false); }
+      await W.walkTo('stadium');
+      await fade(true); W.enterInterior('stadium'); updateHUD(); await fade(false);
+    }
     const g = E.playGame();
     if (g.error) { toast(g.error, 'bad', '⚠️'); return; }
     if (g.win && worldReady) W.shakeCelebrate();
@@ -917,7 +960,8 @@ function handleAction(el, e) {
     /* navigation */
     case 'open-panel': openPanel(id); break;
     case 'close-panel': if (!e || e.target === el || el.classList.contains('panel-close')) closePanel(); break;
-    case 'goto-game': openPanel('season'); break;
+    case 'leave-interior': closePanel(false); leaveInterior(); break;
+    case 'goto-game': onBuildingClick('stadium'); break;
 
     /* day loop */
     case 'next-day': {
@@ -1082,4 +1126,9 @@ export function init() {
   render();
   const S = E.getState();
   if (S && S.pendingDecision) setTimeout(openDecision, 500);
+  // QA hook: lets automated tests drive canvas-only interactions
+  window.__sleeper = {
+    openBuilding: onBuildingClick,
+    act: (action, id) => handleAction({ dataset: { action, id }, classList: { contains: () => true } }, null),
+  };
 }

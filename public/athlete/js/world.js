@@ -21,6 +21,7 @@ let lights = {};
 let lastHash = '';
 let hovered = null;
 let running = false;
+let panelShift = 0, panelOpenFlag = false; // frames the scene above an open panel
 
 const ERA_CFG = {
   youth:   { R: 15, sky: 0x8ec8ef, grass: 0x8cc36c, accent: 0xfb923c },
@@ -635,19 +636,21 @@ export function initWorld(el, { onBuilding } = {}) {
 
 export function syncWorld(state) {
   if (!renderer) return;
+  lastState = state;
   const h = worldHash(state);
   if (h !== lastHash) {
     lastHash = h;
     buildWorld(state);
+    if (interior) worldGroup.visible = false; // stay inside if a rebuild happens mid-visit
   }
 }
 
 export function walkTo(id) {
   const b = buildings[id];
-  if (!b || !character) return Promise.resolve();
+  if (!b || !character || interior) return Promise.resolve();
   return new Promise((res) => {
     if (charState.resolve) charState.resolve();
-    charState = { mode: 'walking', target: b.door.clone(), resolve: res, t: 0 };
+    charState = { mode: 'walking', target: b.door.clone(), resolve: res, pose: 'dribble' };
   });
 }
 
@@ -728,6 +731,7 @@ function findBuildingHit(hits) {
 }
 
 function hoverCheck(e) {
+  if (interior) { renderer.domElement.style.cursor = 'grab'; return; }
   const id = findBuildingHit(pointerRay(e));
   renderer.domElement.style.cursor = id ? 'pointer' : 'grab';
   if (hovered && hovered !== id) {
@@ -741,6 +745,7 @@ function hoverCheck(e) {
 }
 
 function clickCheck(e) {
+  if (interior) return;
   const id = findBuildingHit(pointerRay(e));
   if (id && onBuildingCb) {
     // bounce feedback
@@ -785,14 +790,17 @@ function loop() {
   const dt = Math.min(clock.getDelta(), 0.05);
   const t = clock.elapsedTime;
 
-  // camera orbit
+  // camera orbit (looking slightly below the target lifts the subject
+  // into the visible top half of the screen while a panel is open)
   const { theta, phi, radius, target } = orbit;
+  const wantShift = panelOpenFlag && camera.aspect < 1 ? -radius * 0.3 : 0;
+  panelShift += (wantShift - panelShift) * Math.min(1, dt * 7);
   camera.position.set(
     target.x + radius * Math.sin(phi) * Math.cos(theta),
     target.y + radius * Math.cos(phi),
     target.z + radius * Math.sin(phi) * Math.sin(theta)
   );
-  camera.lookAt(target);
+  camera.lookAt(target.x, target.y + panelShift, target.z);
 
   // clouds drift
   for (const c of clouds) {
@@ -838,12 +846,31 @@ function loop() {
         character.position.y = Math.abs(Math.sin(w)) * 0.05;
       }
     } else {
-      // idle: breathe + settle limbs, dribble the ball
-      u.legL.rotation.x *= 0.85; u.legR.rotation.x *= 0.85;
-      u.armL.rotation.x *= 0.85;
-      u.armR.rotation.x = Math.sin(t * 6) * 0.18 - 0.15;
-      character.position.y = Math.sin(t * 2) * 0.015;
-      u.ball.position.y = 0.14 + Math.abs(Math.sin(t * 6)) * 0.42;
+      const pose = charState.pose || 'dribble';
+      if (pose === 'dribble') {
+        u.legL.rotation.x *= 0.85; u.legR.rotation.x *= 0.85;
+        u.armL.rotation.x *= 0.85;
+        u.armR.rotation.x = Math.sin(t * 6) * 0.18 - 0.15;
+        character.position.y = Math.sin(t * 2) * 0.015;
+        u.ball.position.y = 0.14 + Math.abs(Math.sin(t * 6)) * 0.42;
+      } else if (pose === 'lift') {
+        const pump = Math.PI * 0.85 + Math.sin(t * 3.2) * 0.38;
+        u.armL.rotation.x = pump; u.armR.rotation.x = pump;
+        u.legL.rotation.x *= 0.85; u.legR.rotation.x *= 0.85;
+        character.position.y = Math.max(0, -Math.sin(t * 3.2)) * 0.05;
+      } else if (pose === 'sit') {
+        u.legL.rotation.x = -1.35; u.legR.rotation.x = -1.35;
+        u.armL.rotation.x = -0.35; u.armR.rotation.x = -0.35 + Math.sin(t * 1.6) * 0.06;
+        character.position.y = 0.18 + Math.sin(t * 2) * 0.01;
+      } else if (pose === 'sleep') {
+        u.legL.rotation.x = 0.15; u.legR.rotation.x = 0.15;
+        u.armL.rotation.x = 0.2; u.armR.rotation.x = 0.2;
+        u.body.scale.setScalar(1 + Math.sin(t * 1.4) * 0.03);
+      } else { // idle
+        u.legL.rotation.x *= 0.85; u.legR.rotation.x *= 0.85;
+        u.armL.rotation.x *= 0.85; u.armR.rotation.x *= 0.85;
+        character.position.y = Math.sin(t * 2) * 0.015;
+      }
     }
     if (charState.celebrate > 0) {
       charState.celebrate -= dt;
@@ -876,14 +903,30 @@ function loop() {
 
 function applyDayNight() {
   const k = dayNight.t;
-  const sky = DAY.sky.clone().lerp(NIGHT.sky, k);
-  scene.background = sky;
-  if (scene.fog) scene.fog.color = sky;
   lights.sun.intensity = DAY.sun + (NIGHT.sun - DAY.sun) * k;
   lights.hemi.intensity = DAY.hemi + (NIGHT.hemi - DAY.hemi) * k;
   stars.material.opacity = k * 0.9;
   moonSprite.material.opacity = k;
   if (lights.sunSprite) lights.sunSprite.material.opacity = (1 - k) * 0.95;
+
+  if (interior && interior.group.userData.indoor) {
+    // indoors: dim the room lamp, cool the walls, moonlight through the window
+    scene.background = new THREE.Color(ROOM_BG).lerp(new THREE.Color(0x05070f), k * 0.85);
+    const lamp = interior.group.userData.lamp;
+    if (lamp) lamp.intensity = lamp.userData.base * (1 - k * 0.82);
+    const amb = interior.group.userData.amb;
+    if (amb) amb.intensity = amb.userData.base * (1 - k * 0.6);
+    const win = interior.group.userData.window;
+    if (win) {
+      win.material.color = new THREE.Color(0x8fc8e8).lerp(new THREE.Color(0x1a2452), k);
+      win.material.emissiveIntensity = 0.25 + k * 0.3;
+    }
+    return;
+  }
+
+  const sky = DAY.sky.clone().lerp(NIGHT.sky, k);
+  scene.background = sky;
+  if (scene.fog) scene.fog.color = sky;
   // house windows glow at night
   const house = buildings.house;
   if (house?.group.userData.windows) {
@@ -902,4 +945,584 @@ export function disposeWorld() {
     renderer = null;
   }
   character = null; worldGroup = null; lastHash = '';
+}
+
+/* ============================================================
+   Interiors — entering a building swaps the island for a real
+   place: an equipped gym, your sport's court/pitch/field, a
+   furnished bedroom, a classroom, a stocked shop. What's inside
+   reflects your save: facility tier fills the gym, owned gear
+   furnishes the house, era rebuilds the school, your sport
+   decides the playing surface.
+   ============================================================ */
+
+let interior = null;        // { id, group }
+let savedView = null;       // orbit + fog to restore on exit
+let lastState = null;       // most recent game state (set by syncWorld)
+
+const ROOM_BG = 0x141a2c;
+
+function roomShell(w, h, d, floorC, wallC, trimC = 0x2a3148) {
+  const g = new THREE.Group();
+  const floor = box(w, 0.2, d, floorC); floor.position.y = -0.1; floor.receiveShadow = true;
+  const back = box(w, h, 0.25, wallC); back.position.set(0, h / 2, -d / 2);
+  const left = box(0.25, h, d, wallC); left.position.set(-w / 2, h / 2, 0);
+  const trim = box(w, 0.22, 0.28, trimC); trim.position.set(0, 0.11, -d / 2 + 0.01);
+  const trimL = box(0.28, 0.22, d, trimC); trimL.position.set(-w / 2 + 0.01, 0.11, 0);
+  g.add(floor, back, left, trim, trimL);
+  return g;
+}
+
+function roomLights(g, color = 0xfff2d8, intensity = 95) {
+  const p = new THREE.PointLight(color, intensity, 45, 1.7);
+  p.position.set(1.5, 4.0, 1.5);
+  p.userData.base = intensity;
+  const fill = new THREE.PointLight(0xdfe8ff, 40, 35, 1.8);
+  fill.position.set(-3, 3.5, -2);
+  const amb = new THREE.AmbientLight(0xc8d2ea, 0.85);
+  amb.userData.base = 0.85;
+  g.add(p, fill, amb);
+  g.userData.lamp = p;
+  g.userData.amb = amb;
+}
+
+/* ---------- gym interior (fills up with facility tier) ---------- */
+function gymInterior(tier) {
+  const g = roomShell(14, 4.6, 11, 0x3a4152, 0x556180);
+  roomLights(g);
+
+  const dumbbellRack = () => {
+    const r = new THREE.Group();
+    const frame = box(2.2, 0.9, 0.5, 0x3a4258); frame.position.y = 0.45;
+    for (let i = 0; i < 5; i++) {
+      const db = new THREE.Group();
+      const barSm = cyl(0.03, 0.03, 0.3, 6, 0xb9bec7); barSm.rotation.z = Math.PI / 2;
+      const w1 = cyl(0.09, 0.09, 0.08, 8, 0x22283b); w1.rotation.z = Math.PI / 2; w1.position.x = -0.12;
+      const w2 = w1.clone(); w2.position.x = 0.12;
+      db.add(barSm, w1, w2);
+      db.position.set(-0.85 + i * 0.42, 1.0, 0);
+      r.add(db);
+    }
+    r.add(frame);
+    return r;
+  };
+  const benchPress = () => {
+    const r = new THREE.Group();
+    const bench = box(1.2, 0.16, 0.45, 0x8a4a3a); bench.position.y = 0.5;
+    const legs = box(1.0, 0.4, 0.32, 0x2a3148); legs.position.y = 0.22;
+    const up1 = box(0.08, 1.15, 0.08, 0x5a6478); up1.position.set(-0.45, 0.58, 0);
+    const up2 = up1.clone(); up2.position.x = 0.45;
+    const bar = cyl(0.035, 0.035, 1.9, 6, 0xb9bec7); bar.rotation.z = Math.PI / 2; bar.position.y = 1.12;
+    const pl1 = cyl(0.24, 0.24, 0.1, 10, 0x22283b); pl1.rotation.z = Math.PI / 2; pl1.position.set(-0.85, 1.12, 0);
+    const pl2 = pl1.clone(); pl2.position.x = 0.85;
+    r.add(bench, legs, up1, up2, bar, pl1, pl2);
+    return r;
+  };
+  const treadmill = () => {
+    const r = new THREE.Group();
+    const base = box(0.6, 0.14, 1.6, 0x22283b); base.position.y = 0.12;
+    const belt = box(0.5, 0.04, 1.4, 0x10141f); belt.position.y = 0.2;
+    const post = box(0.5, 0.08, 0.08, 0x3a4258); post.position.set(0, 1.05, -0.72);
+    const arm1 = box(0.06, 0.95, 0.06, 0x3a4258); arm1.position.set(-0.24, 0.6, -0.72);
+    const arm2 = arm1.clone(); arm2.position.x = 0.24;
+    const screen = box(0.36, 0.24, 0.05, 0x10162a, { emissive: 0x2b74d8, emissiveIntensity: 0.8 });
+    screen.position.set(0, 1.2, -0.72);
+    r.add(base, belt, post, arm1, arm2, screen);
+    return r;
+  };
+  const squatRack = () => {
+    const r = new THREE.Group();
+    for (const sx of [-0.5, 0.5]) {
+      const post = box(0.1, 2.1, 0.1, 0x5a6478); post.position.set(sx, 1.05, 0);
+      const foot = box(0.14, 0.08, 0.7, 0x3a4258); foot.position.set(sx, 0.04, 0);
+      r.add(post, foot);
+    }
+    const cross = box(1.1, 0.08, 0.08, 0x5a6478); cross.position.y = 2.05;
+    const bar = cyl(0.035, 0.035, 1.8, 6, 0xb9bec7); bar.rotation.z = Math.PI / 2; bar.position.y = 1.35;
+    r.add(cross, bar);
+    return r;
+  };
+
+  // mats + base equipment every gym has
+  const mat1 = box(1.6, 0.04, 1.0, 0x4a5aa8); mat1.position.set(-3.0, 0.02, 2.0);
+  const bp = benchPress(); bp.position.set(0, 0, -0.6);
+  const dr = dumbbellRack(); dr.position.set(-3.4, 0, -3.9);
+  const poster = box(1.3, 1.7, 0.05, 0xe25c4a); poster.position.set(-6.85, 2.4, -1.5);
+  const poster2 = box(1.3, 1.7, 0.05, 0x22d3ee); poster2.position.set(-6.85, 2.4, 0.6);
+  const cooler = new THREE.Group();
+  const coolerBase = box(0.4, 1.0, 0.4, 0xf2f2f2); coolerBase.position.y = 0.5;
+  const jug = cyl(0.17, 0.17, 0.4, 8, 0x9fdcf2, { transparent: true, opacity: 0.8 }); jug.position.y = 1.2;
+  cooler.add(coolerBase, jug);
+  cooler.position.set(-5.6, 0, 2.6);
+  const plant = new THREE.Group();
+  const pot = cyl(0.22, 0.16, 0.35, 7, 0xb85c40); pot.position.y = 0.17;
+  const leaves = new THREE.Mesh(new THREE.IcosahedronGeometry(0.4), mat(0x4f9d5f)); leaves.position.y = 0.7;
+  plant.add(pot, leaves);
+  plant.position.set(1.9, 0, -4.6);
+  g.add(mat1, bp, dr, poster, poster2, cooler, plant);
+
+  if (tier >= 1) {
+    const t1 = treadmill(); t1.position.set(2.5, 0, -3.8);
+    const t2 = treadmill(); t2.position.set(3.7, 0, -3.8);
+    g.add(t1, t2);
+  }
+  if (tier >= 2) {
+    const sq = squatRack(); sq.position.set(-1.5, 0, -4.0);
+    // mirror wall
+    const mirror = box(6, 2.2, 0.06, 0x9fb6cf, { roughness: 0.12, metalness: 0.65 });
+    mirror.position.set(-2, 1.6, -5.35);
+    // turf sprint lane
+    const turf = box(1.4, 0.03, 9, 0x3f7d46); turf.position.set(4.9, 0.02, 0);
+    g.add(sq, mirror, turf);
+  }
+  if (tier >= 3) {
+    const stripM = new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x22d3ee, emissiveIntensity: 1.3, flatShading: true });
+    const s1 = new THREE.Mesh(new THREE.BoxGeometry(13.6, 0.07, 0.07), stripM); s1.position.set(0, 4.3, -5.3);
+    const s2 = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.07, 10.6), stripM); s2.position.set(-6.8, 4.3, 0);
+    const pod = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.08, 8, 24), stripM);
+    pod.position.set(2.9, 1.4, 2.3);
+    const podBase = cyl(1.0, 1.15, 0.12, 10, 0x22283b); podBase.position.set(2.9, 0.06, 2.3);
+    const screenWall = box(2.6, 1.4, 0.08, 0x10162a, { emissive: 0x2b74d8, emissiveIntensity: 0.6 });
+    screenWall.position.set(2.4, 2.4, -5.3);
+    g.add(s1, s2, pod, podBase, screenWall);
+  }
+  g.userData.charAnchor = new THREE.Vector3(0, 0, 0.35);
+  g.userData.camTarget = new THREE.Vector3(-0.2, 1.0, -0.8);
+  g.userData.charPose = 'lift';
+  g.userData.indoor = true;
+  return g;
+}
+
+/* ---------- playing surface (sport + era) ---------- */
+function courtInterior(sport, era, seedR) {
+  const g = new THREE.Group();
+  const big = era === 'pro' ? 1.25 : era === 'college' ? 1.1 : era === 'hs' ? 1.0 : 0.85;
+  const lineM = mat(0xf2f2f2);
+  const line = (w, d, x, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.03, d), lineM); m.position.set(x, 0.06, z); return m; };
+
+  let W2, D2;
+  if (sport === 'basketball' || !sport) {
+    W2 = 15 * big; D2 = 8.6 * big;
+    const court = box(W2, 0.12, D2, 0xc98d4e); court.position.y = 0; court.receiveShadow = true;
+    g.add(court);
+    g.add(line(W2 - 0.4, 0.1, 0, D2 / 2 - 0.25), line(W2 - 0.4, 0.1, 0, -D2 / 2 + 0.25), line(0.1, D2 - 0.4, 0, 0));
+    const circle = new THREE.Mesh(new THREE.TorusGeometry(1.1 * big, 0.045, 6, 28), lineM);
+    circle.rotation.x = Math.PI / 2; circle.position.y = 0.07;
+    g.add(circle);
+    for (const side of [-1, 1]) {
+      const key = line(2.4 * big, 0.1, side * (W2 / 2 - 2.6 * big), 1.6 * big);
+      const key2 = line(2.4 * big, 0.1, side * (W2 / 2 - 2.6 * big), -1.6 * big);
+      const key3 = line(0.1, 3.25 * big, side * (W2 / 2 - 1.4 * big), 0);
+      g.add(key, key2, key3);
+      // hoop
+      const pole = cyl(0.09, 0.09, 2.6, 6, 0x3a4258); pole.position.set(side * (W2 / 2 + 0.5), 1.3, 0);
+      const arm = box(0.7, 0.08, 0.08, 0x3a4258); arm.position.set(side * (W2 / 2 + 0.15), 2.55, 0);
+      const board = box(0.08, 0.9, 1.4, 0xf2f2f2); board.position.set(side * (W2 / 2 - 0.2), 2.6, 0);
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.035, 6, 14), mat(0xe8503a));
+      rim.rotation.x = Math.PI / 2; rim.position.set(side * (W2 / 2 - 0.5), 2.3, 0);
+      const net = cyl(0.22, 0.14, 0.34, 8, 0xf2f2f2, { transparent: true, opacity: 0.5 });
+      net.position.set(side * (W2 / 2 - 0.5), 2.12, 0);
+      g.add(pole, arm, board, rim, net);
+      if (side === 1) g.userData.hoop = new THREE.Vector3(W2 / 2 - 0.5, 2.3, 0);
+    }
+  } else if (sport === 'soccer') {
+    W2 = 20 * big; D2 = 13 * big;
+    const pitch = box(W2, 0.12, D2, 0x4f9d46); pitch.receiveShadow = true;
+    g.add(pitch);
+    // mow stripes
+    for (let i = 0; i < 8; i++) {
+      if (i % 2) continue;
+      const stripe = box(W2 / 8, 0.005, D2, 0x58a94f);
+      stripe.position.set(-W2 / 2 + W2 / 16 + i * (W2 / 8), 0.065, 0);
+      g.add(stripe);
+    }
+    g.add(line(W2 - 0.4, 0.12, 0, D2 / 2 - 0.25), line(W2 - 0.4, 0.12, 0, -D2 / 2 + 0.25), line(0.12, D2 - 0.4, 0, 0));
+    const circle = new THREE.Mesh(new THREE.TorusGeometry(1.7 * big, 0.05, 6, 30), lineM);
+    circle.rotation.x = Math.PI / 2; circle.position.y = 0.07;
+    g.add(circle);
+    for (const side of [-1, 1]) {
+      g.add(line(0.12, 5.2 * big, side * (W2 / 2 - 2.2 * big), 0));
+      const posts = new THREE.Group();
+      for (const pz of [-1.6 * big, 1.6 * big]) {
+        const post = cyl(0.06, 0.06, 1.5, 6, 0xf2f2f2); post.position.set(0, 0.75, pz);
+        posts.add(post);
+      }
+      const bar = cyl(0.06, 0.06, 3.2 * big, 6, 0xf2f2f2); bar.rotation.x = Math.PI / 2; bar.position.y = 1.5;
+      const netB = box(0.7, 1.4, 3.2 * big, 0xf2f2f2, { transparent: true, opacity: 0.18 });
+      netB.position.set(side * 0.4, 0.7, 0);
+      posts.add(bar, netB);
+      posts.position.x = side * (W2 / 2 - 0.2);
+      g.add(posts);
+      if (side === 1) g.userData.hoop = new THREE.Vector3(W2 / 2 - 0.4, 0.7, 0);
+    }
+  } else { // football
+    W2 = 22 * big; D2 = 12 * big;
+    const field = box(W2, 0.12, D2, 0x3f8a3f); field.receiveShadow = true;
+    g.add(field);
+    for (let i = 0; i <= 10; i++) {
+      g.add(line(0.1, D2 - 0.4, -W2 / 2 + 1.5 + i * (W2 - 3) / 10, 0));
+    }
+    for (const side of [-1, 1]) {
+      const zone = box(1.5, 0.005, D2 - 0.3, side === 1 ? 0x2f6e9e : 0x9e2f4a);
+      zone.position.set(side * (W2 / 2 - 0.75), 0.065, 0);
+      g.add(zone);
+      const base = cyl(0.07, 0.07, 1.4, 6, 0xf2c14e); base.position.set(side * (W2 / 2 + 0.4), 0.7, 0);
+      const cross = cyl(0.05, 0.05, 2.4, 6, 0xf2c14e); cross.rotation.x = Math.PI / 2; cross.position.set(side * (W2 / 2 + 0.4), 1.4, 0);
+      const up1 = cyl(0.05, 0.05, 1.6, 6, 0xf2c14e); up1.position.set(side * (W2 / 2 + 0.4), 2.2, -1.2);
+      const up2 = up1.clone(); up2.position.z = 1.2;
+      g.add(base, cross, up1, up2);
+      if (side === 1) g.userData.hoop = new THREE.Vector3(W2 / 2 + 0.4, 2.0, 0);
+    }
+  }
+
+  // stands wrap the long sides; crowd grows with era
+  const rows = era === 'youth' ? 1 : era === 'hs' ? 2 : era === 'college' ? 3 : 4;
+  const crowdColors = [0xe25c4a, 0xf2c14e, 0x5a8fd8, 0x8fd85a, 0xd85ab8, 0xf2f2f2];
+  for (const side of [-1, 1]) {
+    for (let r = 0; r < rows; r++) {
+      const stand = box(W2 + 2, 0.5, 0.9, era === 'pro' ? 0x2a3148 : 0x5a6478);
+      stand.position.set(0, 0.25 + r * 0.5, side * (D2 / 2 + 1.2 + r * 0.95));
+      g.add(stand);
+      const seats = Math.floor((W2 + 2) / 0.55);
+      for (let sIdx = 0; sIdx < seats; sIdx++) {
+        if (seedR() < (era === 'youth' ? 0.75 : era === 'hs' ? 0.45 : 0.2)) continue; // empty seats early on
+        const fan = new THREE.Mesh(new THREE.SphereGeometry(0.16, 6, 5), mat(crowdColors[Math.floor(seedR() * crowdColors.length)]));
+        fan.position.set(-(W2 + 2) / 2 + 0.3 + sIdx * 0.55, 0.65 + r * 0.5, side * (D2 / 2 + 1.2 + r * 0.95));
+        g.add(fan);
+      }
+    }
+  }
+  // floodlights
+  for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    const pole = cyl(0.1, 0.13, 5.2, 6, 0x4a5164); pole.position.set(sx * (W2 / 2 + 1.4), 2.6, sz * (D2 / 2 + 2.2));
+    const lampM = new THREE.MeshStandardMaterial({ color: 0xfff6cf, emissive: 0xfff2b0, emissiveIntensity: 1.0, flatShading: true });
+    const lamp = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.55, 0.18), lampM);
+    lamp.position.set(sx * (W2 / 2 + 1.4), 5.3, sz * (D2 / 2 + 2.2));
+    lamp.lookAt(0, 0.5, 0);
+    g.add(pole, lamp);
+  }
+  g.userData.charAnchor = new THREE.Vector3(0, 0, 1.2);
+  g.userData.charPose = 'dribble';
+  g.userData.indoor = false; // open air: keep the sky
+  g.userData.viewRadius = Math.max(W2, D2) * 1.05;
+  return g;
+}
+
+/* ---------- house interior (owned gear furnishes the room) ---------- */
+function houseInterior(state) {
+  const gear = state.owned.gear;
+  const pro = state.athlete.era === 'pro';
+  const g = roomShell(12, 4.4, 9.5, pro ? 0x8a715a : 0x9c7d5c, pro ? 0x3b4252 : 0x8a9bb8);
+  roomLights(g, 0xffe2b8, 42);
+
+  // bed — the heart of the game
+  const nice = gear['g_matt'];
+  const frame = box(2.1, 0.35, 3.1, 0x6b4b2a); frame.position.set(-3.1, 0.18, -2.2);
+  const mattress = box(1.9, 0.3, 2.9, nice ? 0xdfe8f2 : 0xcfc4ae); mattress.position.set(-3.1, 0.5, -2.2);
+  const pillow = box(1.4, 0.18, 0.6, 0xf2f2f2); pillow.position.set(-3.1, 0.7, -3.3);
+  const blanket = box(1.92, 0.12, 1.7, nice ? 0x4a5aa8 : 0x9e2f4a); blanket.position.set(-3.1, 0.68, -1.5);
+  g.add(frame, mattress, pillow, blanket);
+  g.userData.bed = new THREE.Vector3(-3.1, 0.85, -2.0);
+
+  // nightstand + lamp
+  const stand = box(0.7, 0.6, 0.7, 0x6b4b2a); stand.position.set(-1.6, 0.3, -3.6);
+  const lampBase = cyl(0.06, 0.1, 0.3, 6, 0x3a4258); lampBase.position.set(-1.6, 0.75, -3.6);
+  const shade = cone(0.22, 0.3, 8, 0xf2e2c9); shade.position.set(-1.6, 1.0, -3.6);
+  g.add(stand, lampBase, shade);
+
+  // window with (optional blackout) curtains
+  const win = box(2.2, 1.5, 0.1, 0x8fc8e8, { emissive: 0x8fc8e8, emissiveIntensity: 0.25 });
+  win.position.set(1.6, 2.3, -4.68);
+  g.add(win);
+  g.userData.window = win;
+  if (gear['g_curtain']) {
+    const c1 = box(0.5, 1.9, 0.14, 0x22283b); c1.position.set(0.35, 2.3, -4.6);
+    const c2 = c1.clone(); c2.position.x = 2.85;
+    const rod = cyl(0.03, 0.03, 3.0, 6, 0x6b4b2a); rod.rotation.z = Math.PI / 2; rod.position.set(1.6, 3.3, -4.6);
+    g.add(c1, c2, rod);
+  }
+
+  // rug
+  const rug = cyl(1.7, 1.7, 0.03, 10, pro ? 0x4a5aa8 : 0xb85c40); rug.position.set(0.4, 0.02, 0.4);
+  rug.receiveShadow = true;
+  g.add(rug);
+
+  // gear shows up in the room as you buy it
+  if (gear['g_roller']) {
+    const roller = cyl(0.14, 0.14, 0.8, 10, 0x4a5aa8); roller.rotation.z = Math.PI / 2; roller.position.set(1.8, 0.14, 2.4);
+    g.add(roller);
+  }
+  if (gear['g_gun']) {
+    const gunB = box(0.14, 0.3, 0.14, 0x22283b); gunB.position.set(-1.45, 0.68, -3.45); // on the nightstand
+    g.add(gunB);
+  }
+  if (gear['g_icebath']) {
+    const tub = cyl(0.9, 0.75, 0.8, 10, 0xd9d2c2); tub.position.set(3.9, 0.4, -3.2);
+    const water = cyl(0.75, 0.75, 0.06, 10, 0x9fdcf2, { roughness: 0.15 }); water.position.set(3.9, 0.78, -3.2);
+    const cubes = [];
+    for (let i = 0; i < 4; i++) {
+      const cube = box(0.16, 0.12, 0.16, 0xe8f6fc, { transparent: true, opacity: 0.85 });
+      cube.position.set(3.9 + Math.cos(i * 1.9) * 0.4, 0.84, -3.2 + Math.sin(i * 1.9) * 0.4);
+      cubes.push(cube);
+    }
+    g.add(tub, water, ...cubes);
+  }
+  if (gear['g_nutrition'] || gear['g_chef']) {
+    // kitchen corner: counter + fridge + fruit bowl
+    const counter = box(2.4, 0.9, 0.8, 0xd9d2c2); counter.position.set(4.2, 0.45, 2.9);
+    const fridge = box(0.9, 1.9, 0.8, gear['g_chef'] ? 0x9fb6cf : 0xf2f2f2); fridge.position.set(5.3, 0.95, 1.6);
+    const bowl = cyl(0.22, 0.14, 0.14, 8, 0x3a4258); bowl.position.set(3.8, 0.97, 2.9);
+    const fruit1 = new THREE.Mesh(new THREE.SphereGeometry(0.09, 6, 5), mat(0xe25c4a)); fruit1.position.set(3.72, 1.08, 2.85);
+    const fruit2 = new THREE.Mesh(new THREE.SphereGeometry(0.09, 6, 5), mat(0xf2c14e)); fruit2.position.set(3.92, 1.08, 2.98);
+    g.add(counter, fridge, bowl, fruit1, fruit2);
+  }
+  // trophy shelf grows with your career
+  const shelfCount = Math.min(5, (state.career.trophies || []).length);
+  if (shelfCount || pro) {
+    const shelf = box(2.2, 0.08, 0.5, 0x6b4b2a); shelf.position.set(-4.6, 2.4, 1.6);
+    shelf.rotation.y = Math.PI / 2;
+    g.add(shelf);
+    for (let i = 0; i < shelfCount; i++) {
+      const cup = new THREE.Group();
+      const bowl2 = cyl(0.09, 0.05, 0.16, 8, 0xffd166);
+      const base2 = box(0.12, 0.05, 0.12, 0xe0a93c); base2.position.y = -0.11;
+      cup.add(bowl2, base2);
+      cup.position.set(-4.6, 2.55, 0.8 + i * 0.42);
+      g.add(cup);
+    }
+  }
+  // wall TV + dresser + plant + pennant
+  const tv = box(1.7, 1.0, 0.08, 0x10162a, { emissive: 0x2b74d8, emissiveIntensity: 0.35 });
+  tv.position.set(-5.8, 2.2, 0.6); tv.rotation.y = Math.PI / 2;
+  const dresser = box(1.6, 0.9, 0.6, 0x8a5a33); dresser.position.set(0.8, 0.45, -4.3);
+  const dLamp = cyl(0.05, 0.08, 0.25, 6, 0x3a4258); dLamp.position.set(0.4, 1.02, -4.3);
+  const plant2 = new THREE.Group();
+  const pot2 = cyl(0.24, 0.18, 0.4, 7, 0xd9d2c2); pot2.position.y = 0.2;
+  const leaves2 = cone(0.35, 0.9, 6, 0x4f9d5f); leaves2.position.y = 0.85;
+  plant2.add(pot2, leaves2);
+  plant2.position.set(-5.2, 0, -3.9);
+  const pennant = new THREE.Mesh(new THREE.ConeGeometry(0.35, 1.1, 3), mat(0xe25c4a));
+  pennant.rotation.z = Math.PI / 2; pennant.rotation.x = Math.PI / 2;
+  pennant.position.set(-1.0, 2.8, -4.62);
+  g.add(tv, dresser, dLamp, plant2, pennant);
+
+  g.userData.charAnchor = new THREE.Vector3(-1.9, 0, -0.7);
+  g.userData.camTarget = new THREE.Vector3(-1.2, 1.0, -1.2);
+  g.userData.charPose = 'sit';
+  g.userData.indoor = true;
+  return g;
+}
+
+/* ---------- school / campus / media HQ interior ---------- */
+function schoolInterior(era) {
+  if (era === 'pro') {
+    // media studio
+    const g = roomShell(13, 4.6, 10, 0x2a3148, 0x1c2233);
+    roomLights(g, 0xd8e8ff, 60);
+    const desk = box(3.4, 0.9, 1.2, 0x39415c); desk.position.set(0, 0.45, -1.6);
+    const deskTop = box(3.6, 0.08, 1.35, 0x22d3ee, { emissive: 0x22d3ee, emissiveIntensity: 0.4 }); deskTop.position.set(0, 0.92, -1.6);
+    for (const mx of [-1, 0.9]) {
+      const micArm = cyl(0.025, 0.025, 0.5, 6, 0x8a93a8); micArm.position.set(mx, 1.2, -1.5); micArm.rotation.z = 0.5;
+      const micHead = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 6), mat(0x22283b)); micHead.position.set(mx + 0.12, 1.42, -1.5);
+      g.add(micArm, micHead);
+    }
+    const screenWall = box(6, 2.6, 0.1, 0x10162a, { emissive: 0x2b74d8, emissiveIntensity: 0.5 });
+    screenWall.position.set(0, 2.4, -4.9);
+    for (const cx of [-3.4, 3.4]) {
+      const tripod = new THREE.Group();
+      for (let l = 0; l < 3; l++) {
+        const leg = cyl(0.03, 0.03, 1.5, 5, 0x3a4258);
+        leg.position.y = 0.7; leg.rotation.z = 0.4; leg.rotation.y = l * 2.1;
+        tripod.add(leg);
+      }
+      const cam = box(0.5, 0.35, 0.7, 0x22283b); cam.position.y = 1.55;
+      const lens = cyl(0.1, 0.13, 0.25, 8, 0x10141f); lens.rotation.x = Math.PI / 2; lens.position.set(0, 1.55, 0.45);
+      tripod.add(cam, lens);
+      tripod.position.set(cx, 0, 1.4);
+      tripod.lookAt(0, 1.4, -1.6);
+      g.add(tripod);
+    }
+    g.add(desk, deskTop, screenWall);
+    g.userData.charAnchor = new THREE.Vector3(0, 0, -0.4);
+    g.userData.camTarget = new THREE.Vector3(0, 1.2, -1.4);
+    g.userData.charPose = 'sit';
+    g.userData.indoor = true;
+    return g;
+  }
+  // classroom / lecture hall
+  const college = era === 'college';
+  const g = roomShell(13, 4.4, 10, 0x9c7d5c, college ? 0x8a715a : 0xa8c8b8);
+  roomLights(g, 0xfff2d8, 48);
+  const boardC = college ? 0xf2f2f2 : 0x2f5e46;
+  const board = box(4.6, 1.7, 0.1, boardC); board.position.set(-0.5, 2.3, -4.9);
+  const tray = box(4.6, 0.08, 0.2, 0x6b4b2a); tray.position.set(-0.5, 1.4, -4.8);
+  const tDesk = box(1.8, 0.85, 0.8, 0x6b4b2a); tDesk.position.set(3.6, 0.42, -3.6);
+  g.add(board, tray, tDesk);
+  const rows = college ? 4 : 3, cols = college ? 4 : 3;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const desk = new THREE.Group();
+      const top = box(0.9, 0.06, 0.55, 0xc9a06a); top.position.y = 0.72;
+      const leg = box(0.08, 0.7, 0.08, 0x3a4258); leg.position.set(0, 0.36, 0);
+      const seat = box(0.5, 0.06, 0.45, 0x8a4a3a); seat.position.set(0, 0.45, 0.62);
+      const back = box(0.5, 0.5, 0.06, 0x8a4a3a); back.position.set(0, 0.72, 0.85);
+      desk.add(top, leg, seat, back);
+      desk.position.set(-3.3 + c * 1.9, college ? r * 0.22 : 0, -2.2 + r * 1.5);
+      g.add(desk);
+    }
+  }
+  if (college) {
+    const banner = box(1.2, 1.8, 0.06, 0xa78bfa); banner.position.set(-5.6, 2.6, -3.0); banner.rotation.y = Math.PI / 2;
+    g.add(banner);
+  } else {
+    const globeBase = cyl(0.06, 0.1, 0.3, 6, 0x6b4b2a); globeBase.position.set(3.6, 1.0, -3.6);
+    const globe = new THREE.Mesh(new THREE.SphereGeometry(0.22, 10, 8), mat(0x4a8fd8)); globe.position.set(3.6, 1.3, -3.6);
+    g.add(globeBase, globe);
+  }
+  g.userData.charAnchor = new THREE.Vector3(-1.4, 0, 0.9);
+  g.userData.camTarget = new THREE.Vector3(-0.6, 1.0, -1.0);
+  g.userData.charPose = 'sit';
+  g.userData.indoor = true;
+  return g;
+}
+
+/* ---------- club shop interior ---------- */
+function shopInterior(state) {
+  const g = roomShell(12, 4.4, 9.5, 0x9c7d5c, 0xd9c7a8);
+  roomLights(g, 0xfff2d8, 50);
+  // counter + register
+  const counter = box(3.2, 0.95, 0.9, 0x6b4b2a); counter.position.set(2.8, 0.47, 2.6);
+  const register = box(0.5, 0.4, 0.4, 0x22283b); register.position.set(3.6, 1.15, 2.6);
+  g.add(counter, register);
+  // shelves stocked with gear-colored boxes
+  const stock = [0x4a5aa8, 0x22283b, 0xe25c4a, 0xf2c14e, 0x8fd85a, 0x9fdcf2, 0xd85ab8, 0xf2f2f2];
+  let sIdx = 0;
+  for (const sx of [-3.8, -1.2]) {
+    for (let lvl = 0; lvl < 3; lvl++) {
+      const shelf = box(2.4, 0.07, 0.8, 0x8a5a33); shelf.position.set(sx, 0.7 + lvl * 0.85, -4.0);
+      g.add(shelf);
+      for (let b = 0; b < 3; b++) {
+        const bx = box(0.5, 0.42, 0.5, stock[sIdx++ % stock.length]);
+        bx.position.set(sx - 0.8 + b * 0.8, 0.95 + lvl * 0.85, -4.0);
+        g.add(bx);
+      }
+    }
+  }
+  // shoe display pedestal
+  const ped = cyl(0.5, 0.6, 0.9, 8, 0xd9d2c2); ped.position.set(-3.2, 0.45, 1.6);
+  const shoe = box(0.55, 0.25, 0.9, 0xe25c4a); shoe.position.set(-3.2, 1.05, 1.6); shoe.rotation.y = 0.6;
+  const spot = new THREE.PointLight(0xfff2d8, 12, 6, 2); spot.position.set(-3.2, 2.4, 1.6);
+  g.add(ped, shoe, spot);
+  // sale sign
+  const sign = box(1.8, 0.6, 0.06, 0x10162a, { emissive: 0xffd166, emissiveIntensity: 0.5 });
+  sign.position.set(2.8, 2.6, -4.9);
+  g.add(sign);
+  g.userData.charAnchor = new THREE.Vector3(0.4, 0, 0.6);
+  g.userData.camTarget = new THREE.Vector3(-0.6, 1.0, -0.8);
+  g.userData.charPose = 'idle';
+  g.userData.indoor = true;
+  return g;
+}
+
+/* ---------- enter / exit ---------- */
+export function inInterior() { return interior ? interior.id : null; }
+
+export function enterInterior(id) {
+  if (!lastState || interior?.id === id) return;
+  exitInterior();
+  const era = lastState.athlete.retired ? 'pro' : lastState.athlete.era;
+  const seedFn = rng(4242 + ERA_CFG[era].R);
+  const group =
+    id === 'gym' ? gymInterior(lastState.owned.facility)
+    : id === 'stadium' ? courtInterior(lastState.athlete.mainSport, era, seedFn)
+    : id === 'house' ? houseInterior(lastState)
+    : id === 'school' ? schoolInterior(era)
+    : shopInterior(lastState);
+
+  interior = { id, group };
+  worldGroup.visible = false;
+  for (const c of clouds) c.visible = false;
+  scene.add(group);
+
+  savedView = { orbit: { ...orbit }, fog: scene.fog, bg: scene.background };
+  const portrait = camera.aspect < 1;
+  if (group.userData.indoor) {
+    scene.fog = null;
+    scene.background = new THREE.Color(ROOM_BG);
+    camera.fov = portrait ? 66 : 50;
+    camera.updateProjectionMatrix();
+    orbit.min = 5; orbit.max = 16;
+    orbit.radius = portrait ? 11.5 : 8.5;
+    orbit.phi = 1.1; orbit.theta = Math.PI * 0.24;
+    orbit.target = (group.userData.camTarget || new THREE.Vector3(-0.4, 1.0, -0.6)).clone();
+  } else {
+    const vr = group.userData.viewRadius || 18;
+    orbit.min = vr * 0.5; orbit.max = vr * 2.0;
+    orbit.radius = vr * (portrait ? 1.35 : 0.95);
+    orbit.phi = 0.95; orbit.theta = Math.PI * 0.28;
+    orbit.target = new THREE.Vector3(0, 0.5, 0);
+  }
+
+  // place the character inside
+  if (character) {
+    const anchor = group.userData.charAnchor || new THREE.Vector3();
+    character.position.copy(anchor);
+    character.rotation.y = Math.PI * 0.15;
+    charState = { mode: 'idle', target: null, resolve: null, pose: group.userData.charPose || 'idle' };
+    setBallForPlace(id);
+  }
+  applyDayNight();
+}
+
+export function exitInterior() {
+  if (!interior) return;
+  scene.remove(interior.group);
+  disposeGroup(interior.group);
+  const wasAt = interior.id;
+  interior = null;
+  worldGroup.visible = true;
+  for (const c of clouds) c.visible = true;
+  if (savedView) {
+    scene.fog = savedView.fog;
+    scene.background = savedView.bg;
+    orbit = savedView.orbit;
+    savedView = null;
+    fitCamera(false); // restores the outdoor field of view
+  }
+  if (character && buildings[wasAt]) {
+    character.position.copy(buildings[wasAt].door);
+    charState = { mode: 'idle', target: null, resolve: null, pose: 'dribble' };
+    setBallForPlace(null);
+  }
+  applyDayNight();
+}
+
+function setBallForPlace(id) {
+  if (!character) return;
+  const u = character.userData;
+  const sport = lastState?.athlete.mainSport;
+  const showBall = id === null || id === 'stadium';
+  u.ball.visible = showBall;
+  const color = sport === 'soccer' ? 0xf2f2f2 : sport === 'football' ? 0x7c4a21 : 0xe8763c;
+  u.ball.material = mat(color);
+}
+
+/* While a panel covers the lower screen, re-frame the camera */
+export function setPanelShift(on) { panelOpenFlag = on; }
+
+/* Character pose for the sleep sequence */
+export function setSleeping(on) {
+  if (!character || !charState) return;
+  if (on) {
+    charState.pose = 'sleep';
+    if (interior?.id === 'house' && interior.group.userData.bed) {
+      const bed = interior.group.userData.bed;
+      character.position.set(bed.x, bed.y, bed.z);
+      character.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
+    }
+  } else {
+    character.rotation.set(0, Math.PI * 0.15, 0);
+    charState.pose = interior?.group.userData.charPose || 'idle';
+    if (interior?.group.userData.charAnchor) character.position.copy(interior.group.userData.charAnchor);
+  }
 }
