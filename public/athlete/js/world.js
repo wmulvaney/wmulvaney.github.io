@@ -10,7 +10,7 @@ import * as THREE from './vendor/three.module.min.js';
 
 /* ---------------- module state ---------------- */
 let renderer, scene, camera, raycaster, clock;
-let container, onBuildingCb = null;
+let container;
 let worldGroup = null, character = null, charState = null;
 let buildings = {}; // id -> { group, door: Vector3, label }
 let clouds = [], stars = null, moonSprite = null, flags = [];
@@ -22,6 +22,12 @@ let lastHash = '';
 let hovered = null;
 let running = false;
 let panelShift = 0, panelOpenFlag = false; // frames the scene above an open panel
+let onEnterCb = null, onInteractCb = null, onPromptCb = null;
+let moveInput = { x: 0, y: 0 };          // screen-space input from joystick/keys
+const keys = {};
+let currentPrompt = null;                 // { kind:'building'|'object', id, label, ico }
+let enterArmed = {};                      // building id -> re-armed after walking away
+let promptClock = 0;
 
 const ERA_CFG = {
   youth:   { R: 15, sky: 0x8ec8ef, grass: 0x8cc36c, accent: 0xfb923c },
@@ -532,7 +538,7 @@ function buildWorld(state) {
   if (!character) {
     character = buildCharacter(cfg.accent);
     scene.add(character);
-    character.position.copy(buildings.house.door);
+    character.position.set(0, 0, 3.4); // start at the plaza
     charState = { mode: 'idle', target: null, resolve: null, t: 0 };
   } else {
     // recolor jersey to era accent
@@ -566,9 +572,9 @@ function disposeGroup(g) {
 }
 
 /* ---------------- public API ---------------- */
-export function initWorld(el, { onBuilding } = {}) {
+export function initWorld(el, { onEnter, onInteract, onPrompt } = {}) {
   container = el;
-  onBuildingCb = onBuilding;
+  onEnterCb = onEnter; onInteractCb = onInteract; onPromptCb = onPrompt;
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
@@ -697,6 +703,17 @@ function attachControls() {
     orbit.radius = Math.max(orbit.min, Math.min(orbit.max, orbit.radius * (1 + e.deltaY * 0.0011)));
   }, { passive: false });
 
+  // keyboard: arrows / WASD to move, E or Enter to use the nearby thing
+  window.addEventListener('keydown', (e) => {
+    if (e.target.matches('input, textarea, select')) return;
+    keys[e.key.toLowerCase()] = true;
+    if ((e.key === 'e' || e.key === 'Enter') && !document.querySelector('.modal') && !document.querySelector('.panel')) {
+      triggerPrompt();
+    }
+    if (e.key.startsWith('Arrow')) e.preventDefault();
+  });
+  window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+
   // pinch zoom
   el.addEventListener('touchstart', (e) => {
     if (e.touches.length === 2) {
@@ -731,7 +748,11 @@ function findBuildingHit(hits) {
 }
 
 function hoverCheck(e) {
-  if (interior) { renderer.domElement.style.cursor = 'grab'; return; }
+  if (interior) {
+    const hit = raycastGroup(e, interior.group).find((h) => h.object.userData.interactId);
+    renderer.domElement.style.cursor = hit ? 'pointer' : 'grab';
+    return;
+  }
   const id = findBuildingHit(pointerRay(e));
   renderer.domElement.style.cursor = id ? 'pointer' : 'grab';
   if (hovered && hovered !== id) {
@@ -745,14 +766,44 @@ function hoverCheck(e) {
 }
 
 function clickCheck(e) {
-  if (interior) return;
+  if (interior) {
+    // tap an object in the room: walk over, then use it
+    const hits = raycastGroup(e, interior.group);
+    for (const h of hits) {
+      const iid = h.object.userData.interactId;
+      if (iid) {
+        const info = (interior.group.userData.interacts || []).find((x) => x.id === iid);
+        if (info && onInteractCb) walkToPoint(info.point).then(() => onInteractCb(iid));
+        return;
+      }
+    }
+    return;
+  }
   const id = findBuildingHit(pointerRay(e));
-  if (id && onBuildingCb) {
-    // bounce feedback
+  if (id && onEnterCb) {
     const b = buildings[id];
     b.bounce = 1;
-    onBuildingCb(id);
+    enterArmed[id] = false;
+    walkTo(id).then(() => onEnterCb(id));
   }
+}
+
+function raycastGroup(e, group) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  const p = new THREE.Vector2(
+    ((e.clientX - rect.left) / rect.width) * 2 - 1,
+    -((e.clientY - rect.top) / rect.height) * 2 + 1
+  );
+  raycaster.setFromCamera(p, camera);
+  return raycaster.intersectObjects(group.children, true);
+}
+
+function walkToPoint(p) {
+  if (!character) return Promise.resolve();
+  return new Promise((res) => {
+    if (charState.resolve) charState.resolve();
+    charState = { mode: 'walking', target: p.clone().setY(0), resolve: res, pose: charState?.pose };
+  });
 }
 
 /* ---------------- frame loop ---------------- */
@@ -816,6 +867,75 @@ function loop() {
       b.bounce = Math.max(0, b.bounce - dt * 3);
       const s = 1 + Math.sin((1 - b.bounce) * Math.PI) * 0.06;
       b.group.scale.setScalar(s);
+    }
+  }
+
+  // direct control: joystick vector + keys, camera-relative
+  if (character && charState && charState.mode !== 'walking' && !panelOpenFlag) {
+    let ix = moveInput.x, iy = moveInput.y;
+    if (keys['arrowup'] || keys['w']) iy -= 1;
+    if (keys['arrowdown'] || keys['s']) iy += 1;
+    if (keys['arrowleft'] || keys['a']) ix -= 1;
+    if (keys['arrowright'] || keys['d']) ix += 1;
+    const mag = Math.min(1, Math.hypot(ix, iy));
+    if (mag > 0.12 && !document.querySelector('#modal-root .modal')) {
+      const fx = -Math.cos(orbit.theta), fz = -Math.sin(orbit.theta); // camera forward on the ground
+      const rx = -fz, rz = fx;                                        // camera right
+      const dir = new THREE.Vector3(rx * ix - fx * iy, 0, rz * ix - fz * iy).normalize();
+      const speed = 5.2 * mag;
+      character.position.addScaledVector(dir, speed * dt);
+      // clamp to the walkable area
+      if (interior) {
+        const b = interior.group.userData.bounds || { x: 6, z: 5 };
+        character.position.x = Math.max(-b.x, Math.min(b.x, character.position.x));
+        character.position.z = Math.max(-b.z, Math.min(b.z, character.position.z));
+      } else {
+        const maxR = islandR - 1.6;
+        const len = Math.hypot(character.position.x, character.position.z);
+        if (len > maxR) character.position.multiplyScalar(maxR / len);
+      }
+      const targetRot = Math.atan2(dir.x, dir.z);
+      const dlt = ((targetRot - character.rotation.y + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+      character.rotation.y += dlt * 0.25;
+      const u2 = character.userData;
+      const w = t * 11;
+      u2.legL.rotation.x = Math.sin(w) * 0.7 * mag;
+      u2.legR.rotation.x = -Math.sin(w) * 0.7 * mag;
+      u2.armL.rotation.x = -Math.sin(w) * 0.55 * mag;
+      u2.armR.rotation.x = Math.sin(w) * 0.55 * mag;
+      character.position.y = Math.abs(Math.sin(w)) * 0.05 * mag;
+      charState.pose = 'moving';
+    } else if (charState.pose === 'moving') {
+      charState.pose = 'idle';
+    }
+  }
+
+  // proximity prompts + auto-enter (checked a few times a second)
+  promptClock += dt;
+  if (promptClock > 0.15 && character && charState && charState.mode !== 'walking') {
+    promptClock = 0;
+    let best = null;
+    if (interior) {
+      for (const it of interior.group.userData.interacts || []) {
+        const d2 = it.point.distanceTo(character.position);
+        if (d2 < it.r && (!best || d2 < best.d)) best = { kind: 'object', id: it.id, label: it.label, ico: it.ico, d: d2 };
+      }
+    } else {
+      for (const [bid, b] of Object.entries(buildings)) {
+        const d2 = b.door.distanceTo(character.position);
+        if (d2 > 2.8) enterArmed[bid] = true;
+        if (d2 < 2.4 && (!best || d2 < best.d)) best = { kind: 'building', id: bid, label: `Enter ${b.label}`, ico: '🚪', d: d2 };
+        if (d2 < 1.35 && enterArmed[bid] === true && charState.pose === 'moving' && onEnterCb) {
+          enterArmed[bid] = false;
+          onEnterCb(bid);
+        }
+      }
+    }
+    if (panelOpenFlag) best = null;
+    const changed = (best?.id || null) !== (currentPrompt?.id || null) || (best?.kind !== currentPrompt?.kind);
+    if (changed) {
+      currentPrompt = best;
+      if (onPromptCb) onPromptCb(best ? { id: best.id, kind: best.kind, label: best.label, ico: best.ico } : null);
     }
   }
 
@@ -964,6 +1084,7 @@ const ROOM_BG = 0x141a2c;
 
 function roomShell(w, h, d, floorC, wallC, trimC = 0x2a3148) {
   const g = new THREE.Group();
+  g.userData.bounds = { x: w / 2 - 0.7, z: d / 2 - 0.7 };
   const floor = box(w, 0.2, d, floorC); floor.position.y = -0.1; floor.receiveShadow = true;
   const back = box(w, h, 0.25, wallC); back.position.set(0, h / 2, -d / 2);
   const left = box(0.25, h, d, wallC); left.position.set(-w / 2, h / 2, 0);
@@ -984,6 +1105,12 @@ function roomLights(g, color = 0xfff2d8, intensity = 95) {
   g.add(p, fill, amb);
   g.userData.lamp = p;
   g.userData.amb = amb;
+}
+
+/* Tag meshes as an interactable "hot spot" with a walk-up prompt */
+function tagInteract(group, objects, id, label, ico, point, r = 2.0) {
+  for (const o of objects) o.traverse ? o.traverse((m) => { if (m.isMesh) m.userData.interactId = id; }) : null;
+  (group.userData.interacts = group.userData.interacts || []).push({ id, label, ico, point: point.clone(), r });
 }
 
 /* ---------- gym interior (fills up with facility tier) ---------- */
@@ -1065,6 +1192,7 @@ function gymInterior(tier) {
     const t1 = treadmill(); t1.position.set(2.5, 0, -3.8);
     const t2 = treadmill(); t2.position.set(3.7, 0, -3.8);
     g.add(t1, t2);
+    g.userData._cardio = [t1, t2];
   }
   if (tier >= 2) {
     const sq = squatRack(); sq.position.set(-1.5, 0, -4.0);
@@ -1085,6 +1213,22 @@ function gymInterior(tier) {
     const screenWall = box(2.6, 1.4, 0.08, 0x10162a, { emissive: 0x2b74d8, emissiveIntensity: 0.6 });
     screenWall.position.set(2.4, 2.4, -5.3);
     g.add(s1, s2, pod, podBase, screenWall);
+    g.userData._screen = screenWall;
+  }
+  // training plan clipboard by the door — the "everything" menu
+  const clip = box(0.8, 1.0, 0.06, 0xd9d2c2); clip.position.set(-6.85, 1.9, 2.8);
+  const clipPaper = box(0.6, 0.75, 0.05, 0xf2f2f2); clipPaper.position.set(-6.8, 1.9, 2.8);
+  g.add(clip, clipPaper);
+
+  tagInteract(g, [bp], 'bench', 'Lift weights', '🏋️', new THREE.Vector3(0, 0, -0.6));
+  tagInteract(g, [dr], 'bench', 'Lift weights', '🏋️', new THREE.Vector3(-3.4, 0, -3.9));
+  tagInteract(g, [mat1], 'mat', 'Mobility work', '🧘', new THREE.Vector3(-3.0, 0, 2.0));
+  tagInteract(g, [clip, clipPaper], 'clipboard', 'Training plan', '📋', new THREE.Vector3(-6.0, 0, 2.8));
+  if (tier >= 1) {
+    tagInteract(g, g.userData._cardio || [], 'cardio', 'Speed session', '⚡', new THREE.Vector3(3.1, 0, -3.6));
+  }
+  if (tier >= 3 && g.userData._screen) {
+    tagInteract(g, [g.userData._screen], 'screen', 'Film study', '🎬', new THREE.Vector3(2.4, 0, -4.4));
   }
   g.userData.charAnchor = new THREE.Vector3(0, 0, 0.35);
   g.userData.camTarget = new THREE.Vector3(-0.2, 1.0, -0.8);
@@ -1201,6 +1345,18 @@ function courtInterior(sport, era, seedR) {
     lamp.lookAt(0, 0.5, 0);
     g.add(pole, lamp);
   }
+  // game ball waiting at center + scoreboard by the stands
+  const ballC = sport === 'soccer' ? 0xf2f2f2 : sport === 'football' ? 0x7c4a21 : 0xe8763c;
+  const gameBall = new THREE.Mesh(new THREE.SphereGeometry(0.3, 10, 8), mat(ballC));
+  gameBall.position.set(0, 0.4, -1.6); gameBall.castShadow = true;
+  const sbPole = cyl(0.09, 0.11, 2.6, 6, 0x3a4258); sbPole.position.set(-W2 / 2 - 1.6, 1.3, -D2 / 2 - 1.4);
+  const sbFace = box(2.2, 1.2, 0.14, 0x10162a, { emissive: 0xe8503a, emissiveIntensity: 0.55 });
+  sbFace.position.set(-W2 / 2 - 1.6, 3.1, -D2 / 2 - 1.4);
+  sbFace.lookAt(0, 1, 0);
+  g.add(gameBall, sbPole, sbFace);
+  tagInteract(g, [gameBall], 'ball', 'Ball up!', '🏀', gameBall.position.clone(), 2.4);
+  tagInteract(g, [sbPole, sbFace], 'scoreboard', 'Scoreboard', '📊', new THREE.Vector3(-W2 / 2 - 0.6, 0, -D2 / 2 - 0.6), 2.6);
+  g.userData.bounds = { x: W2 / 2 + 2, z: D2 / 2 + 1 };
   g.userData.charAnchor = new THREE.Vector3(0, 0, 1.2);
   g.userData.charPose = 'dribble';
   g.userData.indoor = false; // open air: keep the sky
@@ -1306,6 +1462,10 @@ function houseInterior(state) {
   pennant.position.set(-1.0, 2.8, -4.62);
   g.add(tv, dresser, dLamp, plant2, pennant);
 
+  tagInteract(g, [frame, mattress, pillow, blanket], 'bed', 'Sleep', '🛏️', new THREE.Vector3(-3.1, 0, -0.4), 2.2);
+  tagInteract(g, [stand, lampBase, shade], 'nightstand', 'Sleep tracker', '⌚', new THREE.Vector3(-1.6, 0, -2.7), 1.8);
+  tagInteract(g, [tv], 'tv', 'Career story', '📺', new THREE.Vector3(-4.6, 0, 0.6), 2.2);
+  tagInteract(g, [dresser, dLamp], 'dresser', 'Settings', '⚙️', new THREE.Vector3(0.8, 0, -3.2), 1.8);
   g.userData.charAnchor = new THREE.Vector3(-1.9, 0, -0.7);
   g.userData.camTarget = new THREE.Vector3(-1.2, 1.0, -1.2);
   g.userData.charPose = 'sit';
@@ -1343,6 +1503,8 @@ function schoolInterior(era) {
       g.add(tripod);
     }
     g.add(desk, deskTop, screenWall);
+    tagInteract(g, [screenWall], 'board', 'Study film', '🎬', new THREE.Vector3(0, 0, -3.6), 2.2);
+    tagInteract(g, [desk, deskTop], 'deskj', 'Press conference', '🎙️', new THREE.Vector3(0, 0, 0.2), 2.2);
     g.userData.charAnchor = new THREE.Vector3(0, 0, -0.4);
     g.userData.camTarget = new THREE.Vector3(0, 1.2, -1.4);
     g.userData.charPose = 'sit';
@@ -1379,6 +1541,8 @@ function schoolInterior(era) {
     const globe = new THREE.Mesh(new THREE.SphereGeometry(0.22, 10, 8), mat(0x4a8fd8)); globe.position.set(3.6, 1.3, -3.6);
     g.add(globeBase, globe);
   }
+  tagInteract(g, [board, tray], 'board', 'Study hall', '📚', new THREE.Vector3(-0.5, 0, -3.6), 2.4);
+  tagInteract(g, [tDesk], 'deskj', 'Yearbook', '📖', new THREE.Vector3(2.6, 0, -2.6), 2.0);
   g.userData.charAnchor = new THREE.Vector3(-1.4, 0, 0.9);
   g.userData.camTarget = new THREE.Vector3(-0.6, 1.0, -1.0);
   g.userData.charPose = 'sit';
@@ -1416,7 +1580,17 @@ function shopInterior(state) {
   // sale sign
   const sign = box(1.8, 0.6, 0.06, 0x10162a, { emissive: 0xffd166, emissiveIntensity: 0.5 });
   sign.position.set(2.8, 2.6, -4.9);
-  g.add(sign);
+  // recovery corner: massage table
+  const mTable = box(1.9, 0.16, 0.8, 0x4a5aa8); mTable.position.set(3.6, 0.75, -3.4);
+  const mLegs = box(1.5, 0.7, 0.6, 0xd9d2c2); mLegs.position.set(3.6, 0.35, -3.4);
+  const mTowel = box(0.6, 0.06, 0.8, 0xf2f2f2); mTowel.position.set(3.0, 0.86, -3.4);
+  g.add(sign, mTable, mLegs, mTowel);
+
+  const shelfMeshes = [];
+  g.traverse((o) => { if (o.isMesh && o.geometry?.type === 'BoxGeometry' && o.position.z === -4.0) shelfMeshes.push(o); });
+  tagInteract(g, shelfMeshes, 'shelf', 'Browse gear', '🛌', new THREE.Vector3(-2.5, 0, -2.8), 2.6);
+  tagInteract(g, [counter, register], 'counter', 'Hire staff & upgrades', '🧑\u200d🏫', new THREE.Vector3(2.0, 0, 1.6), 2.4);
+  tagInteract(g, [mTable, mLegs, mTowel], 'massage', 'Recovery services', '💆', new THREE.Vector3(3.4, 0, -2.2), 2.2);
   g.userData.charAnchor = new THREE.Vector3(0.4, 0, 0.6);
   g.userData.camTarget = new THREE.Vector3(-0.6, 1.0, -0.8);
   g.userData.charPose = 'idle';
@@ -1524,5 +1698,18 @@ export function setSleeping(on) {
     character.rotation.set(0, Math.PI * 0.15, 0);
     charState.pose = interior?.group.userData.charPose || 'idle';
     if (interior?.group.userData.charAnchor) character.position.copy(interior.group.userData.charAnchor);
+  }
+}
+
+/* ---------------- direct-control API ---------------- */
+export function setMoveInput(x, y) { moveInput.x = x; moveInput.y = y; }
+
+export function triggerPrompt() {
+  if (!currentPrompt) return;
+  if (currentPrompt.kind === 'building') {
+    enterArmed[currentPrompt.id] = false;
+    if (onEnterCb) onEnterCb(currentPrompt.id);
+  } else if (onInteractCb) {
+    onInteractCb(currentPrompt.id);
   }
 }

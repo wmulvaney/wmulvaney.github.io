@@ -209,15 +209,46 @@ function ensureWorld() {
     <div class="hud-banner"></div>
     <div class="hud-bottom">
       <div class="hud-hint"></div>
+      <div class="hud-prompt"></div>
       <div class="hud-context"></div>
     </div>`;
+  const joy = document.createElement('div');
+  joy.id = 'joystick';
+  joy.innerHTML = '<div class="joy-base"><div class="joy-knob"></div></div>';
   const fadeEl = document.createElement('div');
   fadeEl.id = 'scene-fade';
   const panelRoot = document.createElement('div');
   panelRoot.id = 'panel-root';
-  document.body.append(wrap, hud, fadeEl, panelRoot);
-  W.initWorld(wrap, { onBuilding: onBuildingClick });
+  document.body.append(wrap, hud, joy, fadeEl, panelRoot);
+  W.initWorld(wrap, { onEnter: enterBuildingFlow, onInteract: handleInteract, onPrompt });
+  attachJoystick(joy);
   worldReady = true;
+}
+
+function attachJoystick(joy) {
+  const base = joy.querySelector('.joy-base');
+  const knob = joy.querySelector('.joy-knob');
+  const MAX = 38;
+  let pid = null;
+  const setKnob = (x, y) => { knob.style.transform = `translate(${x}px, ${y}px)`; };
+  base.addEventListener('pointerdown', (e) => {
+    pid = e.pointerId;
+    base.setPointerCapture(pid);
+    e.preventDefault();
+  });
+  base.addEventListener('pointermove', (e) => {
+    if (pid === null || e.pointerId !== pid) return;
+    const r = base.getBoundingClientRect();
+    let dx = e.clientX - (r.left + r.width / 2);
+    let dy = e.clientY - (r.top + r.height / 2);
+    const len = Math.hypot(dx, dy);
+    if (len > MAX) { dx = dx / len * MAX; dy = dy / len * MAX; }
+    setKnob(dx, dy);
+    W.setMoveInput(dx / MAX, dy / MAX);
+  });
+  const release = () => { pid = null; setKnob(0, 0); W.setMoveInput(0, 0); };
+  base.addEventListener('pointerup', release);
+  base.addEventListener('pointercancel', release);
 }
 
 function fade(show) {
@@ -241,28 +272,73 @@ function hideWorld() {
   closePanel(false);
 }
 
-const BUILDING_PANEL = { house: 'sleep', gym: 'train', stadium: 'season', shop: 'club', school: 'journal' };
 const PANEL_META = {
-  sleep:   { title: 'Home — Sleep & Recovery', ico: '🏠' },
-  train:   { title: 'Gym — Training', ico: '🏋️' },
-  season:  { title: 'Stadium — Season', ico: '🏟️' },
-  club:    { title: 'Club Shop', ico: '🛒' },
-  journal: { title: 'Story & Settings', ico: '📖' },
+  sleep:    { title: 'Sleep Tracker', ico: '⌚' },
+  train:    { title: 'Training Plan', ico: '📋' },
+  drills:   { title: 'Drills', ico: '🏋️' },
+  season:   { title: 'Season & Career', ico: '📊' },
+  gear:     { title: 'Recovery Gear', ico: '🛌' },
+  staff:    { title: 'Staff & Facility', ico: '🧑\u200d🏫' },
+  services: { title: 'Recovery Services', ico: '💆' },
+  journal:  { title: 'Career Story', ico: '📖' },
+  settings: { title: 'Settings', ico: '⚙️' },
 };
+let drillCtx = null; // { keys, title, ico } for the filtered drill panel
 
-async function onBuildingClick(id) {
+async function enterBuildingFlow(id) {
   if (busy) return;
   const S = E.getState();
   if (!S || S.pendingDecision) { if (S?.pendingDecision) openDecision(); return; }
   busy = true;
   try {
-    await W.walkTo(id);
     await fade(true);
     W.enterInterior(id);
     updateHUD();
     await fade(false);
   } finally { busy = false; }
-  openPanel(BUILDING_PANEL[id] || 'journal');
+}
+
+/* Objects in the rooms are the menus */
+function handleInteract(iid) {
+  const S = E.getState();
+  if (!S || busy) return;
+  switch (iid) {
+    case 'bed': sleepFlow(); break;
+    case 'nightstand': openPanel('sleep'); break;
+    case 'tv': case 'deskj': openPanel('journal'); break;
+    case 'dresser': openPanel('settings'); break;
+    case 'bench': openDrillPanel(['str', 'end'], 'Weights & Conditioning', '🏋️'); break;
+    case 'cardio': openDrillPanel(['spd', 'agi'], 'Speed & Agility', '⚡'); break;
+    case 'mat': openDrillPanel(['cor', 'end'], 'Mobility Corner', '🧘'); break;
+    case 'screen': case 'board': openDrillPanel(['iq'], 'Film & Study', '🎬'); break;
+    case 'clipboard': openPanel('train'); break;
+    case 'ball': {
+      if (E.isGameDay() && !S.athlete.injury) { gameFlow(); break; }
+      const skills = S.athlete.mainSport
+        ? SPORTS[S.athlete.mainSport].skills
+        : [...new Set(S.athlete.youthSports.filter((x) => SPORTS[x]).flatMap((x) => SPORTS[x].skills))];
+      openDrillPanel(skills, 'Practice Session', S.athlete.mainSport ? SPORTS[S.athlete.mainSport].ico : '🏀');
+      break;
+    }
+    case 'scoreboard': openPanel('season'); break;
+    case 'shelf': openPanel('gear'); break;
+    case 'counter': openPanel('staff'); break;
+    case 'massage': openPanel('services'); break;
+  }
+}
+
+function openDrillPanel(keys, title, ico) {
+  drillCtx = { keys, title, ico };
+  openPanel('drills');
+}
+
+let promptUI = null;
+function onPrompt(info) {
+  promptUI = info;
+  const el = document.querySelector('#hud .hud-prompt');
+  if (el) el.innerHTML = info
+    ? `<button class="hud-banner-btn gold" data-action="prompt-trigger">${info.ico} ${esc(info.label)}</button>`
+    : '';
 }
 
 function updateHUD() {
@@ -296,13 +372,12 @@ function updateHUD() {
     banner.innerHTML = '';
   }
 
-  const place = inside ? PANEL_META[BUILDING_PANEL[inside]] : null;
+  const coarse = window.matchMedia('(pointer: coarse)').matches;
   hud.querySelector('.hud-hint').textContent = inside
-    ? place.title
-    : 'Tap a building to enter · drag to look around';
-  hud.querySelector('.hud-context').innerHTML = inside ? `
-    <button class="hud-cta" data-action="leave-interior">← Island</button>
-    ${panelOpen ? '' : `<button class="hud-cta accent" data-action="open-panel" data-id="${BUILDING_PANEL[inside]}">${place.ico} Open menu</button>`}` : '';
+    ? (coarse ? 'Walk up to things to use them' : 'WASD / arrows to move · E to use · walk up to things')
+    : (coarse ? 'Walk to a building to enter · drag to look around' : 'WASD / arrows to move · walk into a building to enter');
+  hud.querySelector('.hud-context').innerHTML = inside
+    ? '<button class="hud-cta" data-action="leave-interior">← Island</button>' : '';
 }
 
 /* ---------------- panels ---------------- */
@@ -321,8 +396,14 @@ function closePanel(rerender = true) {
 }
 function renderPanel() {
   if (!panelOpen) return;
-  const meta = PANEL_META[panelOpen];
-  const content = { sleep: tabSleep, train: tabTrain, season: tabSeason, club: tabClub, journal: tabJournal }[panelOpen]();
+  const meta = panelOpen === 'drills' && drillCtx
+    ? { title: drillCtx.title, ico: drillCtx.ico }
+    : PANEL_META[panelOpen];
+  const content = {
+    sleep: tabSleep, train: tabTrain, drills: tabDrills, season: tabSeason,
+    gear: tabGear, staff: tabStaff, services: tabServices,
+    journal: tabJournal, settings: tabSettings,
+  }[panelOpen]();
   document.getElementById('panel-root').innerHTML = `
     <div class="panel-backdrop" data-action="close-panel">
       <div class="panel">
@@ -411,6 +492,55 @@ function tabSleep() {
     </div>`;
 }
 
+function drillGridHtml(drills, recommended, sessionsLeft, a) {
+  return `
+    <div class="drill-grid">
+      ${drills.map((d) => {
+        const cantAfford = a.energy < d.energy || sessionsLeft === 0 || (a.injury && d.intensity > 1);
+        return `
+        <div class="drill ${d.locked || cantAfford ? 'disabled' : ''}" data-action="train" data-id="${d.id}">
+          <span class="d-ico">${d.ico}</span>
+          ${d.locked ? `<span class="d-lock">🔒</span>` : `<span class="d-cost">${'⚡'.repeat(d.energy)}</span>`}
+          <b>${recommended.includes(d.id) && !d.locked ? '⭐ ' : ''}${d.name}</b>
+          <span class="d-targets">${Object.entries(d.targets).map(([k, v]) => `${ATTRS[k].name} +${v}`).join(' · ')}</span>
+          <span class="d-targets faint">${d.locked ? d.lockReason : d.desc}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function sessionLineHtml(S, a, sessionsLeft) {
+  return `
+    <div class="card">
+      <div class="card-title"><h3>Today's session</h3>
+        <span class="hint">${sessionsLeft} slot${sessionsLeft === 1 ? '' : 's'} · ${energyPips(a.energy)}</span>
+      </div>
+      <p class="small muted">Recovery multiplier: <b style="color:var(--green)">×${(0.4 + S.today.recovery / 100 * 1.1).toFixed(2)}</b>
+        · Facility: <b>${FACILITIES[S.owned.facility].name}</b>
+        ${a.injury ? ` · <b style="color:var(--red)">🤕 ${a.injury.name} — light work only</b>` : ''}</p>
+    </div>`;
+}
+
+/* Filtered drills — opened by walking up to equipment */
+function tabDrills() {
+  const S = E.getState();
+  const a = S.athlete;
+  const keys = new Set(drillCtx?.keys || []);
+  const drills = E.availableDrills().filter((d) => Object.keys(d.targets).some((k) => keys.has(k)));
+  const recommended = E.recommendDrills().slice(0, 3).map((d) => d.id);
+  const sessionsLeft = S.today.sessionsMax - S.today.trained.length;
+  const relevant = [...keys].filter((k) => ATTRS[k]);
+  return `
+    ${sessionLineHtml(S, a, sessionsLeft)}
+    <div class="card">
+      ${relevant.map((k) => bar(ATTRS[k].name, a.attrs[k], a.caps[k], ATTRS[k].ico)).join('')}
+    </div>
+    <div class="card">
+      <div class="card-title"><h3>Drills here</h3><span class="hint">⭐ = best value for your build</span></div>
+      ${drillGridHtml(drills, recommended, sessionsLeft, a)}
+    </div>`;
+}
+
 /* ---------------- TRAIN panel ---------------- */
 function tabTrain() {
   const S = E.getState();
@@ -425,14 +555,9 @@ function tabTrain() {
   const skillBars = skillKeys.map((k) => bar(ATTRS[k].name, a.attrs[k], a.caps[k], ATTRS[k].ico)).join('');
 
   return `
+    ${sessionLineHtml(S, a, sessionsLeft)}
     <div class="card">
-      <div class="card-title"><h3>Today's session</h3>
-        <span class="hint">${sessionsLeft} slot${sessionsLeft === 1 ? '' : 's'} · ${energyPips(a.energy)}</span>
-      </div>
-      <p class="small muted">Recovery multiplier: <b style="color:var(--green)">×${(0.4 + S.today.recovery / 100 * 1.1).toFixed(2)}</b>
-        · Facility: <b>${FACILITIES[S.owned.facility].name}</b>
-        ${a.injury ? ` · <b style="color:var(--red)">🤕 ${a.injury.name} — light work only</b>` : ''}</p>
-      <button class="btn block mt-12" data-action="auto-train" ${sessionsLeft === 0 ? 'disabled' : ''}>🤖 Auto-train (best value)</button>
+      <button class="btn block" data-action="auto-train" ${sessionsLeft === 0 ? 'disabled' : ''}>🤖 Auto-train (best value)</button>
     </div>
 
     <div class="cols-2">
@@ -447,20 +572,8 @@ function tabTrain() {
     </div>
 
     <div class="card">
-      <div class="card-title"><h3>Drills</h3><span class="hint">⭐ = best value for your build</span></div>
-      <div class="drill-grid">
-        ${drills.map((d) => {
-          const cantAfford = a.energy < d.energy || sessionsLeft === 0 || (a.injury && d.intensity > 1);
-          return `
-          <div class="drill ${d.locked || cantAfford ? 'disabled' : ''}" data-action="train" data-id="${d.id}">
-            <span class="d-ico">${d.ico}</span>
-            ${d.locked ? `<span class="d-lock">🔒</span>` : `<span class="d-cost">${'⚡'.repeat(d.energy)}</span>`}
-            <b>${recommended.includes(d.id) && !d.locked ? '⭐ ' : ''}${d.name}</b>
-            <span class="d-targets">${Object.entries(d.targets).map(([k, v]) => `${ATTRS[k].name} +${v}`).join(' · ')}</span>
-            <span class="d-targets faint">${d.locked ? d.lockReason : d.desc}</span>
-          </div>`;
-        }).join('')}
-      </div>
+      <div class="card-title"><h3>All drills</h3><span class="hint">⭐ = best value for your build</span></div>
+      ${drillGridHtml(drills, recommended, sessionsLeft, a)}
     </div>`;
 }
 
@@ -545,21 +658,50 @@ function tabSeason() {
     </div>`;
 }
 
-/* ---------------- CLUB panel ---------------- */
-function tabClub() {
-  const S = E.getState();
-  const eraIdx = ERAS.indexOf(S.athlete.era);
-  const fac = FACILITIES[S.owned.facility];
-  const nextFac = FACILITIES[S.owned.facility + 1];
-
+/* ---------------- SHOP panels (counter / shelf / massage table) ---------------- */
+function rpHeader(S) {
   return `
     <div class="card" style="display:flex; justify-content:space-between; align-items:center">
       <div><h3 style="font-size:16px">Rest Points</h3><p class="xs faint">Earned every night you sleep well — and every win.</p></div>
       <span class="rp-chip" style="font-size:17px">✦ ${S.rp}</span>
-    </div>
+    </div>`;
+}
 
+function tabGear() {
+  const S = E.getState();
+  const eraIdx = ERAS.indexOf(S.athlete.era);
+  return `
+    ${rpHeader(S)}
     <div class="card">
-      <div class="card-title"><h3>🏋️ Gym building</h3><span class="tag accent">${fac.ico} ${fac.name}</span></div>
+      <div class="card-title"><h3>Recovery gear</h3><span class="hint">passive — and it appears in your house</span></div>
+      <div class="stack">
+        ${GEAR.map((g) => {
+          const owned = S.owned.gear[g.id];
+          const lockedEra = (g.era || 0) > eraIdx;
+          return `
+          <div class="row ${lockedEra && !owned ? 'locked' : ''}">
+            <div class="row-ico">${g.ico}</div>
+            <div class="row-main"><b>${g.name}</b><span class="sub">${g.desc}${lockedEra && !owned ? ` · unlocks in ${ERA_INFO[ERAS[g.era]].name}` : ''}</span></div>
+            <div class="row-side">
+              ${owned ? '<span class="tag green">OWNED</span>'
+                : lockedEra ? '<span class="xs faint">🔒</span>'
+                : `<button class="btn small ${S.rp >= g.cost ? 'primary' : ''}" data-action="buy-gear" data-id="${g.id}" ${S.rp >= g.cost ? '' : 'disabled'}>✦ ${g.cost}</button>`}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+
+function tabStaff() {
+  const S = E.getState();
+  const eraIdx = ERAS.indexOf(S.athlete.era);
+  const fac = FACILITIES[S.owned.facility];
+  const nextFac = FACILITIES[S.owned.facility + 1];
+  return `
+    ${rpHeader(S)}
+    <div class="card">
+      <div class="card-title"><h3>Gym building</h3><span class="tag accent">${fac.ico} ${fac.name}</span></div>
       ${nextFac ? `
         <div class="row">
           <div class="row-ico">${nextFac.ico}</div>
@@ -569,9 +711,8 @@ function tabClub() {
           </div>
         </div>` : '<p class="small muted">You train at the best lab in the world. 🧪</p>'}
     </div>
-
     <div class="card">
-      <div class="card-title"><h3>🧑‍🏫 Coaching staff</h3><span class="hint">tiers stack</span></div>
+      <div class="card-title"><h3>Coaching staff</h3><span class="hint">tiers stack</span></div>
       <div class="stack">
         ${COACHES.map((c) => {
           const tier = S.owned.coaches[c.id] || 0;
@@ -592,30 +733,15 @@ function tabClub() {
           </div>`;
         }).join('')}
       </div>
-    </div>
+    </div>`;
+}
 
+function tabServices() {
+  const S = E.getState();
+  return `
+    ${rpHeader(S)}
     <div class="card">
-      <div class="card-title"><h3>🛌 Recovery gear</h3><span class="hint">upgrades your house</span></div>
-      <div class="stack">
-        ${GEAR.map((g) => {
-          const owned = S.owned.gear[g.id];
-          const lockedEra = (g.era || 0) > eraIdx;
-          return `
-          <div class="row ${lockedEra && !owned ? 'locked' : ''}">
-            <div class="row-ico">${g.ico}</div>
-            <div class="row-main"><b>${g.name}</b><span class="sub">${g.desc}${lockedEra && !owned ? ` · unlocks in ${ERA_INFO[ERAS[g.era]].name}` : ''}</span></div>
-            <div class="row-side">
-              ${owned ? '<span class="tag green">OWNED</span>'
-                : lockedEra ? '<span class="xs faint">🔒</span>'
-                : `<button class="btn small ${S.rp >= g.cost ? 'primary' : ''}" data-action="buy-gear" data-id="${g.id}" ${S.rp >= g.cost ? '' : 'disabled'}>✦ ${g.cost}</button>`}
-            </div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><h3>💆 Services</h3><span class="hint">one-time boosts</span></div>
+      <div class="card-title"><h3>One-time boosts</h3></div>
       <div class="stack">
         ${SERVICES.map((sv) => `
           <div class="row">
@@ -650,14 +776,24 @@ function tabJournal() {
       </p>
     </div>
 
+`;
+}
+
+/* ---------------- SETTINGS panel (the dresser) ---------------- */
+function tabSettings() {
+  return `
     <div class="card">
-      <div class="card-title"><h3>⚙️ Settings</h3></div>
+      <div class="card-title"><h3>Save</h3></div>
       <div class="grid-2">
         <button class="btn small" data-action="export-save">⬇️ Export save</button>
         <button class="btn small" data-action="import-save">⬆️ Import save</button>
       </div>
       <button class="btn small danger block mt-8" data-action="reset-confirm">🗑️ Reset career</button>
-      <p class="xs faint mt-8">SLEEPER v2.0 · an installable web app — use your browser's “Add to Home Screen” / “Install” to get the mobile & desktop app. Saves live on this device.</p>
+    </div>
+    <div class="card">
+      <div class="card-title"><h3>Controls</h3></div>
+      <p class="small muted">Move with the joystick (or WASD / arrow keys). Walk up to anything and a prompt appears — tap it, or press E. Drag empty space to look around, pinch or scroll to zoom.</p>
+      <p class="xs faint mt-8">SLEEPER v2.0 · an installable web app — use your browser's "Add to Home Screen" / "Install" to get the mobile & desktop app. Saves live on this device.</p>
     </div>`;
 }
 
@@ -958,10 +1094,10 @@ function handleAction(el, e) {
     }
 
     /* navigation */
-    case 'open-panel': openPanel(id); break;
     case 'close-panel': if (!e || e.target === el || el.classList.contains('panel-close')) closePanel(); break;
     case 'leave-interior': closePanel(false); leaveInterior(); break;
-    case 'goto-game': onBuildingClick('stadium'); break;
+    case 'prompt-trigger': if (worldReady) W.triggerPrompt(); break;
+    case 'goto-game': gameFlow(); break;
 
     /* day loop */
     case 'next-day': {
@@ -1128,7 +1264,8 @@ export function init() {
   if (S && S.pendingDecision) setTimeout(openDecision, 500);
   // QA hook: lets automated tests drive canvas-only interactions
   window.__sleeper = {
-    openBuilding: onBuildingClick,
+    openBuilding: enterBuildingFlow,
+    interact: handleInteract,
     act: (action, id) => handleAction({ dataset: { action, id }, classList: { contains: () => true } }, null),
   };
 }

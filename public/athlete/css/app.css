@@ -531,3 +531,28 @@ button { font-family: inherit; color: inherit; }
   @keyframes slideleft { from { transform: translateX(60px); opacity: .4; } }
   .hud-bottom { align-items: center; }
 }
+
+/* ---------------- virtual joystick + interaction prompt ---------------- */
+#joystick {
+  position: fixed; left: 18px; bottom: calc(20px + var(--safe-b)); z-index: 40;
+  display: none; user-select: none; -webkit-user-select: none;
+}
+@media (pointer: coarse) { #joystick { display: block; } }
+.joy-base {
+  width: 108px; height: 108px; border-radius: 50%;
+  background: rgba(9, 13, 26, 0.45);
+  border: 1.5px solid var(--stroke-2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  touch-action: none;
+}
+.joy-knob {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 4px 16px -4px color-mix(in srgb, var(--accent) 60%, transparent);
+  transition: transform .06s linear;
+  pointer-events: none;
+}
+.hud-prompt { display: flex; justify-content: center; min-height: 0; }
+.hud-prompt:not(:empty) { margin-bottom: 4px; }
