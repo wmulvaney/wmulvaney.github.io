@@ -445,7 +445,9 @@ function buildWorld(state) {
     lbl.position.set(pos.x, bounds.max.y + 1.0, pos.z);
     worldGroup.add(grp, lbl);
     const door = pos.clone().multiplyScalar((pos.length() - 3.3) / pos.length());
-    buildings[d.id] = { group: grp, door, label: d.label, baseY: grp.position.y, sprite: lbl };
+    const size = bounds.getSize(new THREE.Vector3());
+    const enterR = Math.max(2.4, Math.max(size.x, size.z) / 2 * 0.9);
+    buildings[d.id] = { group: grp, door, center: pos.clone().setY(0), enterR, label: d.label, sprite: lbl };
 
     // path to plaza
     const dir = pos.clone().normalize();
@@ -940,10 +942,14 @@ function loop() {
       }
     } else {
       for (const [bid, b] of Object.entries(buildings)) {
-        const d2 = b.door.distanceTo(character.position);
-        if (d2 > 2.8) enterArmed[bid] = true;
-        if (d2 < 2.4 && (!best || d2 < best.d)) best = { kind: 'building', id: bid, label: `Enter ${b.label}`, ico: '🚪', d: d2 };
-        if (d2 < 1.35 && enterArmed[bid] === true && charState.pose === 'moving' && onEnterCb) {
+        const dDoor = b.door.distanceTo(character.position);
+        const dBldg = b.center.distanceTo(character.position);
+        const inside = dDoor < 2.3 || dBldg < b.enterR;
+        if (dDoor > 3.4 && dBldg > b.enterR + 1.2) enterArmed[bid] = true;
+        if (!inside && dDoor < 3.4 && (!best || dDoor < best.d)) {
+          best = { kind: 'building', id: bid, label: `Enter ${b.label}`, ico: '🚪', d: dDoor };
+        }
+        if (inside && enterArmed[bid] === true && onEnterCb) {
           enterArmed[bid] = false;
           onEnterCb(bid);
         }
