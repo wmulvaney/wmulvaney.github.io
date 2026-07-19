@@ -8,7 +8,7 @@
 import {
   ATTRS, PHYS_KEYS, YOUTH_SPORTS, SPORTS, DRILLS, ERAS, ERA_INFO,
   COACHES, FACILITIES, GEAR, SERVICES, COLLEGES, PRO_LEAGUE,
-  CHOICE_EVENTS, OPPONENTS, RIVAL_NAMES,
+  CHOICE_EVENTS, OPPONENTS, RIVAL_NAMES, MATE_NAMES, BADGES, CONTRACT_OFFERS,
 } from './data.js';
 import {
   simulateNight, computeRecovery, recoveryMult,
@@ -30,7 +30,10 @@ let S = null;
 export const getState = () => S;
 
 export function save() {
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* storage full/blocked */ }
+  try {
+    if (S?.meta) S.meta.updated = Date.now();
+    localStorage.setItem(SAVE_KEY, JSON.stringify(S));
+  } catch (e) { /* storage full/blocked */ }
 }
 export function load() {
   try {
@@ -92,6 +95,11 @@ export function createGame({ name, youthSports, provider, look }) {
     journal: [],
     pendingDecision: null,
     rival: { name: pick(RIVAL_NAMES), w: 0, l: 0 },
+    team: null,
+    badges: [],
+    feed: [],
+    records: { highA: 0, highB: 0, highC: 0, winStreak: 0, curStreak: 0, bestSleepStreak: 0 },
+    achievements: [],
     goals: null,
     goalNews: [],
     tutorial: 0,
@@ -100,6 +108,7 @@ export function createGame({ name, youthSports, provider, look }) {
   };
   S.goals = newGoals();
   initSeasonTable();
+  newTeam();
   logJournal(`${name}'s story begins in the backyard, age 8. Three sports, endless summer.`, true);
   logJournal(`A kid named ${S.rival.name} from across town plays all the same sports. You two are going to see a lot of each other.`, true);
   save();
@@ -117,6 +126,12 @@ function migrate() {
   if (!S.sync) S.sync = { url: '', token: '', lastDate: '', status: '' };
   if (!S.season.table) initSeasonTable();
   if (!S.athlete.look) S.athlete.look = null;
+  if (!S.team) newTeam();
+  if (!S.badges) S.badges = [];
+  if (!S.feed) S.feed = [];
+  if (!S.records) S.records = { highA: 0, highB: 0, highC: 0, winStreak: 0, curStreak: 0, bestSleepStreak: 0 };
+  if (!S.achievements) S.achievements = [];
+  delete S.pendingGame; // never resume a half-played game across loads
 }
 
 export function logJournal(text, milestone = false) {
@@ -202,7 +217,7 @@ export function advanceDay(nightOverride) {
     score: night.score, fatigue: a.fatigue, gearRecoveryBonus: gear.recovery, streak: S.sleep.streak,
   });
   a.fatigue = clamp(a.fatigue - recovery / 8 + 2, 0, 100);
-  const rpEarn = Math.floor(night.score / 10) + (S.sleep.streak >= 7 ? 6 : S.sleep.streak >= 3 ? 2 : 0);
+  const rpEarn = rpGain(Math.floor(night.score / 10) + (S.sleep.streak >= 7 ? 6 : S.sleep.streak >= 3 ? 2 : 0));
   S.rp += rpEarn;
   a.energy = energyFromSleep(night.score);
   a.form = Math.round(clamp(a.form * 0.7 + recovery * 0.3, 0, 100));
@@ -210,6 +225,11 @@ export function advanceDay(nightOverride) {
 
   goalProgress('sleep', night.score);
   goalProgress('streak', S.sleep.streak);
+  if (S.records) {
+    S.records.bestSleepStreak = Math.max(S.records.bestSleepStreak, S.sleep.streak);
+    if (S.sleep.streak === 7) feedPost(`${a.name}'s secret? Seven straight elite nights of sleep. The recovery game is real.`, 1);
+  }
+  checkAchievements();
   night.day = a.day; night.recovery = recovery; night.rpEarn = rpEarn;
   S.sleep.history.push(night);
   if (S.sleep.history.length > 60) S.sleep.history.shift();
@@ -221,6 +241,7 @@ export function advanceDay(nightOverride) {
     if (a.injury.daysLeft <= 0) {
       logJournal(`Back from the ${a.injury.name}. Feels good to move again.`);
       a.injury = null;
+      a.rustGames = 1;
     }
   }
 
@@ -298,6 +319,7 @@ function eraTransition(newEra, morning) {
   a.era = newEra;
   resetSeason();
   initSeasonTable();
+  newTeam();
   if (newEra === 'hs') {
     S.pendingDecision = { type: 'sport' };
     morning.push({ type: 'decision', decision: 'sport' });
@@ -308,6 +330,7 @@ function eraTransition(newEra, morning) {
     S.pendingDecision = { type: 'college', offers };
     morning.push({ type: 'decision', decision: 'college' });
     logJournal('Senior season is over. Offer letters are on the kitchen table.', true);
+    feedPost(`Recruiting: where will ${S.athlete.name} land? ${starRating()}-star prospect down to final offers.`, 1);
   } else if (newEra === 'pro') {
     const result = runDraft();
     morning.push({ type: 'draft', result });
@@ -422,7 +445,7 @@ export function syncEnergy() {
   S.today.energyAt = now;
   if (mins === 0 || S.athlete.energy >= ENERGY_CAP) return;
   const before = S.athlete.energy;
-  S.athlete.energy = Math.min(ENERGY_CAP, S.athlete.energy + mins * (S.today.regen || 0.2));
+  S.athlete.energy = Math.min(ENERGY_CAP, S.athlete.energy + mins * (S.today.regen || 0.2) * (hasBadge('smooth') ? 1.15 : 1));
   if (Math.floor(S.athlete.energy) !== Math.floor(before)) save();
 }
 
@@ -465,13 +488,13 @@ export function train(drillId) {
 
   a.energy -= d.energy;
   goalProgress('drill');
-  a.fatigue = clamp(a.fatigue + d.intensity * 2.2, 0, 100);
+  a.fatigue = clamp(a.fatigue + d.intensity * (hasBadge('motor') ? 1.75 : 2.2), 0, 100);
   if (d.recovery) a.fatigue = clamp(a.fatigue - d.recovery, 0, 100);
   S.today.trained.push(d.id);
 
   // Injury roll: intensity × fatigue × poor recovery
   let injury = null;
-  const risk = d.intensity * (a.fatigue / 130) * (1 - S.today.recovery / 130) * 0.05;
+  const risk = d.intensity * (a.fatigue / 130) * (1 - S.today.recovery / 130) * 0.05 * (hasBadge('ironbody') ? 0.6 : 1);
   if (Math.random() < risk) {
     injury = { name: pick(['ankle sprain', 'hamstring strain', 'shin splints', 'shoulder tweak', 'knee tendinitis']), daysLeft: irnd(2, 6) };
     a.injury = injury;
@@ -479,6 +502,8 @@ export function train(drillId) {
     logJournal(`Went down in training — ${injury.name}. ${injury.daysLeft} days out. Poor recovery catches up with you.`);
   }
 
+  checkBadges();
+  checkAchievements();
   save();
   return { gains, injury, drill: d };
 }
@@ -536,69 +561,187 @@ function oppRating() {
   return base + ramp + collegeMod + rnd(-4, 4);
 }
 
-export function playGame(meterBonus = 0) {
+/* ---------------- Live games ----------------
+   Two phases so halftime is a real decision:
+   startGame() -> halftime score + situation
+   finishGame(choice) -> second half, final result, all bookkeeping.
+   playGame() wraps both for quick-sim.                          */
+function scorePair(sport, edge, scale = 1) {
+  if (sport === 'soccer') {
+    const them = Math.max(0, Math.round(rnd(0, 1.4) * scale));
+    return [Math.max(0, them + Math.round(edge / 10)), them];
+  }
+  if (sport === 'football') {
+    const them = Math.round((10 + rnd(0, 10)) * scale);
+    return [Math.max(0, them + Math.round(edge * 0.45 * scale)), them];
+  }
+  const them = Math.round((26 + rnd(0, 8)) * scale);
+  return [Math.max(0, them + Math.round(edge * 0.55 * scale)), them];
+}
+
+export function startGame(meterBonus = 0) {
   syncEnergy();
   const a = S.athlete;
+  if (S.pendingGame) delete S.pendingGame;
   if (!isGameDay()) return { error: 'No game scheduled today.' };
-  if (a.injury) return { error: 'You’re injured — no game today.' };
+  let playingHurt = false;
+  if (a.injury) {
+    if (a.injury.daysLeft > 2) return { error: 'You’re injured — no game today.' };
+    playingHurt = true; // cleared for limited minutes
+  }
   if (a.energy < 2) return { error: 'Too exhausted to play (need 2 energy).' };
 
   a.energy -= 2;
   const rivalGame = Math.random() < 0.24;
   const isYouth = a.era === 'youth';
-  const sport = isYouth ? pick(a.youthSports.filter((s) => SPORTS[s])) || 'basketball' : a.mainSport;
+  const sport = isYouth ? pick(a.youthSports.filter((x) => SPORTS[x])) || 'basketball' : a.mainSport;
   const spec = SPORTS[sport];
   const weights = !isYouth && a.position ? spec.positions[a.position].weights : spec.baseWeights;
   const rating = computeRating(weights);
 
   const energyPct = clamp((a.energy + 2) / 10, 0, 1);
   const recovery = S.today.recovery;
-  const perf = rating
+  let perf = rating
     * (0.82 + 0.28 * (recovery / 100))
     * (0.97 + a.form / 1500)
     * (1 - a.fatigue / 450)
     * (0.97 + energyPct * 0.06)
     + rnd(-6, 6)
     + meterBonus;
+  if (playingHurt) perf -= 8;
+  if (a.rustGames > 0) perf -= 5;
 
   const opp = oppRating() + (rivalGame ? 3 : 0);
-  const winProb = 1 / (1 + Math.exp(-(perf - opp) / 7));
-  const win = Math.random() < winProb;
-  const bias = (!isYouth && a.position) ? spec.positions[a.position].statBias : { a: 1, b: 1, c: 1 };
-  const line = statLine(sport, perf, bias);
+  const team = teamStrength();
+  const halfEdge = (perf * 0.55 + team * 0.45 - opp) * 0.5;
+  const half = scorePair(sport, halfEdge, 0.48);
+  const opponent = nextOpponent();
 
+  S.pendingGame = { sport, perf, team, opp, rivalGame, playingHurt, half, opponent, meterBonus };
+  save();
+  return {
+    sport, opponent, rivalGame, playingHurt,
+    half: { you: half[0], them: half[1] },
+    labels: spec.statLabels,
+    rivalName: rivalGame ? S.rival.name : null,
+    bestMate: S.team.mates[0].name,
+    chemistry: S.team.chemistry,
+  };
+}
+
+export function finishGame(choice = 'trust') {
+  const g = S.pendingGame;
+  if (!g) return { error: 'No game in progress.' };
+  delete S.pendingGame;
+  const a = S.athlete;
+  const spec = SPORTS[g.sport];
+
+  let { perf, team, opp } = g;
+  if (choice === 'takeover') { perf += 4; a.fatigue = clamp(a.fatigue + 4, 0, 100); }
+  else if (choice === 'trust') { team += 4; bumpChemistry(2); }
+  else if (choice === 'lockdown') { opp -= 4; }
+
+  const total = perf * 0.55 + team * 0.45;
+  const winProb = 1 / (1 + Math.exp(-(total - opp) / 7));
+  const win = Math.random() < winProb;
+  const isYouth = a.era === 'youth';
+  const bias = (!isYouth && a.position) ? spec.positions[a.position].statBias : { a: 1, b: 1, c: 1 };
+  const line = statLine(g.sport, perf, bias);
+
+  // final score built on the halftime score
+  const secondEdge = (total - opp) * 0.55;
+  const second = scorePair(g.sport, secondEdge, 0.52);
+  let you = g.half[0] + second[0], them = g.half[1] + second[1];
+  if (win && you <= them) you = them + (g.sport === 'soccer' ? 1 : irnd(1, 4));
+  if (!win && you >= them) them = you + (g.sport === 'soccer' ? 1 : irnd(1, 3));
+
+  // bookkeeping
   S.season.games += 1;
   S.season[win ? 'wins' : 'losses'] += 1;
   S.season.statA += line.a; S.season.statB += line.b; S.season.statC += line.c;
   S.career.games += 1; if (win) S.career.wins += 1;
   S.career.statA += line.a; S.career.statB += line.b; S.career.statC += line.c;
-  a.fatigue = clamp(a.fatigue + 7, 0, 100);
+  a.fatigue = clamp(a.fatigue + (hasBadge('motor') ? 5.6 : 7), 0, 100);
   a.form = clamp(a.form + (win ? 4 : -3), 0, 100);
   a.morale = clamp(a.morale + (win ? 5 : -2), 0, 100);
   a.reputation += win ? 2 : 1;
-  const rpWin = win ? irnd(8, 16) : irnd(2, 6);
+  bumpChemistry(win ? 2 : -1);
+  const rpWin = rpGain(win ? irnd(8, 16) : irnd(2, 6));
   S.rp += rpWin;
   S.today.gamePlayed = true;
 
-  const opponent = nextOpponent();
-  if (rivalGame) {
-    if (win) S.rival.w++; else S.rival.l++;
-  }
+  // records
+  const R = S.records;
+  R.highA = Math.max(R.highA, line.a); R.highB = Math.max(R.highB, line.b); R.highC = Math.max(R.highC, line.c);
+  R.curStreak = win ? R.curStreak + 1 : 0;
+  R.winStreak = Math.max(R.winStreak, R.curStreak);
+
+  if (g.rivalGame) { if (win) S.rival.w++; else S.rival.l++; }
   tickSeasonTable(win);
   goalProgress('win', win ? 1 : 0);
+
+  // playing hurt can aggravate; rust burns off
+  let aggravated = false;
+  if (g.playingHurt && a.injury && Math.random() < 0.18) {
+    a.injury.daysLeft += 3;
+    aggravated = true;
+  }
+  if (a.rustGames > 0) a.rustGames--;
+
+  const carried = team > perf + 5 && win;
+  const star = perf > opp + 10;
+  const mate = pick(S.team.mates).name;
+
+  if (star) feedPost(`${line.a} ${spec.statLabels.a} for ${S.athlete.name} against ${g.opponent}. Different gravity.`, 1);
+  else if (win && g.rivalGame) feedPost(`${S.athlete.name} gets the better of ${S.rival.name} this time. ${S.rival.w}–${S.rival.l} all-time.`, 1);
+  else if (!win && g.rivalGame) feedPost(`${S.rival.name} again. Some matchups just hurt.`, 0);
+  else if (carried) feedPost(`${mate} carried the load tonight — that locker room believes in each other.`, 0);
+
+  checkBadges();
+  checkAchievements();
+
   const result = {
-    win, sport, perf: Math.round(perf), opp: Math.round(opp), line,
-    labels: spec.statLabels, opponent, rp: rpWin,
-    star: perf > opp + 10,
-    rival: rivalGame ? { name: S.rival.name, w: S.rival.w, l: S.rival.l, won: win } : null,
-    meterBonus,
+    win, sport: g.sport, perf: Math.round(perf), opp: Math.round(opp), line,
+    labels: spec.statLabels, opponent: g.opponent, rp: rpWin, star,
+    rival: g.rivalGame ? { name: S.rival.name, w: S.rival.w, l: S.rival.l, won: win } : null,
+    meterBonus: g.meterBonus, choice, carried, mate,
+    score: { you, them, half: { you: g.half[0], them: g.half[1] } },
+    playingHurt: g.playingHurt, aggravated, rust: a.rustGames > 0,
   };
   S.season.lastResult = result;
   S.season.perfSum = (S.season.perfSum || 0) + perf;
 
-  logJournal(`${win ? 'W' : 'L'} vs ${opponent}${rivalGame ? ` (${S.rival.name} on the other side)` : ''} — ${lineText(sport, line, spec.statLabels)}.`);
+  logJournal(`${win ? 'W' : 'L'} ${you}–${them} vs ${g.opponent}${g.rivalGame ? ` (${S.rival.name} on the other side)` : ''} — ${lineText(g.sport, line, spec.statLabels)}.`);
   save();
   return result;
+}
+
+export function playGame(meterBonus = 0) {
+  const started = startGame(meterBonus);
+  if (started.error) return started;
+  return finishGame('trust');
+}
+
+/* ---------------- Injury rehab ---------------- */
+export function rehab() {
+  syncEnergy();
+  const a = S.athlete;
+  if (!a.injury) return { error: 'Nothing to rehab — you’re healthy.' };
+  if (S.today.rehabbed) return { error: 'One rehab session per day.' };
+  if (a.energy < 2) return { error: 'Not enough energy (needs 2).' };
+  a.energy -= 2;
+  S.today.rehabbed = true;
+  a.injury.daysLeft = Math.max(0, a.injury.daysLeft - 1);
+  a.fatigue = clamp(a.fatigue - 4, 0, 100);
+  let cleared = false;
+  if (a.injury.daysLeft === 0) {
+    logJournal(`Rehab done — the ${a.injury.name} is behind you. Expect a little rust.`);
+    a.injury = null;
+    a.rustGames = 1;
+    cleared = true;
+  }
+  save();
+  return { cleared, daysLeft: a.injury?.daysLeft ?? 0 };
 }
 
 function statLine(sport, perf, bias) {
@@ -697,9 +840,10 @@ function endOfSeason(morning) {
     const proYears = S.career.seasons.filter((x) => x.era === 'pro').length;
     S.rp += 120 + Math.round(avgPerf); // salary
     if (proYears >= 3 && (proYears - 3) % 3 === 0 && a.age < 33) {
-      const value = avgPerf > 70 ? 'max' : avgPerf > 55 ? 'solid' : 'minimum';
-      S.rp += value === 'max' ? 600 : value === 'solid' ? 300 : 100;
-      logJournal(`Signed a new ${value} contract. Security for the family.`, true);
+      const mult = (S.proveIt && avgPerf > 60 ? 1.6 : 1) * (avgPerf > 70 ? 1.2 : avgPerf > 55 ? 1 : 0.7);
+      delete S.proveIt;
+      S.pendingDecision = { type: 'contract', mult: Math.round(mult * 100) / 100 };
+      morning.push({ type: 'decision', decision: 'contract' });
     }
     if (a.age >= 34 || (a.age >= 30 && computeRating() < 55)) {
       S.pendingDecision = { type: 'retire' };
@@ -711,6 +855,24 @@ function endOfSeason(morning) {
 
 function oppExpectation(a) {
   return { youth: 25, hs: 43, college: 58, pro: 70 }[a.era];
+}
+
+export function chooseContract(offerId) {
+  const d = S.pendingDecision;
+  if (!d || d.type !== 'contract') return { error: 'No contract on the table.' };
+  const offer = CONTRACT_OFFERS.find((o) => o.id === offerId);
+  if (!offer) return { error: 'Unknown offer.' };
+  const rp = rpGain(Math.round(offer.rp * (d.mult || 1)));
+  S.rp += rp;
+  if (offer.chem) bumpChemistry(offer.chem);
+  if (offer.mates) for (const m of S.team.mates) m.rating += offer.mates;
+  if (offer.morale) S.athlete.morale = clamp(S.athlete.morale + offer.morale, 0, 100);
+  if (offer.proveIt) S.proveIt = true;
+  S.pendingDecision = null;
+  logJournal(`Signed: ${offer.label} (+${rp} RP).`, true);
+  feedPost(offer.id === 'max' ? `${S.athlete.name} gets the bag. Every dollar earned.` : offer.id === 'friendly' ? `${S.athlete.name} leaves money on the table to chase a ring. Respect.` : `${S.athlete.name} bets on ${S.athlete.name.split(' ')[0]}. Bold.`, 1);
+  save();
+  return { rp, offer };
 }
 
 export function retire(confirm) {
@@ -725,8 +887,25 @@ export function retire(confirm) {
   S.pendingDecision = null;
   const legacy = legacyScore();
   logJournal(`Retired at ${a.age}. ${legacy.title}. What a ride.`, true);
+  feedPost(`${a.name} calls it a career. ${legacy.title}. Thank you for the memories.`, 1);
+  try {
+    const hall = hallList();
+    hall.unshift({
+      name: a.name, look: a.look, title: legacy.title, pts: legacy.pts,
+      trophies: S.career.trophies.length, awards: S.career.awards.length,
+      games: S.career.games, wins: S.career.wins,
+      draft: a.draft, rival: { ...S.rival }, records: { ...S.records },
+      sport: a.mainSport, position: a.position, retiredAge: a.age, ts: Date.now(),
+    });
+    localStorage.setItem(HALL_KEY, JSON.stringify(hall.slice(0, 12)));
+  } catch (e) { /* storage full */ }
   save();
   return legacy;
+}
+
+const HALL_KEY = 'sleeper.hall.v1';
+export function hallList() {
+  try { return JSON.parse(localStorage.getItem(HALL_KEY)) || []; } catch (e) { return []; }
 }
 
 export function legacyScore() {
@@ -790,6 +969,79 @@ export function useService(id) {
   S.rp -= sv.cost;
   save();
   return { ok: true };
+}
+
+/* ---------------- Teammates & chemistry ----------------
+   A small squad shares the floor with you. Chemistry (0-100) rises
+   with wins and pickup runs, and boosts the TEAM side of the sim —
+   some nights they carry you.                                    */
+function newTeam() {
+  const base = { youth: 22, hs: 40, college: 56, pro: 68 }[S.athlete.era];
+  const names = [...MATE_NAMES].sort(() => Math.random() - 0.5).slice(0, 4);
+  S.team = {
+    mates: names.map((n) => ({ name: n, rating: Math.round(base + rnd(-6, 8)) })),
+    chemistry: 40,
+  };
+}
+
+function teamStrength() {
+  if (!S.team) newTeam();
+  const avg = S.team.mates.reduce((x, m) => x + m.rating, 0) / S.team.mates.length;
+  return avg * (0.92 + (S.team.chemistry / 100) * 0.16);
+}
+
+function bumpChemistry(n) {
+  if (S.team) S.team.chemistry = clamp(S.team.chemistry + n, 0, 100);
+}
+
+/* ---------------- Badges ---------------- */
+export function earnedBadges() {
+  return BADGES.filter((b) => b.test(S.athlete.attrs));
+}
+export function hasBadge(id) {
+  return BADGES.some((b) => b.id === id && b.test(S.athlete.attrs));
+}
+function checkBadges() {
+  for (const b of earnedBadges()) {
+    if (!S.badges.includes(b.id)) {
+      S.badges.push(b.id);
+      S.goalNews.push(`Badge earned: ${b.ico} ${b.name} — ${b.desc}`);
+      feedPost(`${S.athlete.name} is different lately. Scouts are whispering about the ${b.name.toLowerCase()}.`, 1);
+    }
+  }
+}
+function rpGain(n) {
+  return Math.round(n * (hasBadge('professor') ? 1.1 : 1));
+}
+
+/* ---------------- The Feed ----------------
+   A local-media/social feed reacting to your career. Shown on the
+   house TV and at the media desk.                                */
+function feedPost(text, hot = 0) {
+  const likes = irnd(3, 15) + Math.round(S.athlete.reputation * (0.5 + hot)) + (hot ? irnd(20, 80) : 0);
+  S.feed.unshift({ day: S.athlete.day, age: S.athlete.age, text, likes });
+  if (S.feed.length > 30) S.feed.length = 30;
+}
+
+/* ---------------- Records & achievements ---------------- */
+const ACHIEVEMENTS = [
+  { id: 'first_w', name: 'First win', test: () => S.career.wins >= 1 },
+  { id: 'ten_w', name: '10 career wins', test: () => S.career.wins >= 10 },
+  { id: 'fifty_w', name: '50 career wins', test: () => S.career.wins >= 50 },
+  { id: 'streak5', name: '5-game win streak', test: () => S.records.winStreak >= 5 },
+  { id: 'sleep7', name: '7-night sleep streak', test: () => S.records.bestSleepStreak >= 7 },
+  { id: 'sleep21', name: '21-night sleep streak', test: () => S.records.bestSleepStreak >= 21 },
+  { id: 'rich', name: '5,000 RP banked', test: () => S.rp >= 5000 },
+  { id: 'maxed', name: 'A skill at 90+', test: () => Object.values(S.athlete.attrs).some((v) => v >= 90) },
+];
+function checkAchievements() {
+  for (const a of ACHIEVEMENTS) {
+    if (!S.achievements.includes(a.id) && a.test()) {
+      S.achievements.push(a.id);
+      S.rp += 25;
+      S.goalNews.push(`Achievement: ${a.name} (+25 RP)`);
+    }
+  }
 }
 
 /* ---------------- Weekly coach goals ----------------
@@ -937,7 +1189,7 @@ export function playPickup(sportId, size = 'quick') {
   // ball sports get a scoreline; athletics sports are a session, not a game
   let win = null, my = 0, their = 0;
   if (spec) {
-    const edge = (S.today.recovery - 55) / 180 + (a.morale - 50) / 400;
+    const edge = (S.today.recovery - 55) / 180 + (a.morale - 50) / 400 + (hasBadge('breakaway') ? 0.08 : 0);
     win = Math.random() < 0.5 + edge;
     my = size === 'full' ? irnd(15, 21) : irnd(9, 11);
     their = win ? my - irnd(2, 6) : my + irnd(1, 4);
@@ -945,8 +1197,10 @@ export function playPickup(sportId, size = 'quick') {
   goalProgress('pickup');
   a.fatigue = clamp(a.fatigue + (size === 'full' ? 11 : 6), 0, 100);
   a.morale = clamp(a.morale + (size === 'full' ? 7 : 4) + (win ? 2 : 0), 0, 100);
-  const rp = irnd(2, 5) + (win ? 3 : 0);
+  const rp = rpGain(irnd(2, 5) + (win ? 3 : 0));
   S.rp += rp;
+  bumpChemistry(1);
+  checkBadges();
 
   // playing tired on bad sleep can bite
   let injury = null;

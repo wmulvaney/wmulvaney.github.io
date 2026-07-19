@@ -7,7 +7,7 @@
 
 import {
   ATTRS, PHYS_KEYS, YOUTH_SPORTS, SPORTS, ERA_INFO, ERAS,
-  COACHES, FACILITIES, GEAR, SERVICES,
+  COACHES, FACILITIES, GEAR, SERVICES, CONTRACT_OFFERS,
 } from './data.js';
 import { PROVIDERS, parseSleepCSV, describeScore } from './sleep.js';
 import * as E from './engine.js';
@@ -207,6 +207,8 @@ function ensureWorld() {
   if (document.getElementById('world-wrap')) {
     document.getElementById('world-wrap').style.display = '';
     document.getElementById('hud').style.display = '';
+    const joy = document.getElementById('joystick');
+    if (joy) joy.style.display = '';
     return;
   }
   const wrap = document.createElement('div');
@@ -282,6 +284,8 @@ async function leaveInterior() {
 function hideWorld() {
   const w = document.getElementById('world-wrap');
   if (w) { w.style.display = 'none'; document.getElementById('hud').style.display = 'none'; }
+  const joy = document.getElementById('joystick');
+  if (joy) joy.style.display = 'none';
   closePanel(false);
 }
 
@@ -445,7 +449,7 @@ function updateHUD() {
   if (!hud) return;
   const era = ERA_INFO[a.era];
   const d = describeScore(S.today.sleepScore);
-  const gameDay = E.isGameDay() && !a.injury;
+  const gameDay = E.isGameDay() && (!a.injury || a.injury.daysLeft <= 2);
 
   hud.querySelector('.hud-id').innerHTML = `
     <span class="hud-era">${era.ico}</span>
@@ -466,7 +470,7 @@ function updateHUD() {
   } else if (S.pendingDecision) {
     banner.innerHTML = `<button class="hud-banner-btn" data-action="open-decision">⚡ Decision time — tap to choose</button>`;
   } else if (gameDay && !inside) {
-    banner.innerHTML = `<button class="hud-banner-btn gold" data-action="goto-game">🏟️ Game day vs ${esc(E.nextOpponent())} — tap to play</button>`;
+    banner.innerHTML = `<button class="hud-banner-btn gold" data-action="goto-game">Game day vs ${esc(E.nextOpponent())}${a.injury ? ' — play hurt?' : ''} — tap to play</button>`;
   } else {
     banner.innerHTML = '';
   }
@@ -674,6 +678,12 @@ function tabTrain() {
 
   return `
     ${sessionLineHtml(S, a)}
+    <div class="card">
+      <div class="card-title"><h3>Badges</h3><span class="hint">passive perks</span></div>
+      ${E.earnedBadges().length
+        ? E.earnedBadges().map((b) => `<div class="goal-row done"><span class="g-check">✓</span><span class="g-text"><b>${b.ico} ${b.name}</b> — ${b.desc}</span></div>`).join('')
+        : '<p class="small muted">Push a skill past its threshold to unlock passive perks (Shooting 75 → Deadeye, Endurance 75 → Motor, Strength 70 → Iron Body…).</p>'}
+    </div>
     ${goalsCard(S)}
     <div class="card">
       <button class="btn block" data-action="auto-train" ${a.energy < 1 ? 'disabled' : ''}>Auto-train (best value)</button>
@@ -729,8 +739,21 @@ function tabSeason() {
         }).join('')}
         <span class="xs faint">day ${a.dayOfYear} of ${yearLen}</span>
       </div>
-      ${E.isGameDay() && !a.injury ? `<button class="btn primary block mt-12" data-action="play-game">Play today's game vs ${esc(E.nextOpponent())}</button>` : ''}
-      ${a.injury ? `<p class="small mt-8" style="color:var(--red)">Out ${a.injury.daysLeft} more day(s) — ${a.injury.name}</p>` : ''}
+      ${E.isGameDay() && (!a.injury || a.injury.daysLeft <= 2) ? `<button class="btn primary block mt-12" data-action="play-game">${a.injury ? `Play hurt vs ${esc(E.nextOpponent())} (risky)` : `Play today's game vs ${esc(E.nextOpponent())}`}</button>` : ''}
+      ${a.injury ? `
+        <div class="row mt-12" style="border-color:rgba(251,113,133,.35)">
+          <div class="row-ico">🩹</div>
+          <div class="row-main"><b>${esc(a.injury.name)}</b><span class="sub">${a.injury.daysLeft} day(s) left. Rehab shaves a day; expect one rusty game back.</span></div>
+          <div class="row-side"><button class="btn small ${a.energy >= 2 && !S.today.rehabbed ? 'primary' : ''}" data-action="rehab" ${a.energy >= 2 && !S.today.rehabbed ? '' : 'disabled'}>Rehab ⚡2</button></div>
+        </div>` : ''}
+      ${a.rustGames > 0 ? '<p class="small mt-8" style="color:var(--gold)">Shaking off rust — next game comes with a small penalty.</p>' : ''}
+    </div>
+
+    <div class="card">
+      <div class="card-title"><h3>Locker room</h3><span class="hint">chemistry ${S.team ? S.team.chemistry : 0}/100</span></div>
+      ${(S.team?.mates || []).map((m) => `
+        <div class="table-row"><span>·</span><span>${esc(m.name)}</span><b>${m.rating}</b><b></b></div>`).join('')}
+      <p class="xs faint mt-8">Chemistry grows with wins and pickup runs — a connected team wins games your stat line doesn't.</p>
     </div>
 
     ${goalsCard(S)}
@@ -784,6 +807,17 @@ function tabSeason() {
         <div><b>${g.games ? (g.statC / g.games).toFixed(1) : '0'}</b><span>${labels.c}/G</span></div>
         <div><b>${g.games}</b><span>GP</span></div>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><h3>Records</h3><span class="hint">career highs</span></div>
+      <div class="boxline">
+        <div><b>${S.records.highA}</b><span>${labels.a}</span></div>
+        <div><b>${S.records.highB}</b><span>${labels.b}</span></div>
+        <div><b>${S.records.highC}</b><span>${labels.c}</span></div>
+        <div><b>${S.records.winStreak}</b><span>Streak</span></div>
+      </div>
+      <p class="xs faint center">Best sleep streak: ${S.records.bestSleepStreak} nights</p>
     </div>
 
     <div class="card">
@@ -907,6 +941,15 @@ function tabJournal() {
   const S = E.getState();
   return `
     <div class="card">
+      <div class="card-title"><h3>The Feed</h3><span class="hint">what the town is saying</span></div>
+      ${(S.feed || []).slice(0, 12).map((p) => `
+        <div class="feed-post">
+          <p>${esc(p.text)}</p>
+          <span class="xs faint">age ${p.age} · ♥ ${p.likes}</span>
+        </div>`).join('') || '<p class="small muted">Nothing yet — go make some noise.</p>'}
+    </div>
+
+    <div class="card">
       <div class="card-title"><h3>📖 ${esc(S.athlete.name)}'s story</h3><span class="hint">day ${S.athlete.day}</span></div>
       ${S.journal.slice(0, 40).map((j) => `
         <div class="journal-item">
@@ -949,6 +992,13 @@ function tabSettings() {
         <button class="btn small" data-action="export-save">⬇️ Export save</button>
         <button class="btn small" data-action="import-save">⬆️ Import save</button>
       </div>
+      ${S.sync?.url ? `
+      <div class="grid-2 mt-8">
+        <button class="btn small" data-action="cloud-push">☁️ Push to cloud</button>
+        <button class="btn small" data-action="cloud-pull">☁️ Pull from cloud</button>
+      </div>
+      <p class="xs faint mt-8">Cloud save uses your sync server — one career across phone and desktop.</p>`
+      : '<p class="xs faint mt-8">Connect a sync server (Home → nightstand) to enable cloud saves across devices.</p>'}
       <button class="btn small danger block mt-8" data-action="reset-confirm">🗑️ Reset career</button>
     </div>
     <div class="card">
@@ -985,9 +1035,52 @@ function renderRetired() {
         <h3 style="font-size:20px">🏛️ ${legacy.title}</h3>
         <p class="muted small mt-8">${S.career.trophies.map((t) => `🏆 ${t.name} (${t.age})`).join('<br>') || 'No titles — but a career nobody can take away.'}</p>
         <div class="divider"></div>
-        <button class="btn primary block" data-action="new-career">Start a new career</button>
+        <button class="btn block" data-action="career-card">Download career card</button>
+        <button class="btn primary block mt-8" data-action="new-career">Start a new career</button>
+      </div>
+      <div class="card">
+        <div class="card-title"><h3>Hall of Legacies</h3><span class="hint">every career on this device</span></div>
+        ${E.hallList().map((h) => `
+          <div class="journal-item">
+            <span class="j-day">${esc(h.title)}</span>
+            <span class="j-text milestone">${esc(h.name)} — ${h.wins}W · ${h.trophies}🏆 · ${h.awards} award${h.awards === 1 ? '' : 's'} · legacy ${h.pts}${h.draft?.round ? ` · R${h.draft.round} pick` : ''}</span>
+          </div>`).join('') || '<p class="small muted">This career will be the first inductee.</p>'}
       </div>
     </div>`;
+}
+
+/* Render a shareable career-card PNG and download it */
+function downloadCareerCard() {
+  const S = E.getState();
+  const legacy = E.legacyScore();
+  const c = document.createElement('canvas');
+  c.width = 800; c.height = 460;
+  const g = c.getContext('2d');
+  g.fillStyle = '#0b101f'; g.fillRect(0, 0, 800, 460);
+  g.strokeStyle = '#ffd166'; g.lineWidth = 6; g.strokeRect(14, 14, 772, 432);
+  g.fillStyle = '#ffd166'; g.font = '700 22px system-ui';
+  g.fillText('SLEEPER · CAREER CARD', 40, 60);
+  g.fillStyle = '#eef2ff'; g.font = '800 52px system-ui';
+  g.fillText(`${S.athlete.look?.number != null ? '#' + S.athlete.look.number + ' ' : ''}${S.athlete.name}`, 40, 125);
+  g.fillStyle = '#9aa5c4'; g.font = '600 26px system-ui';
+  const pos = S.athlete.position ? SPORTS[S.athlete.mainSport].positions[S.athlete.position].name : '';
+  g.fillText(`${SPORTS[S.athlete.mainSport]?.name || ''} ${pos} · retired at ${S.athlete.age}`, 40, 165);
+  g.fillStyle = '#eef2ff'; g.font = '800 34px system-ui';
+  g.fillText(legacy.title, 40, 225);
+  g.font = '600 24px system-ui'; g.fillStyle = '#9aa5c4';
+  const lines = [
+    `${S.career.wins} career wins · ${S.career.trophies.length} titles · ${S.career.awards.length} awards`,
+    S.athlete.draft ? (S.athlete.draft.round ? `Draft: Round ${S.athlete.draft.round}, pick ${S.athlete.draft.pickNo} — ${S.athlete.draft.team}` : 'Undrafted — earned everything') : '',
+    `vs ${S.rival.name}: ${S.rival.w}–${S.rival.l} lifetime`,
+    `Best sleep streak: ${S.records.bestSleepStreak} nights`,
+  ].filter(Boolean);
+  lines.forEach((l, i) => g.fillText(l, 40, 275 + i * 38));
+  g.fillStyle = '#22d3ee'; g.font = '700 20px system-ui';
+  g.fillText('Sleep. Recover. Become.', 40, 430);
+  const a = document.createElement('a');
+  a.href = c.toDataURL('image/png');
+  a.download = `sleeper-career-${S.athlete.name.replace(/\s+/g, '-')}.png`;
+  a.click();
 }
 
 /* ---------------- main render ---------------- */
@@ -1128,6 +1221,17 @@ function openDecision() {
             <span class="p-sub" style="color:var(--green)">Key: ${Object.entries(p.weights).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => ATTRS[k].name).join(', ')}</span>
           </div>`).join('')}
       </div>`, { dismissable: false });
+  } else if (d.type === 'contract') {
+    showModal(`
+      <p class="modal-kicker">🖊️ Contract talks</p>
+      <h2>Three offers on the table.</h2>
+      <p class="modal-body">Your agent slides the folder across. ${d.mult > 1.3 ? 'The prove-it bet paid off — these numbers are inflated in your favor.' : d.mult < 0.9 ? 'The market cooled after a quiet stretch.' : 'Fair market, solid leverage.'}</p>
+      <div class="modal-actions">
+        ${CONTRACT_OFFERS.map((o) => `
+          <button class="choice-btn" data-action="choose-contract" data-id="${o.id}">
+            <b>${o.label} · +${Math.round(o.rp * (d.mult || 1))} ✦</b><span>${o.sub}</span>
+          </button>`).join('')}
+      </div>`, { dismissable: false });
   } else if (d.type === 'retire') {
     showModal(`
       <p class="modal-kicker">⏳ The question</p>
@@ -1265,6 +1369,42 @@ async function fetchSyncNights(verbose = false) {
   }
 }
 
+/* ---------------- cloud save ---------------- */
+async function cloudPush(verbose = false) {
+  const S = E.getState();
+  if (!S?.sync?.url) return;
+  try {
+    const res = await fetch(`${S.sync.url.replace(/\/$/, '')}/save`, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${S.sync.token}`, 'content-type': 'application/json' },
+      body: E.exportSave(),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (verbose) toast('Career pushed to the cloud', 'good', '☁️');
+  } catch (err) {
+    if (verbose) toast(`Cloud push failed: ${err.message}`, 'bad', '⚠️');
+  }
+}
+
+async function cloudPull(verbose = false) {
+  const S = E.getState();
+  if (!S?.sync?.url) return;
+  try {
+    const res = await fetch(`${S.sync.url.replace(/\/$/, '')}/save`, {
+      headers: { Authorization: `Bearer ${S.sync.token}` },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const remote = await res.json();
+    if (!remote?.athlete) { if (verbose) toast('No cloud save yet — push one first.', '', '☁️'); return; }
+    if (!verbose && remote.meta?.updated <= (S.meta?.updated || 0)) return; // auto mode: only newer
+    E.importSave(JSON.stringify(remote));
+    toast('Cloud save loaded', 'good', '☁️');
+    render();
+  } catch (err) {
+    if (verbose) toast(`Cloud pull failed: ${err.message}`, 'bad', '⚠️');
+  }
+}
+
 /* ---------------- the sleep flow (walk home → night → morning) ---------------- */
 async function sleepFlow(night) {
   const S = E.getState();
@@ -1292,6 +1432,7 @@ async function sleepFlow(night) {
     updateHUD();
     queueModals([() => showMorningReport(res), ...eventModalFns(res.morning)]);
     tut(2);
+    cloudPush();
   } finally {
     busy = false;
   }
@@ -1310,29 +1451,61 @@ async function gameFlow() {
       await fade(true); W.enterInterior('stadium'); updateHUD(); await fade(false);
     }
     const bonus = await runShotMeter();
-    const g = E.playGame(bonus);
-    if (g.error) { toast(g.error, 'bad', '⚠️'); return; }
-    sfx(g.win ? 'win' : 'loss');
-    buzz(g.win ? [30, 40, 60] : 60);
-    if (g.win && worldReady) W.shakeCelebrate();
+    const h = E.startGame(bonus);
+    if (h.error) { toast(h.error, 'bad', '⚠️'); return; }
+    if (worldReady) await W.playAction('dribble', 1.6);
+    sfx('whistle');
     updateHUD();
-    queueModals([() => showModal(`
-      <p class="modal-kicker">${g.win ? '🎉 Final' : '📉 Final'}</p>
-      <h2>${g.win ? 'W' : 'L'} vs ${esc(g.opponent)}</h2>
-      <div class="result-banner ${g.win ? 'win' : 'loss'}">${g.win ? 'VICTORY' : 'DEFEAT'}${g.star ? ' ⭐' : ''}</div>
-      <div class="boxline">
-        <div><b>${g.line.a}</b><span>${g.labels.a}</span></div>
-        <div><b>${g.line.b}</b><span>${g.labels.b}</span></div>
-        <div><b>${g.line.c}</b><span>${g.labels.c}</span></div>
-        <div><b>+${g.rp}✦</b><span>RP</span></div>
-      </div>
-      ${g.rival ? `<p class="small" style="color:var(--gold)">${esc(g.rival.name)} was on the other side. Head-to-head: ${g.rival.w}–${g.rival.l} ${g.rival.won ? '— this one’s yours.' : '— they got you tonight.'}</p>` : ''}
-      ${g.meterBonus > 3 ? '<p class="small" style="color:var(--green)">Warmup was dialed in: +' + g.meterBonus + ' to your night.</p>' : ''}
-      <p class="modal-body">${g.star ? 'You were the best player on the floor. People noticed.' : g.win ? 'Winning fixes everything.' : 'Sleep on it — literally. Tomorrow is another rep.'}</p>
-      <button class="btn primary block" data-action="close-modal">Continue</button>`, { dismissable: false })]);
+    const lead = h.half.you - h.half.them;
+    showModal(`
+      <p class="modal-kicker">${SPORTS[h.sport].ico} Halftime vs ${esc(h.opponent)}</p>
+      <h2>${h.half.you}–${h.half.them} ${lead > 0 ? '— you’re up' : lead < 0 ? '— you’re down' : '— all tied'}</h2>
+      ${h.rivalName ? `<p class="small" style="color:var(--gold)">${esc(h.rivalName)} is on the other side tonight.</p>` : ''}
+      ${h.playingHurt ? '<p class="small" style="color:var(--red)">You’re playing hurt — one wrong step could aggravate it.</p>' : ''}
+      <p class="modal-body">Coach looks at you in the locker room. What’s the second half?</p>
+      <div class="modal-actions">
+        <button class="choice-btn" data-action="half-choice" data-id="takeover"><b>Take over</b><span>Put the team on your back. More shots, more fatigue.</span></button>
+        <button class="choice-btn" data-action="half-choice" data-id="trust"><b>Trust the room</b><span>Move the ball through ${esc(h.bestMate)} — chemistry grows either way.</span></button>
+        <button class="choice-btn" data-action="half-choice" data-id="lockdown"><b>Lock in on defense</b><span>Make ${esc(h.opponent)} earn every point.</span></button>
+      </div>`, { dismissable: false });
   } finally {
     busy = false;
   }
+}
+
+function tickerLines(g) {
+  const half = `Half: ${g.score.half.you}–${g.score.half.them}.`;
+  const choiceLine = g.choice === 'takeover'
+    ? 'You wave everyone off and start hunting your spot.'
+    : g.choice === 'lockdown'
+      ? `The second half turns into a rock fight — ${esc(g.opponent)} can’t breathe.`
+      : `${esc(g.mate)} gets cooking as the ball starts moving.`;
+  const swing = g.win
+    ? (g.carried ? `${esc(g.mate)} takes over late and slams the door.` : 'You close it out yourself down the stretch.')
+    : 'It slips away in the final minutes.';
+  const rival = g.rival ? `${esc(g.rival.name)} ${g.rival.won ? 'walks off pointing at your bench.' : 'has nothing to say this time.'}` : null;
+  return [half, choiceLine, swing, rival].filter(Boolean);
+}
+
+function showGameResult(g) {
+  sfx(g.win ? 'win' : 'loss');
+  buzz(g.win ? [30, 40, 60] : 60);
+  if (g.win && worldReady) W.shakeCelebrate();
+  updateHUD();
+  showModal(`
+    <p class="modal-kicker">${g.win ? 'Final' : 'Final'} vs ${esc(g.opponent)}</p>
+    <h2>${g.win ? 'W' : 'L'} ${g.score.you}–${g.score.them}</h2>
+    <div class="ticker">${tickerLines(g).map((l, i) => `<p class="ticker-line" style="animation-delay:${0.3 + i * 0.7}s">${l}</p>`).join('')}</div>
+    <div class="boxline">
+      <div><b>${g.line.a}</b><span>${g.labels.a}</span></div>
+      <div><b>${g.line.b}</b><span>${g.labels.b}</span></div>
+      <div><b>${g.line.c}</b><span>${g.labels.c}</span></div>
+      <div><b>+${g.rp}✦</b><span>RP</span></div>
+    </div>
+    ${g.star ? '<p class="small" style="color:var(--green)">Best player on the floor tonight.</p>' : ''}
+    ${g.aggravated ? '<p class="small" style="color:var(--red)">You aggravated the injury — extra days on the shelf.</p>' : ''}
+    ${g.meterBonus > 3 ? `<p class="small" style="color:var(--green)">Warmup was dialed in: +${g.meterBonus} to your night.</p>` : ''}
+    <button class="btn primary block mt-12" data-action="close-modal">Continue</button>`, { dismissable: false });
 }
 
 /* ---------------- actions ---------------- */
@@ -1440,6 +1613,20 @@ function handleAction(el, e) {
       render(); break;
     }
     case 'play-game': gameFlow(); break;
+    case 'rehab': {
+      const r = E.rehab();
+      if (r.error) { toast(r.error, 'bad', '🩹'); return; }
+      if (worldReady) W.playAction('stretch', 1.6);
+      toast(r.cleared ? 'Cleared to play — expect a little rust.' : `Rehab done — ${r.daysLeft} day(s) left.`, 'good', '🩹');
+      render(); break;
+    }
+    case 'half-choice': {
+      const g = E.finishGame(id);
+      $modal().innerHTML = '';
+      if (g.error) { toast(g.error, 'bad', '⚠️'); return; }
+      queueModals([() => showGameResult(g)]);
+      break;
+    }
     case 'pickup': {
       const r = E.playPickup(id, el.dataset.size);
       if (r.error) { toast(r.error, 'bad', '⚠️'); return; }
@@ -1487,8 +1674,16 @@ function handleAction(el, e) {
       toast(`You're a ${p.name} now`, 'good', p.ico);
       closeModal(); break;
     }
+    case 'choose-contract': {
+      const r = E.chooseContract(id);
+      if (r.error) { toast(r.error, 'bad', '🖊️'); return; }
+      sfx('buy'); buzz(30);
+      toast(`Signed: ${r.offer.label} (+${r.rp} RP)`, 'good', '🖊️');
+      closeModal(); break;
+    }
     case 'retire-yes': E.retire(true); closeModal(); break;
     case 'retire-no': E.retire(false); closeModal(); break;
+    case 'career-card': downloadCareerCard(); break;
     case 'new-career': {
       E.resetGame();
       onboarding = { step: 0, name: '', picks: [], provider: 'demo' };
@@ -1504,6 +1699,8 @@ function handleAction(el, e) {
     /* sleep providers */
     case 'set-provider': E.setProvider(id); toast(`Sleep source: ${PROVIDERS[id].name}`, 'good', PROVIDERS[id].ico); render(); break;
     case 'open-import': openImport(); break;
+    case 'cloud-push': cloudPush(true); break;
+    case 'cloud-pull': cloudPull(true); break;
     case 'sync-connect': {
       E.setSync(document.getElementById('sync-url').value, document.getElementById('sync-token').value);
       fetchSyncNights(true);
@@ -1605,6 +1802,7 @@ export function init() {
   }, 20000);
   setInterval(fetchSyncNights, 10 * 60 * 1000);
   fetchSyncNights();
+  cloudPull();
   if (E.getState()) setSoundEnabled(E.getState().settings.sound);
   // QA hook: lets automated tests drive canvas-only interactions
   window.__sleeper = {

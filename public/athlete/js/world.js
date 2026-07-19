@@ -23,6 +23,8 @@ let lastHash = '';
 let hovered = null;
 let running = false;
 let panelShift = 0, panelOpenFlag = false; // frames the scene above an open panel
+let ambient = { base: 0, lastApplied: -1 };  // island lighting follows the player's real clock
+let weather = { kind: null, points: null };
 let onEnterCb = null, onInteractCb = null, onPromptCb = null;
 let moveInput = { x: 0, y: 0 };          // screen-space input from joystick/keys
 const keys = {};
@@ -651,6 +653,8 @@ export function initWorld(el, { onEnter, onInteract, onPrompt } = {}) {
   lights.sunSprite.position.set(46, 60, 26);
   scene.add(lights.sunSprite);
 
+  updateAtmosphere();
+  setInterval(updateAtmosphere, 60000);
   attachControls();
   const ro = new ResizeObserver(resize);
   ro.observe(container);
@@ -858,7 +862,9 @@ const NIGHT = { sky: new THREE.Color(0x0d1230), sun: 0.06, hemi: 0.22 };
 function loop() {
   if (!running) return;
   requestAnimationFrame(loop);
-  const dt = Math.min(clock.getDelta(), 0.05);
+  const rawDt = clock.getDelta();
+  const dt = Math.min(rawDt, 0.05);   // cosmetic motion
+  const rdt = Math.min(rawDt, 0.35);  // gameplay timing — must not dilate on slow frames
   const t = clock.elapsedTime;
 
   // camera orbit (looking slightly below the target lifts the subject
@@ -884,7 +890,7 @@ function loop() {
   // building bounce feedback
   for (const b of Object.values(buildings)) {
     if (b.bounce > 0) {
-      b.bounce = Math.max(0, b.bounce - dt * 3);
+      b.bounce = Math.max(0, b.bounce - rdt * 3);
       const s = 1 + Math.sin((1 - b.bounce) * Math.PI) * 0.06;
       b.group.scale.setScalar(s);
     }
@@ -903,7 +909,7 @@ function loop() {
       const rx = -fz, rz = fx;                                        // camera right
       const dir = new THREE.Vector3(rx * ix - fx * iy, 0, rz * ix - fz * iy).normalize();
       const speed = 5.2 * mag;
-      character.position.addScaledVector(dir, speed * dt);
+      character.position.addScaledVector(dir, speed * rdt);
       // clamp to the walkable area
       if (interior) {
         const b = interior.group.userData.bounds || { x: 6, z: 5 };
@@ -931,7 +937,7 @@ function loop() {
   }
 
   // proximity prompts + auto-enter (checked a few times a second)
-  promptClock += dt;
+  promptClock += rdt;
   if (promptClock > 0.15 && character && charState && charState.mode !== 'walking') {
     promptClock = 0;
     let best = null;
@@ -977,7 +983,7 @@ function loop() {
       } else {
         dir.normalize();
         const speed = 5.5;
-        pos.addScaledVector(dir, Math.min(dist, speed * dt));
+        pos.addScaledVector(dir, Math.min(dist, speed * rdt));
         const targetRot = Math.atan2(dir.x, dir.z);
         const delta = ((targetRot - character.rotation.y + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
         character.rotation.y += delta * 0.22;
@@ -991,7 +997,7 @@ function loop() {
       }
     } else {
       if (charState.action) {
-        charState.action.t -= dt;
+        charState.action.t -= rdt;
         if (charState.action.t <= 0) {
           const done = charState.action.resolve;
           charState.action = null;
@@ -1037,7 +1043,7 @@ function loop() {
       }
     }
     if (charState.celebrate > 0) {
-      charState.celebrate -= dt;
+      charState.celebrate -= rdt;
       character.position.y = Math.abs(Math.sin(t * 9)) * 0.35;
       u.armL.rotation.x = Math.PI * 0.9; u.armR.rotation.x = Math.PI * 0.9;
     }
@@ -1046,7 +1052,7 @@ function loop() {
   // day/night animation
   if (dayNight.anim) {
     const an = dayNight.anim;
-    an.t += dt / 1.1; // each phase ~1.1s
+    an.t += rdt / 1.1; // each phase ~1.1s
     if (an.phase === 'down') {
       dayNight.t = Math.min(1, an.t);
       if (an.t >= 1) {
@@ -1062,11 +1068,73 @@ function loop() {
     applyDayNight();
   }
 
+  // ambient clock lighting (applied when it changes, not per frame)
+  const kNow = Math.round(Math.max(dayNight.t, ambient.base) * 100);
+  if (kNow !== ambient.lastApplied && !dayNight.anim) {
+    ambient.lastApplied = kNow;
+    applyDayNight();
+  }
+
+  // falling weather
+  if (weather.points && !interior?.group?.userData?.indoor) {
+    weather.points.visible = !interior;
+    const pos = weather.points.geometry.attributes.position;
+    const drop = weather.kind === 'snow' ? 2.2 * dt : 14 * dt;
+    for (let i = 0; i < pos.count; i++) {
+      let y = pos.getY(i) - drop;
+      if (y < 0) y = 28 + Math.random() * 4;
+      pos.setY(i, y);
+    }
+    pos.needsUpdate = true;
+  } else if (weather.points) {
+    weather.points.visible = false;
+  }
+
   renderer.render(scene, camera);
 }
 
+/* 0 = full day, 1 = full night, from the player's local time */
+function clockAmbient() {
+  const h = new Date().getHours() + new Date().getMinutes() / 60;
+  if (h >= 21 || h < 5) return 0.82;
+  if (h >= 18) return ((h - 18) / 3) * 0.82;      // dusk
+  if (h < 8) return (1 - (h - 5) / 3) * 0.5;      // dawn
+  return 0;
+}
+
+function updateAtmosphere() {
+  ambient.base = clockAmbient();
+  // deterministic daily weather: ~1 day in 5 rains (snow in winter)
+  const now = new Date();
+  const key = now.getFullYear() * 1000 + now.getMonth() * 40 + now.getDate();
+  const rainy = (key * 2654435761 % 97) < 20;
+  const winter = [11, 0, 1].includes(now.getMonth());
+  const kind = rainy ? (winter ? 'snow' : 'rain') : null;
+  if (kind !== weather.kind) {
+    if (weather.points) { scene.remove(weather.points); weather.points.geometry.dispose(); weather.points = null; }
+    weather.kind = kind;
+    if (kind) {
+      const n = 500;
+      const geo = new THREE.BufferGeometry();
+      const pos = new Float32Array(n * 3);
+      for (let i = 0; i < n; i++) {
+        pos[i * 3] = (Math.random() - 0.5) * 70;
+        pos[i * 3 + 1] = Math.random() * 30;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 70;
+      }
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      weather.points = new THREE.Points(geo, new THREE.PointsMaterial({
+        color: kind === 'snow' ? 0xffffff : 0x9fc8e8,
+        size: kind === 'snow' ? 0.35 : 0.18,
+        transparent: true, opacity: kind === 'snow' ? 0.9 : 0.6,
+      }));
+      scene.add(weather.points);
+    }
+  }
+}
+
 function applyDayNight() {
-  const k = dayNight.t;
+  const k = Math.max(dayNight.t, ambient.base);
   lights.sun.intensity = DAY.sun + (NIGHT.sun - DAY.sun) * k;
   lights.hemi.intensity = DAY.hemi + (NIGHT.hemi - DAY.hemi) * k;
   stars.material.opacity = k * 0.9;

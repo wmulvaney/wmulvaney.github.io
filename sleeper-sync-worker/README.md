@@ -49,5 +49,9 @@ manual input.
                 "restingHR": 52 } ] }
 ```
 
+`GET /save` / `PUT /save` (same bearer token) stores and returns the full
+game save as JSON, which powers cross-device cloud saves — play on your
+phone, continue on your desktop.
+
 Any server that speaks this contract works — the worker is just the
 reference implementation.

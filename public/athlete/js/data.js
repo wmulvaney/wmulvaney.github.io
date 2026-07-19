@@ -343,3 +343,23 @@ export const OPPONENTS = {
 
 /* Rival names — one is generated per career and grows alongside you */
 export const RIVAL_NAMES = ['Marcus Bell', 'Dakota Reeves', 'TJ Okafor', 'Sasha Volkov', 'Reggie Lamar', 'Kai Watanabe', 'Dre Simmons', 'Nico Ferraro'];
+
+/* Teammate name pool */
+export const MATE_NAMES = ['Chris Vaughn', 'Deon Park', 'Milo Santos', 'Andre Weiss', 'Trey Coleman', 'Jalen Ford', 'Owen Brandt', 'Luka Petric', 'Sam Iwu', 'Marcus Cole', 'Ty Redmond', 'Ezra Boone'];
+
+/* ---------- Badges: passive perks at skill thresholds ---------- */
+export const BADGES = [
+  { id: 'deadeye', name: 'Deadeye', ico: '🎯', desc: 'Bigger sweet spot in the pre-game meter.', test: (a) => (a.shoot >= 75 || a.strike >= 75 || a.arm >= 75) },
+  { id: 'motor', name: 'Motor', ico: '🫁', desc: 'Fatigue builds 20% slower.', test: (a) => a.end >= 75 },
+  { id: 'ironbody', name: 'Iron Body', ico: '🛡️', desc: 'Injury risk cut by 40%.', test: (a) => a.str >= 70 },
+  { id: 'breakaway', name: 'Breakaway', ico: '⚡', desc: 'Win more pickup runs.', test: (a) => a.spd >= 80 },
+  { id: 'professor', name: 'Professor', ico: '🧠', desc: '+10% RP from every source.', test: (a) => a.iq >= 75 },
+  { id: 'smooth', name: 'Smooth', ico: '🌀', desc: 'Energy refills 15% faster.', test: (a) => a.cor >= 75 },
+];
+
+/* Contract negotiation options (pro, every 3rd season) */
+export const CONTRACT_OFFERS = [
+  { id: 'max', label: 'Max deal', sub: 'Get every dollar. The locker room notices.', rp: 900, chem: -6 },
+  { id: 'friendly', label: 'Team-friendly deal', sub: 'Leave money so the front office can build a winner.', rp: 450, chem: 8, mates: 2 },
+  { id: 'proveit', label: 'One-year prove-it', sub: 'Bet on yourself. Cash in next time if you ball out.', rp: 300, morale: 8, proveIt: true },
+];

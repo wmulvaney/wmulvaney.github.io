@@ -30,7 +30,7 @@ const PROVIDERS = {
 const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Authorization, Content-Type',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
 };
 
 export default {
@@ -48,7 +48,18 @@ export default {
       if (url.pathname === '/nights') {
         return await nights(request, url, env);
       }
-      return json({ ok: true, service: 'sleeper-sync', endpoints: ['/auth/oura', '/auth/whoop', '/nights'] });
+      if (url.pathname === '/save') {
+        requireAppToken(request, env);
+        if (request.method === 'PUT') {
+          const body = await request.text();
+          if (body.length > 400_000) return json({ error: 'save too large' }, 413);
+          await env.TOKENS.put('save', body);
+          return json({ ok: true });
+        }
+        const raw = await env.TOKENS.get('save');
+        return new Response(raw || 'null', { headers: { 'content-type': 'application/json', ...cors } });
+      }
+      return json({ ok: true, service: 'sleeper-sync', endpoints: ['/auth/oura', '/auth/whoop', '/nights', '/save'] });
     } catch (err) {
       return json({ error: err.message }, 500);
     }
