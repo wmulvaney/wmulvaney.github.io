@@ -76,7 +76,7 @@ function BookPage() {
       />
       <div className="book-bg-overlay" aria-hidden="true" />
       <Helmet>
-        <title>Book Your Free Call — William Mulvaney</title>
+        <title>Book Your Free Call | William Mulvaney</title>
         <meta
           name="description"
           content="4 weeks of free 1-on-1 coaching. Book a free intro call and let's see if we're a fit."
