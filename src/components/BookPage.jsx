@@ -60,6 +60,21 @@ function BookPage() {
 
   return (
     <div className="book-page">
+      <video
+        className="book-bg-video"
+        src={
+          typeof window !== 'undefined' &&
+          window.matchMedia('(max-width: 640px)').matches
+            ? '/hero-mobile.mp4'
+            : '/hero.mp4'
+        }
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+      />
+      <div className="book-bg-overlay" aria-hidden="true" />
       <Helmet>
         <title>Book Your Free Call — William Mulvaney</title>
         <meta
@@ -79,7 +94,7 @@ function BookPage() {
           </h1>
           <p className="book-lede">
             If you&rsquo;re ready to make a real change in your life, the first step is a
-            15-minute call. No pitch, no pressure &mdash; we talk about where you are, where
+            30-minute call. No pitch, no pressure. We talk about where you are, where
             you want to be, and whether we&rsquo;re a fit.
           </p>
           <button type="button" className="book-cta" onClick={openCalendar}>
@@ -115,7 +130,7 @@ function BookPage() {
             more than you can imagine. I want to help you build your list.
           </p>
           <p>
-            I&rsquo;m new to coaching, so I&rsquo;m doing it for free &mdash; and because my
+            I&rsquo;m new to coaching, so I&rsquo;m doing it for free. Because my
             time is limited, I&rsquo;m selective about who I work with. The call is how we
             both figure out if this is worth 4 weeks of your life.
           </p>
@@ -125,7 +140,7 @@ function BookPage() {
           <h2>How it works</h2>
           <ol>
             <li>
-              <strong>Book a free 15-minute call.</strong> Pick any time that works below.
+              <strong>Book a free 30-minute call.</strong> Pick any time that works below.
             </li>
             <li>
               <strong>We talk goals.</strong> Where you&rsquo;re stuck, what you want, and
