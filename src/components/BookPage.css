@@ -1,0 +1,174 @@
+/* ── Page shell — full-viewport overlay, same pattern as .vignelli-page ── */
+.book-page {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #040b12;
+  color: #fff;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+.book-scroll {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.book-page section {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+/* ── Hero ── */
+.book-hero {
+  padding-top: 4.5rem;
+  text-align: center;
+}
+
+.book-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.8rem;
+  color: #7fd1c0;
+  margin: 0 0 1rem;
+}
+
+.book-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  line-height: 1.1;
+  margin: 0 0 1.25rem;
+}
+
+.book-hero h1 span {
+  color: #7fd1c0;
+}
+
+.book-lede {
+  font-size: 1.1rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0 auto 2rem;
+  max-width: 34rem;
+}
+
+/* ── CTA ── */
+.book-cta {
+  display: inline-block;
+  background: #7fd1c0;
+  color: #040b12;
+  border: none;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 0.95rem 2.4rem;
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.book-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(127, 209, 192, 0.35);
+}
+
+/* ── Story ── */
+.book-story h2,
+.book-steps h2,
+.book-calendar h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem;
+  margin: 0 0 1.5rem;
+}
+
+.book-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 560px) {
+  .book-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.book-col {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+}
+
+.book-col h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #7fd1c0;
+}
+
+.book-col ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.book-story p {
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* ── Steps ── */
+.book-steps ol {
+  margin: 0 0 2rem;
+  padding-left: 1.3rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.book-steps li {
+  margin-bottom: 0.6rem;
+}
+
+.book-steps li strong {
+  color: #fff;
+}
+
+/* ── Calendar ── */
+.book-calendar {
+  padding-top: 0;
+}
+
+.book-calendar.is-open {
+  padding-top: 3rem;
+}
+
+.book-calendar iframe {
+  width: 100%;
+  height: 900px;
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.book-fallback {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.book-fallback a {
+  color: #7fd1c0;
+}
+
+/* ── Footer ── */
+.book-footer {
+  text-align: center;
+  padding: 2rem 1.5rem 3rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.85rem;
+}
