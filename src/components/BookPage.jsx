@@ -133,6 +133,7 @@ function BookPage() {
   );
   const v = VARIANTS[variant];
   const calendarRef = useRef(null);
+  const iframeRef = useRef(null);
   const scheduledFired = useRef(false);
 
   useEffect(() => {
@@ -140,43 +141,74 @@ function BookPage() {
   }, [variant]);
 
   /*
-   * IMPORTANT: this fires when the visitor REACHES the calendar, not when they
-   * book. Google's scheduler runs in a cross-origin iframe, so the page cannot
-   * observe a completed booking — only Google Calendar knows. Swap the embed for
-   * Calendly/Cal.com to get a true booking event and re-point this there.
+   * Schedule = the visitor actually engaged with the booking widget.
+   *
+   * This is the ad set's optimization event, so it has to mean something. It
+   * fires only when the visitor clicks INTO the calendar iframe — not when they
+   * scroll past it and not when they tap the CTA. Clicking a cross-origin iframe
+   * blurs the parent window and moves document.activeElement to that iframe,
+   * which is the only engagement signal the parent page can legitimately see.
+   *
+   * It still is NOT a booking. Google's scheduler is cross-origin, so a completed
+   * booking is invisible here — only Google Calendar knows. Swapping the embed for
+   * Calendly/Cal.com would expose a real booking event; re-point this there then.
    */
-  const fireReachedCalendar = (source) => {
+  const fireOpenedCalendar = (source) => {
     if (scheduledFired.current) return;
     scheduledFired.current = true;
     if (window.fbq) {
       window.fbq('track', 'Schedule', {
-        content_name: 'reached-calendar',
+        content_name: 'opened-calendar',
         content_category: variant,
         source,
       });
     }
   };
 
-  // Fire once the calendar scrolls into view, however the visitor got there.
   useEffect(() => {
-    const el = calendarRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          fireReachedCalendar('scroll');
-          io.disconnect();
-        }
-      },
-      { threshold: 0.35 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    const isCalendarFocused = () =>
+      iframeRef.current && document.activeElement === iframeRef.current;
+
+    // Desktop and most mobile browsers blur the window when an iframe takes focus.
+    const onBlur = () => {
+      window.setTimeout(() => {
+        if (isCalendarFocused()) fireOpenedCalendar('iframe-focus');
+      }, 0);
+    };
+    window.addEventListener('blur', onBlur);
+
+    // Fallback: some mobile browsers don't reliably emit blur for iframe taps,
+    // so poll activeElement as well. Cheap, and stops as soon as it fires.
+    const poll = window.setInterval(() => {
+      if (scheduledFired.current) {
+        window.clearInterval(poll);
+        return;
+      }
+      if (isCalendarFocused()) {
+        fireOpenedCalendar('iframe-poll');
+        window.clearInterval(poll);
+      }
+    }, 750);
+
+    return () => {
+      window.removeEventListener('blur', onBlur);
+      window.clearInterval(poll);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /*
+   * CTA taps are intent, not engagement, so they get their own event and are
+   * deliberately kept OUT of Schedule. Useful for spotting the gap between
+   * "wanted to book" and "actually touched the calendar".
+   */
   const scrollToCalendar = () => {
-    fireReachedCalendar('cta');
+    if (window.fbq) {
+      window.fbq('track', 'InitiateCheckout', {
+        content_name: 'cta-tap',
+        content_category: variant,
+      });
+    }
     calendarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
@@ -236,6 +268,7 @@ function BookPage() {
         <section ref={calendarRef} className="book-calendar is-open" id="book">
           <h2>Pick a time</h2>
           <iframe
+            ref={iframeRef}
             src={CALENDAR_EMBED_URL}
             title="Book a free intro call"
             frameBorder="0"
