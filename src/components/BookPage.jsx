@@ -9,9 +9,18 @@ const CALENDAR_EMBED_URL =
   'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0S6KnUVY7AmxDddKOoW0L00RfmMiANmdemIt4PyDQivXEPqbfP3gTw8q1TCpd7POu8NACS9w6f?gv=true';
 const CALENDAR_FALLBACK_URL = 'https://calendar.app.google/SgK1WwFXghMeX2CT7';
 
+// The $50-trial cohort books on a separate schedule so free and paid intro
+// calls stay distinguishable in Google Calendar.
+const TRIAL_CALENDAR_EMBED_URL =
+  'https://calendar.google.com/calendar/appointments/schedules/AcZssZ13N1osP0koWVi_I6c1IP7Rb_P4QzpSH8cMm_nG80kRyuhCdzANvwfga-CMZux2tstFuZMaa0l1?gv=true';
+const TRIAL_CALENDAR_FALLBACK_URL = 'https://calendar.app.google/hLLbTXAZPezzvv5U6';
+
 // Spots left in the free cohort. Set to 0 when they're gone — the page copy
 // promises this number is real, so it has to be kept honest.
 const SPOTS_LEFT = 5;
+
+// Spots left in the $50 trial cohort. Same honesty rule as SPOTS_LEFT.
+const TRIAL_SPOTS_LEFT = 5;
 
 /*
  * Page variants, keyed to the messaging of the ad that sent the visitor.
@@ -29,6 +38,9 @@ const VARIANT_CODES = {
   f1: 'fitness',
   p1: 'discipline',
   g1: 'general',
+  d2: 'dating50',
+  f2: 'fitness50',
+  g2: 'general50',
 };
 const VARIANTS = {
   dating: {
@@ -71,6 +83,44 @@ const VARIANTS = {
     h1sub: 'No strings attached.',
     lede:
       "Dating, fitness, or just getting your life in order. Four weeks of real 1-on-1 coaching, free, so you can find out whether I'm any good before you ever pay me.",
+    thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
+    nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
+    fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
+    gimmick: 'a $997 course and a countdown timer',
+  },
+
+  /* ---- $50-for-4-weeks trial offer (money back, no questions asked) ---- */
+  dating50: {
+    offer: 'trial',
+    eyebrow: '1-on-1 dating coaching · $50 for 4 weeks',
+    h1: 'Start talking to women.',
+    h1sub: 'The real kind. In person.',
+    lede:
+      "Not scripts. Not openers. Not a 200-page PDF. Four weeks of me coaching you through actual conversations with actual women — for $50 total, not per week. If you're not satisfied at the end of the month, you get it back.",
+    thenLine: "I couldn't talk to a woman I found attractive. Not one.",
+    nowLine: "I've approached over 1,000 women. I've been with a dream girl for the past year and a half.",
+    fieldWork: 'We go out together and you approach. I watch, then we break it down.',
+    gimmick: 'fake text screenshots and "3 lines that make her chase you"',
+  },
+  fitness50: {
+    offer: 'trial',
+    eyebrow: '1-on-1 fitness coaching · $50 for 4 weeks',
+    h1: 'Build the body you actually want.',
+    h1sub: 'Starting this week.',
+    lede:
+      "No secret protocol, no supplement stack, no 12-week shred. Four weeks of me coaching you through the training and eating that actually moves the needle — for $50 total, not per week. If your body hasn't changed by the end of the month, you get it back.",
+    thenLine: 'I hated my body. I avoided mirrors and photos.',
+    nowLine: "Year-round sub-12% body fat. I've finished a 100-mile ultra.",
+    fieldWork: 'We train together. I watch you lift and fix what needs fixing.',
+    gimmick: "before/after photos you can't verify",
+  },
+  general50: {
+    offer: 'trial',
+    eyebrow: '1-on-1 coaching · $50 for 4 weeks',
+    h1: '4 weeks of coaching.',
+    h1sub: '$50. Total.',
+    lede:
+      "Dating, fitness, or just getting your life in order. Four weeks of real 1-on-1 coaching for $50 — total, not per week — and if you're not satisfied at the end, you get it back. That's the whole deal.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
     fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
@@ -212,8 +262,17 @@ function BookPage() {
     calendarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const spotsLine =
-    SPOTS_LEFT > 0
+  const isTrial = v.offer === 'trial';
+  const spots = isTrial ? TRIAL_SPOTS_LEFT : SPOTS_LEFT;
+  const calendarEmbedUrl = isTrial ? TRIAL_CALENDAR_EMBED_URL : CALENDAR_EMBED_URL;
+  const calendarFallbackUrl = isTrial ? TRIAL_CALENDAR_FALLBACK_URL : CALENDAR_FALLBACK_URL;
+  const ctaLabel = isTrial ? 'Book my intro call' : 'Book my free call';
+
+  const spotsLine = isTrial
+    ? spots > 0
+      ? `${spots} spots at $50. When they're gone, this page will say so.`
+      : "All spots are taken right now. Book anyway and I'll tell you when one opens."
+    : SPOTS_LEFT > 0
       ? `${SPOTS_LEFT} free spots left. When they're gone, this page will say so.`
       : "All free spots are taken right now. Book anyway and I'll tell you when one opens.";
 
@@ -236,10 +295,14 @@ function BookPage() {
       />
       <div className="book-bg-overlay" aria-hidden="true" />
       <Helmet>
-        <title>Book Your Free Call | William Mulvaney</title>
+        <title>{isTrial ? 'Book Your Intro Call | William Mulvaney' : 'Book Your Free Call | William Mulvaney'}</title>
         <meta
           name="description"
-          content="4 weeks of free 1-on-1 coaching. Book a free intro call and let's see if we're a fit."
+          content={
+            isTrial
+              ? "4 weeks of 1-on-1 coaching for $50 total, money back if you're not satisfied. Book a free intro call and let's see if we're a fit."
+              : "4 weeks of free 1-on-1 coaching. Book a free intro call and let's see if we're a fit."
+          }
         />
         <meta name="robots" content="noindex" />
       </Helmet>
@@ -256,11 +319,13 @@ function BookPage() {
           <p className="book-lede">{v.lede}</p>
 
           <button type="button" className="book-cta" onClick={scrollToCalendar}>
-            Book my free call
+            {ctaLabel}
           </button>
           <p className="book-scarcity">{spotsLine}</p>
           <p className="book-microcopy">
-            30 minutes. No pitch, no card, no obligation.
+            {isTrial
+              ? 'The call is free. 30 minutes, no pitch, no obligation — you only pay the $50 if we both decide it’s a fit.'
+              : '30 minutes. No pitch, no card, no obligation.'}
           </p>
         </section>
 
@@ -269,33 +334,52 @@ function BookPage() {
           <h2>Pick a time</h2>
           <iframe
             ref={iframeRef}
-            src={CALENDAR_EMBED_URL}
+            src={calendarEmbedUrl}
             title="Book a free intro call"
             frameBorder="0"
             loading="lazy"
           />
           <p className="book-fallback">
             Calendar not loading?{' '}
-            <a href={CALENDAR_FALLBACK_URL} target="_blank" rel="noreferrer">
+            <a href={calendarFallbackUrl} target="_blank" rel="noreferrer">
               Open it in a new tab
             </a>
             .
           </p>
         </section>
 
-        {/* ---------- WHY IT'S FREE ---------- */}
-        <section className="book-why">
-          <h2>Why this is free</h2>
-          <p>
-            I&rsquo;m new to coaching. That&rsquo;s the whole reason. I don&rsquo;t have a wall of
-            testimonials, so instead of asking you to trust me, I&rsquo;m asking you to
-            <strong> test me</strong> — four weeks, free, and you decide at the end whether
-            I&rsquo;m worth paying.
-          </p>
-          <p className="book-why-kicker">
-            I don&rsquo;t need your money yet. I need proof I&rsquo;m a good coach.
-          </p>
-        </section>
+        {/* ---------- WHY IT'S FREE / WHY IT'S $50 ---------- */}
+        {isTrial ? (
+          <section className="book-why">
+            <h2>Why it&rsquo;s $50 &mdash; total</h2>
+            <p>
+              Not per week. Not per session. <strong>$50 for the whole 4 weeks</strong>, stated
+              right here on the page, because I&rsquo;m tired of coaches who make you sit through
+              a &ldquo;free strategy call&rdquo; to hear a price. It&rsquo;s small enough that
+              you&rsquo;ll risk it and large enough that you&rsquo;ll show up.
+            </p>
+            <p>
+              And if you&rsquo;re not satisfied after the 4 weeks, you get your money back.
+              <strong> No questions asked.</strong> No forms, no exit call, no fine print.
+            </p>
+            <p className="book-why-kicker">
+              Don&rsquo;t trust me. Try me.
+            </p>
+          </section>
+        ) : (
+          <section className="book-why">
+            <h2>Why this is free</h2>
+            <p>
+              I&rsquo;m new to coaching. That&rsquo;s the whole reason. I don&rsquo;t have a wall of
+              testimonials, so instead of asking you to trust me, I&rsquo;m asking you to
+              <strong> test me</strong> — four weeks, free, and you decide at the end whether
+              I&rsquo;m worth paying.
+            </p>
+            <p className="book-why-kicker">
+              I don&rsquo;t need your money yet. I need proof I&rsquo;m a good coach.
+            </p>
+          </section>
+        )}
 
         {/* ---------- ANTI-GIMMICK ---------- */}
         <section className="book-not">
@@ -304,8 +388,14 @@ function BookPage() {
             <li>No $997 course, no &ldquo;secret system,&rdquo; no PDF you&rsquo;ll never open</li>
             <li>No {v.gimmick}</li>
             <li>No upsell call disguised as a free strategy session</li>
+            {isTrial && (
+              <li>
+                No hidden pricing. It&rsquo;s $50 total, it&rsquo;s written on this page, and
+                that&rsquo;s the whole price.
+              </li>
+            )}
             <li>
-              No countdown timer that resets when you reload the page. The {SPOTS_LEFT} spots are
+              No countdown timer that resets when you reload the page. The {spots} spots are
               real, and when they&rsquo;re gone this page will say so.
             </li>
           </ul>
@@ -331,7 +421,11 @@ function BookPage() {
               the numbers.
             </li>
           </ul>
-          <p className="book-get-kicker">Four weeks of that. $0. No card on file.</p>
+          <p className="book-get-kicker">
+            {isTrial
+              ? 'Four weeks of that. $50 total — money back if you’re not satisfied.'
+              : 'Four weeks of that. $0. No card on file.'}
+          </p>
         </section>
 
         {/* ---------- SHORT, EMOTIONAL STORY ---------- */}
@@ -352,9 +446,13 @@ function BookPage() {
 
         {/* ---------- CLOSE ---------- */}
         <section className="book-close">
-          <h2>Worst case, you get 4 free weeks of coaching.</h2>
+          <h2>
+            {isTrial
+              ? 'Worst case: you try it for 4 weeks and get your $50 back.'
+              : 'Worst case, you get 4 free weeks of coaching.'}
+          </h2>
           <button type="button" className="book-cta" onClick={scrollToCalendar}>
-            Book my free call
+            {ctaLabel}
           </button>
           <p className="book-scarcity">{spotsLine}</p>
         </section>
