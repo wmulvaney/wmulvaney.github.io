@@ -41,6 +41,9 @@ const VARIANT_CODES = {
   d2: 'dating50',
   f2: 'fitness50',
   g2: 'general50',
+  d3: 'datingNP',
+  f3: 'fitnessNP',
+  g3: 'generalNP',
 };
 const VARIANTS = {
   dating: {
@@ -121,6 +124,44 @@ const VARIANTS = {
     h1sub: '$50. Total.',
     lede:
       "Dating, fitness, or just getting your life in order. Four weeks of real 1-on-1 coaching for $50 — total, not per week — and if you're not satisfied at the end, you get it back. That's the whole deal.",
+    thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
+    nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
+    fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
+    gimmick: 'a $997 course and a countdown timer',
+  },
+
+  /* ---- guarantee offer, price never named on the page ('NP' = no price) ---- */
+  datingNP: {
+    offer: 'trialnp',
+    eyebrow: '1-on-1 dating coaching · money-back guarantee',
+    h1: 'Start talking to women.',
+    h1sub: 'The real kind. In person.',
+    lede:
+      "Not scripts. Not openers. Not a 200-page PDF. Four weeks of me coaching you through actual conversations with actual women — and if you're not satisfied at the end of the month, you get your money back.",
+    thenLine: "I couldn't talk to a woman I found attractive. Not one.",
+    nowLine: "I've approached over 1,000 women. I've been with a dream girl for the past year and a half.",
+    fieldWork: 'We go out together and you approach. I watch, then we break it down.',
+    gimmick: 'fake text screenshots and "3 lines that make her chase you"',
+  },
+  fitnessNP: {
+    offer: 'trialnp',
+    eyebrow: '1-on-1 fitness coaching · money-back guarantee',
+    h1: 'Build the body you actually want.',
+    h1sub: 'Starting this week.',
+    lede:
+      "No secret protocol, no supplement stack, no 12-week shred. Four weeks of me coaching you through the training and eating that actually moves the needle — and if your body hasn't changed by the end of the month, you get your money back.",
+    thenLine: 'I hated my body. I avoided mirrors and photos.',
+    nowLine: "Year-round sub-12% body fat. I've finished a 100-mile ultra.",
+    fieldWork: 'We train together. I watch you lift and fix what needs fixing.',
+    gimmick: "before/after photos you can't verify",
+  },
+  generalNP: {
+    offer: 'trialnp',
+    eyebrow: '1-on-1 coaching · money-back guarantee',
+    h1: '4 weeks of coaching.',
+    h1sub: 'Money back if it doesn’t work.',
+    lede:
+      "Dating, fitness, or just getting your life in order. Four weeks of real 1-on-1 coaching, with your money back if you're not satisfied at the end. That's the whole deal.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
     fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
@@ -262,7 +303,10 @@ function BookPage() {
     calendarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const isTrial = v.offer === 'trial';
+  // 'trial' and 'trialnp' share the paid-cohort calendar and CTA; 'trialnp'
+  // additionally never names the price anywhere on the page.
+  const isTrial = v.offer === 'trial' || v.offer === 'trialnp';
+  const showPrice = v.offer === 'trial';
   const spots = isTrial ? TRIAL_SPOTS_LEFT : SPOTS_LEFT;
   const calendarEmbedUrl = isTrial ? TRIAL_CALENDAR_EMBED_URL : CALENDAR_EMBED_URL;
   const calendarFallbackUrl = isTrial ? TRIAL_CALENDAR_FALLBACK_URL : CALENDAR_FALLBACK_URL;
@@ -270,7 +314,7 @@ function BookPage() {
 
   const spotsLine = isTrial
     ? spots > 0
-      ? `${spots} spots at $50. When they're gone, this page will say so.`
+      ? `${spots} spots ${showPrice ? 'at $50' : 'left'}. When they're gone, this page will say so.`
       : "All spots are taken right now. Book anyway and I'll tell you when one opens."
     : SPOTS_LEFT > 0
       ? `${SPOTS_LEFT} free spots left. When they're gone, this page will say so.`
@@ -299,9 +343,11 @@ function BookPage() {
         <meta
           name="description"
           content={
-            isTrial
+            showPrice
               ? "4 weeks of 1-on-1 coaching for $50 total, money back if you're not satisfied. Book a free intro call and let's see if we're a fit."
-              : "4 weeks of free 1-on-1 coaching. Book a free intro call and let's see if we're a fit."
+              : isTrial
+                ? "4 weeks of 1-on-1 coaching with a money-back guarantee. Book a free intro call and let's see if we're a fit."
+                : "4 weeks of free 1-on-1 coaching. Book a free intro call and let's see if we're a fit."
           }
         />
         <meta name="robots" content="noindex" />
@@ -323,9 +369,11 @@ function BookPage() {
           </button>
           <p className="book-scarcity">{spotsLine}</p>
           <p className="book-microcopy">
-            {isTrial
+            {showPrice
               ? 'The call is free. 30 minutes, no pitch, no obligation — you only pay the $50 if we both decide it’s a fit.'
-              : '30 minutes. No pitch, no card, no obligation.'}
+              : isTrial
+                ? 'The call is free. 30 minutes, no pitch, no obligation.'
+                : '30 minutes. No pitch, no card, no obligation.'}
           </p>
         </section>
 
@@ -348,8 +396,21 @@ function BookPage() {
           </p>
         </section>
 
-        {/* ---------- WHY IT'S FREE / WHY IT'S $50 ---------- */}
-        {isTrial ? (
+        {/* ---------- WHY IT'S FREE / WHY IT'S $50 / WHY THE GUARANTEE ---------- */}
+        {isTrial && !showPrice ? (
+          <section className="book-why">
+            <h2>Why the guarantee</h2>
+            <p>
+              I&rsquo;m new to coaching. I don&rsquo;t have a wall of testimonials, so instead of
+              asking you to trust me, I&rsquo;m asking you to <strong>try me</strong> — four weeks,
+              and if you&rsquo;re not satisfied at the end, you get your money back.
+              <strong> No questions asked.</strong> No forms, no exit call, no fine print.
+            </p>
+            <p className="book-why-kicker">
+              Don&rsquo;t trust me. Try me.
+            </p>
+          </section>
+        ) : isTrial ? (
           <section className="book-why">
             <h2>Why it&rsquo;s $50 &mdash; total</h2>
             <p>
@@ -388,7 +449,7 @@ function BookPage() {
             <li>No $997 course, no &ldquo;secret system,&rdquo; no PDF you&rsquo;ll never open</li>
             <li>No {v.gimmick}</li>
             <li>No upsell call disguised as a free strategy session</li>
-            {isTrial && (
+            {showPrice && (
               <li>
                 No hidden pricing. It&rsquo;s $50 total, it&rsquo;s written on this page, and
                 that&rsquo;s the whole price.
@@ -422,9 +483,11 @@ function BookPage() {
             </li>
           </ul>
           <p className="book-get-kicker">
-            {isTrial
+            {showPrice
               ? 'Four weeks of that. $50 total — money back if you’re not satisfied.'
-              : 'Four weeks of that. $0. No card on file.'}
+              : isTrial
+                ? 'Four weeks of that. Money back if you’re not satisfied.'
+                : 'Four weeks of that. $0. No card on file.'}
           </p>
         </section>
 
@@ -447,9 +510,11 @@ function BookPage() {
         {/* ---------- CLOSE ---------- */}
         <section className="book-close">
           <h2>
-            {isTrial
+            {showPrice
               ? 'Worst case: you try it for 4 weeks and get your $50 back.'
-              : 'Worst case, you get 4 free weeks of coaching.'}
+              : isTrial
+                ? 'Worst case: you try it for 4 weeks and get your money back.'
+                : 'Worst case, you get 4 free weeks of coaching.'}
           </h2>
           <button type="button" className="book-cta" onClick={scrollToCalendar}>
             {ctaLabel}
