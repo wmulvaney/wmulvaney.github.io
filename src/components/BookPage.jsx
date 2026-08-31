@@ -9,11 +9,19 @@ const CALENDAR_EMBED_URL =
   'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0S6KnUVY7AmxDddKOoW0L00RfmMiANmdemIt4PyDQivXEPqbfP3gTw8q1TCpd7POu8NACS9w6f?gv=true';
 const CALENDAR_FALLBACK_URL = 'https://calendar.app.google/SgK1WwFXghMeX2CT7';
 
-// The $50-trial cohort books on a separate schedule so free and paid intro
-// calls stay distinguishable in Google Calendar.
+// Each offer books on its own schedule so cohorts stay distinguishable in
+// Google Calendar: $50 trial, no-explicit-offer (guarantee), and 2-week free.
 const TRIAL_CALENDAR_EMBED_URL =
   'https://calendar.google.com/calendar/appointments/schedules/AcZssZ13N1osP0koWVi_I6c1IP7Rb_P4QzpSH8cMm_nG80kRyuhCdzANvwfga-CMZux2tstFuZMaa0l1?gv=true';
 const TRIAL_CALENDAR_FALLBACK_URL = 'https://calendar.app.google/hLLbTXAZPezzvv5U6';
+
+const NP_CALENDAR_EMBED_URL =
+  'https://calendar.google.com/calendar/appointments/schedules/AcZssZ20uUGAqEwSeiQ9OEaJQPgJgv5Yq40fj_OMsILlLf6e7ZVq4kFygRHVbD3QKc2pjn7vnc3XhPhn?gv=true';
+const NP_CALENDAR_FALLBACK_URL = 'https://calendar.app.google/VvyuHg9mUhJRc4Q47';
+
+const FREE2W_CALENDAR_EMBED_URL =
+  'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1xcEw9dNSCM0oDQpJSiu-NOjGggkIIC4OZXGf7m3PBR4_uek2zL0BTNZCuxCb8vp2eJxjU2iZd?gv=true';
+const FREE2W_CALENDAR_FALLBACK_URL = 'https://calendar.app.google/Fk4XcjviQToqUJeTA';
 
 // Spots left in the free cohort. Set to 0 when they're gone — the page copy
 // promises this number is real, so it has to be kept honest.
@@ -357,8 +365,22 @@ function BookPage() {
   const weeksWord = isTwoWeek ? 'two' : 'four';
   const weeksNum = isTwoWeek ? 2 : 4;
   const spots = isTrial ? TRIAL_SPOTS_LEFT : isTwoWeek ? FREE2W_SPOTS_LEFT : SPOTS_LEFT;
-  const calendarEmbedUrl = isTrial ? TRIAL_CALENDAR_EMBED_URL : CALENDAR_EMBED_URL;
-  const calendarFallbackUrl = isTrial ? TRIAL_CALENDAR_FALLBACK_URL : CALENDAR_FALLBACK_URL;
+  const calendarEmbedUrl =
+    v.offer === 'trial'
+      ? TRIAL_CALENDAR_EMBED_URL
+      : v.offer === 'trialnp'
+        ? NP_CALENDAR_EMBED_URL
+        : isTwoWeek
+          ? FREE2W_CALENDAR_EMBED_URL
+          : CALENDAR_EMBED_URL;
+  const calendarFallbackUrl =
+    v.offer === 'trial'
+      ? TRIAL_CALENDAR_FALLBACK_URL
+      : v.offer === 'trialnp'
+        ? NP_CALENDAR_FALLBACK_URL
+        : isTwoWeek
+          ? FREE2W_CALENDAR_FALLBACK_URL
+          : CALENDAR_FALLBACK_URL;
   const ctaLabel = isTrial ? 'Book my intro call' : 'Book my free call';
 
   const spotsLine = isTrial
