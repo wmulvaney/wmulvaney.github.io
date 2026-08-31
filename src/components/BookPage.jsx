@@ -9,19 +9,21 @@ const CALENDAR_EMBED_URL =
   'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0S6KnUVY7AmxDddKOoW0L00RfmMiANmdemIt4PyDQivXEPqbfP3gTw8q1TCpd7POu8NACS9w6f?gv=true';
 const CALENDAR_FALLBACK_URL = 'https://calendar.app.google/SgK1WwFXghMeX2CT7';
 
-// Each offer books on its own schedule so cohorts stay distinguishable in
-// Google Calendar: $50 trial, no-explicit-offer (guarantee), and 2-week free.
+// Each offer books on its own Cal.com event type so cohorts stay
+// distinguishable: no-explicit-offer (1), $50 trial (2), 2-week free (3).
+// The Meta pixel Schedule event now fires from Cal.com's own pixel
+// integration on booking, not from this page.
 const TRIAL_CALENDAR_EMBED_URL =
-  'https://calendar.google.com/calendar/appointments/schedules/AcZssZ13N1osP0koWVi_I6c1IP7Rb_P4QzpSH8cMm_nG80kRyuhCdzANvwfga-CMZux2tstFuZMaa0l1?gv=true';
-const TRIAL_CALENDAR_FALLBACK_URL = 'https://calendar.app.google/hLLbTXAZPezzvv5U6';
+  'https://cal.com/william-mulvaney-s0q4fq/introwithwill2?embed=true';
+const TRIAL_CALENDAR_FALLBACK_URL = 'https://cal.com/william-mulvaney-s0q4fq/introwithwill2';
 
 const NP_CALENDAR_EMBED_URL =
-  'https://calendar.google.com/calendar/appointments/schedules/AcZssZ20uUGAqEwSeiQ9OEaJQPgJgv5Yq40fj_OMsILlLf6e7ZVq4kFygRHVbD3QKc2pjn7vnc3XhPhn?gv=true';
-const NP_CALENDAR_FALLBACK_URL = 'https://calendar.app.google/VvyuHg9mUhJRc4Q47';
+  'https://cal.com/william-mulvaney-s0q4fq/introwithwill1?embed=true';
+const NP_CALENDAR_FALLBACK_URL = 'https://cal.com/william-mulvaney-s0q4fq/introwithwill1';
 
 const FREE2W_CALENDAR_EMBED_URL =
-  'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1xcEw9dNSCM0oDQpJSiu-NOjGggkIIC4OZXGf7m3PBR4_uek2zL0BTNZCuxCb8vp2eJxjU2iZd?gv=true';
-const FREE2W_CALENDAR_FALLBACK_URL = 'https://calendar.app.google/Fk4XcjviQToqUJeTA';
+  'https://cal.com/william-mulvaney-s0q4fq/introwithwill3?embed=true';
+const FREE2W_CALENDAR_FALLBACK_URL = 'https://cal.com/william-mulvaney-s0q4fq/introwithwill3';
 
 // Spots left in the free cohort. Set to 0 when they're gone — the page copy
 // promises this number is real, so it has to be kept honest.
@@ -277,68 +279,17 @@ function BookPage() {
   const v = VARIANTS[variant];
   const calendarRef = useRef(null);
   const iframeRef = useRef(null);
-  const scheduledFired = useRef(false);
 
   useEffect(() => {
     loadPixel(variant);
   }, [variant]);
 
   /*
-   * Schedule = the visitor actually engaged with the booking widget.
-   *
-   * This is the ad set's optimization event, so it has to mean something. It
-   * fires only when the visitor clicks INTO the calendar iframe — not when they
-   * scroll past it and not when they tap the CTA. Clicking a cross-origin iframe
-   * blurs the parent window and moves document.activeElement to that iframe,
-   * which is the only engagement signal the parent page can legitimately see.
-   *
-   * It still is NOT a booking. Google's scheduler is cross-origin, so a completed
-   * booking is invisible here — only Google Calendar knows. Swapping the embed for
-   * Calendly/Cal.com would expose a real booking event; re-point this there then.
+   * The Schedule pixel event is no longer fired from this page. Cal.com's own
+   * Meta Pixel integration fires it on the calendar event itself when a booking
+   * is actually made, which is a stronger, truer optimization signal than the
+   * old iframe-engagement heuristic this page used with the Google embed.
    */
-  const fireOpenedCalendar = (source) => {
-    if (scheduledFired.current) return;
-    scheduledFired.current = true;
-    if (window.fbq) {
-      window.fbq('track', 'Schedule', {
-        content_name: 'opened-calendar',
-        content_category: variant,
-        source,
-      });
-    }
-  };
-
-  useEffect(() => {
-    const isCalendarFocused = () =>
-      iframeRef.current && document.activeElement === iframeRef.current;
-
-    // Desktop and most mobile browsers blur the window when an iframe takes focus.
-    const onBlur = () => {
-      window.setTimeout(() => {
-        if (isCalendarFocused()) fireOpenedCalendar('iframe-focus');
-      }, 0);
-    };
-    window.addEventListener('blur', onBlur);
-
-    // Fallback: some mobile browsers don't reliably emit blur for iframe taps,
-    // so poll activeElement as well. Cheap, and stops as soon as it fires.
-    const poll = window.setInterval(() => {
-      if (scheduledFired.current) {
-        window.clearInterval(poll);
-        return;
-      }
-      if (isCalendarFocused()) {
-        fireOpenedCalendar('iframe-poll');
-        window.clearInterval(poll);
-      }
-    }, 750);
-
-    return () => {
-      window.removeEventListener('blur', onBlur);
-      window.clearInterval(poll);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   /*
    * CTA taps are intent, not engagement, so they get their own event and are
