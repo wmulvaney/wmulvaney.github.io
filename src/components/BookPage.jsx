@@ -61,7 +61,7 @@ const VARIANT_CODES = {
 };
 const VARIANTS = {
   dating: {
-    eyebrow: 'Free 1-on-1 dating coaching',
+    eyebrow: 'Free 1-1 dating coaching',
     h1: 'Start talking to women.',
     h1sub: 'The real kind. In person.',
     lede:
@@ -72,7 +72,7 @@ const VARIANTS = {
     gimmick: 'fake text screenshots and "3 lines that make her chase you"',
   },
   fitness: {
-    eyebrow: 'Free 1-on-1 fitness coaching',
+    eyebrow: 'Free 1-1 fitness coaching',
     h1: 'Build the body you actually want.',
     h1sub: 'Starting this week.',
     lede:
@@ -83,7 +83,7 @@ const VARIANTS = {
     gimmick: "before/after photos you can't verify",
   },
   discipline: {
-    eyebrow: 'Free 1-on-1 discipline coaching',
+    eyebrow: 'Free 1-1 discipline coaching',
     h1: 'Do the hard thing.',
     h1sub: 'Every day. Even when you don’t feel like it.',
     lede:
@@ -95,11 +95,11 @@ const VARIANTS = {
     gimmick: 'a $997 discipline course',
   },
   general: {
-    eyebrow: 'Free 1-on-1 coaching',
+    eyebrow: 'Free 1-1 coaching',
     h1: '4 weeks of coaching.',
     h1sub: 'No strings attached.',
     lede:
-      "Dating, fitness, or just getting your life in order. Four weeks of real 1-on-1 coaching, free, so you can find out whether I'm any good before you ever pay me.",
+      "Dating, fitness, or just getting your life in order. Four weeks of real 1-1 coaching, free, so you can find out whether I'm any good before you ever pay me.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
     fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
@@ -109,7 +109,7 @@ const VARIANTS = {
   /* ---- $50-for-4-weeks trial offer (money back, no questions asked) ---- */
   dating50: {
     offer: 'trial',
-    eyebrow: '1-on-1 dating coaching · $50 for 4 weeks',
+    eyebrow: '1-1 dating coaching · $50 for 4 weeks',
     h1: 'Start talking to women.',
     h1sub: 'The real kind. In person.',
     lede:
@@ -121,7 +121,7 @@ const VARIANTS = {
   },
   fitness50: {
     offer: 'trial',
-    eyebrow: '1-on-1 fitness coaching · $50 for 4 weeks',
+    eyebrow: '1-1 fitness coaching · $50 for 4 weeks',
     h1: 'Build the body you actually want.',
     h1sub: 'Starting this week.',
     lede:
@@ -133,11 +133,11 @@ const VARIANTS = {
   },
   general50: {
     offer: 'trial',
-    eyebrow: '1-on-1 coaching · $50 for 4 weeks',
+    eyebrow: '1-1 coaching · $50 for 4 weeks',
     h1: '4 weeks of coaching.',
     h1sub: '$50. Total.',
     lede:
-      "Dating, fitness, or just getting your life in order. Four weeks of real 1-on-1 coaching for $50 — total, not per week — and if you're not satisfied at the end, you get it back. That's the whole deal.",
+      "Dating, fitness, or just getting your life in order. Four weeks of real 1-1 coaching for $50 — total, not per week — and if you're not satisfied at the end, you get it back. That's the whole deal.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
     fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
@@ -147,7 +147,7 @@ const VARIANTS = {
   /* ---- guarantee offer, price never named on the page ('NP' = no price) ---- */
   datingNP: {
     offer: 'trialnp',
-    eyebrow: '1-on-1 dating coaching · money-back guarantee',
+    eyebrow: '1-1 dating coaching · money-back guarantee',
     h1: 'Start talking to women.',
     h1sub: 'The real kind. In person.',
     lede:
@@ -159,7 +159,7 @@ const VARIANTS = {
   },
   fitnessNP: {
     offer: 'trialnp',
-    eyebrow: '1-on-1 fitness coaching · money-back guarantee',
+    eyebrow: '1-1 fitness coaching · money-back guarantee',
     h1: 'Build the body you actually want.',
     h1sub: 'Starting this week.',
     lede:
@@ -171,11 +171,11 @@ const VARIANTS = {
   },
   generalNP: {
     offer: 'trialnp',
-    eyebrow: '1-on-1 coaching · money-back guarantee',
+    eyebrow: '1-1 coaching · money-back guarantee',
     h1: 'Coaching that works.',
     h1sub: 'Money back if it doesn’t.',
     lede:
-      "Dating, fitness, or just getting your life in order. Real 1-on-1 coaching — and if your life hasn't changed after 4 weeks, you get your money back. That's the whole deal.",
+      "Dating, fitness, or just getting your life in order. Real 1-1 coaching — and if your life hasn't changed after 4 weeks, you get your money back. That's the whole deal.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
     fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
@@ -185,7 +185,7 @@ const VARIANTS = {
   /* ---- 2-week free offer ---- */
   dating2w: {
     offer: 'free2w',
-    eyebrow: 'Free 1-on-1 dating coaching · 2 weeks',
+    eyebrow: 'Free 1-1 dating coaching · 2 weeks',
     h1: 'Start talking to women.',
     h1sub: 'The real kind. In person.',
     lede:
@@ -197,7 +197,7 @@ const VARIANTS = {
   },
   fitness2w: {
     offer: 'free2w',
-    eyebrow: 'Free 1-on-1 fitness coaching · 2 weeks',
+    eyebrow: 'Free 1-1 fitness coaching · 2 weeks',
     h1: 'Build the body you actually want.',
     h1sub: 'Starting this week.',
     lede:
@@ -209,11 +209,11 @@ const VARIANTS = {
   },
   general2w: {
     offer: 'free2w',
-    eyebrow: 'Free 1-on-1 coaching · 2 weeks',
+    eyebrow: 'Free 1-1 coaching · 2 weeks',
     h1: '2 weeks of coaching.',
     h1sub: 'Free. No strings attached.',
     lede:
-      "Dating, fitness, or just getting your life in order. Two weeks of real 1-on-1 coaching, free, so you can find out whether I'm any good before you ever pay me.",
+      "Dating, fitness, or just getting your life in order. Two weeks of real 1-1 coaching, free, so you can find out whether I'm any good before you ever pay me.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
     fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
@@ -415,10 +415,10 @@ function BookPage() {
           name="description"
           content={
             showPrice
-              ? "4 weeks of 1-on-1 coaching for $50 total, money back if you're not satisfied. Book a free intro call and let's see if we're a fit."
+              ? "4 weeks of 1-1 coaching for $50 total, money back if you're not satisfied. Book a free intro call and let's see if we're a fit."
               : isTrial
-                ? "4 weeks of 1-on-1 coaching with a money-back guarantee. Book a free intro call and let's see if we're a fit."
-                : `${weeksNum} weeks of free 1-on-1 coaching. Book a free intro call and let's see if we're a fit.`
+                ? "4 weeks of 1-1 coaching with a money-back guarantee. Book a free intro call and let's see if we're a fit."
+                : `${weeksNum} weeks of free 1-1 coaching. Book a free intro call and let's see if we're a fit.`
           }
         />
         <meta name="robots" content="noindex" />
