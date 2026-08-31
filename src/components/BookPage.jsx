@@ -22,6 +22,9 @@ const SPOTS_LEFT = 5;
 // Spots left in the $50 trial cohort. Same honesty rule as SPOTS_LEFT.
 const TRIAL_SPOTS_LEFT = 5;
 
+// Spots left in the 2-week free cohort. Same honesty rule.
+const FREE2W_SPOTS_LEFT = 5;
+
 /*
  * Page variants, keyed to the messaging of the ad that sent the visitor.
  *
@@ -44,6 +47,9 @@ const VARIANT_CODES = {
   d3: 'datingNP',
   f3: 'fitnessNP',
   g3: 'generalNP',
+  d4: 'dating2w',
+  f4: 'fitness2w',
+  g4: 'general2w',
 };
 const VARIANTS = {
   dating: {
@@ -162,6 +168,44 @@ const VARIANTS = {
     h1sub: 'Money back if it doesn’t work.',
     lede:
       "Dating, fitness, or just getting your life in order. Four weeks of real 1-on-1 coaching, with your money back if you're not satisfied at the end. That's the whole deal.",
+    thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
+    nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
+    fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
+    gimmick: 'a $997 course and a countdown timer',
+  },
+
+  /* ---- 2-week free offer ---- */
+  dating2w: {
+    offer: 'free2w',
+    eyebrow: 'Free 1-on-1 dating coaching · 2 weeks',
+    h1: 'Start talking to women.',
+    h1sub: 'The real kind. In person.',
+    lede:
+      "Not scripts. Not openers. Not a 200-page PDF. Two weeks of me coaching you through actual conversations with actual women — completely free, so you can find out whether I'm any good before you ever pay me.",
+    thenLine: "I couldn't talk to a woman I found attractive. Not one.",
+    nowLine: "I've approached over 1,000 women. I've been with a dream girl for the past year and a half.",
+    fieldWork: 'We go out together and you approach. I watch, then we break it down.',
+    gimmick: 'fake text screenshots and "3 lines that make her chase you"',
+  },
+  fitness2w: {
+    offer: 'free2w',
+    eyebrow: 'Free 1-on-1 fitness coaching · 2 weeks',
+    h1: 'Build the body you actually want.',
+    h1sub: 'Starting this week.',
+    lede:
+      "No secret protocol, no supplement stack, no 12-week shred. Two weeks of me coaching you through the training and eating that actually moves the needle — completely free, so you can find out whether I'm any good before you ever pay me.",
+    thenLine: 'I hated my body. I avoided mirrors and photos.',
+    nowLine: "Year-round sub-12% body fat. I've finished a 100-mile ultra.",
+    fieldWork: 'We train together. I watch you lift and fix what needs fixing.',
+    gimmick: "before/after photos you can't verify",
+  },
+  general2w: {
+    offer: 'free2w',
+    eyebrow: 'Free 1-on-1 coaching · 2 weeks',
+    h1: '2 weeks of coaching.',
+    h1sub: 'Free. No strings attached.',
+    lede:
+      "Dating, fitness, or just getting your life in order. Two weeks of real 1-on-1 coaching, free, so you can find out whether I'm any good before you ever pay me.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
     fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
@@ -307,7 +351,12 @@ function BookPage() {
   // additionally never names the price anywhere on the page.
   const isTrial = v.offer === 'trial' || v.offer === 'trialnp';
   const showPrice = v.offer === 'trial';
-  const spots = isTrial ? TRIAL_SPOTS_LEFT : SPOTS_LEFT;
+  // The 2-week free offer follows the free-offer copy but with its own duration,
+  // spot counter, and (eventually) its own booking calendar.
+  const isTwoWeek = v.offer === 'free2w';
+  const weeksWord = isTwoWeek ? 'two' : 'four';
+  const weeksNum = isTwoWeek ? 2 : 4;
+  const spots = isTrial ? TRIAL_SPOTS_LEFT : isTwoWeek ? FREE2W_SPOTS_LEFT : SPOTS_LEFT;
   const calendarEmbedUrl = isTrial ? TRIAL_CALENDAR_EMBED_URL : CALENDAR_EMBED_URL;
   const calendarFallbackUrl = isTrial ? TRIAL_CALENDAR_FALLBACK_URL : CALENDAR_FALLBACK_URL;
   const ctaLabel = isTrial ? 'Book my intro call' : 'Book my free call';
@@ -316,8 +365,8 @@ function BookPage() {
     ? spots > 0
       ? `${spots} spots ${showPrice ? 'at $50' : 'left'}. When they're gone, this page will say so.`
       : "All spots are taken right now. Book anyway and I'll tell you when one opens."
-    : SPOTS_LEFT > 0
-      ? `${SPOTS_LEFT} free spots left. When they're gone, this page will say so.`
+    : spots > 0
+      ? `${spots} free spots left. When they're gone, this page will say so.`
       : "All free spots are taken right now. Book anyway and I'll tell you when one opens.";
 
   return (
@@ -347,7 +396,7 @@ function BookPage() {
               ? "4 weeks of 1-on-1 coaching for $50 total, money back if you're not satisfied. Book a free intro call and let's see if we're a fit."
               : isTrial
                 ? "4 weeks of 1-on-1 coaching with a money-back guarantee. Book a free intro call and let's see if we're a fit."
-                : "4 weeks of free 1-on-1 coaching. Book a free intro call and let's see if we're a fit."
+                : `${weeksNum} weeks of free 1-on-1 coaching. Book a free intro call and let's see if we're a fit.`
           }
         />
         <meta name="robots" content="noindex" />
@@ -433,8 +482,8 @@ function BookPage() {
             <p>
               I&rsquo;m new to coaching. That&rsquo;s the whole reason. I don&rsquo;t have a wall of
               testimonials, so instead of asking you to trust me, I&rsquo;m asking you to
-              <strong> test me</strong> — four weeks, free, and you decide at the end whether
-              I&rsquo;m worth paying.
+              <strong> test me</strong> — {weeksWord} weeks, free, and you decide at the end
+              whether I&rsquo;m worth paying.
             </p>
             <p className="book-why-kicker">
               I don&rsquo;t need your money yet. I need proof I&rsquo;m a good coach.
@@ -487,7 +536,7 @@ function BookPage() {
               ? 'Four weeks of that. $50 total — money back if you’re not satisfied.'
               : isTrial
                 ? 'Four weeks of that. Money back if you’re not satisfied.'
-                : 'Four weeks of that. $0. No card on file.'}
+                : `${isTwoWeek ? 'Two' : 'Four'} weeks of that. $0. No card on file.`}
           </p>
         </section>
 
@@ -514,7 +563,7 @@ function BookPage() {
               ? 'Worst case: you try it for 4 weeks and get your $50 back.'
               : isTrial
                 ? 'Worst case: you try it for 4 weeks and get your money back.'
-                : 'Worst case, you get 4 free weeks of coaching.'}
+                : `Worst case, you get ${weeksNum} free weeks of coaching.`}
           </h2>
           <button type="button" className="book-cta" onClick={scrollToCalendar}>
             {ctaLabel}
