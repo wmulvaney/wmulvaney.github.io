@@ -617,6 +617,153 @@ button.vignelli-cta-secondary {
   padding: 1.5rem 0 0.5rem;
 }
 
+/* ── Newsletter inline form ────────────────────────────── */
+.vignelli-newsletter-form {
+  display: flex;
+  align-items: stretch;
+  max-width: 360px;
+  margin-top: 0.25rem;
+}
+
+.vignelli-form-modal .vignelli-newsletter-form {
+  max-width: 100%;
+}
+
+.vignelli-newsletter-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: none;
+  border-radius: 3px 0 0 3px;
+  padding: 11px 14px;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.vignelli-newsletter-input::placeholder {
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.vignelli-newsletter-input:focus {
+  border-color: #479dc2;
+}
+
+.vignelli-newsletter-btn {
+  background: #479dc2;
+  border: 1px solid #479dc2;
+  border-radius: 0 3px 3px 0;
+  padding: 11px 20px;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.vignelli-newsletter-btn:hover { background: #3a7e9b; }
+
+.vignelli-newsletter-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.vignelli-newsletter-success {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: #fff;
+  margin: 0;
+  font-style: italic;
+}
+
+.vignelli-newsletter-error {
+  font-size: 0.75rem;
+  color: rgba(220, 100, 100, 0.9);
+  margin: 6px 0 0;
+  width: 100%;
+}
+
+/* ── Willpower Stack toast ─────────────────────────────── */
+.vignelli-toast {
+  position: fixed;
+  top: 84px;
+  right: clamp(1.25rem, 3vw, 2.5rem);
+  z-index: 250;
+  width: 308px;
+  background: rgba(7, 14, 23, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  padding: 18px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  backdrop-filter: blur(12px);
+}
+
+.vignelli-toast-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  transition: color 150ms ease;
+}
+
+.vignelli-toast-close:hover { color: #fff; }
+
+.vignelli-toast-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+  margin: 0;
+  padding-right: 20px;
+}
+
+.vignelli-toast-sub {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.76rem;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.45;
+}
+
+.vignelli-toast-btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #479dc2;
+  border: 1px solid #479dc2;
+  border-radius: 3px;
+  padding: 8px 14px;
+  cursor: pointer;
+  align-self: center;
+  transition: background 0.2s ease;
+}
+
+.vignelli-toast-btn:hover { background: #3a7e9b; border-color: #3a7e9b; }
+
+.vignelli-form-stack-sub {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: -10px 0 18px;
+  line-height: 1.5;
+}
+
 /* ── Mobile ────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .vignelli-hero {
@@ -662,8 +809,8 @@ button.vignelli-cta-secondary {
     font-size: 0.55rem;
   }
 
-  /* Zoom out contact image on mobile */
-  .vignelli-bg-layer--contact {
+  /* Zoom out coaching image on mobile */
+  .vignelli-bg-layer--coaching {
     background-size: auto 65% !important;
     background-position: 80% top !important;
   }
@@ -677,5 +824,32 @@ button.vignelli-cta-secondary {
   .vignelli-sel-label {
     font-size: 0.6rem;
     letter-spacing: 0.08em;
+  }
+
+  /* Toast: full-width strip under nav on mobile */
+  .vignelli-toast {
+    top: 76px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    border-radius: 6px;
+    padding: 12px 16px 12px;
+    gap: 4px;
+  }
+
+  .vignelli-toast-heading {
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .vignelli-toast-sub {
+    font-size: 0.72rem;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .vignelli-toast-btn {
+    font-size: 0.68rem;
+    padding: 7px 12px;
   }
 }

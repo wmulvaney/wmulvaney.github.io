@@ -88,12 +88,12 @@ const slides = [
     },
   },
   {
-    id: 'contact',
-    kicker: 'Get in Touch',
-    titleLines: ['Say', 'Hello'],
-    bio: 'Reach out about podcast appearances, brand partnerships, Grooves feedback, or just to say hi. Always happy to connect with people who are putting in the work.',
-    cta: { label: 'Send a Message', href: 'mailto:w.mulvaney00@gmail.com' },
-    card: { label: 'Contact' },
+    id: 'coaching',
+    kicker: 'Men\'s Coaching · Dating · Fitness · Self-Expression',
+    titleLines: ['Build Your', 'Life.'],
+    bio: 'Private 1-on-1 coaching for men in their 20s and 30s ready to build from the ground up. We focus on the three pillars that actually move the needle: fitness, dating, and self-expression. Work on these long enough and who you are on the inside starts matching who you show up as in every room.',
+    cta: { label: "Let's Talk", href: '#' },
+    card: { label: 'Coaching' },
     bg: {
       type: 'image',
       src: '/contact.jpeg',
@@ -162,6 +162,16 @@ export default function TestPage() {
   const [formSubmitted,  setFormSubmitted]  = useState(false);
   const [formLoading,    setFormLoading]    = useState(false);
   const [formError,      setFormError]      = useState('');
+  const [showToast,      setShowToast]      = useState(true);
+  const [showStackModal, setShowStackModal] = useState(false);
+  const [stackEmail,     setStackEmail]     = useState('');
+  const [stackSubmitted, setStackSubmitted] = useState(false);
+  const [stackLoading,   setStackLoading]   = useState(false);
+  const [stackError,     setStackError]     = useState('');
+  const [newsletterEmail,     setNewsletterEmail]     = useState('');
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+  const [newsletterLoading,   setNewsletterLoading]   = useState(false);
+  const [newsletterError,     setNewsletterError]     = useState('');
   const trackRef   = useRef(null);
   const timerRef   = useRef(null);
   const navigateRef = useRef(null);
@@ -237,12 +247,24 @@ export default function TestPage() {
     return () => window.removeEventListener('wheel', onWheel);
   }, []);
 
-  // Escape closes the contact form
+  // Open stack modal via URL hash (#willpower)
   useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') setShowContact(false); };
-    if (showContact) window.addEventListener('keydown', onKey);
+    const checkHash = () => {
+      if (window.location.hash === '#willpower') setShowStackModal(true);
+    };
+    checkHash();
+    window.addEventListener('hashchange', checkHash);
+    return () => window.removeEventListener('hashchange', checkHash);
+  }, []);
+
+  // Escape closes modals
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') { setShowContact(false); setShowStackModal(false); }
+    };
+    if (showContact || showStackModal) window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [showContact]);
+  }, [showContact, showStackModal]);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -271,6 +293,55 @@ export default function TestPage() {
       setFormError('Something went wrong — please try again.');
     } finally {
       setFormLoading(false);
+    }
+  };
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    setNewsletterLoading(true);
+    setNewsletterError('');
+    try {
+      const res = await fetch('https://api.convertkit.com/v3/forms/9627178/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: '3eosTgIXLwC5r9lGfyoqnw', email: newsletterEmail }),
+      });
+      const data = await res.json();
+      console.log('Kit response:', res.status, data);
+      if (!res.ok) throw new Error();
+      setNewsletterSubmitted(true);
+    } catch {
+      setNewsletterError('Something went wrong — please try again.');
+    } finally {
+      setNewsletterLoading(false);
+    }
+  };
+
+  const handleStackSubmit = async (e) => {
+    e.preventDefault();
+    setStackLoading(true);
+    setStackError('');
+    try {
+      const res = await fetch('https://api.convertkit.com/v3/sequences/2810762/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: '3eosTgIXLwC5r9lGfyoqnw',
+          email: stackEmail,
+        }),
+      });
+      if (!res.ok) throw new Error();
+      setStackSubmitted(true);
+      setTimeout(() => {
+        setShowStackModal(false);
+        setStackSubmitted(false);
+        setStackEmail('');
+        setShowToast(false);
+      }, 2500);
+    } catch {
+      setStackError('Something went wrong — please try again.');
+    } finally {
+      setStackLoading(false);
     }
   };
 
@@ -390,7 +461,26 @@ export default function TestPage() {
           </h1>
           <p className="vignelli-bio">{slide.bio}</p>
           <div className="vignelli-cta-group">
-            {slide.id === 'contact' ? (
+            {slide.id === 'about' ? (
+              newsletterSubmitted ? (
+                <p className="vignelli-newsletter-success">You're in. Check your inbox.</p>
+              ) : (
+                <form className="vignelli-newsletter-form" onSubmit={handleNewsletterSubmit}>
+                  <input
+                    className="vignelli-newsletter-input"
+                    type="email"
+                    placeholder="your@email.com"
+                    value={newsletterEmail}
+                    onChange={e => setNewsletterEmail(e.target.value)}
+                    required
+                  />
+                  <button type="submit" className="vignelli-newsletter-btn" disabled={newsletterLoading}>
+                    {newsletterLoading ? '…' : 'Follow Along'}
+                  </button>
+                  {newsletterError && <p className="vignelli-newsletter-error">{newsletterError}</p>}
+                </form>
+              )
+            ) : slide.id === 'coaching' ? (
               <button className="vignelli-cta" onClick={() => setShowContact(true)}>
                 {slide.cta.label} ›
               </button>
@@ -507,6 +597,57 @@ export default function TestPage() {
                   >
                     {formLoading ? 'Sending…' : 'Send Message ›'}
                   </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── Willpower Stack toast ── */}
+      {showToast && (
+        <div className="vignelli-toast">
+          <button className="vignelli-toast-close" onClick={() => setShowToast(false)} aria-label="Dismiss">×</button>
+          <p className="vignelli-toast-heading">The Fundamental Willpower Stack</p>
+          <p className="vignelli-toast-sub">10 days to noticeably higher willpower.</p>
+          <button className="vignelli-toast-btn" onClick={() => setShowStackModal(true)}>Free Walkthrough ›</button>
+        </div>
+      )}
+
+      {/* ── Willpower Stack email modal ── */}
+      {showStackModal && (
+        <div className="vignelli-form-backdrop" onClick={() => setShowStackModal(false)}>
+          <div className="vignelli-form-modal" onClick={e => e.stopPropagation()}>
+            <button className="vignelli-form-close" onClick={() => setShowStackModal(false)} aria-label="Close">×</button>
+            {stackSubmitted ? (
+              <div className="vignelli-form-success">
+                <p className="vignelli-form-kicker">You're in</p>
+                <h2 className="vignelli-form-heading">Check your<br />inbox.</h2>
+              </div>
+            ) : (
+              <>
+                <p className="vignelli-form-kicker">Free Walkthrough</p>
+                <h2 className="vignelli-form-heading">The Fundamental<br />Willpower Stack</h2>
+                <p className="vignelli-form-stack-sub">I built a sequence that I can <em>almost</em> guarantee will noticeably increase your willpower in the span of 10 days. Give it a try and let me know what you think.</p>
+                <form className="vignelli-form" onSubmit={handleStackSubmit}>
+                  <div className="vignelli-newsletter-form">
+                    <input
+                      className="vignelli-newsletter-input"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={stackEmail}
+                      onChange={e => setStackEmail(e.target.value)}
+                      required
+                    />
+                    <button
+                      type="submit"
+                      className="vignelli-newsletter-btn"
+                      disabled={stackLoading}
+                    >
+                      {stackLoading ? '…' : 'Start Now'}
+                    </button>
+                  </div>
+                  {stackError && <p className="vignelli-form-error">{stackError}</p>}
                 </form>
               </>
             )}

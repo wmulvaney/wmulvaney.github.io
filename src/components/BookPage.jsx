@@ -555,7 +555,7 @@ function BookPage() {
           </ul>
           <p className="book-get-kicker">
             {showPrice
-              ? 'Four weeks of that. $50 total — money back if you’re not satisfied.'
+              ? 'Four weeks of that. $50 total, money back if you’re not satisfied.'
               : isTrial
                 ? 'All of that, with a guarantee: money back if you’re not satisfied after 4 weeks.'
                 : `${isTwoWeek ? 'Two' : 'Four'} weeks of that. $0. No card on file.`}
