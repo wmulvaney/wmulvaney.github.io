@@ -76,7 +76,7 @@ const VARIANTS = {
     h1: 'Build the body you actually want.',
     h1sub: 'Starting this week.',
     lede:
-      "No secret protocol, no supplement stack, no 12-week shred. Four weeks of me coaching you through the training and eating that actually moves the needle — and the discipline to keep doing it.",
+      "No secret protocol, no supplement stack, no 12-week shred. Four weeks of me coaching you through the training and eating that actually moves the needle, and the discipline to keep doing it.",
     thenLine: 'I hated my body. I avoided mirrors and photos.',
     nowLine: "Year-round sub-12% body fat. I've finished a 100-mile ultra.",
     fieldWork: 'We train together. I watch you lift and fix what needs fixing.',
@@ -91,7 +91,7 @@ const VARIANTS = {
     thenLine:
       'I was scared to leave a "good" job that was quietly killing me. I coped with scrolling, drinking, and food.',
     nowLine: 'I left the comfy tech job. I do the hard thing daily now, and it stuck.',
-    fieldWork: "We do the hard thing together — the workout, the cold call, the thing you've been avoiding.",
+    fieldWork: "We do the hard thing together: the workout, the cold call, the thing you've been avoiding.",
     gimmick: 'a $997 discipline course',
   },
   general: {
@@ -102,7 +102,7 @@ const VARIANTS = {
       "Dating, fitness, or just getting your life in order. Four weeks of real 1-1 coaching, free, so you can find out whether I'm any good before you ever pay me.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
-    fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
+    fieldWork: "We do the work together, in person, on whatever your version of the hard thing is.",
     gimmick: 'a $997 course and a countdown timer',
   },
 
@@ -113,7 +113,7 @@ const VARIANTS = {
     h1: 'Start talking to women.',
     h1sub: 'The real kind. In person.',
     lede:
-      "Not scripts. Not openers. Not a 200-page PDF. Four weeks of me coaching you through actual conversations with actual women — for $50 total, not per week. If you're not satisfied at the end of the month, you get it back.",
+      "Not scripts. Not openers. Not a 200-page PDF. Four weeks of me coaching you through actual conversations with actual women. $50 total, not per week. If you're not satisfied at the end of the month, you get it back.",
     thenLine: "I couldn't talk to a woman I found attractive. Not one.",
     nowLine: "I've approached over 1,000 women. I've been with a dream girl for the past year and a half.",
     fieldWork: 'We go out together and you approach. I watch, then we break it down.',
@@ -125,7 +125,7 @@ const VARIANTS = {
     h1: 'Build the body you actually want.',
     h1sub: 'Starting this week.',
     lede:
-      "No secret protocol, no supplement stack, no 12-week shred. Four weeks of me coaching you through the training and eating that actually moves the needle — for $50 total, not per week. If your body hasn't changed by the end of the month, you get it back.",
+      "No secret protocol, no supplement stack, no 12-week shred. Four weeks of me coaching you through the training and eating that actually moves the needle. $50 total, not per week. If your body hasn't changed by the end of the month, you get it back.",
     thenLine: 'I hated my body. I avoided mirrors and photos.',
     nowLine: "Year-round sub-12% body fat. I've finished a 100-mile ultra.",
     fieldWork: 'We train together. I watch you lift and fix what needs fixing.',
@@ -137,10 +137,10 @@ const VARIANTS = {
     h1: '4 weeks of coaching.',
     h1sub: '$50. Total.',
     lede:
-      "Dating, fitness, or just getting your life in order. Four weeks of real 1-1 coaching for $50 — total, not per week — and if you're not satisfied at the end, you get it back. That's the whole deal.",
+      "Dating, fitness, or just getting your life in order. Four weeks of real 1-1 coaching for $50 total, not per week. If you're not satisfied at the end, you get it back. That's the whole deal.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
-    fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
+    fieldWork: "We do the work together, in person, on whatever your version of the hard thing is.",
     gimmick: 'a $997 course and a countdown timer',
   },
 
@@ -151,7 +151,7 @@ const VARIANTS = {
     h1: 'Start talking to women.',
     h1sub: 'The real kind. In person.',
     lede:
-      "Not scripts. Not openers. Not a 200-page PDF. Me coaching you through actual conversations with actual women — and if your life hasn't changed after 4 weeks, you get your money back.",
+      "Not scripts. Not openers. Not a 200-page PDF. Me coaching you through actual conversations with actual women. If your life hasn't changed after 4 weeks, you get your money back.",
     thenLine: "I couldn't talk to a woman I found attractive. Not one.",
     nowLine: "I've approached over 1,000 women. I've been with a dream girl for the past year and a half.",
     fieldWork: 'We go out together and you approach. I watch, then we break it down.',
@@ -163,7 +163,7 @@ const VARIANTS = {
     h1: 'Build the body you actually want.',
     h1sub: 'Starting this week.',
     lede:
-      "No secret protocol, no supplement stack, no 12-week shred. Me coaching you through the training and eating that actually moves the needle — and if your body hasn't changed after 4 weeks, you get your money back.",
+      "No secret protocol, no supplement stack, no 12-week shred. Me coaching you through the training and eating that actually moves the needle. If your body hasn't changed after 4 weeks, you get your money back.",
     thenLine: 'I hated my body. I avoided mirrors and photos.',
     nowLine: "Year-round sub-12% body fat. I've finished a 100-mile ultra.",
     fieldWork: 'We train together. I watch you lift and fix what needs fixing.',
@@ -175,10 +175,10 @@ const VARIANTS = {
     h1: 'Coaching that works.',
     h1sub: 'Money back if it doesn’t.',
     lede:
-      "Dating, fitness, or just getting your life in order. Real 1-1 coaching — and if your life hasn't changed after 4 weeks, you get your money back. That's the whole deal.",
+      "Dating, fitness, or just getting your life in order. Real 1-1 coaching. If your life hasn't changed after 4 weeks, you get your money back. That's the whole deal.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
-    fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
+    fieldWork: "We do the work together, in person, on whatever your version of the hard thing is.",
     gimmick: 'a $997 course and a countdown timer',
   },
 
@@ -189,7 +189,7 @@ const VARIANTS = {
     h1: 'Start talking to women.',
     h1sub: 'The real kind. In person.',
     lede:
-      "Not scripts. Not openers. Not a 200-page PDF. Two weeks of me coaching you through actual conversations with actual women — completely free, so you can find out whether I'm any good before you ever pay me.",
+      "Not scripts. Not openers. Not a 200-page PDF. Two weeks of me coaching you through actual conversations with actual women, completely free, so you can find out whether I'm any good before you ever pay me.",
     thenLine: "I couldn't talk to a woman I found attractive. Not one.",
     nowLine: "I've approached over 1,000 women. I've been with a dream girl for the past year and a half.",
     fieldWork: 'We go out together and you approach. I watch, then we break it down.',
@@ -201,7 +201,7 @@ const VARIANTS = {
     h1: 'Build the body you actually want.',
     h1sub: 'Starting this week.',
     lede:
-      "No secret protocol, no supplement stack, no 12-week shred. Two weeks of me coaching you through the training and eating that actually moves the needle — completely free, so you can find out whether I'm any good before you ever pay me.",
+      "No secret protocol, no supplement stack, no 12-week shred. Two weeks of me coaching you through the training and eating that actually moves the needle, completely free, so you can find out whether I'm any good before you ever pay me.",
     thenLine: 'I hated my body. I avoided mirrors and photos.',
     nowLine: "Year-round sub-12% body fat. I've finished a 100-mile ultra.",
     fieldWork: 'We train together. I watch you lift and fix what needs fixing.',
@@ -216,7 +216,7 @@ const VARIANTS = {
       "Dating, fitness, or just getting your life in order. Two weeks of real 1-1 coaching, free, so you can find out whether I'm any good before you ever pay me.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
-    fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
+    fieldWork: "We do the work together, in person, on whatever your version of the hard thing is.",
     gimmick: 'a $997 course and a countdown timer',
   },
 };
@@ -441,7 +441,7 @@ function BookPage() {
           <p className="book-scarcity">{spotsLine}</p>
           <p className="book-microcopy">
             {showPrice
-              ? 'The call is free. 30 minutes, no pitch, no obligation — you only pay the $50 if we both decide it’s a fit.'
+              ? 'The call is free. 30 minutes, no pitch, no obligation. You only pay the $50 if we both decide it’s a fit.'
               : isTrial
                 ? 'The call is free. 30 minutes, no pitch, no obligation.'
                 : '30 minutes. No pitch, no card, no obligation.'}
@@ -483,7 +483,7 @@ function BookPage() {
           </section>
         ) : isTrial ? (
           <section className="book-why">
-            <h2>Why it&rsquo;s $50 &mdash; total</h2>
+            <h2>Why it&rsquo;s $50 total</h2>
             <p>
               Not per week. Not per session. <strong>$50 for the whole 4 weeks</strong>, stated
               right here on the page, because I&rsquo;m tired of coaches who make you sit through
@@ -504,7 +504,7 @@ function BookPage() {
             <p>
               I&rsquo;m new to coaching. That&rsquo;s the whole reason. I don&rsquo;t have a wall of
               testimonials, so instead of asking you to trust me, I&rsquo;m asking you to
-              <strong> test me</strong> — {weeksWord} weeks, free, and you decide at the end
+              <strong> test me</strong>: {weeksWord} weeks, free, and you decide at the end
               whether I&rsquo;m worth paying.
             </p>
             <p className="book-why-kicker">
