@@ -151,7 +151,7 @@ const VARIANTS = {
     h1: 'Start talking to women.',
     h1sub: 'The real kind. In person.',
     lede:
-      "Not scripts. Not openers. Not a 200-page PDF. Four weeks of me coaching you through actual conversations with actual women — and if you're not satisfied at the end of the month, you get your money back.",
+      "Not scripts. Not openers. Not a 200-page PDF. Me coaching you through actual conversations with actual women — and if your life hasn't changed after 4 weeks, you get your money back.",
     thenLine: "I couldn't talk to a woman I found attractive. Not one.",
     nowLine: "I've approached over 1,000 women. I've been with a dream girl for the past year and a half.",
     fieldWork: 'We go out together and you approach. I watch, then we break it down.',
@@ -163,7 +163,7 @@ const VARIANTS = {
     h1: 'Build the body you actually want.',
     h1sub: 'Starting this week.',
     lede:
-      "No secret protocol, no supplement stack, no 12-week shred. Four weeks of me coaching you through the training and eating that actually moves the needle — and if your body hasn't changed by the end of the month, you get your money back.",
+      "No secret protocol, no supplement stack, no 12-week shred. Me coaching you through the training and eating that actually moves the needle — and if your body hasn't changed after 4 weeks, you get your money back.",
     thenLine: 'I hated my body. I avoided mirrors and photos.',
     nowLine: "Year-round sub-12% body fat. I've finished a 100-mile ultra.",
     fieldWork: 'We train together. I watch you lift and fix what needs fixing.',
@@ -172,10 +172,10 @@ const VARIANTS = {
   generalNP: {
     offer: 'trialnp',
     eyebrow: '1-on-1 coaching · money-back guarantee',
-    h1: '4 weeks of coaching.',
-    h1sub: 'Money back if it doesn’t work.',
+    h1: 'Coaching that works.',
+    h1sub: 'Money back if it doesn’t.',
     lede:
-      "Dating, fitness, or just getting your life in order. Four weeks of real 1-on-1 coaching, with your money back if you're not satisfied at the end. That's the whole deal.",
+      "Dating, fitness, or just getting your life in order. Real 1-on-1 coaching — and if your life hasn't changed after 4 weeks, you get your money back. That's the whole deal.",
     thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
     nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
     fieldWork: "We do the work together, in person — whatever your version of the hard thing is.",
@@ -473,8 +473,8 @@ function BookPage() {
             <h2>Why the guarantee</h2>
             <p>
               I&rsquo;m new to coaching. I don&rsquo;t have a wall of testimonials, so instead of
-              asking you to trust me, I&rsquo;m asking you to <strong>try me</strong> — four weeks,
-              and if you&rsquo;re not satisfied at the end, you get your money back.
+              asking you to trust me, I&rsquo;m asking you to <strong>try me</strong>. If you&rsquo;re
+              not satisfied after 4 weeks, you get your money back.
               <strong> No questions asked.</strong> No forms, no exit call, no fine print.
             </p>
             <p className="book-why-kicker">
@@ -557,7 +557,7 @@ function BookPage() {
             {showPrice
               ? 'Four weeks of that. $50 total — money back if you’re not satisfied.'
               : isTrial
-                ? 'Four weeks of that. Money back if you’re not satisfied.'
+                ? 'All of that, with a guarantee: money back if you’re not satisfied after 4 weeks.'
                 : `${isTwoWeek ? 'Two' : 'Four'} weeks of that. $0. No card on file.`}
           </p>
         </section>
