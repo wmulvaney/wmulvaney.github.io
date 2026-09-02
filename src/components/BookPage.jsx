@@ -243,7 +243,8 @@ function resolveVariant(search) {
   if (/dating|approach|women|girls|scared|try me|test me|\bbc\b|\ba\d/.test(content)) {
     return 'dating';
   }
-  return 'general';
+  // Bare /book (no ad code, no matching utm): the $50-for-4-weeks offer.
+  return 'general50';
 }
 
 function loadPixel(variant) {
