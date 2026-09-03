@@ -604,13 +604,20 @@ export default function TestPage() {
         </div>
       )}
 
-      {/* ── Willpower Stack toast ── */}
+      {/* ── Willpower Board toast ── */}
       {showToast && (
         <div className="vignelli-toast">
           <button className="vignelli-toast-close" onClick={() => setShowToast(false)} aria-label="Dismiss">×</button>
-          <p className="vignelli-toast-heading">The Fundamental Willpower Stack</p>
-          <p className="vignelli-toast-sub">10 days to noticeably higher willpower.</p>
-          <button className="vignelli-toast-btn" onClick={() => setShowStackModal(true)}>Free Walkthrough ›</button>
+          <p className="vignelli-toast-heading">The Willpower Board</p>
+          <p className="vignelli-toast-sub">Real people, real habits, tracked in the open.</p>
+          <a
+            className="vignelli-toast-btn"
+            href="https://board.williammulvaney.com"
+            target="_blank"
+            rel="noreferrer"
+          >
+            See the Board ›
+          </a>
         </div>
       )}
 
