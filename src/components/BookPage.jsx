@@ -25,6 +25,12 @@ const FREE2W_CALENDAR_EMBED_URL =
   'https://cal.com/william-mulvaney-s0q4fq/introwithwill3?embed=true';
 const FREE2W_CALENDAR_FALLBACK_URL = 'https://cal.com/william-mulvaney-s0q4fq/introwithwill3';
 
+// Group offer intro calls. TEMPORARY: reusing introwithwill1 (freed up when the
+// No Price campaign was paused) until a dedicated group event type exists.
+const GROUP_CALENDAR_EMBED_URL =
+  'https://cal.com/william-mulvaney-s0q4fq/introwithwill1?embed=true';
+const GROUP_CALENDAR_FALLBACK_URL = 'https://cal.com/william-mulvaney-s0q4fq/introwithwill1';
+
 // Spots left in the free cohort. Set to 0 when they're gone — the page copy
 // promises this number is real, so it has to be kept honest.
 const SPOTS_LEFT = 5;
@@ -60,6 +66,9 @@ const VARIANT_CODES = {
   d4: 'dating2w',
   f4: 'fitness2w',
   g4: 'general2w',
+  d5: 'datingGroup',
+  f5: 'fitnessGroup',
+  g5: 'generalGroup',
 };
 const VARIANTS = {
   dating: {
@@ -221,6 +230,44 @@ const VARIANTS = {
     fieldWork: "We do the work together, in person, on whatever your version of the hard thing is.",
     gimmick: 'a $997 course and a countdown timer',
   },
+
+  /* ---- group coaching: $50 first month, then $200/month ---- */
+  datingGroup: {
+    offer: 'group',
+    eyebrow: 'Group dating coaching · $50 first month',
+    h1: 'Start talking to women.',
+    h1sub: 'With a crew doing it too.',
+    lede:
+      "Not scripts. Not openers. Not a 200-page PDF. A small group of guys learning to have real conversations with real women, coached by me. $50 for your first month, then $200 a month. The intro call is free.",
+    thenLine: "I couldn't talk to a woman I found attractive. Not one.",
+    nowLine: "I've approached over 1,000 women. I've been with a dream girl for the past year and a half.",
+    fieldWork: 'We go out as a group and you approach. Everyone gets reps, everyone gets feedback.',
+    gimmick: 'fake text screenshots and "3 lines that make her chase you"',
+  },
+  fitnessGroup: {
+    offer: 'group',
+    eyebrow: 'Group fitness coaching · $50 first month',
+    h1: 'Build the body you actually want.',
+    h1sub: 'With a crew holding you to it.',
+    lede:
+      "No secret protocol, no supplement stack, no 12-week shred. A small group training and eating right together, coached by me. $50 for your first month, then $200 a month. The intro call is free.",
+    thenLine: 'I hated my body. I avoided mirrors and photos.',
+    nowLine: "Year-round sub-12% body fat. I've finished a 100-mile ultra.",
+    fieldWork: 'We train together as a group. You lift, I fix what needs fixing.',
+    gimmick: "before/after photos you can't verify",
+  },
+  generalGroup: {
+    offer: 'group',
+    eyebrow: 'Group coaching · $50 first month',
+    h1: 'Group coaching.',
+    h1sub: '$50 for your first month.',
+    lede:
+      "Dating, fitness, or just getting your life in order. A small group doing the work together, coached by me. $50 for your first month, then $200 a month. The intro call is free.",
+    thenLine: 'I was unhappy with my body, terrified to speak up, and stuck in a life I didn’t choose.',
+    nowLine: '100-mile ultra. Sub-12% body fat. Left the safe job. Got the girl.',
+    fieldWork: "We do the work together, as a group, on whatever your version of the hard thing is.",
+    gimmick: 'a $997 course and a countdown timer',
+  },
 };
 
 function resolveVariant(search) {
@@ -314,6 +361,7 @@ function BookPage() {
   // The 2-week free offer follows the free-offer copy but with its own duration,
   // spot counter, and (eventually) its own booking calendar.
   const isTwoWeek = v.offer === 'free2w';
+  const isGroup = v.offer === 'group';
   const weeksWord = isTwoWeek ? 'two' : 'four';
   const weeksNum = isTwoWeek ? 2 : 4;
   const spots = isTrial ? TRIAL_SPOTS_LEFT : isTwoWeek ? FREE2W_SPOTS_LEFT : SPOTS_LEFT;
@@ -322,26 +370,32 @@ function BookPage() {
       ? TRIAL_CALENDAR_EMBED_URL
       : v.offer === 'trialnp'
         ? NP_CALENDAR_EMBED_URL
-        : isTwoWeek
-          ? FREE2W_CALENDAR_EMBED_URL
-          : CALENDAR_EMBED_URL;
+        : isGroup
+          ? GROUP_CALENDAR_EMBED_URL
+          : isTwoWeek
+            ? FREE2W_CALENDAR_EMBED_URL
+            : CALENDAR_EMBED_URL;
   const calendarFallbackUrl =
     v.offer === 'trial'
       ? TRIAL_CALENDAR_FALLBACK_URL
       : v.offer === 'trialnp'
         ? NP_CALENDAR_FALLBACK_URL
-        : isTwoWeek
-          ? FREE2W_CALENDAR_FALLBACK_URL
-          : CALENDAR_FALLBACK_URL;
-  const ctaLabel = isTrial ? 'Book my intro call' : 'Book my free call';
+        : isGroup
+          ? GROUP_CALENDAR_FALLBACK_URL
+          : isTwoWeek
+            ? FREE2W_CALENDAR_FALLBACK_URL
+            : CALENDAR_FALLBACK_URL;
+  const ctaLabel = isTrial || isGroup ? 'Book my intro call' : 'Book my free call';
 
-  const spotsLine = isTrial
-    ? spots > 0
-      ? `${spots} spots ${showPrice ? 'at $50' : 'left'}. When they're gone, this page will say so.`
-      : "All spots are taken right now. Book anyway and I'll tell you when one opens."
-    : spots > 0
-      ? `${spots} free spots left. When they're gone, this page will say so.`
-      : "All free spots are taken right now. Book anyway and I'll tell you when one opens.";
+  const spotsLine = isGroup
+    ? "Spots in the group are limited. When it's full, this page will say so."
+    : isTrial
+      ? spots > 0
+        ? `${spots} spots ${showPrice ? 'at $50' : 'left'}. When they're gone, this page will say so.`
+        : "All spots are taken right now. Book anyway and I'll tell you when one opens."
+      : spots > 0
+        ? `${spots} free spots left. When they're gone, this page will say so.`
+        : "All free spots are taken right now. Book anyway and I'll tell you when one opens.";
 
   return (
     <div className="book-page" data-variant={variant}>
@@ -362,15 +416,17 @@ function BookPage() {
       />
       <div className="book-bg-overlay" aria-hidden="true" />
       <Helmet>
-        <title>{isTrial ? 'Book Your Intro Call | William Mulvaney' : 'Book Your Free Call | William Mulvaney'}</title>
+        <title>{isTrial || isGroup ? 'Book Your Intro Call | William Mulvaney' : 'Book Your Free Call | William Mulvaney'}</title>
         <meta
           name="description"
           content={
-            showPrice
-              ? "4 weeks of 1-1 coaching for $50 total, money back if you're not satisfied. Book a free intro call and let's see if we're a fit."
-              : isTrial
-                ? "4 weeks of 1-1 coaching with a money-back guarantee. Book a free intro call and let's see if we're a fit."
-                : `${weeksNum} weeks of free 1-1 coaching. Book a free intro call and let's see if we're a fit.`
+            isGroup
+              ? "Group coaching. $50 for your first month, then $200 a month. Book a free intro call and let's see if it's a fit."
+              : showPrice
+                ? "4 weeks of 1-1 coaching for $50 total, money back if you're not satisfied. Book a free intro call and let's see if we're a fit."
+                : isTrial
+                  ? "4 weeks of 1-1 coaching with a money-back guarantee. Book a free intro call and let's see if we're a fit."
+                  : `${weeksNum} weeks of free 1-1 coaching. Book a free intro call and let's see if we're a fit.`
           }
         />
         <meta name="robots" content="noindex" />
@@ -392,11 +448,13 @@ function BookPage() {
           </button>
           <p className="book-scarcity">{spotsLine}</p>
           <p className="book-microcopy">
-            {showPrice
-              ? 'The call is free. 30 minutes, no pitch, no obligation. You only pay the $50 if we both decide it’s a fit.'
-              : isTrial
-                ? 'The call is free. 30 minutes, no pitch, no obligation.'
-                : '30 minutes. No pitch, no card, no obligation.'}
+            {isGroup
+              ? 'The call is free. 30 minutes, no pitch, no obligation. You only join the group if we both decide it’s a fit.'
+              : showPrice
+                ? 'The call is free. 30 minutes, no pitch, no obligation. You only pay the $50 if we both decide it’s a fit.'
+                : isTrial
+                  ? 'The call is free. 30 minutes, no pitch, no obligation.'
+                  : '30 minutes. No pitch, no card, no obligation.'}
           </p>
         </section>
 
@@ -420,7 +478,24 @@ function BookPage() {
         </section>
 
         {/* ---------- WHY IT'S FREE / WHY IT'S $50 / WHY THE GUARANTEE ---------- */}
-        {isTrial && !showPrice ? (
+        {isGroup ? (
+          <section className="book-why">
+            <h2>Why the first month is $50</h2>
+            <p>
+              The group is <strong>$200 a month</strong>. Your first month is
+              <strong> $50</strong>, because I&rsquo;d rather you try it than take my word for
+              it. It&rsquo;s small enough that you&rsquo;ll risk it and large enough that
+              you&rsquo;ll show up.
+            </p>
+            <p>
+              If it&rsquo;s not for you after a month, you don&rsquo;t stay. No contracts, no
+              exit call, no fine print.
+            </p>
+            <p className="book-why-kicker">
+              Don&rsquo;t trust me. Try me.
+            </p>
+          </section>
+        ) : isTrial && !showPrice ? (
           <section className="book-why">
             <h2>Why the guarantee</h2>
             <p>
@@ -478,10 +553,17 @@ function BookPage() {
                 that&rsquo;s the whole price.
               </li>
             )}
-            <li>
-              No countdown timer that resets when you reload the page. The {spots} spots are
-              real, and when they&rsquo;re gone this page will say so.
-            </li>
+            {isGroup ? (
+              <li>
+                No countdown timer that resets when you reload the page. The group cap is real,
+                and when it&rsquo;s full this page will say so.
+              </li>
+            ) : (
+              <li>
+                No countdown timer that resets when you reload the page. The {spots} spots are
+                real, and when they&rsquo;re gone this page will say so.
+              </li>
+            )}
           </ul>
         </section>
 
@@ -490,15 +572,19 @@ function BookPage() {
           <h2>What you actually get, every week</h2>
           <ul>
             <li>
-              <strong>1 virtual coaching session.</strong> We plan the week and fix what broke last
-              week.
+              <strong>{isGroup ? '1 group coaching session.' : '1 virtual coaching session.'}</strong>{' '}
+              {isGroup
+                ? 'We plan the week and fix what broke, together.'
+                : 'We plan the week and fix what broke last week.'}
             </li>
             <li>
               <strong>1 &ldquo;in the field&rdquo; session.</strong> {v.fieldWork}
             </li>
             <li>
-              <strong>Daily check-ins.</strong> You hear from me every day. That&rsquo;s the part
-              that makes it stick.
+              <strong>{isGroup ? 'Daily accountability in the group.' : 'Daily check-ins.'}</strong>{' '}
+              {isGroup
+                ? 'You check in every day and the group sees it. That’s the part that makes it stick.'
+                : 'You hear from me every day. That’s the part that makes it stick.'}
             </li>
             <li>
               <strong>Habit engineering &amp; tracking.</strong> We build the system, then we watch
@@ -506,11 +592,13 @@ function BookPage() {
             </li>
           </ul>
           <p className="book-get-kicker">
-            {showPrice
-              ? 'Four weeks of that. $50 total, money back if you’re not satisfied.'
-              : isTrial
-                ? 'All of that, with a guarantee: money back if you’re not satisfied after 4 weeks.'
-                : `${isTwoWeek ? 'Two' : 'Four'} weeks of that. $0. No card on file.`}
+            {isGroup
+              ? 'Four weeks of that for $50. Then $200 a month if you stay.'
+              : showPrice
+                ? 'Four weeks of that. $50 total, money back if you’re not satisfied.'
+                : isTrial
+                  ? 'All of that, with a guarantee: money back if you’re not satisfied after 4 weeks.'
+                  : `${isTwoWeek ? 'Two' : 'Four'} weeks of that. $0. No card on file.`}
           </p>
         </section>
 
@@ -533,11 +621,13 @@ function BookPage() {
         {/* ---------- CLOSE ---------- */}
         <section className="book-close">
           <h2>
-            {showPrice
-              ? 'Worst case: you try it for 4 weeks and get your $50 back.'
-              : isTrial
-                ? 'Worst case: you try it for 4 weeks and get your money back.'
-                : `Worst case, you get ${weeksNum} free weeks of coaching.`}
+            {isGroup
+              ? 'First month is $50. Decide for yourself if it’s worth $200.'
+              : showPrice
+                ? 'Worst case: you try it for 4 weeks and get your $50 back.'
+                : isTrial
+                  ? 'Worst case: you try it for 4 weeks and get your money back.'
+                  : `Worst case, you get ${weeksNum} free weeks of coaching.`}
           </h2>
           <button type="button" className="book-cta" onClick={scrollToCalendar}>
             {ctaLabel}
