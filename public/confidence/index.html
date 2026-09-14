@@ -308,7 +308,7 @@
           <li><b>The group</b>: an active community of guys running the same 12 weeks</li>
           <li>Weekly scorecard reviews and plan adjustments</li>
         </ul>
-        <button class="btn-primary btn-block" onclick="v1go(5, 'async')">Join for $49 · guide free</button>
+        <button class="btn-primary btn-block" onclick="buyPersonal()">Join for $49 · guide free</button>
       </div>
     </div>
     <div style="text-align:center; margin-top: 6px">
@@ -340,7 +340,7 @@
         <option>Just exploring</option>
       </select>
       <label class="agree"><input type="checkbox" id="v1app-agree" /><span>I understand 1-on-1 coaching starts at $799/month if I'm accepted.</span></label>
-      <button class="btn-primary btn-block" onclick="appSubmit('v1')">Submit application</button>
+      <button class="btn-primary btn-block" id="v1app-go" onclick="appSubmit('v1')">Submit application</button>
       <button class="btn-ghost btn-block" onclick="v1go(3)">← Back to options</button>
     </div>
   </div>
@@ -401,7 +401,7 @@
         <li>Weekly review of your scorecards</li>
         <li>Plan adjustments when you plateau</li>
       </ul>
-      <button class="btn-primary btn-block" onclick="buyToast('Guide + Personal · $49 first month')">Start for $49</button>
+      <button class="btn-primary btn-block" onclick="buyPersonal()">Start for $49</button>
     </div>
     <div class="card tier">
       <div class="t-name">1-on-1 Coaching</div>
@@ -469,7 +469,7 @@
         <li>Weekly scorecard reviews and plan adjustments</li>
         <li>Direct line when a week goes sideways</li>
       </ul>
-      <button class="btn-primary btn-block" onclick="buyToast('Personal Coaching · $49 first month')">Add personal coaching · $49</button>
+      <button class="btn-primary btn-block" onclick="buyPersonal()">Add personal coaching · $49</button>
     </div>
     <div class="card tier">
       <div class="t-name">1-on-1 Coaching</div>
@@ -546,7 +546,7 @@
           <li><b>The group</b>: an active community of guys running the same 12 weeks</li>
           <li>Weekly scorecard reviews and plan adjustments</li>
         </ul>
-        <button class="btn-primary btn-block" onclick="v4go(4, 'async')">Join for $49 · guide free</button>
+        <button class="btn-primary btn-block" onclick="buyPersonal()">Join for $49 · guide free</button>
       </div>
     </div>
     <div style="text-align:center; margin-top: 6px">
@@ -578,7 +578,7 @@
         <option>Just exploring</option>
       </select>
       <label class="agree"><input type="checkbox" id="v4app-agree" /><span>I understand 1-on-1 coaching starts at $799/month if I'm accepted.</span></label>
-      <button class="btn-primary btn-block" onclick="appSubmit('v4')">Submit application</button>
+      <button class="btn-primary btn-block" id="v4app-go" onclick="appSubmit('v4')">Submit application</button>
       <button class="btn-ghost btn-block" onclick="v4go(2)">← Back to options</button>
     </div>
   </div>
@@ -616,7 +616,7 @@
       <div class="card tier" style="margin-bottom:14px">
         <div class="t-name">Personal Coaching <span style="font-family:var(--font-ui);font-size:11px;letter-spacing:0.16em;color:var(--faint);font-weight:700">· $49 FIRST MONTH, THEN $199/MO</span></div>
         <p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:var(--muted)">Run the 12-week plan with me reviewing every session you log. Feedback within 24h. Includes the app that walks you through every week, and the guide. Cancel anytime.</p>
-        <button class="btn-secondary" onclick="buyToast('Personal Coaching · $49 first month')">Start for $49</button>
+        <button class="btn-secondary" onclick="buyPersonal()">Start for $49</button>
       </div>
       <div class="card tier hot">
         <div class="t-name">The Guide <span style="font-family:var(--font-ui);font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:700">· JUST $9</span></div>
@@ -743,14 +743,40 @@ function v4go(step, choice) {
   if (document.getElementById("v4").classList.contains("on")) window.scrollTo(0, 0);
 }
 
+/* ---------------- checkout + application endpoints ---------------- */
+const STRIPE_PERSONAL_URL = "https://buy.stripe.com/3cIbJ2bhw8fn3Os7RhfjG0e";
+const ONBOARD_FN_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/confidence-onboard";
+function buyPersonal() { window.location.href = STRIPE_PERSONAL_URL; }
+
 /* ---------------- 1-on-1 application ---------------- */
-function appSubmit(v) {
+async function appSubmit(v) {
   const val = id => (document.getElementById(v + "app-" + id).value || "").trim();
   if (!val("name")) { toast("Add your name"); return; }
   if (!val("email") || !val("email").includes("@")) { toast("Add a valid email"); return; }
   if (!val("now")) { toast("Tell me where you're at first"); return; }
   if (!document.getElementById(v + "app-agree").checked) { toast("Please confirm the pricing checkbox"); return; }
-  if (v === "v1") v1go(5, "one"); else v4go(4, "one");
+  const btn = document.getElementById(v + "app-go");
+  btn.disabled = true; btn.textContent = "Submitting…";
+  try {
+    const res = await fetch(ONBOARD_FN_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        kind: "one_on_one_application",
+        name: val("name"), email: val("email"), city: val("city"),
+        goal: val("now"), sticking_point: val("why"), frequency: val("start"),
+        website: "",
+      }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out.ok) throw new Error(out.error || "request failed");
+    if (v === "v1") v1go(5, "one"); else v4go(4, "one");
+  } catch (e) {
+    console.error(e);
+    toast("Something went wrong. Try again in a minute.");
+  } finally {
+    btn.disabled = false; btn.textContent = "Submit application";
+  }
 }
 
 /* ---------------- misc ---------------- */
