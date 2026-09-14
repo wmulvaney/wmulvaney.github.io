@@ -47,23 +47,10 @@
   }
   .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 24px 20px 80px; }
 
-  /* ------- dev-only variation switcher ------- */
-  .vbar {
-    position: sticky; top: 0; z-index: 40;
-    background: rgba(4, 11, 18, 0.92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  }
-  .vbar .vlabel { font-size: 9px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--faint); flex: none; }
-  .vtabs { display: flex; border: 1px solid var(--border); }
-  .vtab {
-    font-family: var(--font-ui); cursor: pointer; background: transparent; border: none;
-    color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-    padding: 9px 16px; transition: all 140ms ease;
-  }
-  .vtab:hover { color: var(--text); }
-  .vtab.sel { background: var(--accent-soft); color: #fff; box-shadow: inset 0 -2px 0 var(--accent); }
-  .vdesc { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; line-height: 1.5; flex: 1; min-width: 200px; }
+  /* ------- header logo ------- */
+  .home-link { display: inline-block; margin: 6px 0 4px; }
+  .home-link img { height: 42px; width: auto; display: block; opacity: 0.9; transition: opacity 150ms ease; filter: brightness(0) invert(1); }
+  .home-link:hover img { opacity: 1; }
 
   /* ------- shared page pieces ------- */
   .kicker { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(71, 157, 194, 0.9); margin-bottom: 12px; }
@@ -214,9 +201,6 @@
   .divider-lbl { color: var(--faint); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin: 44px 0 26px; display: flex; align-items: center; gap: 12px; }
   .divider-lbl::before, .divider-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.09); }
 
-  .vpage { display: none; }
-  .vpage.on { display: block; }
-
   footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
 
   .toast {
@@ -230,19 +214,14 @@
 </head>
 <body>
 
-<!-- ======= variation switcher (dev-only, delete before shipping) ======= -->
-<div class="vbar">
-  <span class="vlabel">Variations</span>
-  <div class="vtabs" id="vtabs"></div>
-  <span class="vdesc" id="vdesc"></span>
-</div>
-
 <div class="wrap">
+
+<a class="home-link" href="https://williammulvaney.com/" aria-label="William Mulvaney home"><img src="willpower_logo.svg" alt="William Mulvaney" /></a>
 
 <!-- ================================================================
      V1 · ASK-FIRST FLOW: BUY → "WANT HELP?" QUESTION → OFFERS OR CHECKOUT
      ================================================================ -->
-<section class="vpage" id="v1">
+<section id="v1">
   <!-- step 1: minimal, distraction-free guide page (copy of V4) -->
   <div class="v1-step" id="v1s1">
     <div class="hero">
@@ -268,7 +247,7 @@
     <p class="lede">Honest question. Most guys don't fail the approach, they fail the follow-through: week 3 arrives, motivation dips, and the guide sits in a downloads folder. If that sounds familiar, it's worth 20 seconds to see how we fix it.</p>
     <div style="max-width:380px">
       <button class="btn-primary btn-block" onclick="v1go(3)">Yes, show me my options</button>
-      <button class="btn-secondary btn-block" style="margin-top:10px" onclick="v1go(5, false)">No, I've got this. Checkout</button>
+      <button class="btn-secondary btn-block" style="margin-top:10px" onclick="goGuideCheckout()">No, I've got this. Checkout</button>
     </div>
   </div>
 
@@ -312,7 +291,7 @@
       </div>
     </div>
     <div style="text-align:center; margin-top: 6px">
-      <button class="btn-ghost" onclick="v1go(5, false)">Just the guide for $9</button>
+      <button class="btn-ghost" onclick="goGuideCheckout()">Just the guide for $9</button>
     </div>
   </div>
 
@@ -351,293 +330,12 @@
     <div class="kicker">Order complete</div>
     <h2 class="sect" id="v1-thanks">You're in. Check your email.</h2>
     <p class="lede" id="v1-thanks-sub">Your guide download link is in your inbox. Week 1 starts the moment you decide it does.</p>
-    <button class="btn-primary" id="v1-thanks-cta" style="display:none" onclick="buyToast('The Guide · $9')">Get the guide · $9</button>
-    <button class="btn-ghost" style="margin-top:14px" onclick="v1go(1)">← Back to start (demo)</button>
-  </div>
-</section>
-
-<!-- ================================================================
-     V2 · CLASSIC THREE-TIER PRICING TABLE ON THE PAGE
-     ================================================================ -->
-<section class="vpage" id="v2">
-  <div class="hero flip">
-    <div class="cover-slot"></div>
-    <div>
-      <div class="kicker">William Mulvaney · Field Guide</div>
-      <h1 class="hero-title">12 Weeks to Confident Approaching</h1>
-      <p class="lede">The complete 12-week training plan for starting conversations with strangers, plus two ways to have me in your corner while you run it.</p>
-      <a class="btn btn-primary" href="#v2-pricing" onclick="return smoothTo('v2-pricing')">Choose your path ↓</a>
-    </div>
-  </div>
-
-  <div class="divider-lbl" id="v2-pricing">Pick how much support you want</div>
-  <div class="grid-3">
-    <div class="card tier">
-      <div class="t-name">The Guide</div>
-      <div class="t-for">Self-directed</div>
-      <div class="t-price">$9</div>
-      <div class="t-per">one-time</div>
-      <div class="t-sub">Instant download. Yours forever.</div>
-      <ul class="checks">
-        <li>The full <b>12-week plan</b>, week by week</li>
-        <li>Daily rep counts and openers</li>
-        <li>Printable tracking scorecards</li>
-        <li>30-day money-back guarantee</li>
-      </ul>
-      <button class="btn-secondary btn-block" onclick="buyToast('The Guide · $9')">Get the guide</button>
-    </div>
-    <div class="card tier hot">
-      <div class="hot-badge">Most popular</div>
-      <div class="t-name">Guide + Personal Coaching</div>
-      <div class="t-for">Guided</div>
-      <div class="t-price"><span class="strike">$199</span> $49</div>
-      <div class="t-per">first month</div>
-      <div class="t-sub">Then $199/month. Cancel anytime.</div>
-      <ul class="checks">
-        <li><b>Everything in The Guide</b></li>
-        <li><b>Personal coaching</b>: message me after every session, get feedback within 24h</li>
-        <li><b>The app</b>: walks you through all 12 weeks, day by day</li>
-        <li><b>The group</b>: an active community of guys running the same 12 weeks</li>
-        <li>Weekly review of your scorecards</li>
-        <li>Plan adjustments when you plateau</li>
-      </ul>
-      <button class="btn-primary btn-block" onclick="buyPersonal()">Start for $49</button>
-    </div>
-    <div class="card tier">
-      <div class="t-name">1-on-1 Coaching</div>
-      <div class="t-for">Full immersion</div>
-      <div class="t-price">$799</div>
-      <div class="t-per">per month, starting at</div>
-      <div class="t-sub">Limited spots. Application required.</div>
-      <ul class="checks">
-        <li><b>Everything in Personal Coaching</b></li>
-        <li><b>Weekly 1-1 calls</b></li>
-        <li><b>Daily check-ins</b> so you never skip a rep</li>
-        <li><b>In-the-field help</b>: we go out and do approaches together</li>
-      </ul>
-      <button class="btn-secondary btn-block" onclick="buyToast('1-on-1 application')">Apply for 1-on-1</button>
-    </div>
-  </div>
-  <p class="fine" style="text-align:center">Every tier includes the guide. Subscriptions renew monthly and can be cancelled in one click.</p>
-
-  <div class="divider-lbl">Where it takes you</div>
-  <div class="journey-slot"></div>
-</section>
-
-<!-- ================================================================
-     V3 · GUIDE-FIRST LONG PAGE, UPSELLS BELOW THE FOLD
-     ================================================================ -->
-<section class="vpage" id="v3">
-  <div class="hero">
-    <div>
-      <div class="kicker">William Mulvaney · Field Guide</div>
-      <h1 class="hero-title">Stop rehearsing.<br/>Start approaching.</h1>
-      <p class="lede">12 Weeks to Confident Approaching is a progressive training plan, the same one I run with private clients, packaged so you can run it yourself for the price of two coffees.</p>
-      <div class="price-line"><span class="price-big">$9</span><span class="price-note">one-time · instant download</span></div>
-      <button class="btn-primary" onclick="buyToast('The Guide · $9')">Buy the guide · $9</button>
-      <div class="guarantee"><span class="g-ic">✓</span><span>30-day guarantee, no questions asked.</span></div>
-    </div>
-    <div class="cover-slot"></div>
-  </div>
-
-  <div class="divider-lbl">Where it takes you</div>
-  <div class="journey-slot"></div>
-
-  <div class="quote">
-    <div class="q-txt">"Week one felt stupidly easy. That's the trick. By week eight I was doing things I'd avoided for ten years."</div>
-    <div class="q-who">Guide reader, Chicago IL</div>
-  </div>
-
-  <div style="text-align:center; margin: 36px 0 10px">
-    <button class="btn-primary" onclick="buyToast('The Guide · $9')">Buy the guide · $9</button>
-  </div>
-
-  <!-- upsell block, deliberately after the full guide pitch -->
-  <div class="divider-lbl">Want me in your corner while you run it?</div>
-  <div class="grid-2">
-    <div class="card tier hot">
-      <div class="hot-badge">Pairs with the guide</div>
-      <div class="t-name">Personal Coaching</div>
-      <div class="t-for">Personal feedback, on your schedule</div>
-      <div class="t-price"><span class="strike">$199</span> $49</div>
-      <div class="t-per">first month · then $199/month</div>
-      <div class="t-sub">Cancel anytime. Guide included free.</div>
-      <ul class="checks">
-        <li>Message me after each session</li>
-        <li><b>The app</b>: walks you through all 12 weeks, day by day</li>
-        <li>Personal feedback within 24 hours</li>
-        <li>Weekly scorecard reviews and plan adjustments</li>
-        <li>Direct line when a week goes sideways</li>
-      </ul>
-      <button class="btn-primary btn-block" onclick="buyPersonal()">Add personal coaching · $49</button>
-    </div>
-    <div class="card tier">
-      <div class="t-name">1-on-1 Coaching</div>
-      <div class="t-for">The full program, together</div>
-      <div class="t-price">$799</div>
-      <div class="t-per">per month, starting at</div>
-      <div class="t-sub">Limited spots. Application required.</div>
-      <ul class="checks">
-        <li>Everything in Personal Coaching</li>
-        <li>Weekly 1-1 video calls</li>
-        <li>Daily check-ins, every single day</li>
-        <li>In-the-field sessions: I come out with you</li>
-      </ul>
-      <button class="btn-secondary btn-block" onclick="buyToast('1-on-1 application')">Apply for 1-on-1</button>
-    </div>
-  </div>
-</section>
-
-<!-- ================================================================
-     V4 · POST-PURCHASE FLOW: BUY GUIDE → ONE-TIME ASYNC OFFER → 1-1
-     ================================================================ -->
-<section class="vpage" id="v4">
-  <!-- step 1: minimal, distraction-free guide page -->
-  <div class="v4-step" id="v4s1">
-    <div class="hero">
-      <div>
-        <div class="kicker">William Mulvaney · Field Guide</div>
-        <h1 class="hero-title">12 Weeks to Confident Approaching</h1>
-        <p class="lede">The exact 12-week plan for going from avoiding eye contact to opening conversations anywhere. One purchase, instant download, run it yourself.</p>
-        <div class="price-line"><span class="price-big">$9</span><span class="price-note">one-time</span></div>
-        <button class="btn-primary" onclick="v4go(2)">Buy now · $9</button>
-        <div class="guarantee"><span class="g-ic">✓</span><span>30-day money-back guarantee.</span></div>
-      </div>
-      <div class="cover-slot"></div>
-    </div>
-    <div class="divider-lbl">Where it takes you</div>
-    <div class="journey-slot"></div>
-  </div>
-
-  <!-- step 2: pre-checkout interstitial with both tiers; 1-1 first as the price anchor -->
-  <div class="v4-step step-wrap wide-offer" id="v4s2" style="display:none">
-    <div class="progress"><div class="p on"></div><div class="p now"></div><div class="p"></div></div>
-    <div class="kicker">One last thing before you check out</div>
-    <div class="offer-timer">⏱ This offer appears once, on this page only</div>
-    <h2 class="sect">Want to increase your<br/>chances of success?</h2>
-    <p class="lede">Most guys come out of the gate hot. Then somewhere in the middle weeks, they stall. Because of that, I run a group with a low starting price: try it for a month and see if it's worth your time. Join it and the guide is free.</p>
-    <div class="grid-2">
-      <!-- anchor first: full 1-1 at $799 -->
-      <div class="card tier">
-        <div class="t-name">1-on-1 Coaching</div>
-        <div class="t-for">The full program, together</div>
-        <div class="t-price">$799</div>
-        <div class="t-per">per month, starting at</div>
-        <div class="t-sub">Limited spots. Application required.</div>
-        <ul class="checks">
-          <li>Everything in Personal Coaching</li>
-          <li><b>Weekly 1-1 calls</b></li>
-          <li><b>Daily check-ins</b>, every single day</li>
-          <li><b>In-the-field sessions</b>: we go out and approach together</li>
-        </ul>
-        <button class="btn-secondary btn-block" onclick="v4go(3)">Apply for 1-on-1</button>
-      </div>
-      <div class="card tier hot">
-        <div class="hot-badge">Most choose this · new-reader price</div>
-        <div class="t-name">Personal Coaching</div>
-        <div class="t-for">Personal feedback, on your schedule</div>
-        <div class="t-price"><span class="strike">$199</span> $49</div>
-        <div class="t-per">first month · then $199/month</div>
-        <div class="t-sub">Cancel anytime. <b style="color:var(--text)">Guide included free.</b></div>
-        <ul class="checks">
-          <li><b>The guide, free</b>: your $9 stays in your pocket</li>
-          <li><b>The app</b>: walks you through all 12 weeks, day by day</li>
-          <li>Feedback on every session you log, within 24h</li>
-          <li><b>The group</b>: an active community of guys running the same 12 weeks</li>
-          <li>Weekly scorecard reviews and plan adjustments</li>
-        </ul>
-        <button class="btn-primary btn-block" onclick="buyPersonal()">Join for $49 · guide free</button>
-      </div>
-    </div>
-    <div style="text-align:center; margin-top: 6px">
-      <button class="btn-ghost" onclick="v4go(4, false)">No thanks, just the guide for $9</button>
-    </div>
-  </div>
-
-  <!-- step 3: 1-on-1 application -->
-  <div class="v4-step step-wrap" id="v4s3" style="display:none">
-    <div class="progress"><div class="p on"></div><div class="p on"></div><div class="p now"></div></div>
-    <div class="kicker">1-on-1 Coaching · application</div>
-    <h2 class="sect">Tell me where you're at.</h2>
-    <p class="lede">I take a handful of 1-on-1 clients at a time, so I read every application myself. Two minutes, honest answers.</p>
-    <div class="card app-form" style="max-width:520px">
-      <label for="v4app-name">Name</label>
-      <input type="text" id="v4app-name" placeholder="First name is fine" autocomplete="name" />
-      <label for="v4app-email">Email</label>
-      <input type="email" id="v4app-email" placeholder="you@example.com" autocomplete="email" />
-      <label for="v4app-city">City</label>
-      <input type="text" id="v4app-city" placeholder="Where you'd be approaching" />
-      <label for="v4app-now">Where are you right now?</label>
-      <textarea id="v4app-now" placeholder="How often do you approach today? What happens when you try?"></textarea>
-      <label for="v4app-why">Why 1-on-1 instead of the group?</label>
-      <textarea id="v4app-why" placeholder="What do you want from working with me directly?"></textarea>
-      <label for="v4app-start">When can you start?</label>
-      <select id="v4app-start">
-        <option>Right away</option>
-        <option>Within a month</option>
-        <option>Just exploring</option>
-      </select>
-      <label class="agree"><input type="checkbox" id="v4app-agree" /><span>I understand 1-on-1 coaching starts at $799/month if I'm accepted.</span></label>
-      <button class="btn-primary btn-block" id="v4app-go" onclick="appSubmit('v4')">Submit application</button>
-      <button class="btn-ghost btn-block" onclick="v4go(2)">← Back to options</button>
-    </div>
-  </div>
-
-  <!-- step 4: confirmation -->
-  <div class="v4-step step-wrap" id="v4s4" style="display:none">
-    <div class="progress"><div class="p on"></div><div class="p on"></div><div class="p on"></div></div>
-    <div class="kicker">Order complete</div>
-    <h2 class="sect" id="v4-thanks">You're in. Check your email.</h2>
-    <p class="lede" id="v4-thanks-sub">Your guide download link is in your inbox. Week 1 starts the moment you decide it does.</p>
-    <button class="btn-primary" id="v4-thanks-cta" style="display:none" onclick="buyToast('The Guide · $9')">Get the guide · $9</button>
-    <button class="btn-ghost" style="margin-top:14px" onclick="v4go(1)">← Back to start (demo)</button>
-  </div>
-</section>
-
-<!-- ================================================================
-     V5 · PRICE-ANCHORED LADDER: 1-1 FIRST, GUIDE LAST
-     ================================================================ -->
-<section class="vpage" id="v5">
-  <div style="text-align:center; padding: 44px 0 8px">
-    <div class="kicker">William Mulvaney · Approach Coaching</div>
-    <h1 class="hero-title" style="max-width:640px; margin-left:auto; margin-right:auto">Confidence with strangers is a trainable skill.</h1>
-    <p class="lede" style="margin-left:auto; margin-right:auto; text-align:center">There are three ways to train it with me. Start where you are.</p>
-  </div>
-
-  <div class="hero" style="padding-top:10px">
-    <div class="cover-slot"></div>
-    <div>
-      <!-- anchor: most expensive first -->
-      <div class="card tier" style="margin-bottom:14px">
-        <div class="t-name">1-on-1 Coaching <span style="font-family:var(--font-ui);font-size:11px;letter-spacing:0.16em;color:var(--faint);font-weight:700">· FROM $799/MO</span></div>
-        <p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:var(--muted)">Everything below, plus weekly 1-1 calls, daily check-ins, and in-the-field sessions where we go out and approach together. Limited spots.</p>
-        <button class="btn-secondary" onclick="buyToast('1-on-1 application')">Apply</button>
-      </div>
-      <div class="card tier" style="margin-bottom:14px">
-        <div class="t-name">Personal Coaching <span style="font-family:var(--font-ui);font-size:11px;letter-spacing:0.16em;color:var(--faint);font-weight:700">· $49 FIRST MONTH, THEN $199/MO</span></div>
-        <p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:var(--muted)">Run the 12-week plan with me reviewing every session you log. Feedback within 24h. Includes the app that walks you through every week, and the guide. Cancel anytime.</p>
-        <button class="btn-secondary" onclick="buyPersonal()">Start for $49</button>
-      </div>
-      <div class="card tier hot">
-        <div class="t-name">The Guide <span style="font-family:var(--font-ui);font-size:11px;letter-spacing:0.16em;color:var(--accent);font-weight:700">· JUST $9</span></div>
-        <p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:var(--muted)">The complete 12-week plan, daily reps, openers, and printable scorecards. Everything you need to do this solo, for less than lunch.</p>
-        <button class="btn-primary" onclick="buyToast('The Guide · $9')">Get the guide · $9</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider-lbl">Where it takes you</div>
-  <div class="journey-slot"></div>
-
-  <div class="quote">
-    <div class="q-txt">"I bought the $9 guide expecting nothing. Three weeks in I upgraded to personal coaching because I wanted someone to see my numbers."</div>
-    <div class="q-who">Reader → coaching client</div>
+    <button class="btn-primary" id="v1-thanks-cta" style="display:none" onclick="goGuideCheckout()">Get the guide · $9</button>
   </div>
 </section>
 
 <footer>
-  © William Mulvaney · Coaching<br/>
-  Demo page. No payments are processed from this file.
+  © William Mulvaney · Coaching
 </footer>
 
 </div><!-- /wrap -->
@@ -677,38 +375,6 @@ function coverHtml() {
 }
 document.querySelectorAll(".cover-slot").forEach(el => el.innerHTML = coverHtml());
 
-/* ---------------- variation switcher ---------------- */
-const VARIANTS = {
-  v1: "Ask-first flow: buy click \u2192 'want help following through?' \u2192 yes shows both tiers, no skips straight to checkout.",
-  v2: "Classic good / better / best pricing table, personal coaching highlighted as most popular.",
-  v3: "Long-form guide pitch first; both coaching tiers presented below the fold.",
-  v4: "Pre-checkout interstitial: buy click → one-time offer, both tiers ($799 anchor, guide free with Personal) → confirmation.",
-  v5: "Price-anchored ladder: 1-1 shown first at $799 so the $9 guide feels like a steal.",
-};
-const tabsEl = document.getElementById("vtabs");
-Object.keys(VARIANTS).forEach((v, i) => {
-  const b = document.createElement("button");
-  b.className = "vtab"; b.textContent = "V" + (i + 1);
-  b.onclick = () => switchV(v);
-  b.id = "tab-" + v;
-  tabsEl.appendChild(b);
-});
-function switchV(v) {
-  document.querySelectorAll(".vpage").forEach(el => el.classList.remove("on"));
-  document.querySelectorAll(".vtab").forEach(el => el.classList.remove("sel"));
-  document.getElementById(v).classList.add("on");
-  document.getElementById("tab-" + v).classList.add("sel");
-  document.getElementById("vdesc").textContent = VARIANTS[v];
-  v1go(1);
-  v4go(1);
-  history.replaceState(null, "", "#" + v);
-  window.scrollTo(0, 0);
-}
-function smoothTo(id) {
-  document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-  return false;
-}
-
 /* ---------------- shared confirmation copy ---------------- */
 const CONFIRM_HEADS = {
   "async": "You're in: coaching, the group, and the guide.",
@@ -732,21 +398,15 @@ function v1go(step, choice) {
   if (document.getElementById("v1").classList.contains("on")) window.scrollTo(0, 0);
 }
 
-/* ---------------- v4 steps ---------------- */
-function v4go(step, choice) {
-  [1,2,3,4].forEach(n => { const el = document.getElementById("v4s" + n); if (el) el.style.display = (n === step) ? "" : "none"; });
-  if (step === 4) {
-    document.getElementById("v4-thanks").textContent = CONFIRM_HEADS[choice] || CONFIRM_HEAD_DEFAULT;
-    document.getElementById("v4-thanks-sub").textContent = CONFIRM_SUBS[choice] || CONFIRM_SUB_DEFAULT;
-    document.getElementById("v4-thanks-cta").style.display = (choice === "one") ? "" : "none";
-  }
-  if (document.getElementById("v4").classList.contains("on")) window.scrollTo(0, 0);
-}
-
 /* ---------------- checkout + application endpoints ---------------- */
 const STRIPE_PERSONAL_URL = "https://buy.stripe.com/3cIbJ2bhw8fn3Os7RhfjG0e";
+const STRIPE_GUIDE_URL = ""; // $9 payment link goes here
 const ONBOARD_FN_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/confidence-onboard";
 function buyPersonal() { window.location.href = STRIPE_PERSONAL_URL; }
+function goGuideCheckout() {
+  if (STRIPE_GUIDE_URL) window.location.href = STRIPE_GUIDE_URL;
+  else toast("Guide checkout is almost ready. Check back shortly.");
+}
 
 /* ---------------- 1-on-1 application ---------------- */
 async function appSubmit(v) {
@@ -770,7 +430,7 @@ async function appSubmit(v) {
     });
     const out = await res.json().catch(() => ({}));
     if (!res.ok || !out.ok) throw new Error(out.error || "request failed");
-    if (v === "v1") v1go(5, "one"); else v4go(4, "one");
+    v1go(5, "one");
   } catch (e) {
     console.error(e);
     toast("Something went wrong. Try again in a minute.");
@@ -780,7 +440,6 @@ async function appSubmit(v) {
 }
 
 /* ---------------- misc ---------------- */
-function buyToast(what) { toast("Demo: " + what + " (hook up Stripe here)"); }
 function toast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -789,9 +448,7 @@ function toast(msg) {
   t._h = setTimeout(() => t.classList.remove("show"), 2600);
 }
 
-/* boot: honor #v hash */
-const initial = (location.hash || "#v1").slice(1);
-switchV(VARIANTS[initial] ? initial : "v1");
+
 </script>
 </body>
 </html>
