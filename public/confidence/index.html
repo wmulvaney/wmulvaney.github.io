@@ -306,6 +306,8 @@
       <input type="text" id="v1app-name" placeholder="First name is fine" autocomplete="name" />
       <label for="v1app-email">Email</label>
       <input type="email" id="v1app-email" placeholder="you@example.com" autocomplete="email" />
+      <label for="v1app-phone">Phone number</label>
+      <input type="text" id="v1app-phone" inputmode="tel" placeholder="So I can text you" autocomplete="tel" />
       <label for="v1app-city">City</label>
       <input type="text" id="v1app-city" placeholder="Where you're located" />
       <label for="v1app-now">Where are you right now?</label>
@@ -413,6 +415,7 @@ async function appSubmit(v) {
   const val = id => (document.getElementById(v + "app-" + id).value || "").trim();
   if (!val("name")) { toast("Add your name"); return; }
   if (!val("email") || !val("email").includes("@")) { toast("Add a valid email"); return; }
+  if (!val("phone")) { toast("Add your phone number"); return; }
   if (!val("now")) { toast("Tell me where you're at first"); return; }
   if (!document.getElementById(v + "app-agree").checked) { toast("Please confirm the pricing checkbox"); return; }
   const btn = document.getElementById(v + "app-go");
@@ -423,7 +426,7 @@ async function appSubmit(v) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         kind: "one_on_one_application",
-        name: val("name"), email: val("email"), city: val("city"),
+        name: val("name"), email: val("email"), phone: val("phone"), city: val("city"),
         goal: val("now"), sticking_point: val("why"), frequency: val("start"),
         website: "",
       }),

@@ -94,6 +94,8 @@
       <input type="text" id="f-name" placeholder="First name is fine" autocomplete="name" />
       <label for="f-email">Email (the one you used at checkout)</label>
       <input type="email" id="f-email" placeholder="you@example.com" autocomplete="email" />
+      <label for="f-phone">Phone number</label>
+      <input type="text" id="f-phone" inputmode="tel" placeholder="So I can text you" autocomplete="tel" />
       <label for="f-city">City</label>
       <input type="text" id="f-city" placeholder="Where you're located" />
       <label for="f-goal">What does your ideal dating life look like?</label>
@@ -121,13 +123,14 @@
     <h1>Check your email.</h1>
     <p class="lede" id="doneLede">Your welcome email has the app link and the guide. Here's what happens next:</p>
     <div class="card">
-      <div class="next"><span class="n">1</span><span><b>Open the app</b> and sign in with your checkout email. No password, we email you a code. It walks you through all 12 weeks, day by day.</span></div>
-      <div class="next"><span class="n">2</span><span><b>Read the guide</b>, included free with your coaching.</span></div>
-      <div class="next"><span class="n">3</span><span><b>I'll message you in the app within 24 hours</b> to kick off week 1 and introduce you to the group.</span></div>
+      <div class="next"><span class="n">1</span><span><b>Your 12 weeks start Monday<span id="startMonday"></span>.</b> That gives me time to review your goals and set up your plan.</span></div>
+      <div class="next"><span class="n">2</span><span><b>Open the app</b> and sign in with your checkout email. No password, we email you a code. It walks you through all 12 weeks, day by day.</span></div>
+      <div class="next"><span class="n">3</span><span><b>Download the guide (PDF)</b>, included free with your coaching. The link is below and in your email.</span></div>
+      <div class="next"><span class="n">4</span><span><b>Will will reach out to you via email and/or text in the next few days</b>, so keep an eye out.</span></div>
     </div>
     <div class="row">
       <a class="btn btn-primary" href="https://coaching.williammulvaney.com/">Open the app</a>
-      <a class="btn btn-secondary" href="/confidence/guide-7f3k9q.html">Read the guide</a>
+      <a class="btn btn-secondary" id="guideBtn" href="#" style="display:none">Download the guide (PDF)</a>
     </div>
   </div>
 
@@ -151,6 +154,7 @@ async function submitForm() {
   const v = id => (document.getElementById(id).value || "").trim();
   if (!v("f-name")) { toast("Add your name"); return; }
   if (!v("f-email") || !v("f-email").includes("@")) { toast("Add the email you used at checkout"); return; }
+  if (!v("f-phone")) { toast("Add your phone number"); return; }
   if (!v("f-goal")) { toast("Tell me your 12-week goal"); return; }
   const btn = document.getElementById("goBtn");
   btn.disabled = true; btn.textContent = "Setting up…";
@@ -160,7 +164,7 @@ async function submitForm() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         kind: "personal_coaching",
-        name: v("f-name"), email: v("f-email"), city: v("f-city"),
+        name: v("f-name"), email: v("f-email"), phone: v("f-phone"), city: v("f-city"),
         goal: v("f-goal"), sticking_point: v("f-stick"),
         frequency: v("f-freq"), notes: v("f-notes"),
         session_id: sessionId, website: v("f-web"),
@@ -168,7 +172,12 @@ async function submitForm() {
     });
     const out = await res.json().catch(() => ({}));
     if (!res.ok || !out.ok) throw new Error(out.error || "request failed");
-    if (!out.emailed) document.getElementById("doneLede").textContent = "You're all set. Here's what happens next:";
+    if (!out.emailed && !out.merged) document.getElementById("doneLede").textContent = "You're all set. Here's what happens next:";
+    if (out.guide_url) {
+      const g = document.getElementById("guideBtn");
+      g.href = out.guide_url; g.style.display = "";
+    }
+    document.getElementById("startMonday").textContent = out.start_monday ? ", " + out.start_monday : "";
     document.getElementById("formView").style.display = "none";
     document.getElementById("doneView").style.display = "";
     window.scrollTo(0, 0);
