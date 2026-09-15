@@ -133,6 +133,9 @@
   .p-imgs.three { grid-template-columns: repeat(3, 1fr); }
   .p-imgs.two { grid-template-columns: repeat(2, 1fr); }
   .p-imgs img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; border: 1px solid var(--border-strong); filter: saturate(0.95); }
+  /* zoomed crops for the approach shots (subject is small in the raw photos) */
+  .p-imgs .pz { position: relative; aspect-ratio: 3 / 4; overflow: hidden; border: 1px solid var(--border-strong); }
+  .p-imgs .pz img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; border: none; transform-origin: var(--zx, 50%) var(--zy, 50%); transform: scale(var(--zs, 1)); }
 
   ul.checks { list-style: none; margin: 0 0 22px; padding: 0; }
   ul.checks li { padding: 8px 0 8px 30px; position: relative; font-size: 14.5px; line-height: 1.55; color: var(--muted); }
@@ -242,7 +245,8 @@
         <p class="lede">The exact 12-week plan for going from avoiding eye contact to opening conversations anywhere. One purchase, instant download, run it yourself.</p>
         <div class="price-line"><span class="price-big">$9</span><span class="price-note">one-time</span></div>
         <button class="btn-primary" onclick="v1go(2)">Buy now · $9</button>
-        <div class="guarantee"><span class="g-ic">✓</span><span>30-day money-back guarantee.</span></div>
+        <div class="guarantee"><span class="g-ic">✓</span><span>30-day money-back guarantee.*</span></div>
+        <p class="fine">*Follow the guide and it doesn't work, or you fundamentally disagree with it? Full refund.</p>
       </div>
       <div class="cover-slot"></div>
     </div>
@@ -252,23 +256,23 @@
     <div class="divider-lbl">The receipts</div>
     <div class="proof">
       <div>
-        <div class="p-label">1,000+ real approaches · a few caught on camera</div>
+        <div class="p-label">The process</div>
         <div class="p-imgs three">
-          <img src="proof/approach-yeti.jpg" alt="William approaching a woman outside a storefront" loading="lazy" />
-          <img src="proof/approach-aisle.jpg" alt="William talking with a group in a grocery aisle" loading="lazy" />
-          <img src="proof/approach-checkout.jpg" alt="William starting a conversation in a store" loading="lazy" />
+          <div class="pz" style="--zs:2.1; --zx:46%; --zy:30%"><img src="proof/approach-yeti.jpg" alt="William approaching a woman outside a storefront" loading="lazy" /></div>
+          <div class="pz" style="--zs:1.9; --zx:52%; --zy:58%"><img src="proof/approach-aisle.jpg" alt="William talking with a group in a grocery aisle" loading="lazy" /></div>
+          <div class="pz" style="--zs:2.4; --zx:48%; --zy:26%"><img src="proof/approach-checkout.jpg" alt="William starting a conversation in a store" loading="lazy" /></div>
         </div>
       </div>
       <div class="flow-arrow">→</div>
       <div>
-        <div class="p-label">Where it ended up</div>
+        <div class="p-label">The outcome</div>
         <div class="p-imgs two">
           <img src="proof/couple-crown.jpg" alt="William with his girlfriend" loading="lazy" />
           <img src="proof/couple-river.jpg" alt="William and his girlfriend at the river" loading="lazy" />
         </div>
       </div>
     </div>
-    <p class="j-tease">Not stock photos. The left side is me doing the reps this guide is built from. The right side is my girlfriend of almost two years — I approached her in daylight, exactly like the guide teaches.</p>
+    <p class="j-tease">My process → the outcome: a 2+ year relationship.</p>
   </div>
 
   <!-- step 2: the question -->
