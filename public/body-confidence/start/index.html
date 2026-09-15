@@ -97,7 +97,9 @@
       <label for="f-phone">Phone number</label>
       <input type="text" id="f-phone" inputmode="tel" placeholder="So I can text you" autocomplete="tel" />
       <label for="f-city">City</label>
-      <input type="text" id="f-city" placeholder="Where you're located" />
+      <input type="text" id="f-city" placeholder="e.g. Austin" autocomplete="address-level2" />
+      <label for="f-state">State</label>
+      <input type="text" id="f-state" placeholder="e.g. TX" autocomplete="address-level1" />
       <label for="f-goal">What are you training for?</label>
       <textarea id="f-goal" placeholder="Get specific. What do you want to look like and feel like a few months from now?"></textarea>
       <label for="f-stick">What's stopped you so far?</label>
@@ -165,7 +167,8 @@ async function submitForm() {
       body: JSON.stringify({
         kind: "personal_coaching",
         product: "body-confidence",
-        name: v("f-name"), email: v("f-email"), phone: v("f-phone"), city: v("f-city"),
+        name: v("f-name"), email: v("f-email"), phone: v("f-phone"),
+        city: [v("f-city"), v("f-state")].filter(Boolean).join(", "),
         goal: v("f-goal"), sticking_point: v("f-stick"),
         frequency: v("f-freq"), notes: v("f-notes"),
         session_id: sessionId, website: v("f-web"),
