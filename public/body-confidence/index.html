@@ -446,6 +446,10 @@ async function appSubmit(v) {
   }
 }
 
+/* ---------------- deep links ---------------- */
+// #offers jumps straight to the coaching options step (used by the download page).
+if (location.hash === "#offers") v1go(3);
+
 /* ---------------- misc ---------------- */
 function toast(msg) {
   const t = document.getElementById("toast");
