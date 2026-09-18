@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
 <meta name="theme-color" content="#040b12" />
-<title>12 Weeks to Confident Approaching · William Mulvaney</title>
+<title>30 Days to a Gym Routine That Sticks · William Mulvaney</title>
 <link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
 <link rel="apple-touch-icon" href="/willpower_logo.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -71,7 +72,7 @@
   }
   .cover:hover { transform: rotate(0deg) scale(1.015); }
   .cover .photo { position: absolute; inset: 0 0 34% 0; overflow: hidden; }
-  .cover .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 40%; display: block; filter: saturate(0.92); }
+  .cover .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; display: block; filter: saturate(0.92); }
   .cover .photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(4,11,18,0.05) 55%, rgba(4,11,18,0.92) 100%); }
   .cover .photo .ph-fallback {
     display: none; position: absolute; inset: 0; align-items: center; justify-content: center; text-align: center;
@@ -126,18 +127,11 @@
     .journey { grid-template-columns: 1fr auto 1fr; }
     .flow-arrow { transform: none; }
   }
+  /* credential chips */
+  .cred-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .cred-chip { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text); border: 1px solid rgba(71, 157, 194, 0.5); background: var(--accent-soft); padding: 12px 18px; white-space: nowrap; }
+  .cred-note { text-align: center; font-size: 12.5px; color: var(--faint); margin-top: 14px; line-height: 1.6; }
   .j-tease { text-align: center; font-size: 12.5px; color: var(--faint); margin-top: 16px; line-height: 1.6; }
-  /* proof strip: real approaches -> the girlfriend */
-  .proof { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: center; }
-  @media (min-width: 760px) { .proof { grid-template-columns: 3fr auto 2fr; } }
-  .p-label { font-size: 10px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: 0.22em; margin: 0 0 10px; }
-  .p-imgs { display: grid; gap: 10px; }
-  .p-imgs.three { grid-template-columns: repeat(3, 1fr); }
-  .p-imgs.two { grid-template-columns: repeat(2, 1fr); }
-  .p-imgs img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; border: 1px solid var(--border-strong); filter: saturate(0.95); }
-  /* zoomed crops for the approach shots (subject is small in the raw photos) */
-  .p-imgs .pz { position: relative; aspect-ratio: 3 / 4; overflow: hidden; border: 1px solid var(--border-strong); }
-  .p-imgs .pz img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; border: none; transform-origin: var(--zx, 50%) var(--zy, 50%); transform: scale(var(--zs, 1)); }
 
   ul.checks { list-style: none; margin: 0 0 22px; padding: 0; }
   ul.checks li { padding: 8px 0 8px 30px; position: relative; font-size: 14.5px; line-height: 1.55; color: var(--muted); }
@@ -203,7 +197,7 @@
 
   /* v4 offer steps */
   .step-wrap { max-width: 620px; margin: 0 auto; padding-top: 30px; }
-  .step-wrap.wide-offer { max-width: 860px; }
+  .step-wrap.wide-offer { max-width: 1060px; }
   .progress { display: flex; gap: 6px; margin-bottom: 34px; }
   .progress .p { flex: 1; height: 3px; background: var(--card-2); }
   .progress .p.on { background: var(--accent); }
@@ -242,7 +236,7 @@ fbq('track', 'PageView');
 <script>
 !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
 posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
-posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'landing'});
+posthog.register({funnel_product: 'gym', funnel_price: 29, funnel_page: 'landing'});
 </script>
 <!-- PostHog analytics (end) -->
 </head>
@@ -256,15 +250,15 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'landi
      V1 · ASK-FIRST FLOW: BUY → "WANT HELP?" QUESTION → OFFERS OR CHECKOUT
      ================================================================ -->
 <section id="v1">
-  <!-- step 1: minimal, distraction-free guide page (copy of V4) -->
+  <!-- step 1: minimal, distraction-free guide page -->
   <div class="v1-step" id="v1s1">
     <div class="hero">
       <div>
-        <div class="kicker">William Mulvaney · The Guide</div>
-        <h1 class="hero-title">12 Weeks to Confident Approaching</h1>
-        <p class="lede">The exact 12-week plan for going from avoiding eye contact to opening conversations anywhere. One purchase, instant download, run it yourself.</p>
-        <div class="price-line"><span class="price-big">$9</span><span class="price-note">one-time</span></div>
-        <button class="btn-primary" onclick="v1go(2)">Buy now · $9</button>
+        <div class="kicker">William Mulvaney · Training Guide</div>
+        <h1 class="hero-title">30 Days to a Gym Routine That Sticks</h1>
+        <p class="lede">The 30-day plan built to make progress obvious enough that you actually want to keep going. Three short dumbbell workouts a week. One purchase, instant download, yours to keep.</p>
+        <div class="price-line"><span class="price-big">$29</span><span class="price-note">one-time</span></div>
+        <button class="btn-primary" onclick="v1go(3)">Buy now · $29</button>
         <div class="guarantee"><span class="g-ic">✓</span><span>30-day money-back guarantee.*</span></div>
         <p class="fine">*Follow the guide and it doesn't work, or you fundamentally disagree with it? Full refund.</p>
       </div>
@@ -273,26 +267,14 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'landi
     <div class="divider-lbl">Where it takes you</div>
     <div class="journey-slot"></div>
 
-    <div class="divider-lbl">The receipts</div>
-    <div class="proof">
-      <div>
-        <div class="p-label">The process</div>
-        <div class="p-imgs three">
-          <div class="pz" style="--zs:2.1; --zx:46%; --zy:30%"><img src="proof/approach-yeti.jpg" alt="William approaching a woman outside a storefront" loading="lazy" /></div>
-          <div class="pz" style="--zs:1.9; --zx:52%; --zy:58%"><img src="proof/approach-aisle.jpg" alt="William talking with a group in a grocery aisle" loading="lazy" /></div>
-          <div class="pz" style="--zs:2.4; --zx:48%; --zy:26%"><img src="proof/approach-checkout.jpg" alt="William starting a conversation in a store" loading="lazy" /></div>
-        </div>
-      </div>
-      <div class="flow-arrow">→</div>
-      <div>
-        <div class="p-label">The outcome</div>
-        <div class="p-imgs two">
-          <img src="proof/couple-crown.jpg" alt="William with his girlfriend" loading="lazy" />
-          <img src="proof/couple-river.jpg" alt="William and his girlfriend at the river" loading="lazy" />
-        </div>
-      </div>
+    <div class="divider-lbl">I train what I teach</div>
+    <div class="cred-chips">
+      <span class="cred-chip">Spartan Race</span>
+      <span class="cred-chip">100 Mile Ultramarathon</span>
+      <span class="cred-chip">Sub 10% Body Fat</span>
+      <span class="cred-chip">Brazilian Jiu Jitsu Competitor</span>
     </div>
-    <p class="j-tease">My process → the outcome: a 2+ year relationship.</p>
+    <p class="cred-note">All of it started with the same thing this guide builds: a routine that survives week 3.</p>
   </div>
 
   <!-- step 2: the question -->
@@ -300,7 +282,7 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'landi
     <div class="progress"><div class="p on"></div><div class="p now"></div><div class="p"></div><div class="p"></div></div>
     <div class="kicker">Quick question before checkout</div>
     <h2 class="sect">Do you want help<br/>following through?</h2>
-    <p class="lede">Honest question. Most guys don't fail the approach, they fail the follow-through: week 3 arrives, motivation dips, and the guide sits in a downloads folder. If that sounds familiar, it's worth 20 seconds to see how we fix it.</p>
+    <p class="lede">Honest question. Most guys don't fail the workout, they fail the follow-through: week 3 arrives, motivation dips, and the plan sits in a downloads folder. If you've run that loop before, it's worth 20 seconds to see how we fix it.</p>
     <div style="max-width:380px">
       <button class="btn-primary btn-block" onclick="v1go(3)">Yes, show me my options</button>
       <button class="btn-secondary btn-block" style="margin-top:10px" onclick="goGuideCheckout()">No, I've got this. Checkout</button>
@@ -309,12 +291,39 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'landi
 
   <!-- step 3: offers (only if they said yes); 1-1 first as the price anchor -->
   <div class="v1-step step-wrap wide-offer" id="v1s3" style="display:none">
-    <div class="progress"><div class="p on"></div><div class="p on"></div><div class="p now"></div><div class="p"></div></div>
-    <div class="kicker">Good call · here are your options</div>
-    <div class="offer-timer">⏱ This offer appears once, on this page only</div>
-    <h2 class="sect">Two ways to make sure<br/>the 12 weeks actually happen.</h2>
-    <p class="lede">Both come with me in your corner and an active group of guys on the same path. Join Personal Coaching and the guide is free.</p>
-    <div class="grid-2">
+    <div class="progress"><div class="p on"></div><div class="p now"></div><div class="p"></div></div>
+    <h2 class="sect">Increase your likelihood of success</h2>
+    <div class="grid-3">
+      <div class="card tier">
+        <div class="t-name">The Guide Only</div>
+        <div class="t-for">Self-guided</div>
+        <div class="t-price">$29</div>
+        <div class="t-per">one-time</div>
+        <div class="t-sub">Instant download. 30-day money-back guarantee.</div>
+        <ul class="checks">
+          <li><b>The full 30-day plan</b>, instant download</li>
+          <li>12 dumbbell workouts, every exercise explained</li>
+          <li>Yours to keep, at your own pace</li>
+          <li>No app, no session feedback, no group</li>
+        </ul>
+        <button class="btn-secondary btn-block" onclick="goGuideCheckout()">Get the guide &middot; $29</button>
+      </div>
+      <div class="card tier hot">
+        <div class="hot-badge">Most choose this · new-reader price</div>
+        <div class="t-name">Personal Coaching</div>
+        <div class="t-for">Personal feedback, on your schedule</div>
+        <div class="t-price"><span class="strike">$199</span> $49</div>
+        <div class="t-per">first month · then $199/month</div>
+        <div class="t-sub">Cancel anytime. <b style="color:var(--text)">Guide included free.</b></div>
+        <ul class="checks">
+          <li><b>The guide, free</b>: your $29 stays in your pocket</li>
+          <li><b>The app</b>: walks you through all 30 days, workout by workout</li>
+          <li>Feedback on every session you log, within 24h</li>
+          <li><b>The group</b>: an active community of guys on the same path as you</li>
+          <li>Weekly log reviews and plan adjustments</li>
+        </ul>
+        <button class="btn-primary btn-block" onclick="buyPersonal()">Join for $49</button>
+      </div>
       <div class="card tier">
         <div class="t-name">1-on-1 Coaching</div>
         <div class="t-for">The full program, together</div>
@@ -325,29 +334,10 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'landi
           <li>Everything in Personal Coaching</li>
           <li><b>Weekly 1-1 calls</b></li>
           <li><b>Daily check-ins</b>, every single day</li>
-          <li><b>In-the-field sessions</b>: we go out and approach together</li>
+          <li><b>Training sessions together</b>: in person or live on video</li>
         </ul>
         <button class="btn-secondary btn-block" onclick="v1go(4)">Apply for 1-on-1</button>
       </div>
-      <div class="card tier hot">
-        <div class="hot-badge">Most choose this · new-reader price</div>
-        <div class="t-name">Personal Coaching</div>
-        <div class="t-for">Personal feedback, on your schedule</div>
-        <div class="t-price"><span class="strike">$199</span> $49</div>
-        <div class="t-per">first month · then $199/month</div>
-        <div class="t-sub">Cancel anytime. <b style="color:var(--text)">Guide included free.</b></div>
-        <ul class="checks">
-          <li><b>The guide, free</b>: your $9 stays in your pocket</li>
-          <li><b>The app</b>: walks you through all 12 weeks, day by day</li>
-          <li>Feedback on every session you log, within 24h</li>
-          <li><b>The group</b>: an active community of guys running the same 12 weeks</li>
-          <li>Weekly scorecard reviews and plan adjustments</li>
-        </ul>
-        <button class="btn-primary btn-block" onclick="buyPersonal()">Join for $49 · guide free</button>
-      </div>
-    </div>
-    <div style="text-align:center; margin-top: 6px">
-      <button class="btn-ghost" onclick="goGuideCheckout()">Just the guide for $9</button>
     </div>
   </div>
 
@@ -367,7 +357,7 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'landi
       <label for="v1app-city">City</label>
       <input type="text" id="v1app-city" placeholder="Where you're located" />
       <label for="v1app-now">Where are you right now?</label>
-      <textarea id="v1app-now" placeholder="How often do you approach today? What happens when you try?"></textarea>
+      <textarea id="v1app-now" placeholder="How often do you train today? What usually happens around week 3?"></textarea>
       <label for="v1app-why">Why 1-on-1 instead of the group?</label>
       <textarea id="v1app-why" placeholder="What do you want from working with me directly?"></textarea>
       <label for="v1app-start">When can you start?</label>
@@ -387,8 +377,8 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'landi
     <div class="progress"><div class="p on"></div><div class="p on"></div><div class="p on"></div><div class="p on"></div></div>
     <div class="kicker">Order complete</div>
     <h2 class="sect" id="v1-thanks">You're in. Check your email.</h2>
-    <p class="lede" id="v1-thanks-sub">Your guide download link is in your inbox. Week 1 starts the moment you decide it does.</p>
-    <button class="btn-primary" id="v1-thanks-cta" style="display:none" onclick="goGuideCheckout()">Get the guide · $9</button>
+    <p class="lede" id="v1-thanks-sub">Your guide download link is in your inbox. Day 0 starts the moment you decide it does.</p>
+    <button class="btn-primary" id="v1-thanks-cta" style="display:none" onclick="goGuideCheckout()">Get the guide · $29</button>
   </div>
 </section>
 
@@ -404,30 +394,30 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'landi
 /* ---------------- shared content ---------------- */
 const JOURNEY = `<div class="journey">
   <div class="card jcard">
-    <div class="sect-label">Week 1 · Where you start</div>
-    <div class="j-big">Nervous. Overthinking. Rehearsing lines you never say out loud.</div>
-    <p class="j-txt">Heart racing at the thought of a simple hello. That is exactly who this was built for.</p>
+    <div class="sect-label">Day 1 · Where you start</div>
+    <div class="j-big">You know what to do. You've read the routines. Following through is the part that keeps not happening.</div>
+    <p class="j-txt">Two motivated weeks, one missed session, and the whole thing quietly dies. That is exactly who this was built for.</p>
   </div>
   <div class="flow-arrow">→</div>
   <div class="card jcard hot-j">
-    <div class="sect-label">Week 12 · Where you end</div>
-    <div class="j-big">Talking to groups of girls in broad daylight, playfully, and asking out the one you think is cutest.</div>
+    <div class="sect-label">Day 30 · Where you end</div>
+    <div class="j-big">A month of workouts actually completed, a log that shows you lifting more than when you started, and photos to compare.</div>
   </div>
 </div>
-<p class="j-tease">The ten weeks in between are inside the guide. Each one is small enough to do and big enough to change you.</p>`;
+<p class="j-tease">The four weeks in between are inside the guide. Three short dumbbell workouts a week, built so you see progress before motivation runs out.</p>`;
 document.querySelectorAll(".journey-slot").forEach(el => el.innerHTML = JOURNEY);
 
 /* guide cover illustration · the photo + title panel */
 function coverHtml() {
   return `<div class="cover">
-    <div class="c-badge">PDF Guide · $9</div>
+    <div class="c-badge">PDF Guide · $29</div>
     <div class="photo">
-      <img src="approach.jpg" alt="A real approach in the wild" onerror="this.style.display='none'; this.parentElement.querySelector('.ph-fallback').style.display='flex';" />
-      <div class="ph-fallback">Add approach.jpg<br/>to this folder</div>
+      <img src="spartan-stone.jpg" alt="Will carrying the atlas stone at a Spartan race" onerror="this.style.display='none'; this.parentElement.querySelector('.ph-fallback').style.display='flex';" />
+      <div class="ph-fallback">Add spartan-stone.jpg<br/>to this folder</div>
     </div>
     <div class="panel">
-      <div class="c-kicker">A 12-week training plan</div>
-      <div class="c-title">12 Weeks to Confident Approaching</div>
+      <div class="c-kicker">A 30-day training plan</div>
+      <div class="c-title">30 Days to a Gym Routine That Sticks</div>
       <div class="c-author">William Mulvaney</div>
     </div>
   </div>`;
@@ -441,10 +431,10 @@ const CONFIRM_HEADS = {
 };
 const CONFIRM_SUBS = {
   "async": "The guide and your group invite are in your inbox, free. I'll message you within 24 hours to kick off your coaching.",
-  "one":   "I review 1-on-1 applications personally and will reply within 48 hours. In the meantime, grab the guide for $9 and start week 1 today. If you're accepted, I'll credit the $9 back.",
+  "one":   "I review 1-on-1 applications personally and will reply within 48 hours. In the meantime, grab the guide for $29 and start your day 0 measurements today. If you're accepted, I'll credit the $29 back.",
 };
 const CONFIRM_HEAD_DEFAULT = "You're in. Check your email.";
-const CONFIRM_SUB_DEFAULT = "Your guide download link is in your inbox. Week 1 starts the moment you decide it does.";
+const CONFIRM_SUB_DEFAULT = "Your guide download link is in your inbox. Day 0 starts the moment you decide it does.";
 
 /* ---------------- v1 steps (ask-first flow) ---------------- */
 function v1go(step, choice) {
@@ -458,10 +448,13 @@ function v1go(step, choice) {
 }
 
 /* ---------------- checkout + application endpoints ---------------- */
-const STRIPE_PERSONAL_URL = "https://buy.stripe.com/3cIbJ2bhw8fn3Os7RhfjG0e";
-const STRIPE_GUIDE_URL = "https://buy.stripe.com/3cIeVe5Xc3Z7ckY2wXfjG0f";
+const STRIPE_PERSONAL_URL = "https://buy.stripe.com/14A5kE0CS7bjacQfjJfjG0h";
+const STRIPE_GUIDE_URL = "https://buy.stripe.com/fZu7sM3P4gLTgBe4F5fjG0i";
 const ONBOARD_FN_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/confidence-onboard";
-function buyPersonal() { window.location.href = STRIPE_PERSONAL_URL; }
+function buyPersonal() {
+  if (STRIPE_PERSONAL_URL) window.location.href = STRIPE_PERSONAL_URL;
+  else toast("Checkout is almost ready. Check back shortly.");
+}
 function goGuideCheckout() {
   if (STRIPE_GUIDE_URL) window.location.href = STRIPE_GUIDE_URL;
   else toast("Guide checkout is almost ready. Check back shortly.");
@@ -483,6 +476,7 @@ async function appSubmit(v) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         kind: "one_on_one_application",
+        product: "body-confidence",
         name: val("name"), email: val("email"), phone: val("phone"), city: val("city"),
         goal: val("now"), sticking_point: val("why"), frequency: val("start"),
         website: "",
@@ -531,7 +525,7 @@ function toast(msg) {
   wrap('buyPersonal', function () { cap('checkout_click', {tier: 'personal_coaching'}, true); });
   wrap('appSubmit', function () { cap('application_submit', {tier: 'one_on_one'}); });
   wrap('submitForm', function () { cap('intake_submit'); });
-  if ('landing' === 'download') cap('guide_purchased', {value: 9, currency: 'USD'});
+  if ('landing' === 'download') cap('guide_purchased', {value: 29, currency: 'USD'});
 })();
 </script>
 <!-- PostHog funnel events (end) -->

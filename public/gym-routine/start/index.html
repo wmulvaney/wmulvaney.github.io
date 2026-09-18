@@ -87,7 +87,7 @@
 <script>
 !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
 posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
-posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'start'});
+posthog.register({funnel_product: 'gym', funnel_price: 29, funnel_page: 'start'});
 </script>
 <!-- PostHog analytics (end) -->
 </head>
@@ -96,7 +96,7 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'start
 
   <div id="formView">
     <div class="kicker">Payment received · one more step</div>
-    <h1>Let's set up your 12 weeks.</h1>
+    <h1>Let's set up your coaching.</h1>
     <p class="lede">Two minutes. Your answers go straight to me and shape how I coach you, so be specific and be honest.</p>
     <div class="card">
       <label for="f-name">Name</label>
@@ -109,20 +109,20 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'start
       <input type="text" id="f-city" placeholder="e.g. Austin" autocomplete="address-level2" />
       <label for="f-state">State</label>
       <input type="text" id="f-state" placeholder="e.g. TX" autocomplete="address-level1" />
-      <label for="f-goal">What does your ideal dating life look like?</label>
-      <textarea id="f-goal" placeholder="Get specific. Who do you want to be able to walk up to, where, and what happens next?"></textarea>
+      <label for="f-goal">What are you training for?</label>
+      <textarea id="f-goal" placeholder="Get specific. What do you want to look like and feel like a few months from now?"></textarea>
       <label for="f-stick">What's stopped you so far?</label>
-      <textarea id="f-stick" placeholder="Freezing up? Never trying? Starting strong and fading?"></textarea>
-      <label for="f-freq">If you see an attractive woman in public, how often do you go talk to her?</label>
+      <textarea id="f-stick" placeholder="Starting strong and fading? Never starting? No plan? Be honest."></textarea>
+      <label for="f-freq">How often do you work out right now?</label>
       <select id="f-freq">
         <option>Never</option>
-        <option>Almost never</option>
-        <option>Sometimes</option>
-        <option>About half the time</option>
-        <option>Almost always</option>
+        <option>A few times a year</option>
+        <option>A few times a month</option>
+        <option>1-2 times a week</option>
+        <option>3+ times a week</option>
       </select>
       <label for="f-notes">Anything else I should know?</label>
-      <textarea id="f-notes" placeholder="Schedule constraints, past experience, anything relevant (optional)"></textarea>
+      <textarea id="f-notes" placeholder="Equipment you have, injuries, schedule constraints, anything relevant (optional)"></textarea>
       <div class="hp"><label for="f-web">Website</label><input type="text" id="f-web" tabindex="-1" autocomplete="off" /></div>
       <button class="btn-primary btn-block" id="goBtn" onclick="submitForm()">Finish setup</button>
     </div>
@@ -134,8 +134,8 @@ posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'start
     <h1>Check your email.</h1>
     <p class="lede" id="doneLede">Your welcome email has the app link and the guide. Here's what happens next:</p>
     <div class="card">
-      <div class="next"><span class="n">1</span><span><b>Your 12 weeks start Monday<span id="startMonday"></span>.</b> That gives me time to review your goals and set up your plan.</span></div>
-      <div class="next"><span class="n">2</span><span><b>Open the app</b> and sign in with your checkout email. No password, we email you a code. It walks you through all 12 weeks, day by day.</span></div>
+      <div class="next"><span class="n">1</span><span><b>Your coaching starts Monday<span id="startMonday"></span>.</b> That gives me time to review your goals and set up your plan.</span></div>
+      <div class="next"><span class="n">2</span><span><b>Open the app</b> and sign in with your checkout email. No password, we email you a code. It walks you through your plan, day by day.</span></div>
       <div class="next"><span class="n">3</span><span><b>Download the guide (PDF)</b>, included free with your coaching. The link is below and in your email.</span></div>
       <div class="next"><span class="n">4</span><span><b>Will will reach out to you via email and/or text in the next few days</b>, so keep an eye out.</span></div>
     </div>
@@ -166,7 +166,7 @@ async function submitForm() {
   if (!v("f-name")) { toast("Add your name"); return; }
   if (!v("f-email") || !v("f-email").includes("@")) { toast("Add the email you used at checkout"); return; }
   if (!v("f-phone")) { toast("Add your phone number"); return; }
-  if (!v("f-goal")) { toast("Tell me your 12-week goal"); return; }
+  if (!v("f-goal")) { toast("Tell me what you're training for"); return; }
   const btn = document.getElementById("goBtn");
   btn.disabled = true; btn.textContent = "Setting up…";
   try {
@@ -175,6 +175,7 @@ async function submitForm() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         kind: "personal_coaching",
+        product: "body-confidence",
         name: v("f-name"), email: v("f-email"), phone: v("f-phone"),
         city: [v("f-city"), v("f-state")].filter(Boolean).join(", "),
         goal: v("f-goal"), sticking_point: v("f-stick"),
@@ -217,7 +218,7 @@ async function submitForm() {
   wrap('buyPersonal', function () { cap('checkout_click', {tier: 'personal_coaching'}, true); });
   wrap('appSubmit', function () { cap('application_submit', {tier: 'one_on_one'}); });
   wrap('submitForm', function () { cap('intake_submit'); });
-  if ('start' === 'download') cap('guide_purchased', {value: 9, currency: 'USD'});
+  if ('start' === 'download') cap('guide_purchased', {value: 29, currency: 'USD'});
 })();
 </script>
 <!-- PostHog funnel events (end) -->
