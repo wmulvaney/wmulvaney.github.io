@@ -163,7 +163,11 @@
   .cta-band .cta-line { display: flex; align-items: baseline; justify-content: center; gap: 12px; margin-bottom: 6px; }
   .cta-band .cta-sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
   .with-img { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
-  @media (min-width: 760px) { .with-img { grid-template-columns: minmax(0, 1fr) 340px; } .with-img.flip > :first-child { order: 2; } }
+  @media (min-width: 760px) {
+    .with-img { grid-template-columns: minmax(0, 1fr) 340px; }
+    .with-img.flip { grid-template-columns: 340px minmax(0, 1fr); }
+    .with-img.flip .sect-img { order: -1; }
+  }
   .sect-img { width: 100%; max-width: 340px; margin: 0 auto; display: block; border: 1px solid var(--border-strong); aspect-ratio: 4 / 5; object-fit: cover; }
   @media (max-width: 759px) { .sect-img { max-width: 100%; aspect-ratio: 3 / 2; } }
   footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
@@ -238,11 +242,11 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
 <!-- ================= LABEL ================= -->
 <div class="divider-lbl">Where you are</div>
 <section class="with-img flip">
-  <img class="sect-img" src="img/scene-kitchen.jpg" alt="A man sitting alone at his kitchen table in the evening" loading="lazy" />
   <div>
     <h2>You want more out of your life. You just don't believe in yourself enough yet to go get it alone.</h2>
     <p class="body">I have been there. Most men are at some point. The difference is how long they stay, because some men stay there for good.</p>
   </div>
+  <img class="sect-img" src="img/scene-kitchen.jpg" alt="A man sitting alone at his kitchen table in the evening" loading="lazy" />
 </section>
 
 <!-- ================= OVERVIEW ================= -->
@@ -253,7 +257,7 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
     <p class="body"><b>What has worked has never been consistent.</b> A good date here, a girl who liked you there, mostly from circumstance, so it feels more like luck than something you can repeat on purpose.</p>
     <p class="body"><b>And pretending it is not a problem does not solve it.</b> Telling yourself you are just busy, or that you will deal with it later, keeps the week comfortable and the year the same.</p>
   </div>
-  <img class="sect-img" src="img/scene-diagram.jpg" alt="A diagram contrasting scattered luck with steady practice" loading="lazy" />
+  <img class="sect-img" src="img/scene-edge.jpg" alt="A man standing at the edge of a group at a party" loading="lazy" />
 </section>
 
 <!-- ================= SELL ================= -->
@@ -265,7 +269,6 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
 </section>
 
 <section class="with-img flip" style="margin-top:8px">
-  <img class="sect-img" src="img/couple-crown.jpg" alt="William and Carsyn" loading="lazy" style="aspect-ratio:4/5" />
   <div>
     <div class="sect-label">Me and Carsyn</div>
     <p class="body">I met Carsyn by walking up to her. Before I did, I thought she was completely out of my league.</p>
@@ -277,10 +280,11 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
       <p class="fine" style="margin-top:12px"><span class="js-when">Saturday, October 17 · 1:00 PM Central</span> · 2 hours live</p>
     </div>
   </div>
+  <img class="sect-img" src="img/couple-crown.jpg" alt="William and Carsyn" loading="lazy" style="aspect-ratio:4/5" />
 </section>
 
 <!-- ================= RECEIPTS ================= -->
-<div class="divider-lbl">The receipts</div>
+<div class="divider-lbl">Trusting the process</div>
 <section>
   <div class="proof">
     <div>
@@ -340,8 +344,16 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
   <details><summary>What if I can't make it?</summary><p>Email will@williammulvaney.com up until 24 hours before the workshop and you get a full refund.</p></details>
 </section>
 
+<!-- ================= CLOSING CTA ================= -->
+<section class="cta-band" style="margin-top:44px">
+  <div class="cta-line"><span class="price-big js-price">$29</span><span class="strike js-strike">$49</span><span class="price-note js-price-note">early bird</span></div>
+  <p class="cta-sub js-seats">The first 50 seats are $29. After that it's $49.</p>
+  <button class="btn-primary js-buy" onclick="register('footer')">Save my seat · $29</button>
+  <p class="fine" style="margin-left:auto;margin-right:auto;text-align:center"><span class="js-when">Saturday, October 17 · 1:00 PM Central</span> · 2 hours live</p>
+</section>
+
 <!-- ================= ABOUT ================= -->
-<div class="divider-lbl">Who is teaching</div>
+<div class="divider-lbl">Who am I</div>
 <section class="about">
   <img src="img/approach-yeti.jpg" alt="William Mulvaney approaching a woman outside a storefront" loading="lazy" />
   <div>
@@ -349,21 +361,6 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
     <p class="body">I coach men on dating and fitness, host The Willpower Podcast, and created <i>12 Weeks to Confident Approaching</i>, a week-by-week guide for going from avoiding eye contact to starting conversations anywhere.</p>
     <p class="body">I have approached over a thousand women, and the first ones were rough. Everything in this workshop is what I actually do, and what I have seen work with the men I coach.</p>
   </div>
-</section>
-
-<!-- ================= CLOSING CTA ================= -->
-<section class="with-img" style="margin-top:44px">
-  <div>
-    <h2 style="margin-bottom:10px">Saturday afternoon, two hours.</h2>
-    <p class="body" style="margin:0">You get the process I use, and your questions answered live.</p>
-  </div>
-  <img class="sect-img" src="img/scene-first-date.jpg" alt="A man and a woman laughing together on a first date" loading="lazy" />
-</section>
-<section class="cta-band" style="margin-top:20px">
-  <div class="cta-line"><span class="price-big js-price">$29</span><span class="strike js-strike">$49</span><span class="price-note js-price-note">early bird</span></div>
-  <p class="cta-sub js-seats">The first 50 seats are $29. After that it's $49.</p>
-  <button class="btn-primary js-buy" onclick="register('footer')">Save my seat · $29</button>
-  <p class="fine" style="margin-left:auto;margin-right:auto;text-align:center"><span class="js-when">Saturday, October 17 · 1:00 PM Central</span> · 2 hours live</p>
 </section>
 
 <footer>© William Mulvaney · Coaching</footer>
