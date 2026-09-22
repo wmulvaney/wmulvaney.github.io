@@ -270,12 +270,11 @@ posthog.register({funnel_product: 'group', funnel_page: 'landing'});
 <script>
 // Stripe Payment Link: $49 first month. Must carry
 // metadata product=group so stripe-webhook sends the group welcome (no guide).
-const STRIPE_GROUP_URL = "";
+const STRIPE_GROUP_URL = "https://buy.stripe.com/14AdRa85k8fn0CgefFfjG0n";
 
 function join(where) {
   try { fbq('track', 'InitiateCheckout', {value: 49, currency: 'USD', content_name: 'Group Coaching'}); } catch (e) {}
   try { posthog.capture('checkout_click', {tier: 'group', price: 49, where: where}, {send_instantly: true, transport: 'sendBeacon'}); } catch (e) {}
-  if (!STRIPE_GROUP_URL) { alert("Signups open shortly. Check back soon."); return; }
   setTimeout(() => { window.location.href = STRIPE_GROUP_URL; }, 250);
 }
 
