@@ -269,13 +269,14 @@ posthog.register({funnel_product: 'group', funnel_page: 'landing'});
 </div>
 
 <script>
-// Stripe Payment Link: $49 first month, then $199/month (same link as
-// Personal Coaching on /approaching and /confidence).
-const STRIPE_GROUP_URL = "https://buy.stripe.com/3cIbJ2bhw8fn3Os7RhfjG0e";
+// Stripe Payment Link: $49 first month, then $199/month. Must carry
+// metadata product=group so stripe-webhook sends the group welcome (no guide).
+const STRIPE_GROUP_URL = "";
 
 function join(where) {
   try { fbq('track', 'InitiateCheckout', {value: 49, currency: 'USD', content_name: 'Group Coaching'}); } catch (e) {}
   try { posthog.capture('checkout_click', {tier: 'group', price: 49, where: where}, {send_instantly: true, transport: 'sendBeacon'}); } catch (e) {}
+  if (!STRIPE_GROUP_URL) { alert("Signups open shortly. Check back soon."); return; }
   setTimeout(() => { window.location.href = STRIPE_GROUP_URL; }, 250);
 }
 
