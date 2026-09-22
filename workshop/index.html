@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#040b12" />
+<title>Dating Discipline Workshop · William Mulvaney</title>
+<meta name="description" content="A live 2-hour workshop on how to date in a way that makes you more attractive. Saturday, October 17, 7:00 PM Central, on Zoom." />
+<meta property="og:title" content="Dating Discipline Workshop" />
+<meta property="og:description" content="How to date in a way that makes you more attractive. Live on Zoom, Saturday, October 17." />
+<meta property="og:image" content="https://williammulvaney.com/workshop/img/approach.jpg" />
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="apple-touch-icon" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Same design language as the guide pages (/approaching, /gym-routine):
+     near-black navy stage, steel-blue accent, Playfair Display headings,
+     Space Grotesk UI, letter-spaced uppercase labels, thin alpha borders, square corners. */
+  :root {
+    --bg: #040b12;
+    --surface: rgba(10, 26, 39, 0.72);
+    --surface-strong: #0a1a27;
+    --card-2: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.22);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.58);
+    --faint: rgba(255, 255, 255, 0.34);
+    --accent: #479dc2;
+    --accent-press: #3a7e9b;
+    --accent-soft: rgba(71, 157, 194, 0.12);
+    --ok: #4ade80;
+    --warn: #fbbf24;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 45% at 75% -10%, rgba(71, 157, 194, 0.14), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 10% 110%, rgba(71, 157, 194, 0.07), transparent 60%);
+  }
+  .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 24px 20px 110px; }
+  .home-link { display: inline-block; margin: 6px 0 4px; }
+  .home-link img { height: 42px; width: auto; display: block; opacity: 0.9; filter: brightness(0) invert(1); }
+
+  .kicker { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(71, 157, 194, 0.95); margin-bottom: 14px; line-height: 1.8; }
+  h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(32px, 5.4vw, 52px); line-height: 1.08; color: #fff; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .h1-sub { font-family: var(--font-display); font-weight: 700; font-size: clamp(19px, 2.6vw, 25px); line-height: 1.3; color: rgba(255,255,255,0.8); margin: 0 0 18px; }
+  h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(23px, 3.4vw, 31px); color: #fff; margin: 0 0 14px; line-height: 1.2; }
+  .lede { color: var(--muted); font-size: 16px; line-height: 1.7; max-width: 560px; margin: 0 0 22px; }
+  p.body { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 640px; margin: 0 0 16px; }
+  p.body b { color: var(--text); font-weight: 600; }
+
+  .hero { display: grid; grid-template-columns: 1fr; gap: 34px; align-items: center; padding: 40px 0 20px; }
+  @media (min-width: 780px) { .hero { grid-template-columns: minmax(0, 1fr) 340px; } }
+  .hero-photo { position: relative; width: 100%; max-width: 340px; margin: 0 auto; aspect-ratio: 4 / 5; border: 1px solid var(--border-strong); box-shadow: var(--shadow); overflow: hidden; transform: rotate(1.4deg); }
+  .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 50%; display: block; }
+  .hero-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(4,11,18,0.9) 100%); }
+  .hero-photo .cap { position: absolute; left: 16px; right: 16px; bottom: 14px; z-index: 2; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.75); line-height: 1.7; }
+  .hero-photo .badge { position: absolute; top: 12px; right: 12px; z-index: 2; background: var(--accent); color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 6px 10px; }
+
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+  .fact { border: 1px solid var(--border-strong); padding: 8px 12px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
+
+  .price-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px; margin: 0 0 8px; }
+  .price-big { font-family: var(--font-display); font-weight: 900; font-size: 44px; color: #fff; line-height: 1; }
+  .strike { text-decoration: line-through; color: var(--faint); font-size: 20px; font-weight: 500; }
+  .price-note { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
+  .deadline { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--warn); margin: 0 0 18px; line-height: 1.7; }
+  .deadline.closed { color: var(--faint); }
+
+  button, .btn {
+    font-family: var(--font-ui); cursor: pointer; border: 1px solid transparent; border-radius: 0;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 17px 30px; transition: all 160ms ease; display: inline-block; text-decoration: none; text-align: center;
+  }
+  button:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-press); border-color: var(--accent-press); }
+  .btn-primary[disabled] { background: transparent; color: var(--faint); border-color: var(--border-strong); cursor: default; }
+  .fine { font-size: 12px; color: var(--faint); line-height: 1.6; margin-top: 12px; max-width: 460px; }
+
+  .divider-lbl { color: var(--faint); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin: 56px 0 28px; display: flex; align-items: center; gap: 12px; }
+  .divider-lbl::before, .divider-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.09); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 24px 22px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .card.hot { border-color: rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.10), var(--surface)); }
+  .sect-label { font-size: 10px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: 0.22em; margin: 0 0 12px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 720px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+
+  /* agenda */
+  .agenda { display: grid; gap: 0; border-top: 1px solid var(--border); }
+  .ag { display: grid; grid-template-columns: 48px 1fr; gap: 14px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+  .ag .n { font-family: var(--font-display); font-weight: 900; font-size: 26px; color: var(--accent); line-height: 1; }
+  .ag .t { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.4; }
+  .ag .d { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+  /* steps */
+  .step .num { font-family: var(--font-display); font-weight: 900; font-size: 34px; color: var(--accent); line-height: 1; margin-bottom: 12px; }
+  .step .t { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .step .d { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  ul.checks { list-style: none; margin: 0; padding: 0; }
+  ul.checks li { padding: 7px 0 7px 28px; position: relative; font-size: 14.5px; line-height: 1.55; color: var(--muted); }
+  ul.checks li::before { content: "✓"; position: absolute; left: 0; top: 7px; color: var(--accent); font-weight: 800; }
+  ul.checks.no li::before { content: "×"; color: var(--faint); }
+  ul.checks li b { color: var(--text); font-weight: 600; }
+
+  /* receipts */
+  .proof { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: center; }
+  @media (min-width: 780px) { .proof { grid-template-columns: 3fr auto 3fr; } }
+  .p-imgs { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
+  .p-imgs .pz { position: relative; aspect-ratio: 3 / 4; overflow: hidden; border: 1px solid var(--border-strong); background: var(--surface-strong); }
+  .p-imgs .pz img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transform-origin: var(--zx, 50%) var(--zy, 50%); transform: scale(var(--zs, 1)); }
+  .flow-arrow { color: var(--accent); font-size: 24px; background: var(--bg); border: 1px solid rgba(71, 157, 194, 0.45); width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; justify-self: center; transform: rotate(90deg); }
+  @media (min-width: 780px) { .flow-arrow { transform: none; } }
+  .p-note { text-align: center; font-size: 12.5px; color: var(--faint); margin-top: 16px; line-height: 1.6; }
+
+  /* about */
+  .about { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
+  @media (min-width: 720px) { .about { grid-template-columns: 220px 1fr; } }
+  .about img { width: 100%; max-width: 260px; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 30%; border: 1px solid var(--border-strong); display: block; }
+
+  /* price box */
+  .pricebox { max-width: 560px; margin: 0 auto; text-align: center; }
+  .pricebox .price-line { justify-content: center; }
+  .tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 20px; text-align: left; }
+  .tierchip { border: 1px solid var(--border); padding: 12px 14px; }
+  .tierchip.now { border-color: rgba(71, 157, 194, 0.7); background: var(--accent-soft); }
+  .tierchip.past { opacity: 0.45; }
+  .tierchip .tn { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
+  .tierchip .tp { font-family: var(--font-display); font-weight: 900; font-size: 24px; color: #fff; }
+  .tierchip .td { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .pricebox .btn-primary { width: 100%; }
+
+  /* faq */
+  details { border-bottom: 1px solid var(--border); padding: 16px 0; }
+  details summary { cursor: pointer; list-style: none; font-size: 15px; font-weight: 600; color: #fff; display: flex; justify-content: space-between; gap: 16px; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after { content: "+"; color: var(--accent); font-weight: 700; }
+  details[open] summary::after { content: "–"; }
+  details p { margin: 10px 0 0; font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* sticky mobile bar */
+  .sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(4, 11, 18, 0.94); border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: space-between; gap: 12px; transform: translateY(110%); transition: transform 200ms ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .sticky.show { transform: none; }
+  .sticky .s-txt { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .sticky .s-txt b { color: #fff; font-size: 15px; }
+  .sticky .btn-primary { padding: 13px 18px; white-space: nowrap; }
+  @media (min-width: 780px) { .sticky { display: none; } }
+
+  footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
+  .toast { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%) translateY(20px); background: var(--accent); color: #fff; font-weight: 700; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; padding: 13px 24px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 100; max-width: calc(100vw - 32px); text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '526303911209957');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=526303911209957&ev=PageView&noscript=1"/></noscript>
+<!-- PostHog analytics (start) -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
+posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
+</script>
+<!-- PostHog analytics (end) -->
+</head>
+<body>
+<div class="wrap">
+
+<a class="home-link" href="https://williammulvaney.com/" aria-label="William Mulvaney home"><img src="willpower_logo.svg" alt="William Mulvaney" /></a>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div>
+    <div class="kicker">Live workshop · <span class="js-when">Saturday, October 17 · 7:00 PM Central</span></div>
+    <h1>Dating Discipline Workshop</h1>
+    <p class="h1-sub">How to date in a way that makes you more attractive</p>
+    <p class="lede">A 2-hour live workshop on meeting women in real life, asking them out, and going on more dates. Discipline here means doing it consistently: a few habits you practice every week until talking to women you're attracted to feels normal.</p>
+    <div class="facts">
+      <span class="fact">2 hours</span>
+      <span class="fact">Live on Zoom</span>
+      <span class="fact">Q&amp;A included</span>
+      <span class="fact">Leave with a 30-day plan</span>
+    </div>
+    <div class="price-line"><span class="price-big js-price">$29</span><span class="strike js-strike">$49</span><span class="price-note js-price-note">early bird</span></div>
+    <div class="deadline js-deadline">Early bird ends Sunday, October 4</div>
+    <button class="btn-primary js-buy" onclick="register('hero')">Save my seat · $29</button>
+    <p class="fine">Can't make it after all? Reply to your confirmation email before the workshop starts and you get a full refund.</p>
+  </div>
+  <div class="hero-photo">
+    <div class="badge">Live · Oct 17</div>
+    <img src="img/approach.jpg" alt="William talking with a woman on a sidewalk while walking his dog" />
+  </div>
+</section>
+
+<!-- ================= THE IDEA ================= -->
+<div class="divider-lbl">The idea</div>
+<section>
+  <h2>More dates come from more practice.</h2>
+  <p class="body">Most guys who want to date more are waiting on something: the right app, the right night out, the right thing to say. Meanwhile they see women they would like to talk to every week and walk past them.</p>
+  <p class="body">In my experience the guys who date the most are not the smoothest. <b>They talk to more women, ask more of them out, and keep doing it</b>, so it stops feeling like a big deal. That comfort is a big part of what makes someone attractive.</p>
+  <p class="body">This workshop covers how I do it: where I meet women, how I start the conversation, how I ask her out, and how to handle the nerves along the way. You leave with a plan for the next 30 days.</p>
+</section>
+
+<!-- ================= AGENDA ================= -->
+<div class="divider-lbl">What we cover</div>
+<section>
+  <h2>The 2 hours</h2>
+  <div class="agenda">
+    <div class="ag"><div class="n">01</div><div><div class="t">Where to meet women</div><div class="d">The everyday places I meet women, and why in person tends to work better than waiting on apps.</div></div></div>
+    <div class="ag"><div class="n">02</div><div><div class="t">Starting the conversation</div><div class="d">Walking over and saying hi without a script: a genuine compliment or the honest reason you came over, then talking to her like a normal person.</div></div></div>
+    <div class="ag"><div class="n">03</div><div><div class="t">Handling the nerves</div><div class="d">How I handle the hesitation before walking up to someone: breathe deeper and name it, "I am feeling resistance," then go while you are still nervous.</div></div></div>
+    <div class="ag"><div class="n">04</div><div><div class="t">Asking her out and the first date</div><div class="d">How to ask clearly, get her number, make a real plan, and what a good first date looks like.</div></div></div>
+    <div class="ag"><div class="n">05</div><div><div class="t">Build your 30-day plan, live</div><div class="d">Using the prep doc you fill out before the workshop, you write your plan on the call: how many conversations a week, where, and how you will track them.</div></div></div>
+    <div class="ag"><div class="n">06</div><div><div class="t">Q&amp;A</div><div class="d">Bring the question you actually want answered. The prep doc asks for it ahead of time so I can get to as many as possible.</div></div></div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<div class="divider-lbl">How it works</div>
+<section class="grid-3">
+  <div class="card step"><div class="num">1</div><div class="t">Save your seat</div><div class="d">Checkout takes a minute. Your confirmation email arrives right away with the date, a calendar link, and your prep doc.</div></div>
+  <div class="card step"><div class="num">2</div><div class="t">Fill out the prep doc</div><div class="d">15 to 20 minutes of honest questions about where you are now. It is what makes the workshop about you instead of generic advice. You get a reminder the day before if you haven't finished.</div></div>
+  <div class="card step hot"><div class="num">3</div><div class="t">Show up live</div><div class="d">The Zoom link comes the day before and again an hour before start. Bring your prep doc and something to write with.</div></div>
+</section>
+
+<!-- ================= RECEIPTS ================= -->
+<div class="divider-lbl">The receipts</div>
+<section>
+  <div class="proof">
+    <div>
+      <div class="sect-label">The practice</div>
+      <div class="p-imgs">
+        <div class="pz" style="--zs:2.1; --zx:46%; --zy:30%"><img src="img/approach-yeti.jpg" alt="William approaching a woman outside a storefront" loading="lazy" /></div>
+        <div class="pz" style="--zs:1.9; --zx:52%; --zy:58%"><img src="img/approach-aisle.jpg" alt="William talking with a group in a grocery aisle" loading="lazy" /></div>
+        <div class="pz" style="--zs:2.4; --zx:48%; --zy:26%"><img src="img/approach-checkout.jpg" alt="William starting a conversation in a store" loading="lazy" /></div>
+      </div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div>
+      <div class="sect-label">Where it led</div>
+      <!-- Girlfriend photos: drop gf-1.jpg ... gf-4.jpg into /workshop/img/.
+           Any slot whose file is missing hides itself, so the grid stays clean. -->
+      <div class="p-imgs js-gf">
+        <div class="pz"><img src="img/couple-crown.jpg" alt="William with his girlfriend" loading="lazy" /></div>
+        <div class="pz"><img src="img/couple-river.jpg" alt="William and his girlfriend at the river" loading="lazy" style="object-position: 40% 50%" /></div>
+        <div class="pz"><img src="img/gf-1.jpg" alt="William with his girlfriend" loading="lazy" onerror="this.parentElement.remove()" /></div>
+        <div class="pz"><img src="img/gf-2.jpg" alt="William with his girlfriend" loading="lazy" onerror="this.parentElement.remove()" /></div>
+        <div class="pz"><img src="img/gf-3.jpg" alt="William with his girlfriend" loading="lazy" onerror="this.parentElement.remove()" /></div>
+        <div class="pz"><img src="img/gf-4.jpg" alt="William with his girlfriend" loading="lazy" onerror="this.parentElement.remove()" /></div>
+      </div>
+    </div>
+  </div>
+  <p class="p-note">The same process I teach, and where it took me: a relationship of more than two years.</p>
+</section>
+
+<!-- ================= FOR / NOT FOR ================= -->
+<div class="divider-lbl">Is this for you</div>
+<section class="grid-2">
+  <div class="card">
+    <div class="sect-label">This is for you if</div>
+    <ul class="checks">
+      <li>You want to go on more dates, or find a relationship, and what you are doing isn't getting you there</li>
+      <li>You see women you would like to talk to and don't</li>
+      <li>You get nervous around women you find attractive and want to be comfortable instead</li>
+      <li>You are tired of relying on dating apps</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="sect-label">This is not for you if</div>
+    <ul class="checks no">
+      <li>You want scripts, routines, or tricks</li>
+      <li>You are looking for a way to get someone who has said no to change her mind</li>
+      <li>You are not willing to fill out a 20-minute prep doc</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<div class="divider-lbl">Who is teaching</div>
+<section class="about">
+  <img src="img/couple-crown.jpg" alt="William Mulvaney" loading="lazy" />
+  <div>
+    <h2>William Mulvaney</h2>
+    <p class="body">I coach men on dating and fitness, host The Willpower Podcast, and created <i>12 Weeks to Confident Approaching</i>, a week-by-week guide for going from avoiding eye contact to starting conversations anywhere.</p>
+    <p class="body">Everything in this workshop is something I practice myself. It is also what I have seen work with the men I coach, and I will say so plainly when something is my opinion rather than a rule.</p>
+  </div>
+</section>
+
+<!-- ================= PRICE ================= -->
+<div class="divider-lbl" id="register">Save your seat</div>
+<section class="card hot pricebox">
+  <div class="kicker js-when">Saturday, October 17 · 7:00 PM Central</div>
+  <h2 style="margin-bottom:6px">Dating Discipline Workshop</h2>
+  <p class="body" style="margin:0 auto 4px">2 hours, live on Zoom, prep doc and Q&amp;A included.</p>
+  <div class="tiers">
+    <div class="tierchip js-tier-early"><div class="tn">Early bird</div><div class="tp">$29</div><div class="td js-early-until">Through Sunday, October 4</div></div>
+    <div class="tierchip js-tier-std"><div class="tn">Standard</div><div class="tp">$49</div><div class="td js-std-until">Until Friday, October 16</div></div>
+  </div>
+  <button class="btn-primary js-buy" onclick="register('pricebox')">Save my seat · $29</button>
+  <p class="fine" style="margin-left:auto;margin-right:auto">Registration closes the day before the workshop. Can't make it after all? Reply to your confirmation email before we start and you get a full refund.</p>
+</section>
+
+<!-- ================= FAQ ================= -->
+<div class="divider-lbl">Questions</div>
+<section style="max-width:720px">
+  <details><summary>What time is it in my time zone?</summary><p class="js-localtime">It starts Saturday, October 17 at 7:00 PM Central.</p></details>
+  <details><summary>Do I need my camera on?</summary><p>No. Camera on is encouraged, especially for the Q&amp;A, but it is up to you.</p></details>
+  <details><summary>Will there be a replay?</summary><p>Plan to attend live. The second half is you building your own plan with the group, and that part works best in the room.</p></details>
+  <details><summary>What is the prep doc?</summary><p>A short Google Doc of questions about where you are now: how you meet women, the last time you held back, your week outside of dating, and what you want. You make your own private copy. It takes 15 to 20 minutes.</p></details>
+  <details><summary>I'm in a relationship. Is this useful?</summary><p>It is built for single men who want to date better. Parts of it (your standards, your life outside of dating) apply either way, but that is not the focus.</p></details>
+  <details><summary>What if I can't make it?</summary><p>Reply to your confirmation email before the workshop starts and you get a full refund.</p></details>
+</section>
+
+<footer>© William Mulvaney · Coaching</footer>
+</div><!-- /wrap -->
+
+<div class="sticky" id="sticky">
+  <div class="s-txt"><b class="js-price">$29</b> <span class="js-sticky-note">early bird</span><br/>Live · <span class="js-when-short">Sat, Oct 17, 7 PM CT</span></div>
+  <button class="btn-primary js-buy" onclick="register('sticky')">Save my seat</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- event config ----------------
+   Keep in sync with the workshop_events row (dating-discipline-2026-10) that
+   the confirmation and reminder emails read. */
+const EVENT = {
+  start: new Date("2026-10-18T00:00:00Z"),          // Sat Oct 17, 7:00 PM CDT
+  earlyBirdEnds: new Date("2026-10-05T05:00:00Z"),  // end of Sun Oct 4, Central
+  closes: new Date("2026-10-17T05:00:00Z"),         // end of Fri Oct 16, Central (day before)
+};
+// Stripe Payment Links (metadata product=workshop, event=dating-discipline-2026-10).
+const STRIPE_EARLY_URL = "https://buy.stripe.com/6oU5kE4T81QZ3Os9ZpfjG0l";
+const STRIPE_STANDARD_URL = "https://buy.stripe.com/9B6cN63P42V34SwfjJfjG0m";
+
+function tier(now) {
+  if (now >= EVENT.closes) return "closed";
+  if (now < EVENT.earlyBirdEnds) return "early";
+  return "standard";
+}
+const $$ = sel => document.querySelectorAll(sel);
+function setText(sel, txt) { $$(sel).forEach(el => el.textContent = txt); }
+
+function render() {
+  const now = new Date();
+  const t = tier(now);
+  const price = t === "standard" ? 49 : 29;
+  setText(".js-price", "$" + price);
+  $$(".js-strike").forEach(el => el.style.display = t === "early" ? "" : "none");
+  setText(".js-price-note", t === "early" ? "early bird" : t === "standard" ? "per seat" : "");
+  setText(".js-sticky-note", t === "early" ? "early bird" : "");
+  const days = Math.ceil((EVENT.earlyBirdEnds - now) / 86400000);
+  const dl = document.querySelector(".js-deadline");
+  if (t === "early") dl.textContent = days <= 1 ? "Early bird ends tonight · then $49" : `Early bird ends Sunday, October 4 (${days} days) · then $49`;
+  else if (t === "standard") dl.textContent = "Registration closes Friday, October 16";
+  else { dl.textContent = "Registration is closed"; dl.classList.add("closed"); }
+  document.querySelector(".js-tier-early").classList.toggle("now", t === "early");
+  document.querySelector(".js-tier-early").classList.toggle("past", t !== "early");
+  document.querySelector(".js-tier-std").classList.toggle("now", t === "standard");
+  $$(".js-buy").forEach(b => {
+    if (t === "closed") { b.disabled = true; b.textContent = "Registration closed"; }
+    else if (b.closest("#sticky")) b.textContent = "Save my seat";
+    else b.textContent = "Save my seat · $" + price;
+  });
+  if (t === "closed") document.getElementById("sticky").remove();
+  // Local time for visitors outside Central.
+  try {
+    const local = new Intl.DateTimeFormat(undefined, { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(EVENT.start);
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const el = document.querySelector(".js-localtime");
+    el.textContent = "It starts Saturday, October 17 at 7:00 PM Central" + (tz === "America/Chicago" ? " (your time zone)." : `, which is ${local} for you.`);
+  } catch (e) {}
+}
+render();
+
+function register(where) {
+  const t = tier(new Date());
+  if (t === "closed") return;
+  const url = t === "early" ? STRIPE_EARLY_URL : STRIPE_STANDARD_URL;
+  const price = t === "early" ? 29 : 49;
+  try { fbq('track', 'InitiateCheckout', {value: price, currency: 'USD', content_name: 'Dating Discipline Workshop'}); } catch (e) {}
+  try { posthog.capture('checkout_click', {tier: 'workshop_' + t, price: price, where: where}, {send_instantly: true, transport: 'sendBeacon'}); } catch (e) {}
+  if (!url) { toast("Registration opens shortly. Check back soon."); return; }
+  setTimeout(() => { window.location.href = url; }, 250);
+}
+
+// Sticky mobile bar once the hero button scrolls away.
+(function () {
+  const bar = document.getElementById("sticky");
+  const heroBtn = document.querySelector(".hero .js-buy");
+  if (!bar || !heroBtn || !("IntersectionObserver" in window)) return;
+  new IntersectionObserver(([e]) => bar.classList.toggle("show", !e.isIntersecting && e.boundingClientRect.top < 0)).observe(heroBtn);
+})();
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 2800);
+}
+</script>
+</body>
+</html>
