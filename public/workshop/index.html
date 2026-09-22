@@ -132,6 +132,8 @@
   /* about */
   .about { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
   @media (min-width: 720px) { .about { grid-template-columns: 220px 1fr; } }
+  /* on a phone the photo and copy stack, so centre them */
+  @media (max-width: 719px) { .about { justify-items: center; text-align: center; } .about img { margin: 0 auto; } }
   .about img { width: 100%; max-width: 260px; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 30%; border: 1px solid var(--border-strong); display: block; }
 
   /* price box */
