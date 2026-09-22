@@ -159,6 +159,11 @@
   .sticky .btn-primary { padding: 13px 18px; white-space: nowrap; }
   @media (min-width: 780px) { .sticky { display: none; } }
 
+  .cta-band { text-align: center; border: 1px solid rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.12), var(--surface)); padding: 30px 22px; margin: 44px 0; }
+  .cta-band .cta-line { display: flex; align-items: baseline; justify-content: center; gap: 12px; margin-bottom: 6px; }
+  .cta-band .cta-sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+  .sect-img { width: 100%; max-width: 860px; margin: 0 auto 26px; display: block; border: 1px solid var(--border-strong); }
+  .sect-img.tall { max-width: 420px; }
   footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
   .toast { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%) translateY(20px); background: var(--accent); color: #fff; font-weight: 700; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; padding: 13px 24px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 100; max-width: calc(100vw - 32px); text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -193,7 +198,7 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
     <div class="kicker">Live workshop · <span class="js-when">Saturday, October 17 · 1:00 PM Central</span></div>
     <h1>Dating Discipline Workshop</h1>
     <p class="h1-sub">How to meet women in real life and go on more dates</p>
-    <p class="lede">A 2-hour live workshop on meeting women in real life, asking them out, and going on more dates. You leave with the process I use and a 90-day plan for running it yourself.</p>
+    <p class="lede">A 2-hour live workshop on meeting women in real life, asking them out, and going on more dates. You leave with the process I use and your own 90-day plan.</p>
     <div class="facts">
       <span class="fact">2 hours</span>
       <span class="fact">Live workshop</span>
@@ -201,7 +206,7 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
       <span class="fact">Leave with a 90-day plan</span>
     </div>
     <div class="price-line"><span class="price-big js-price">$29</span><span class="strike js-strike">$49</span><span class="price-note js-price-note">early bird</span></div>
-    <div class="deadline js-deadline">Early bird ends Sunday, October 4</div>
+    <div class="deadline js-deadline">The first 50 seats are $29</div>
     <button class="btn-primary js-buy" onclick="register('hero')">Save my seat · $29</button>
     <p class="fine">Can't make it after all? Reply to your confirmation email before the workshop starts and you get a full refund.</p>
   </div>
@@ -214,6 +219,7 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
 <!-- ================= CLARIFY ================= -->
 <div class="divider-lbl">Why you're reading this</div>
 <section>
+  <img class="sect-img" src="img/scene-walk-past.jpg" alt="A man glancing back at a woman he just walked past on a city sidewalk" loading="lazy" />
   <h2>You are here for one of these reasons.</h2>
   <ul class="checks" style="max-width:640px">
     <li>You are lonely, and you are tired of being lonely</li>
@@ -243,7 +249,7 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
 <!-- ================= SELL ================= -->
 <div class="divider-lbl">What this is</div>
 <section>
-  <h2>A 2-hour workshop, and a process you can actually run.</h2>
+  <h2>A 2-hour workshop, and a process that works.</h2>
   <p class="body">This is not motivation. It is the process I use and teach: where to meet women, how to walk over and start a real conversation, how to handle the nerves, how to ask her out, and how to keep doing it week after week until it is normal.</p>
   <p class="body"><b>Imagine where you could be 90 days from now:</b> walking up to women you currently think are out of your range, having a real conversation, and taking them on dates. Not once, by accident. On purpose, whenever you decide to.</p>
 </section>
@@ -257,10 +263,17 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
   </div>
 </section>
 
+<section class="cta-band">
+  <div class="cta-line"><span class="price-big js-price">$29</span><span class="strike js-strike">$49</span><span class="price-note js-price-note">early bird</span></div>
+  <p class="cta-sub js-seats">The first 50 seats are $29. After that it's $49.</p>
+  <button class="btn-primary js-buy" onclick="register('sell')">Save my seat · $29</button>
+  <p class="fine" style="margin-left:auto;margin-right:auto;text-align:center"><span class="js-when">Saturday, October 17 · 1:00 PM Central</span> · 2 hours live</p>
+</section>
+
 <!-- ================= AGENDA ================= -->
 <div class="divider-lbl">What we cover</div>
 <section>
-  <h2>The 2 hours</h2>
+  <img class="sect-img" src="img/scene-conversation.jpg" alt="A man and a woman talking outside a coffee shop in the afternoon" loading="lazy" />
   <div class="agenda">
     <div class="ag"><div class="n">01</div><div><div class="t">Where to meet women</div><div class="d">The everyday places I meet women, and why in person tends to work better than waiting on apps.</div></div></div>
     <div class="ag"><div class="n">02</div><div><div class="t">Starting the conversation</div><div class="d">Walking over and saying hi without a script: a genuine compliment or the honest reason you came over, then talking to her like a normal person.</div></div></div>
@@ -301,47 +314,6 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
   <p class="p-note">The same process I teach, and where it took me: a relationship of more than two years.</p>
 </section>
 
-<!-- ================= EXPLAIN / OBJECTIONS ================= -->
-<div class="divider-lbl">The honest answers</div>
-<section style="max-width:760px">
-  <h2>Will this happen overnight?</h2>
-  <p class="body">No. You will leave the workshop with the process and a 90-day plan, and then you have to go do the reps. Most men feel a real difference in how hard it is to walk over within a few weeks of doing it regularly. Skip the reps and nothing changes, which is the same as it is with training.</p>
-  <h2 style="margin-top:34px">"I'm not good looking, and I'm obviously not dating supermodels. Why would I do this?"</h2>
-  <p class="body">There are biological realities to physical attraction, and I am not going to tell you otherwise. What surprised me is how much of the rest is in your control, especially as a man.</p>
-  <p class="body">Confidence and self-assuredness carry more weight than most guys expect, and they are built by doing this, not by deciding you have them. The physical side moves too: training, hygiene, clothes that fit, and a life you actually like will change how you look and how you come across more than you would guess.</p>
-  <p class="body">And the practical part: the men who go on the most dates are usually not the best looking ones. They are the ones who talk to the most women.</p>
-</section>
-
-<!-- ================= HOW IT WORKS ================= -->
-<div class="divider-lbl">How it works</div>
-<section class="grid-3">
-  <div class="card step"><div class="num">1</div><div class="t">Save your seat</div><div class="d">Checkout takes a minute. Your confirmation email arrives right away with the date, a calendar link, and your prep doc.</div></div>
-  <div class="card step"><div class="num">2</div><div class="t">Fill out the prep doc</div><div class="d">15 to 20 minutes of honest questions about where you are now. It is what makes the workshop about you instead of generic advice. You get a reminder the day before if you haven't finished.</div></div>
-  <div class="card step hot"><div class="num">3</div><div class="t">Show up live</div><div class="d">Your joining link comes the day before and again an hour before start. Bring your prep doc and something to write with.</div></div>
-</section>
-
-<!-- ================= FOR / NOT FOR ================= -->
-<div class="divider-lbl">Is this for you</div>
-<section class="grid-2">
-  <div class="card">
-    <div class="sect-label">This is for you if</div>
-    <ul class="checks">
-      <li>You want to go on more dates, or find a relationship, and what you are doing isn't getting you there</li>
-      <li>You see women you would like to talk to and don't</li>
-      <li>You get nervous around women you find attractive and want to be comfortable instead</li>
-      <li>You are tired of relying on dating apps</li>
-    </ul>
-  </div>
-  <div class="card">
-    <div class="sect-label">This is not for you if</div>
-    <ul class="checks no">
-      <li>You want scripts, routines, or tricks</li>
-      <li>You are looking for a way to get someone who has said no to change her mind</li>
-      <li>You are not willing to fill out a 20-minute prep doc</li>
-    </ul>
-  </div>
-</section>
-
 <!-- ================= ABOUT ================= -->
 <div class="divider-lbl">Who is teaching</div>
 <section class="about">
@@ -360,22 +332,51 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
   <h2 style="margin-bottom:6px">Dating Discipline Workshop</h2>
   <p class="body" style="margin:0 auto 4px">2 hours live, prep doc and Q&amp;A included.</p>
   <div class="tiers">
-    <div class="tierchip js-tier-early"><div class="tn">Early bird</div><div class="tp">$29</div><div class="td js-early-until">Through Sunday, October 4</div></div>
-    <div class="tierchip js-tier-std"><div class="tn">Standard</div><div class="tp">$49</div><div class="td js-std-until">Until Friday, October 16</div></div>
+    <div class="tierchip js-tier-early"><div class="tn">Early bird</div><div class="tp">$29</div><div class="td js-early-until">First 50 seats</div></div>
+    <div class="tierchip js-tier-std"><div class="tn">Standard</div><div class="tp">$49</div><div class="td js-std-until">After the first 50</div></div>
   </div>
   <button class="btn-primary js-buy" onclick="register('pricebox')">Save my seat · $29</button>
   <p class="fine" style="margin-left:auto;margin-right:auto">Registration closes the day before the workshop. Can't make it after all? Reply to your confirmation email before we start and you get a full refund.</p>
 </section>
 
 <!-- ================= FAQ ================= -->
-<div class="divider-lbl">Questions</div>
-<section style="max-width:720px">
+<div class="divider-lbl">FAQ</div>
+<section style="max-width:760px">
+  <details><summary>Will this happen overnight?</summary><p>No. You leave with the process and a 90-day plan, and then you have to go do the reps. Most men feel a real difference in how hard it is to walk over within a few weeks of doing it regularly. Skip the reps and nothing changes, same as training.</p></details>
+  <details><summary>I'm not good looking, and I'm obviously not dating supermodels. Why would I do this?</summary><p>There are biological realities to physical attraction, and I am not going to tell you otherwise. What surprised me is how much of the rest is in your control, especially as a man.</p><p>Confidence and self-assuredness carry more weight than most guys expect, and they are built by doing this, not by deciding you have them. The physical side moves too: training, hygiene, clothes that fit, and a life you actually like will change how you look and how you come across more than you would guess.</p><p>And the practical part: the men who go on the most dates are usually not the best looking ones. They are the ones who talk to the most women.</p></details>
+  <details><summary>How do I know if this is right for me?</summary><p>Read these. If the left side sounds like you, it's right for you.</p><div class="grid-2" style="margin-top:12px">
+  <div class="card">
+    <div class="sect-label">This is for you if</div>
+    <ul class="checks">
+      <li>You want to go on more dates, or find a relationship, and what you are doing isn't getting you there</li>
+      <li>You see women you would like to talk to and don't</li>
+      <li>You get nervous around women you find attractive and want to be comfortable instead</li>
+      <li>You are tired of relying on dating apps</li>
+      <li>You want to be a better man in general, not just with dating</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="sect-label">This is not for you if</div>
+    <ul class="checks no">
+      <li>You want scripts, routines, or tricks</li>
+      <li>You are looking for a way to get someone who has said no to change her mind</li>
+      <li>You are not willing to fill out a 20-minute prep doc</li>
+    </ul>
+  </div>
+</div></details>
   <details><summary>What time is it in my time zone?</summary><p class="js-localtime">It starts Saturday, October 17 at 1:00 PM Central.</p></details>
+  <details><summary>What is the prep doc?</summary><p>A short Google Doc of questions about where you are now: where you meet women, the last time you wanted to talk to someone and didn't, and what you want your dating life to look like. You get your own copy. It takes 15 to 20 minutes.</p></details>
   <details><summary>Do I need my camera on?</summary><p>No. Camera on is encouraged, especially for the Q&amp;A, but it is up to you.</p></details>
   <details><summary>Will there be a replay?</summary><p>Plan to attend live. The second half is you building your own plan with the group, and that part works best in the room.</p></details>
-  <details><summary>What is the prep doc?</summary><p>A short Google Doc of questions about where you are now: where you meet women, the last time you wanted to talk to someone and didn't, and what you want your dating life to look like. You get your own copy. It takes 15 to 20 minutes.</p></details>
-  <details><summary>I'm in a relationship. Is this useful?</summary><p>It is built for single men who want to meet more women and go on more dates. That is the whole focus, so it is probably not for you right now.</p></details>
   <details><summary>What if I can't make it?</summary><p>Reply to your confirmation email before the workshop starts and you get a full refund.</p></details>
+</section>
+
+<img class="sect-img" src="img/scene-first-date.jpg" alt="A man and a woman laughing together on a first date" loading="lazy" style="margin-top:40px" />
+<section class="cta-band" style="margin-top:20px">
+  <div class="cta-line"><span class="price-big js-price">$29</span><span class="strike js-strike">$49</span><span class="price-note js-price-note">early bird</span></div>
+  <p class="cta-sub js-seats">The first 50 seats are $29. After that it's $49.</p>
+  <button class="btn-primary js-buy" onclick="register('footer')">Save my seat · $29</button>
+  <p class="fine" style="margin-left:auto;margin-right:auto;text-align:center"><span class="js-when">Saturday, October 17 · 1:00 PM Central</span> · 2 hours live</p>
 </section>
 
 <footer>© William Mulvaney · Coaching</footer>
@@ -400,10 +401,13 @@ const EVENT = {
 const STRIPE_EARLY_URL = "https://buy.stripe.com/6oU5kE4T81QZ3Os9ZpfjG0l";
 const STRIPE_STANDARD_URL = "https://buy.stripe.com/9B6cN63P42V34SwfjJfjG0m";
 
+// Early bird is the first 50 seats, not a date. SEATS comes from the
+// workshop-seats function; until it answers we show the early bird price.
+let SEATS = null;
 function tier(now) {
   if (now >= EVENT.closes) return "closed";
-  if (now < EVENT.earlyBirdEnds) return "early";
-  return "standard";
+  if (SEATS && SEATS.tier) return SEATS.tier;
+  return "early";
 }
 const $$ = sel => document.querySelectorAll(sel);
 function setText(sel, txt) { $$(sel).forEach(el => el.textContent = txt); }
@@ -416,11 +420,19 @@ function render() {
   $$(".js-strike").forEach(el => el.style.display = t === "early" ? "" : "none");
   setText(".js-price-note", t === "early" ? "early bird" : t === "standard" ? "per seat" : "");
   setText(".js-sticky-note", t === "early" ? "early bird" : "");
-  const days = Math.ceil((EVENT.earlyBirdEnds - now) / 86400000);
+  const left = SEATS && typeof SEATS.early_left === "number" ? SEATS.early_left : null;
   const dl = document.querySelector(".js-deadline");
-  if (t === "early") dl.textContent = days <= 1 ? "Early bird ends tonight · then $49" : `Early bird ends Sunday, October 4 (${days} days) · then $49`;
-  else if (t === "standard") dl.textContent = "Registration closes Friday, October 16";
-  else { dl.textContent = "Registration is closed"; dl.classList.add("closed"); }
+  if (t === "early") {
+    dl.textContent = (left !== null && left <= 20)
+      ? `${left} of the 50 early bird seats left · then $49`
+      : "The first 50 seats are $29 · then $49";
+  } else if (t === "standard") {
+    dl.textContent = "The first 50 seats are gone · registration closes Friday, October 16";
+  } else { dl.textContent = "Registration is closed"; dl.classList.add("closed"); }
+  setText(".js-seats", t === "early"
+    ? ((left !== null && left <= 20) ? `Only ${left} of the 50 early bird seats are left.` : "The first 50 seats are $29. After that it's $49.")
+    : t === "standard" ? "The early bird seats are gone. Registration closes Friday, October 16."
+    : "Registration is closed.");
   document.querySelector(".js-tier-early").classList.toggle("now", t === "early");
   document.querySelector(".js-tier-early").classList.toggle("past", t !== "early");
   document.querySelector(".js-tier-std").classList.toggle("now", t === "standard");
@@ -445,6 +457,12 @@ function render() {
   } catch (e) {}
 }
 render();
+
+// Ask the server how many early bird seats are left, then re-render.
+fetch("https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-seats")
+  .then(r => r.json())
+  .then(d => { if (d && d.ok) { SEATS = d; render(); } })
+  .catch(() => {});
 
 function register(where) {
   const t = tier(new Date());
