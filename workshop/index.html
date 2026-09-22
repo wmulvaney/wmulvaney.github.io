@@ -117,8 +117,9 @@
   ul.checks li b { color: var(--text); font-weight: 600; }
 
   /* receipts */
-  .proof { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: center; }
-  @media (min-width: 780px) { .proof { grid-template-columns: 3fr auto 3fr; } }
+  .proof { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: center; justify-items: center; max-width: 900px; margin: 0 auto; }
+  @media (min-width: 780px) { .proof { grid-template-columns: auto auto auto; justify-content: center; } }
+  .proof .p-imgs { justify-content: center; }
   .p-imgs { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
   .p-imgs .pz { position: relative; aspect-ratio: 3 / 4; overflow: hidden; border: 1px solid var(--border-strong); background: var(--surface-strong); }
   .p-imgs .pz img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transform-origin: var(--zx, 50%) var(--zy, 50%); transform: scale(var(--zs, 1)); }
@@ -315,7 +316,7 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
 
 <!-- ================= FAQ ================= -->
 <div class="divider-lbl">FAQ</div>
-<section style="max-width:760px">
+<section style="max-width:760px;margin:0 auto">
   <details><summary>Will this happen overnight?</summary><p>No. You leave with the process and then you go do the reps. Most men feel a real difference in how hard it is to walk over within a few weeks of doing it regularly. Skip the reps and nothing changes, same as training.</p></details>
   <details><summary>I'm not good looking, and I'm obviously not dating supermodels. Why would I do this?</summary><p>There are biological realities to physical attraction, and I am not going to tell you otherwise. What surprised me is how much of the rest is in your control, especially as a man.</p><p>Confidence and self-assuredness carry more weight than most guys expect, and they are built through consistent action, not by deciding you have them. You are also in control of your physical attractiveness: training, hygiene, clothes that fit, and a life you actually like will change how you look and how you come across more than you would guess.</p></details>
   <details><summary>How do I know if this is right for me?</summary><p>Read these. If the left side sounds like you, it's right for you.</p><div class="grid-2" style="margin-top:12px">
