@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#040b12" />
+<title>Group Coaching · William Mulvaney</title>
+<meta name="description" content="Group coaching with William Mulvaney: a weekly plan written for you, two live group calls a week, and daily check-ins in the app. $49 your first month, then $199/month." />
+<meta property="og:title" content="Group Coaching with William Mulvaney" />
+<meta property="og:description" content="A weekly plan, two live group calls a week, and daily check-ins. $49 your first month." />
+<meta property="og:image" content="https://williammulvaney.com/workshop/img/couple-crown.jpg" />
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="apple-touch-icon" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Same design language as /workshop and the guide pages. */
+  :root {
+    --bg: #040b12;
+    --surface: rgba(10, 26, 39, 0.72);
+    --surface-strong: #0a1a27;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.22);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.58);
+    --faint: rgba(255, 255, 255, 0.34);
+    --accent: #479dc2;
+    --accent-press: #3a7e9b;
+    --accent-soft: rgba(71, 157, 194, 0.12);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 45% at 75% -10%, rgba(71, 157, 194, 0.14), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 10% 110%, rgba(71, 157, 194, 0.07), transparent 60%);
+  }
+  .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 24px 20px 110px; }
+  .home-link { display: inline-block; margin: 6px 0 4px; }
+  .home-link img { height: 42px; width: auto; display: block; opacity: 0.9; filter: brightness(0) invert(1); }
+
+  .kicker { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(71, 157, 194, 0.95); margin-bottom: 14px; line-height: 1.8; }
+  h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(34px, 5.8vw, 56px); line-height: 1.06; color: #fff; margin: 0 0 10px; letter-spacing: -0.01em; }
+  .h1-sub { font-family: var(--font-display); font-weight: 700; font-size: clamp(19px, 2.6vw, 25px); line-height: 1.3; color: rgba(255,255,255,0.8); margin: 0 0 18px; max-width: 620px; }
+  h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(23px, 3.4vw, 31px); color: #fff; margin: 0 0 14px; line-height: 1.2; }
+  .lede { color: var(--muted); font-size: 16px; line-height: 1.7; max-width: 600px; margin: 0 0 22px; }
+  p.body { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 640px; margin: 0 0 16px; }
+  p.body b { color: var(--text); font-weight: 600; }
+
+  .hero { padding: 40px 0 10px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 26px; }
+  .fact { border: 1px solid var(--border-strong); padding: 8px 12px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
+
+  .price-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px; margin: 0 0 18px; }
+  .price-big { font-family: var(--font-display); font-weight: 900; font-size: 44px; color: #fff; line-height: 1; }
+  .strike { text-decoration: line-through; color: var(--faint); font-size: 20px; font-weight: 500; }
+  .price-note { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
+
+  .btn {
+    font-family: var(--font-ui); cursor: pointer; border: 1px solid transparent; border-radius: 0;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 17px 30px; transition: all 160ms ease; display: inline-block; text-decoration: none; text-align: center;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-press); border-color: var(--accent-press); }
+  .fine { font-size: 12px; color: var(--faint); line-height: 1.6; margin-top: 12px; max-width: 460px; }
+
+  .divider-lbl { color: var(--faint); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin: 56px 0 28px; display: flex; align-items: center; gap: 12px; }
+  .divider-lbl::before, .divider-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.09); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 24px 22px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .card.hot { border-color: rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.10), var(--surface)); }
+  .sect-label { font-size: 10px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: 0.22em; margin: 0 0 12px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 720px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+
+  .agenda { display: grid; gap: 0; border-top: 1px solid var(--border); }
+  .ag { display: grid; grid-template-columns: 48px 1fr; gap: 14px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+  .ag .n { font-family: var(--font-display); font-weight: 900; font-size: 26px; color: var(--accent); line-height: 1; }
+  .ag .t { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.4; }
+  .ag .d { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+  .step .num { font-family: var(--font-display); font-weight: 900; font-size: 34px; color: var(--accent); line-height: 1; margin-bottom: 12px; }
+  .step .t { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .step .d { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  ul.checks { list-style: none; margin: 0; padding: 0; }
+  ul.checks li { padding: 7px 0 7px 28px; position: relative; font-size: 14.5px; line-height: 1.55; color: var(--muted); }
+  ul.checks li::before { content: "✓"; position: absolute; left: 0; top: 7px; color: var(--accent); font-weight: 800; }
+  ul.checks.no li::before { content: "×"; color: var(--faint); }
+  ul.checks li b { color: var(--text); font-weight: 600; }
+
+  .about { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
+  @media (min-width: 720px) { .about { grid-template-columns: 220px 1fr; } }
+  .about img { width: 100%; max-width: 260px; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 30%; border: 1px solid var(--border-strong); display: block; }
+
+  .pricebox { max-width: 560px; margin: 0 auto; text-align: center; }
+  .pricebox .price-line { justify-content: center; }
+  .pricebox ul.checks { text-align: left; max-width: 400px; margin: 0 auto 22px; }
+  .pricebox .btn-primary { width: 100%; }
+
+  details { border-bottom: 1px solid var(--border); padding: 16px 0; }
+  details summary { cursor: pointer; list-style: none; font-size: 15px; font-weight: 600; color: #fff; display: flex; justify-content: space-between; gap: 16px; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after { content: "+"; color: var(--accent); font-weight: 700; }
+  details[open] summary::after { content: "–"; }
+  details p { margin: 10px 0 0; font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  .sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(4, 11, 18, 0.94); border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: space-between; gap: 12px; transform: translateY(110%); transition: transform 200ms ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .sticky.show { transform: none; }
+  .sticky .s-txt { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .sticky .s-txt b { color: #fff; font-size: 15px; }
+  .sticky .btn-primary { padding: 13px 18px; white-space: nowrap; }
+  @media (min-width: 780px) { .sticky { display: none; } }
+
+  footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
+</style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '526303911209957');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=526303911209957&ev=PageView&noscript=1"/></noscript>
+<!-- PostHog analytics (start) -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
+posthog.register({funnel_product: 'group', funnel_page: 'landing'});
+</script>
+<!-- PostHog analytics (end) -->
+</head>
+<body>
+<div class="wrap">
+
+<a class="home-link" href="https://williammulvaney.com/" aria-label="William Mulvaney home"><img src="/willpower_logo.svg" alt="William Mulvaney" /></a>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="kicker">Group coaching · with William Mulvaney</div>
+  <h1>The Group</h1>
+  <p class="h1-sub">Coaching for men working on the things that are hard to do alone: dating, fitness, and the rest of life.</p>
+  <p class="lede">You pick the goals. I turn them into a plan of small weekly actions and rewrite it every week based on what you actually did. Twice a week we get on a live call as a group, and every day you check in through the app, where I read and reply.</p>
+  <div class="facts">
+    <span class="fact">Weekly plan from me</span>
+    <span class="fact">2 live group calls a week</span>
+    <span class="fact">Daily check-ins in the app</span>
+    <span class="fact">Cancel anytime</span>
+  </div>
+  <div class="price-line"><span class="price-big">$49</span><span class="strike">$199</span><span class="price-note">your first month · then $199/month</span></div>
+  <a class="btn btn-primary js-buy" href="#" onclick="join('hero'); return false;">Join the group · $49</a>
+  <p class="fine">Your first month is $49. After that it is $199 a month, and you can cancel anytime.</p>
+</section>
+
+<!-- ================= THE IDEA ================= -->
+<div class="divider-lbl">How I coach</div>
+<section>
+  <h2>Small actions, done every week, for months.</h2>
+  <p class="body">Most people know roughly what they should be doing. The gap is doing it consistently once the first burst of motivation wears off, usually around week three.</p>
+  <p class="body">My approach is simple. <b>We define what you want, break it into small actions you can do this week, and track whether you did them.</b> Every week I look at what happened and adjust the plan. The group calls and daily check-ins keep you doing it when you would otherwise drift.</p>
+</section>
+
+<!-- ================= WHAT YOU GET ================= -->
+<div class="divider-lbl">What you get</div>
+<section>
+  <h2>Every week in the group</h2>
+  <div class="agenda">
+    <div class="ag"><div class="n">01</div><div><div class="t">A plan written for you</div><div class="d">Your goals broken into specific weekly actions and habits. I rewrite it every week based on what you logged, what worked, and what didn't.</div></div></div>
+    <div class="ag"><div class="n">02</div><div><div class="t">Two live group calls a week</div><div class="d">Live video calls with me and the rest of the group. Bring what you are working on and where you are stuck. Make at least one a week.</div></div></div>
+    <div class="ag"><div class="n">03</div><div><div class="t">Daily check-ins in the app</div><div class="d">Your plan, habits, workouts, and sleep all live in the app. You log each day, I read it, and I reply with feedback. You can message me there any time.</div></div></div>
+    <div class="ag"><div class="n">04</div><div><div class="t">The other guys</div><div class="d">Men working on the same kinds of goals. You see what they are doing each week, and they see what you are doing.</div></div></div>
+  </div>
+</section>
+
+<!-- ================= WHAT PEOPLE WORK ON ================= -->
+<div class="divider-lbl">What people work on</div>
+<section class="grid-3">
+  <div class="card step"><div class="num">01</div><div class="t">Dating</div><div class="d">Meeting women in person, asking them out, and going on more dates. Getting comfortable through practice every week.</div></div>
+  <div class="card step"><div class="num">02</div><div class="t">Fitness</div><div class="d">A gym routine you keep, eating that supports it, and tracking the numbers so you can see the change.</div></div>
+  <div class="card step"><div class="num">03</div><div class="t">Everything else</div><div class="d">Sleep, work, money, moving, habits. Anything that is hard to do consistently on your own.</div></div>
+</section>
+
+<!-- ================= HOW TO START ================= -->
+<div class="divider-lbl">How to start</div>
+<section class="grid-3">
+  <div class="card step"><div class="num">1</div><div class="t">Join</div><div class="d">Checkout takes a minute. $49 covers your first month.</div></div>
+  <div class="card step"><div class="num">2</div><div class="t">Tell me your goals</div><div class="d">You get a welcome email with app access right away. A short form asks what you want to work on so I can write your first plan.</div></div>
+  <div class="card step hot"><div class="num">3</div><div class="t">Start on Monday</div><div class="d">Your plan starts the following Monday. I reach out by email or text to kick things off, and you join the next group call.</div></div>
+</section>
+
+<!-- ================= FOR / NOT FOR ================= -->
+<div class="divider-lbl">Is this for you</div>
+<section class="grid-2">
+  <div class="card">
+    <div class="sect-label">This is for you if</div>
+    <ul class="checks">
+      <li>You have a goal you keep starting and then dropping</li>
+      <li>You want someone checking your work every week, not just advice</li>
+      <li>You are willing to log what you do every day</li>
+      <li>You would rather improve alongside other men than by yourself</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="sect-label">This is not for you if</div>
+    <ul class="checks no">
+      <li>You want a quick fix or a script</li>
+      <li>You are not willing to show up to at least one call a week</li>
+      <li>You want private 1-on-1 calls (ask me about 1-on-1 coaching instead)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<div class="divider-lbl">Who runs it</div>
+<section class="about">
+  <img src="/workshop/img/couple-crown.jpg" alt="William Mulvaney" loading="lazy" />
+  <div>
+    <h2>William Mulvaney</h2>
+    <p class="body">I coach men on dating, fitness, and the other things in life we consider hard. I host The Willpower Podcast and wrote <i>12 Weeks to Confident Approaching</i> and <i>30 Days to a Gym Routine That Sticks</i>.</p>
+    <p class="body">I run every call and write every plan myself. Everything I ask you to do is something I practice too.</p>
+  </div>
+</section>
+
+<!-- ================= PRICE ================= -->
+<div class="divider-lbl" id="join">Join the group</div>
+<section class="card hot pricebox">
+  <div class="kicker">Group coaching</div>
+  <h2 style="margin-bottom:10px">The Group</h2>
+  <div class="price-line"><span class="price-big">$49</span><span class="price-note">first month · then $199/month</span></div>
+  <ul class="checks">
+    <li><b>A weekly plan</b> written and updated by me</li>
+    <li><b>Two live group calls</b> every week</li>
+    <li><b>Daily check-ins</b> in the app, with my replies</li>
+    <li><b>The group</b> of men doing the same work</li>
+  </ul>
+  <a class="btn btn-primary js-buy" href="#" onclick="join('pricebox'); return false;">Join the group · $49</a>
+  <p class="fine" style="margin-left:auto;margin-right:auto">Cancel anytime. No contract.</p>
+</section>
+
+<!-- ================= FAQ ================= -->
+<div class="divider-lbl">Questions</div>
+<section style="max-width:720px">
+  <details><summary>What happens after the first month?</summary><p>Your membership continues at $199 a month. You can cancel anytime before the next billing date and you won't be charged again.</p></details>
+  <details><summary>When are the calls?</summary><p>Two live video calls a week, currently Sunday and Wednesday, Central time. If you can't make one, make the other. I send the schedule in your welcome email.</p></details>
+  <details><summary>Do I need to be in Austin?</summary><p>No. The calls and the app are all online, so you can join from anywhere.</p></details>
+  <details><summary>How much time does it take?</summary><p>One or two hour-long calls a week, plus a few minutes a day to check in. The rest of the time goes into the actual work on your plan.</p></details>
+  <details><summary>How is this different from 1-on-1 coaching?</summary><p>1-on-1 adds private calls with me, daily check-ins by voice or video, and in-person sessions if you are in Austin. The group gets the same weekly plan and feedback, with the calls shared.</p></details>
+</section>
+
+<footer>© William Mulvaney · Coaching</footer>
+</div><!-- /wrap -->
+
+<div class="sticky" id="sticky">
+  <div class="s-txt"><b>$49</b> first month<br/>then $199/month · cancel anytime</div>
+  <a class="btn btn-primary" href="#" onclick="join('sticky'); return false;">Join the group</a>
+</div>
+
+<script>
+// Stripe Payment Link: $49 first month, then $199/month (same link as
+// Personal Coaching on /approaching and /confidence).
+const STRIPE_GROUP_URL = "https://buy.stripe.com/3cIbJ2bhw8fn3Os7RhfjG0e";
+
+function join(where) {
+  try { fbq('track', 'InitiateCheckout', {value: 49, currency: 'USD', content_name: 'Group Coaching'}); } catch (e) {}
+  try { posthog.capture('checkout_click', {tier: 'group', price: 49, where: where}, {send_instantly: true, transport: 'sendBeacon'}); } catch (e) {}
+  setTimeout(() => { window.location.href = STRIPE_GROUP_URL; }, 250);
+}
+
+// Sticky mobile bar once the hero button scrolls away.
+(function () {
+  const bar = document.getElementById("sticky");
+  const heroBtn = document.querySelector(".hero .js-buy");
+  if (!bar || !heroBtn || !("IntersectionObserver" in window)) return;
+  new IntersectionObserver(([e]) => bar.classList.toggle("show", !e.isIntersecting && e.boundingClientRect.top < 0)).observe(heroBtn);
+})();
+</script>
+</body>
+</html>
