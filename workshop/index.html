@@ -162,8 +162,10 @@
   .cta-band { text-align: center; border: 1px solid rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.12), var(--surface)); padding: 30px 22px; margin: 44px 0; }
   .cta-band .cta-line { display: flex; align-items: baseline; justify-content: center; gap: 12px; margin-bottom: 6px; }
   .cta-band .cta-sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
-  .sect-img { width: 100%; max-width: 860px; margin: 0 auto 26px; display: block; border: 1px solid var(--border-strong); }
-  .sect-img.tall { max-width: 420px; }
+  .with-img { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
+  @media (min-width: 760px) { .with-img { grid-template-columns: minmax(0, 1fr) 340px; } .with-img.flip > :first-child { order: 2; } }
+  .sect-img { width: 100%; max-width: 340px; margin: 0 auto; display: block; border: 1px solid var(--border-strong); aspect-ratio: 4 / 5; object-fit: cover; }
+  @media (max-width: 759px) { .sect-img { max-width: 100%; aspect-ratio: 3 / 2; } }
   footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
   .toast { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%) translateY(20px); background: var(--accent); color: #fff; font-weight: 700; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; padding: 13px 24px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 100; max-width: calc(100vw - 32px); text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -218,8 +220,8 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
 
 <!-- ================= CLARIFY ================= -->
 <div class="divider-lbl">Why you're reading this</div>
-<section>
-  <img class="sect-img" src="img/scene-walk-past.jpg" alt="A man glancing back at a woman he just walked past on a city sidewalk" loading="lazy" />
+<section class="with-img">
+  <div>
   <h2>You are here for one of these reasons.</h2>
   <ul class="checks" style="max-width:640px">
     <li>You are lonely, and you are tired of being lonely</li>
@@ -229,6 +231,8 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
     <li>You feel like time is getting away from you, and you do not want another year to look like the last one</li>
     <li>You are not sure what you would even do differently on your own</li>
   </ul>
+  </div>
+  <img class="sect-img" src="img/scene-walk-past.jpg" alt="A man glancing back at a woman he just walked past on a city sidewalk" loading="lazy" />
 </section>
 
 <!-- ================= LABEL ================= -->
@@ -272,8 +276,11 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
 
 <!-- ================= AGENDA ================= -->
 <div class="divider-lbl">What we cover</div>
-<section>
+<section class="with-img flip" style="margin-bottom:26px">
   <img class="sect-img" src="img/scene-conversation.jpg" alt="A man and a woman talking outside a coffee shop in the afternoon" loading="lazy" />
+  <p class="body" style="margin:0">Two hours, live, covering the whole thing end to end: where to meet women, how to start the conversation, how to handle the nerves, how to ask her out, and the plan you leave with.</p>
+</section>
+<section>
   <div class="agenda">
     <div class="ag"><div class="n">01</div><div><div class="t">Where to meet women</div><div class="d">The everyday places I meet women, and why in person tends to work better than waiting on apps.</div></div></div>
     <div class="ag"><div class="n">02</div><div><div class="t">Starting the conversation</div><div class="d">Walking over and saying hi without a script: a genuine compliment or the honest reason you came over, then talking to her like a normal person.</div></div></div>
@@ -371,7 +378,13 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
   <details><summary>What if I can't make it?</summary><p>Reply to your confirmation email before the workshop starts and you get a full refund.</p></details>
 </section>
 
-<img class="sect-img" src="img/scene-first-date.jpg" alt="A man and a woman laughing together on a first date" loading="lazy" style="margin-top:40px" />
+<section class="with-img" style="margin-top:44px">
+  <div>
+    <h2 style="margin-bottom:10px">This is what you are actually buying.</h2>
+    <p class="body" style="margin:0">A Saturday afternoon, the process, and a plan for the next 90 days.</p>
+  </div>
+  <img class="sect-img" src="img/scene-first-date.jpg" alt="A man and a woman laughing together on a first date" loading="lazy" />
+</section>
 <section class="cta-band" style="margin-top:20px">
   <div class="cta-line"><span class="price-big js-price">$29</span><span class="strike js-strike">$49</span><span class="price-note js-price-note">early bird</span></div>
   <p class="cta-sub js-seats">The first 50 seats are $29. After that it's $49.</p>
