@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex" />
 <meta name="theme-color" content="#040b12" />
 <title>Group Coaching · William Mulvaney</title>
-<meta name="description" content="Group coaching with William Mulvaney: a weekly plan written for you, two live group calls a week, and daily check-ins in the app. $49 your first month, then $199/month." />
+<meta name="description" content="Group coaching with William Mulvaney: a weekly plan written for you, two live group calls a week, and daily check-ins in the app. $49 your first month, cancel anytime." />
 <meta property="og:title" content="Group Coaching with William Mulvaney" />
 <meta property="og:description" content="A weekly plan, two live group calls a week, and daily check-ins. $49 your first month." />
 <meta property="og:image" content="https://williammulvaney.com/workshop/img/couple-crown.jpg" />
@@ -160,9 +160,9 @@ posthog.register({funnel_product: 'group', funnel_page: 'landing'});
     <span class="fact">Daily check-ins in the app</span>
     <span class="fact">Cancel anytime</span>
   </div>
-  <div class="price-line"><span class="price-big">$49</span><span class="strike">$199</span><span class="price-note">your first month · then $199/month</span></div>
+  <div class="price-line"><span class="price-big">$49</span><span class="price-note">your first month</span></div>
   <a class="btn btn-primary js-buy" href="#" onclick="join('hero'); return false;">Join the group · $49</a>
-  <p class="fine">Your first month is $49. After that it is $199 a month, and you can cancel anytime.</p>
+  <p class="fine">Your first month is $49. Cancel anytime.</p>
 </section>
 
 <!-- ================= THE IDEA ================= -->
@@ -239,7 +239,7 @@ posthog.register({funnel_product: 'group', funnel_page: 'landing'});
 <section class="card hot pricebox">
   <div class="kicker">Group coaching</div>
   <h2 style="margin-bottom:10px">The Group</h2>
-  <div class="price-line"><span class="price-big">$49</span><span class="price-note">first month · then $199/month</span></div>
+  <div class="price-line"><span class="price-big">$49</span><span class="price-note">your first month</span></div>
   <ul class="checks">
     <li><b>A weekly plan</b> written and updated by me</li>
     <li><b>Two live group calls</b> every week</li>
@@ -253,7 +253,6 @@ posthog.register({funnel_product: 'group', funnel_page: 'landing'});
 <!-- ================= FAQ ================= -->
 <div class="divider-lbl">Questions</div>
 <section style="max-width:720px">
-  <details><summary>What happens after the first month?</summary><p>Your membership continues at $199 a month. You can cancel anytime before the next billing date and you won't be charged again.</p></details>
   <details><summary>When are the calls?</summary><p>Two live video calls a week, currently Sunday and Wednesday, Central time. If you can't make one, make the other. I send the schedule in your welcome email.</p></details>
   <details><summary>Do I need to be in Austin?</summary><p>No. The calls and the app are all online, so you can join from anywhere.</p></details>
   <details><summary>How much time does it take?</summary><p>One or two hour-long calls a week, plus a few minutes a day to check in. The rest of the time goes into the actual work on your plan.</p></details>
@@ -264,12 +263,12 @@ posthog.register({funnel_product: 'group', funnel_page: 'landing'});
 </div><!-- /wrap -->
 
 <div class="sticky" id="sticky">
-  <div class="s-txt"><b>$49</b> first month<br/>then $199/month · cancel anytime</div>
+  <div class="s-txt"><b>$49</b> your first month<br/>Cancel anytime</div>
   <a class="btn btn-primary" href="#" onclick="join('sticky'); return false;">Join the group</a>
 </div>
 
 <script>
-// Stripe Payment Link: $49 first month, then $199/month. Must carry
+// Stripe Payment Link: $49 first month. Must carry
 // metadata product=group so stripe-webhook sends the group welcome (no guide).
 const STRIPE_GROUP_URL = "";
 
