@@ -120,6 +120,7 @@
   .proof { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: center; justify-items: center; max-width: 900px; margin: 0 auto; }
   @media (min-width: 780px) { .proof { grid-template-columns: auto auto auto; justify-content: center; } }
   .proof .p-imgs { justify-content: center; }
+  @media (min-width: 760px) { .centered { text-align: center; } .centered .body { margin-left: auto; margin-right: auto; } }
   /* the proof strip is too small to read on a phone, so it is desktop only */
   @media (max-width: 759px) { .desktop-only { display: none; } }
   .p-imgs { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
@@ -267,7 +268,7 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
 
 <!-- ================= SELL ================= -->
 <div class="divider-lbl">90 days from now</div>
-<section>
+<section class="centered">
   <h2>If it could happen for me, it can happen for you.</h2>
   <p class="body">I was not a natural at this. I was the guy who rehearsed a sentence ten times and never said it, who avoided eye contact so he would not have to act, who went home and replayed every moment he chickened out.</p>
   <p class="body">Then I started doing it. And I built a habit, a process: the exact one you'll learn in this workshop.</p>
@@ -286,36 +287,6 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
     </div>
   </div>
   <img class="sect-img" src="img/couple-crown.jpg" alt="William and Carsyn" loading="lazy" style="aspect-ratio:4/5" />
-</section>
-
-<!-- ================= RECEIPTS ================= -->
-<div class="divider-lbl desktop-only">Trusting the process</div>
-<section class="desktop-only">
-  <div class="proof">
-    <div>
-      <div class="sect-label">The practice</div>
-      <div class="p-imgs">
-        <div class="pz" style="--zs:2.1; --zx:46%; --zy:30%"><img src="img/approach-yeti.jpg" alt="William approaching a woman outside a storefront" loading="lazy" /></div>
-        <div class="pz" style="--zs:1.9; --zx:52%; --zy:58%"><img src="img/approach-aisle.jpg" alt="William talking with a group in a grocery aisle" loading="lazy" /></div>
-        <div class="pz" style="--zs:2.4; --zx:48%; --zy:26%"><img src="img/approach-checkout.jpg" alt="William starting a conversation in a store" loading="lazy" /></div>
-      </div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div>
-      <div class="sect-label">Where it led</div>
-      <!-- Girlfriend photos: drop gf-1.jpg ... gf-4.jpg into /workshop/img/.
-           Any slot whose file is missing hides itself, so the grid stays clean. -->
-      <div class="p-imgs js-gf">
-        <div class="pz"><img src="img/couple-crown.jpg" alt="William and Carsyn" loading="lazy" /></div>
-        <div class="pz"><img src="img/couple-river.jpg" alt="William and Carsyn at the river" loading="lazy" style="object-position: 40% 50%" /></div>
-        <div class="pz"><img src="img/gf-1.jpg" alt="William and Carsyn" loading="lazy" onerror="this.parentElement.remove()" /></div>
-        <div class="pz"><img src="img/gf-2.jpg" alt="William and Carsyn" loading="lazy" onerror="this.parentElement.remove()" /></div>
-        <div class="pz"><img src="img/gf-3.jpg" alt="William and Carsyn" loading="lazy" onerror="this.parentElement.remove()" /></div>
-        <div class="pz"><img src="img/gf-4.jpg" alt="William and Carsyn" loading="lazy" onerror="this.parentElement.remove()" /></div>
-      </div>
-    </div>
-  </div>
-  <p class="p-note">The same process I teach, and where it took me: a relationship of more than two years.</p>
 </section>
 
 <!-- ================= FAQ ================= -->
