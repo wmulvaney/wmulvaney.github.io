@@ -189,6 +189,7 @@ t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '526303911209957');
 fbq('track', 'PageView');
+fbq('track', 'ViewContent', {content_name: 'Dating Discipline Workshop', content_type: 'product', value: 29.00, currency: 'USD'});
 </script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=526303911209957&ev=PageView&noscript=1"/></noscript>
 <!-- PostHog analytics (start) -->
@@ -391,15 +392,17 @@ function render() {
     ? ((left !== null && left <= 20) ? `Only ${left} of the 50 early bird seats are left.` : "The first 50 seats are $29. After that it's $49.")
     : t === "standard" ? "The early bird seats are gone. Registration closes Friday, October 16."
     : "Registration is closed.");
-  document.querySelector(".js-tier-early").classList.toggle("now", t === "early");
-  document.querySelector(".js-tier-early").classList.toggle("past", t !== "early");
-  document.querySelector(".js-tier-std").classList.toggle("now", t === "standard");
+  // the tier chips only exist if the price-box layout is on the page
+  const chipEarly = document.querySelector(".js-tier-early");
+  const chipStd = document.querySelector(".js-tier-std");
+  if (chipEarly) { chipEarly.classList.toggle("now", t === "early"); chipEarly.classList.toggle("past", t !== "early"); }
+  if (chipStd) chipStd.classList.toggle("now", t === "standard");
   $$(".js-buy").forEach(b => {
     if (t === "closed") { b.disabled = true; b.textContent = "Registration closed"; }
     else if (b.closest("#sticky")) b.textContent = "Save my seat";
     else b.textContent = "Save my seat · $" + price;
   });
-  if (t === "closed") document.getElementById("sticky").remove();
+  if (t === "closed") { const bar = document.getElementById("sticky"); if (bar) bar.remove(); }
   // Show the start time in the visitor's own time zone, with Central in parentheses.
   try {
     const f = (opts, tz) => new Intl.DateTimeFormat(undefined, tz ? { ...opts, timeZone: tz } : opts).format(EVENT.start);
@@ -419,8 +422,16 @@ render();
 // Ask the server how many early bird seats are left, then re-render.
 fetch("https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-seats")
   .then(r => r.json())
-  .then(d => { if (d && d.ok) { SEATS = d; render(); } })
-  .catch(() => {});
+  .then(d => {
+    if (d && d.ok) {
+      SEATS = d;
+      render();
+      cap("workshop_seats_loaded", {tier: d.tier, early_left: d.early_left, sold: d.sold});
+    } else {
+      cap("workshop_seats_error", {reason: (d && d.error) || "not ok"});
+    }
+  })
+  .catch((e) => cap("workshop_seats_error", {reason: String(e)}));
 
 function register(where) {
   const t = tier(new Date());
@@ -428,7 +439,12 @@ function register(where) {
   const url = t === "early" ? STRIPE_EARLY_URL : STRIPE_STANDARD_URL;
   const price = t === "early" ? 29 : 49;
   try { fbq('track', 'InitiateCheckout', {value: price, currency: 'USD', content_name: 'Dating Discipline Workshop'}); } catch (e) {}
-  try { posthog.capture('checkout_click', {tier: 'workshop_' + t, price: price, where: where}, {send_instantly: true, transport: 'sendBeacon'}); } catch (e) {}
+  cap('checkout_click', {
+    tier: 'workshop_' + t, price: price, where: where,
+    early_left: SEATS ? SEATS.early_left : null,
+    seconds_on_page: secondsOnPage(),
+    max_scroll_pct: MAX_SCROLL,
+  }, true);
   if (!url) { toast("Registration opens shortly. Check back soon."); return; }
   setTimeout(() => { window.location.href = url; }, 250);
 }
@@ -439,6 +455,85 @@ function register(where) {
   const heroBtn = document.querySelector(".hero .js-buy");
   if (!bar || !heroBtn || !("IntersectionObserver" in window)) return;
   new IntersectionObserver(([e]) => bar.classList.toggle("show", !e.isIntersecting && e.boundingClientRect.top < 0)).observe(heroBtn);
+})();
+
+/* ---------------- analytics ----------------
+   PostHog already logs the pageview and pageleave. These add the things that
+   tell us WHY the page does or does not convert: how far people read, which
+   objections they open, which CTA they saw, and what the price state was. */
+const T0 = Date.now();
+let MAX_SCROLL = 0;
+function secondsOnPage() { return Math.round((Date.now() - T0) / 1000); }
+function cap(event, props, leaving) {
+  try {
+    posthog.capture(event, props || {}, leaving ? {send_instantly: true, transport: 'sendBeacon'} : undefined);
+  } catch (e) {}
+}
+
+(function analytics() {
+  // how far down the page people actually get
+  const marks = [25, 50, 75, 90];
+  const seen = {};
+  function onScroll() {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = h > 0 ? Math.min(100, Math.round((window.scrollY / h) * 100)) : 100;
+    if (pct > MAX_SCROLL) MAX_SCROLL = pct;
+    marks.forEach(function (m) {
+      if (pct >= m && !seen[m]) { seen[m] = 1; cap('scroll_depth', {depth: m}); }
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive: true});
+  onScroll();
+
+  // which sections were actually reached, named by their divider label
+  if ('IntersectionObserver' in window) {
+    const sectionSeen = {};
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        const name = (e.target.textContent || '').trim();
+        if (!name || sectionSeen[name]) return;
+        sectionSeen[name] = 1;
+        cap('section_view', {section: name, seconds_on_page: secondsOnPage()});
+      });
+    }, {threshold: 0.6});
+    document.querySelectorAll('.divider-lbl').forEach(function (el) { io.observe(el); });
+
+    // did they ever actually see a buy button
+    const ctaSeen = {};
+    const ctaIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        const where = e.target.getAttribute('onclick') || '';
+        const which = (where.match(/register\('([^']+)'\)/) || [null, 'unknown'])[1];
+        if (ctaSeen[which]) return;
+        ctaSeen[which] = 1;
+        cap('cta_view', {where: which, seconds_on_page: secondsOnPage()});
+      });
+    }, {threshold: 0.9});
+    document.querySelectorAll('.js-buy').forEach(function (el) { ctaIo.observe(el); });
+  }
+
+  // which objections people open, in order
+  let faqOrder = 0;
+  document.querySelectorAll('details').forEach(function (d) {
+    d.addEventListener('toggle', function () {
+      if (!d.open) return;
+      faqOrder += 1;
+      const q = (d.querySelector('summary') || {}).textContent || '';
+      cap('faq_open', {question: q.trim(), order: faqOrder, seconds_on_page: secondsOnPage()});
+    });
+  });
+
+  // one summary event on the way out, so drop-off is one query instead of three
+  window.addEventListener('pagehide', function () {
+    cap('workshop_page_exit', {
+      max_scroll_pct: MAX_SCROLL,
+      seconds_on_page: secondsOnPage(),
+      faq_opened: faqOrder,
+      tier: SEATS ? SEATS.tier : 'unknown',
+    }, true);
+  });
 })();
 
 function toast(msg) {
