@@ -179,6 +179,28 @@
   footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
   .toast { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%) translateY(20px); background: var(--accent); color: #fff; font-weight: 700; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; padding: 13px 24px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 100; max-width: calc(100vw - 32px); text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---- Qualifying step shown before checkout ---- */
+  .modal { position: fixed; inset: 0; z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); overflow-y: auto; background: rgba(2, 6, 10, 0.82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .modal.open { display: flex; }
+  .modal-card { position: relative; width: 100%; max-width: 480px; margin: auto; background: var(--surface-strong); border: 1px solid var(--border-strong); box-shadow: var(--shadow); padding: 30px 26px 26px; }
+  .modal-close { position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--faint); font-size: 22px; line-height: 1; padding: 8px 12px; letter-spacing: 0; }
+  .modal-close:hover { color: var(--text); }
+  .modal h3 { font-family: var(--font-display); font-weight: 900; font-size: 25px; line-height: 1.2; margin: 0 0 8px; }
+  .modal .lede { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0 0 20px; }
+  .fld { margin-bottom: 15px; }
+  .fld label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); margin-bottom: 7px; }
+  .fld input, .fld textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 0; color: var(--text); font-family: var(--font-ui); font-size: 15px; padding: 13px 14px; transition: border-color 140ms ease; }
+  .fld textarea { min-height: 88px; resize: vertical; line-height: 1.5; }
+  .fld input:focus, .fld textarea:focus { outline: none; border-color: var(--accent); }
+  .fld input::placeholder, .fld textarea::placeholder { color: rgba(255,255,255,0.28); }
+  .fld.bad input, .fld.bad textarea { border-color: #f87171; }
+  .fld .err { display: none; font-size: 11px; color: #f87171; margin-top: 6px; letter-spacing: 0.04em; }
+  .fld.bad .err { display: block; }
+  .modal .btn-primary { width: 100%; margin-top: 4px; }
+  .modal .btn-primary[disabled] { opacity: 0.6; }
+  .modal .why { font-size: 11px; color: var(--faint); line-height: 1.6; margin: 14px 0 0; }
+  @media (max-width: 520px) { .modal-card { padding: 26px 18px 20px; } .modal h3 { font-size: 22px; } }
 </style>
 <!-- Meta Pixel -->
 <script>
@@ -345,6 +367,37 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
   <div class="s-txt"><b class="js-price">$29</b> <span class="js-sticky-note">early bird</span><br/>Live · <span class="js-when-short">Sat, Oct 17, 1 PM CT</span></div>
   <button class="btn-primary js-buy" onclick="register('sticky')">Save my seat</button>
 </div>
+<div class="modal" id="lead-modal" role="dialog" aria-modal="true" aria-labelledby="lead-title">
+  <div class="modal-card">
+    <button class="modal-close" type="button" onclick="closeLead()" aria-label="Close">&times;</button>
+    <h3 id="lead-title">Save your seat</h3>
+    <p class="lede">Two quick things before checkout, then you are straight through to payment.</p>
+    <form id="lead-form" novalidate>
+      <div class="fld" id="fld-name">
+        <label for="lead-name">Your name</label>
+        <input id="lead-name" name="name" type="text" autocomplete="name" placeholder="First and last" />
+        <div class="err">Please enter your name.</div>
+      </div>
+      <div class="fld" id="fld-email">
+        <label for="lead-email">Email</label>
+        <input id="lead-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" />
+        <div class="err">Please enter a valid email.</div>
+      </div>
+      <div class="fld" id="fld-phone">
+        <label for="lead-phone">Phone</label>
+        <input id="lead-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(555) 555-5555" />
+        <div class="err">Please enter your phone number.</div>
+      </div>
+      <div class="fld" id="fld-goal">
+        <label for="lead-goal">If this workshop goes really well, what would you want to be different afterward?</label>
+        <textarea id="lead-goal" name="goal" placeholder="Be as specific as you like."></textarea>
+        <div class="err">Please answer this one, it is the part I actually use.</div>
+      </div>
+      <button class="btn-primary" type="submit" id="lead-submit">Continue to payment &middot; <span class="js-price">$29</span></button>
+      <p class="why">We use your name, email and phone only to send you the joining link and reminders for this workshop.</p>
+    </form>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -433,11 +486,19 @@ fetch("https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-seats")
   })
   .catch((e) => cap("workshop_seats_error", {reason: String(e)}));
 
+/* Clicking a CTA no longer jumps straight to Stripe. It opens a short qualifying
+   form, and the lead is stored BEFORE payment, so the people who drop at checkout
+   are captured instead of lost. checkout_click still fires here and still means the
+   same thing it always did (someone asked to buy), so the history stays comparable;
+   lead_submitted is the new step between it and the purchase. */
+const LEAD_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-lead";
+let LEAD_CTX = {where: "hero", tier: "early", price: 29};
+
 function register(where) {
   const t = tier(new Date());
   if (t === "closed") return;
-  const url = t === "early" ? STRIPE_EARLY_URL : STRIPE_STANDARD_URL;
   const price = t === "early" ? 29 : 49;
+  LEAD_CTX = {where: where, tier: t, price: price};
   try { fbq('track', 'InitiateCheckout', {value: price, currency: 'USD', content_name: 'Dating Discipline Workshop'}); } catch (e) {}
   cap('checkout_click', {
     tier: 'workshop_' + t, price: price, where: where,
@@ -445,9 +506,103 @@ function register(where) {
     seconds_on_page: secondsOnPage(),
     max_scroll_pct: MAX_SCROLL,
   }, true);
-  if (!url) { toast("Registration opens shortly. Check back soon."); return; }
-  setTimeout(() => { window.location.href = url; }, 250);
+  if (!(t === "early" ? STRIPE_EARLY_URL : STRIPE_STANDARD_URL)) {
+    toast("Registration opens shortly. Check back soon."); return;
+  }
+  openLead();
 }
+
+const $modal = () => document.getElementById("lead-modal");
+
+function openLead() {
+  const m = $modal();
+  m.classList.add("open");
+  document.body.style.overflow = "hidden";
+  cap('lead_form_open', {where: LEAD_CTX.where, tier: 'workshop_' + LEAD_CTX.tier});
+  setTimeout(() => { const f = document.getElementById("lead-name"); if (f) f.focus(); }, 60);
+}
+
+function closeLead(reason) {
+  $modal().classList.remove("open");
+  document.body.style.overflow = "";
+  cap('lead_form_abandon', {where: LEAD_CTX.where, reason: reason || "closed"});
+}
+
+function goToStripe(leadId, email) {
+  const base = LEAD_CTX.tier === "early" ? STRIPE_EARLY_URL : STRIPE_STANDARD_URL;
+  const q = [];
+  if (email) q.push("prefilled_email=" + encodeURIComponent(email));
+  if (leadId) q.push("client_reference_id=" + encodeURIComponent(leadId));
+  window.location.href = base + (q.length ? "?" + q.join("&") : "");
+}
+
+(function leadForm() {
+  const form = document.getElementById("lead-form");
+  if (!form) return;
+
+  // Escape closes, and so does clicking the backdrop outside the card.
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && $modal().classList.contains("open")) closeLead("escape");
+  });
+  $modal().addEventListener("click", (e) => { if (e.target === $modal()) closeLead("backdrop"); });
+
+  const mark = (id, bad) => document.getElementById(id).classList.toggle("bad", bad);
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const name = document.getElementById("lead-name").value.trim();
+    const email = document.getElementById("lead-email").value.trim();
+    const phone = document.getElementById("lead-phone").value.trim();
+    const goal = document.getElementById("lead-goal").value.trim();
+
+    const badName = name.length < 2;
+    const badEmail = !/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(email);
+    const badPhone = phone.replace(/\D/g, "").length < 7;
+    const badGoal = goal.length < 3;
+    mark("fld-name", badName); mark("fld-email", badEmail);
+    mark("fld-phone", badPhone); mark("fld-goal", badGoal);
+    if (badName || badEmail || badPhone || badGoal) {
+      cap('lead_form_invalid', {name: badName, email: badEmail, phone: badPhone, goal: badGoal});
+      const first = document.querySelector(".fld.bad input, .fld.bad textarea");
+      if (first) first.focus();
+      return;
+    }
+
+    const btn = document.getElementById("lead-submit");
+    btn.disabled = true; btn.textContent = "One moment...";
+
+    cap('lead_submitted', {
+      where: LEAD_CTX.where, tier: 'workshop_' + LEAD_CTX.tier, price: LEAD_CTX.price,
+      seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL,
+    }, true);
+    try { posthog.identify(email, {email: email, name: name}); } catch (err) {}
+    try { fbq('track', 'Lead', {value: LEAD_CTX.price, currency: 'USD', content_name: 'Dating Discipline Workshop'}); } catch (err) {}
+
+    const payload = {
+      name: name, email: email, phone: phone, goal: goal,
+      price_tier: LEAD_CTX.tier === "early" ? "early_bird" : "standard",
+      where: LEAD_CTX.where,
+      referrer: document.referrer || null,
+      utm_source: new URLSearchParams(location.search).get("utm_source"),
+    };
+
+    // A failed lead write must never stop someone paying, so every path ends at Stripe.
+    // 6s ceiling: a hung request cannot strand a buyer on this form.
+    let done = false;
+    const proceed = (id) => { if (!done) { done = true; goToStripe(id, email); } };
+    setTimeout(() => proceed(null), 6000);
+
+    fetch(LEAD_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(payload),
+      keepalive: true,
+    })
+      .then((r) => r.json())
+      .then((d) => proceed(d && d.ok ? d.id : null))
+      .catch(() => proceed(null));
+  });
+})();
 
 // Sticky mobile bar once the hero button scrolls away.
 (function () {
