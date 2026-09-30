@@ -186,8 +186,7 @@
   .modal-card { position: relative; width: 100%; max-width: 480px; margin: auto; background: var(--surface-strong); border: 1px solid var(--border-strong); box-shadow: var(--shadow); padding: 30px 26px 26px; }
   .modal-close { position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--faint); font-size: 22px; line-height: 1; padding: 8px 12px; letter-spacing: 0; }
   .modal-close:hover { color: var(--text); }
-  .modal h3 { font-family: var(--font-display); font-weight: 900; font-size: 25px; line-height: 1.2; margin: 0 0 8px; }
-  .modal .lede { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0 0 20px; }
+  .modal h3 { font-family: var(--font-display); font-weight: 900; font-size: 25px; line-height: 1.2; margin: 0 0 22px; }
   .fld { margin-bottom: 15px; }
   .fld label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); margin-bottom: 7px; }
   .fld input, .fld textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 0; color: var(--text); font-family: var(--font-ui); font-size: 15px; padding: 13px 14px; transition: border-color 140ms ease; }
@@ -371,7 +370,6 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
   <div class="modal-card">
     <button class="modal-close" type="button" onclick="closeLead()" aria-label="Close">&times;</button>
     <h3 id="lead-title">Save your seat</h3>
-    <p class="lede">Two quick things before checkout, then you are straight through to payment.</p>
     <form id="lead-form" novalidate>
       <div class="fld" id="fld-name">
         <label for="lead-name">Your name</label>
@@ -393,7 +391,7 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
         <textarea id="lead-goal" name="goal" placeholder="Be as specific as you like."></textarea>
         <div class="err">Please answer this one, it is the part I actually use.</div>
       </div>
-      <button class="btn-primary" type="submit" id="lead-submit">Continue to payment &middot; <span class="js-price">$29</span></button>
+      <button class="btn-primary" type="submit" id="lead-submit">Reserve seat</button>
       <p class="why">We use your name, email and phone only to send you the joining link and reminders for this workshop.</p>
     </form>
   </div>
