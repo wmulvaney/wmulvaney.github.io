@@ -552,9 +552,10 @@ function goToStripe(leadId, email) {
     const phone = document.getElementById("lead-phone").value.trim();
     const goal = document.getElementById("lead-goal").value.trim();
 
-    // The goal question is optional. On 2026-09-30 the only real visitor who reached this
-    // form filled name, email and phone correctly and was turned away for leaving the goal
-    // blank, then left. It is still asked, and still captured when given.
+    // The goal question is optional (Will, 2026-09-30). No real visitor had reached this
+    // form yet when that was decided: the session that got blocked for a blank goal was
+    // Will's own test. It is still asked, and still captured when given. lead_submitted
+    // carries answered_goal so the cost of asking can be measured once traffic arrives.
     const badName = name.length < 2;
     const badEmail = !/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(email);
     const badPhone = phone.replace(/\D/g, "").length < 7;
