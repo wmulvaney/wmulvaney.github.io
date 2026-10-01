@@ -200,7 +200,10 @@
   .modal .btn-primary[disabled] { opacity: 0.6; }
   .modal .why { font-size: 11px; color: var(--faint); line-height: 1.6; margin: 14px 0 0; }
   .modal-card.wide { max-width: 560px; }
-  #checkout-panel { min-height: 320px; }
+  /* Stripe's own panel is rounded inside the frame, so the frame is rounded to match
+     rather than showing square white corners against the dark modal. */
+  #checkout-panel { min-height: 320px; border-radius: 10px; overflow: hidden; }
+  #checkout-panel iframe { border-radius: 10px; }
   /* Mounted early and clipped. Stripe only renders in real layout, so this cannot be
      display:none, visibility:hidden or moved off-screen: all three render nothing. */
   #lead-pay.prerender { height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
