@@ -201,6 +201,9 @@
   .modal .why { font-size: 11px; color: var(--faint); line-height: 1.6; margin: 14px 0 0; }
   .modal-card.wide { max-width: 560px; }
   #checkout-panel { min-height: 320px; }
+  /* Mounted early and clipped. Stripe only renders in real layout, so this cannot be
+     display:none, visibility:hidden or moved off-screen: all three render nothing. */
+  #lead-pay.prerender { height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
   .pay-back { background: none; border: none; color: var(--faint); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 0 14px; }
   .pay-back:hover { color: var(--text); }
   .pay-wait { color: var(--muted); font-size: 13px; padding: 40px 0; text-align: center; }
@@ -401,7 +404,8 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
     </form>
     <div id="lead-pay" hidden>
       <button type="button" class="pay-back" onclick="backToForm()">&larr; Back</button>
-      <div id="checkout-panel"><p class="pay-wait">Loading secure checkout...</p></div>
+      <p class="pay-wait" id="pay-wait">Loading secure checkout...</p>
+      <div id="checkout-panel"></div>
     </div>
   </div>
 </div>
@@ -541,7 +545,7 @@ function openLead() {
 function closeLead(reason) {
   // The checkout instance is deliberately kept: reopening the modal should not pay the
   // load cost again, and the lead has already been written.
-  document.getElementById("lead-pay").hidden = true;
+  document.getElementById("lead-pay").classList.add("prerender");
   document.getElementById("lead-form").hidden = false;
   document.querySelector(".modal-card").classList.remove("wide");
   const sb = document.getElementById("lead-submit");
@@ -559,66 +563,78 @@ function goToStripe(leadId, email) {
   window.location.href = base + (q.length ? "?" + q.join("&") : "");
 }
 
-/* The Checkout Session is created as soon as a valid email is entered, so the ~800ms
-   round trip happens while they are still filling in the phone and goal fields instead
-   of after they press the button. */
+/* Checkout is created AND mounted while they are still filling the form, then simply
+   revealed on submit. The panel is clipped to 1px rather than hidden, because Stripe
+   renders nothing in display:none, visibility:hidden or an off-screen container. */
 function warmSession(email) {
-  if (!STRIPE_PK || typeof Stripe === "undefined") return;
-  if (SESSION && SESSION.email === email) return;
-  SESSION = {
-    email: email,
-    promise: fetch(CHECKOUT_URL, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({lead_id: LEAD_ID || "", email: email, tier: LEAD_CTX.tier === "early" ? "early_bird" : "standard"}),
-    }).then((r) => r.json()).catch(() => null),
-  };
+  if (!STRIPE_PK || typeof Stripe === "undefined") return null;
+  if (!SESSION || SESSION.email !== email) {
+    SESSION = {
+      email: email,
+      promise: fetch(CHECKOUT_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({lead_id: LEAD_ID || "", email: email, tier: LEAD_CTX.tier === "early" ? "early_bird" : "standard"}),
+      }).then((r) => r.json()).catch(() => null),
+    };
+  }
+  return SESSION.promise;
 }
 
-/* Second screen: Stripe's own checkout mounted inside this modal. Returns true only
-   when it is actually on screen, so the caller can fall back to the hosted link.
+let MOUNTING = null;
 
-   Mounted ONCE. Going back to the form and returning re-shows the same live instance
-   rather than tearing it down and paying the load cost again. A new session is only
-   needed if they change their email, because customer_email is fixed at creation. */
-async function openCheckout(leadId, email) {
-  try {
-    const showPay = () => {
-      document.getElementById("lead-form").hidden = true;
-      document.getElementById("lead-pay").hidden = false;
-      document.querySelector(".modal-card").classList.add("wide");
-    };
+/* Get a mounted checkout for this email. Safe to call repeatedly. */
+function ensureCheckout(email) {
+  if (CHECKOUT && CHECKOUT_EMAIL === email) return Promise.resolve(true);
+  if (MOUNTING && MOUNTING.email === email) return MOUNTING.promise;
 
-    if (CHECKOUT && CHECKOUT_EMAIL === email) { showPay(); return true; }
-
-    if (CHECKOUT) {                       // email changed: this one is for the wrong address
+  const run = (async () => {
+    if (CHECKOUT) {                 // email changed: the old session is for the wrong address
       try { CHECKOUT.destroy(); } catch (e) {}
       CHECKOUT = null; CHECKOUT_EMAIL = null;
-      document.getElementById("checkout-panel").innerHTML = '<p class="pay-wait">Loading secure checkout...</p>';
+      document.getElementById("checkout-panel").innerHTML = "";
+      const w0 = document.getElementById("pay-wait");
+      if (w0) w0.hidden = false;
     }
-
-    if (!SESSION || SESSION.email !== email) warmSession(email);
-    const d = await SESSION.promise;
+    const d = await warmSession(email);
     if (!d || !d.ok || !d.client_secret) return false;
 
-    showPay();
+    const pay = document.getElementById("lead-pay");
+    pay.classList.add("prerender");
+    pay.hidden = false;             // must be in layout for Stripe to draw
+
     const stripe = Stripe(STRIPE_PK);
     CHECKOUT = await stripe.initEmbeddedCheckout({clientSecret: d.client_secret});
     CHECKOUT_EMAIL = email;
-    document.getElementById("checkout-panel").innerHTML = "";
     CHECKOUT.mount("#checkout-panel");
-    cap('checkout_mounted', {where: LEAD_CTX.where, tier: 'workshop_' + LEAD_CTX.tier, price: LEAD_CTX.price});
+    const w = document.getElementById("pay-wait");
+    if (w) w.hidden = true;
     return true;
-  } catch (e) {
+  })();
+
+  MOUNTING = {email: email, promise: run.catch((e) => {
     cap('checkout_mount_failed', {reason: String(e).slice(0, 200)});
     return false;
-  }
+  })};
+  return MOUNTING.promise;
 }
 
-/* Back does NOT destroy the checkout. It stays mounted and hidden, so returning is
-   instant and no second lead row or session is created. */
+/* Reveal the already-mounted checkout. Returns false so the caller can fall back. */
+async function openCheckout(leadId, email) {
+  const ok = await ensureCheckout(email);
+  if (!ok) return false;
+  document.getElementById("lead-form").hidden = true;
+  const pay = document.getElementById("lead-pay");
+  pay.hidden = false;
+  pay.classList.remove("prerender");
+  document.querySelector(".modal-card").classList.add("wide");
+  cap('checkout_mounted', {where: LEAD_CTX.where, tier: 'workshop_' + LEAD_CTX.tier, price: LEAD_CTX.price});
+  return true;
+}
+
 function backToForm() {
-  document.getElementById("lead-pay").hidden = true;
+  const pay = document.getElementById("lead-pay");
+  pay.classList.add("prerender");   // keep it mounted and rendered, just clipped again
   document.querySelector(".modal-card").classList.remove("wide");
   document.getElementById("lead-form").hidden = false;
   const btn = document.getElementById("lead-submit");
@@ -641,7 +657,7 @@ function backToForm() {
   const emailEl = document.getElementById("lead-email");
   const tryWarm = () => {
     const v = emailEl.value.trim();
-    if (/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/.test(v)) warmSession(v);
+    if (/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/.test(v)) ensureCheckout(v);
   };
   emailEl.addEventListener("blur", tryWarm);
   emailEl.addEventListener("change", tryWarm);
