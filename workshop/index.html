@@ -387,8 +387,9 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
         <div class="err">Please enter your phone number.</div>
       </div>
       <div class="fld" id="fld-goal">
-        <label for="lead-goal">If this workshop goes really well, what would you want to be different afterward? <span style="color:var(--faint);font-weight:400;letter-spacing:0.08em">(optional)</span></label>
+        <label for="lead-goal">If this workshop goes really well, what would you want to be different afterward?</label>
         <textarea id="lead-goal" name="goal" placeholder="I tailor the workshop to what most attendees say here."></textarea>
+        <div class="err">Please answer this one, it is the part I actually use.</div>
       </div>
       <button class="btn-primary" type="submit" id="lead-submit">Reserve seat</button>
       <p class="why">We use your name, email and phone only to send you the joining link and reminders for this workshop.</p>
@@ -552,16 +553,19 @@ function goToStripe(leadId, email) {
     const phone = document.getElementById("lead-phone").value.trim();
     const goal = document.getElementById("lead-goal").value.trim();
 
-    // The goal question is optional (Will, 2026-09-30). No real visitor had reached this
-    // form yet when that was decided: the session that got blocked for a blank goal was
-    // Will's own test. It is still asked, and still captured when given. lead_submitted
-    // carries answered_goal so the cost of asking can be measured once traffic arrives.
+    // The goal question is required again (Will, 2026-10-01), after a day optional in which
+    // 3 of 4 leads left it blank and none bought. Trading lead volume for lead quality.
+    // The email pattern requires a letters-only TLD: "jims30688@gmail.com7" passed the
+    // looser version on 2026-09-30 and was undeliverable, so that lead could never be
+    // contacted by email.
     const badName = name.length < 2;
-    const badEmail = !/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(email);
+    const badEmail = !/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/.test(email);
     const badPhone = phone.replace(/\D/g, "").length < 7;
-    mark("fld-name", badName); mark("fld-email", badEmail); mark("fld-phone", badPhone);
-    if (badName || badEmail || badPhone) {
-      cap('lead_form_invalid', {name: badName, email: badEmail, phone: badPhone});
+    const badGoal = goal.length < 3;
+    mark("fld-name", badName); mark("fld-email", badEmail);
+    mark("fld-phone", badPhone); mark("fld-goal", badGoal);
+    if (badName || badEmail || badPhone || badGoal) {
+      cap('lead_form_invalid', {name: badName, email: badEmail, phone: badPhone, goal: badGoal});
       const first = document.querySelector(".fld.bad input, .fld.bad textarea");
       if (first) first.focus();
       return;
