@@ -199,6 +199,11 @@
   .modal .btn-primary { width: 100%; margin-top: 4px; }
   .modal .btn-primary[disabled] { opacity: 0.6; }
   .modal .why { font-size: 11px; color: var(--faint); line-height: 1.6; margin: 14px 0 0; }
+  .modal-card.wide { max-width: 560px; }
+  #checkout-panel { min-height: 320px; }
+  .pay-back { background: none; border: none; color: var(--faint); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 0 14px; }
+  .pay-back:hover { color: var(--text); }
+  .pay-wait { color: var(--muted); font-size: 13px; padding: 40px 0; text-align: center; }
   @media (max-width: 520px) { .modal-card { padding: 26px 18px 20px; } .modal h3 { font-size: 22px; } }
 </style>
 <!-- Meta Pixel -->
@@ -394,10 +399,15 @@ posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
       <button class="btn-primary" type="submit" id="lead-submit">Reserve seat</button>
       <p class="why">We use your name, email and phone only to send you the joining link and reminders for this workshop.</p>
     </form>
+    <div id="lead-pay" hidden>
+      <button type="button" class="pay-back" onclick="backToForm()">&larr; Back</button>
+      <div id="checkout-panel"><p class="pay-wait">Loading secure checkout...</p></div>
+    </div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="https://js.stripe.com/v3/"></script>
 <script>
 /* ---------------- event config ----------------
    Keep in sync with the workshop_events row (dating-discipline-2026-10) that
@@ -490,6 +500,11 @@ fetch("https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-seats")
    same thing it always did (someone asked to buy), so the history stays comparable;
    lead_submitted is the new step between it and the purchase. */
 const LEAD_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-lead";
+const CHECKOUT_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-checkout";
+/* Publishable key, safe to expose. While this is empty the modal keeps the old behaviour
+   and redirects to the Stripe payment link, so checkout is never blocked by it. */
+const STRIPE_PK = "pk_live_51QTR4JLAJgldTRcOz6n2VevgGNzM7LEwGjDMtqs0AMt6k7aM9tGS7EAQeP2AqUnS4Gl59Z4RavVyDVGHCGlKbokD00Vtvq3kWR";
+let CHECKOUT = null;
 let LEAD_CTX = {where: "hero", tier: "early", price: 29};
 
 function register(where) {
@@ -521,6 +536,12 @@ function openLead() {
 }
 
 function closeLead(reason) {
+  try { if (CHECKOUT) { CHECKOUT.destroy(); CHECKOUT = null; } } catch (e) {}
+  document.getElementById("lead-pay").hidden = true;
+  document.getElementById("lead-form").hidden = false;
+  document.querySelector(".modal-card").classList.remove("wide");
+  const sb = document.getElementById("lead-submit");
+  if (sb) { sb.disabled = false; sb.textContent = "Reserve seat"; }
   $modal().classList.remove("open");
   document.body.style.overflow = "";
   cap('lead_form_abandon', {where: LEAD_CTX.where, reason: reason || "closed"});
@@ -532,6 +553,47 @@ function goToStripe(leadId, email) {
   if (email) q.push("prefilled_email=" + encodeURIComponent(email));
   if (leadId) q.push("client_reference_id=" + encodeURIComponent(leadId));
   window.location.href = base + (q.length ? "?" + q.join("&") : "");
+}
+
+/* Second screen: Stripe's own checkout mounted inside this modal. Returns true only
+   when it is actually on screen, so the caller can fall back to the hosted link. */
+async function openCheckout(leadId, email) {
+  try {
+    const r = await fetch(CHECKOUT_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({lead_id: leadId, email: email, tier: LEAD_CTX.tier === "early" ? "early_bird" : "standard"}),
+    });
+    const d = await r.json();
+    if (!d || !d.ok || !d.client_secret) return false;
+
+    document.getElementById("lead-form").hidden = true;
+    const pay = document.getElementById("lead-pay");
+    pay.hidden = false;
+    document.querySelector(".modal-card").classList.add("wide");
+
+    const stripe = Stripe(STRIPE_PK);
+    CHECKOUT = await stripe.initEmbeddedCheckout({clientSecret: d.client_secret});
+    document.getElementById("checkout-panel").innerHTML = "";
+    CHECKOUT.mount("#checkout-panel");
+    cap('checkout_mounted', {where: LEAD_CTX.where, tier: 'workshop_' + LEAD_CTX.tier, price: LEAD_CTX.price});
+    return true;
+  } catch (e) {
+    cap('checkout_mount_failed', {reason: String(e).slice(0, 200)});
+    return false;
+  }
+}
+
+function backToForm() {
+  try { if (CHECKOUT) { CHECKOUT.destroy(); CHECKOUT = null; } } catch (e) {}
+  document.getElementById("lead-pay").hidden = true;
+  document.getElementById("checkout-panel").innerHTML = '<p class="pay-wait">Loading secure checkout...</p>';
+  document.querySelector(".modal-card").classList.remove("wide");
+  const f = document.getElementById("lead-form");
+  f.hidden = false;
+  const btn = document.getElementById("lead-submit");
+  btn.disabled = false; btn.textContent = "Reserve seat";
+  cap('checkout_back_to_form', {where: LEAD_CTX.where});
 }
 
 (function leadForm() {
@@ -590,11 +652,13 @@ function goToStripe(leadId, email) {
       utm_source: new URLSearchParams(location.search).get("utm_source"),
     };
 
-    // A failed lead write must never stop someone paying, so every path ends at Stripe.
-    // 6s ceiling: a hung request cannot strand a buyer on this form.
+    // The lead is written first, then checkout opens on the second screen of this modal.
+    // Every failure path falls back to the hosted payment link: a problem with our own
+    // endpoint, Stripe.js or the session must never be the reason someone cannot pay.
+    // 8s ceiling so a hung request cannot strand a buyer on this form.
     let done = false;
-    const proceed = (id) => { if (!done) { done = true; goToStripe(id, email); } };
-    setTimeout(() => proceed(null), 6000);
+    const fallback = (id) => { if (!done) { done = true; goToStripe(id, email); } };
+    const timer = setTimeout(() => fallback(null), 8000);
 
     fetch(LEAD_URL, {
       method: "POST",
@@ -603,8 +667,14 @@ function goToStripe(leadId, email) {
       keepalive: true,
     })
       .then((r) => r.json())
-      .then((d) => proceed(d && d.ok ? d.id : null))
-      .catch(() => proceed(null));
+      .then((d) => {
+        const id = d && d.ok ? d.id : null;
+        if (!STRIPE_PK || typeof Stripe === "undefined") return fallback(id);
+        return openCheckout(id, email).then((ok) => {
+          if (ok) { done = true; clearTimeout(timer); } else { fallback(id); }
+        });
+      })
+      .catch(() => fallback(null));
   });
 })();
 
