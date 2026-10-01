@@ -504,7 +504,10 @@ const CHECKOUT_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/work
 /* Publishable key, safe to expose. While this is empty the modal keeps the old behaviour
    and redirects to the Stripe payment link, so checkout is never blocked by it. */
 const STRIPE_PK = "pk_live_51QTR4JLAJgldTRcOz6n2VevgGNzM7LEwGjDMtqs0AMt6k7aM9tGS7EAQeP2AqUnS4Gl59Z4RavVyDVGHCGlKbokD00Vtvq3kWR";
-let CHECKOUT = null;
+let CHECKOUT = null;        // the one Embedded Checkout object for this modal session
+let CHECKOUT_EMAIL = null;  // the email its session was created with
+let LEAD_ID = null;         // written once; going back and forward must not write a second
+let SESSION = null;         // in-flight or resolved {email, promise} from the warm-up
 let LEAD_CTX = {where: "hero", tier: "early", price: 29};
 
 function register(where) {
@@ -536,7 +539,8 @@ function openLead() {
 }
 
 function closeLead(reason) {
-  try { if (CHECKOUT) { CHECKOUT.destroy(); CHECKOUT = null; } } catch (e) {}
+  // The checkout instance is deliberately kept: reopening the modal should not pay the
+  // load cost again, and the lead has already been written.
   document.getElementById("lead-pay").hidden = true;
   document.getElementById("lead-form").hidden = false;
   document.querySelector(".modal-card").classList.remove("wide");
@@ -555,25 +559,52 @@ function goToStripe(leadId, email) {
   window.location.href = base + (q.length ? "?" + q.join("&") : "");
 }
 
-/* Second screen: Stripe's own checkout mounted inside this modal. Returns true only
-   when it is actually on screen, so the caller can fall back to the hosted link. */
-async function openCheckout(leadId, email) {
-  try {
-    const r = await fetch(CHECKOUT_URL, {
+/* The Checkout Session is created as soon as a valid email is entered, so the ~800ms
+   round trip happens while they are still filling in the phone and goal fields instead
+   of after they press the button. */
+function warmSession(email) {
+  if (!STRIPE_PK || typeof Stripe === "undefined") return;
+  if (SESSION && SESSION.email === email) return;
+  SESSION = {
+    email: email,
+    promise: fetch(CHECKOUT_URL, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({lead_id: leadId, email: email, tier: LEAD_CTX.tier === "early" ? "early_bird" : "standard"}),
-    });
-    const d = await r.json();
+      body: JSON.stringify({lead_id: LEAD_ID || "", email: email, tier: LEAD_CTX.tier === "early" ? "early_bird" : "standard"}),
+    }).then((r) => r.json()).catch(() => null),
+  };
+}
+
+/* Second screen: Stripe's own checkout mounted inside this modal. Returns true only
+   when it is actually on screen, so the caller can fall back to the hosted link.
+
+   Mounted ONCE. Going back to the form and returning re-shows the same live instance
+   rather than tearing it down and paying the load cost again. A new session is only
+   needed if they change their email, because customer_email is fixed at creation. */
+async function openCheckout(leadId, email) {
+  try {
+    const showPay = () => {
+      document.getElementById("lead-form").hidden = true;
+      document.getElementById("lead-pay").hidden = false;
+      document.querySelector(".modal-card").classList.add("wide");
+    };
+
+    if (CHECKOUT && CHECKOUT_EMAIL === email) { showPay(); return true; }
+
+    if (CHECKOUT) {                       // email changed: this one is for the wrong address
+      try { CHECKOUT.destroy(); } catch (e) {}
+      CHECKOUT = null; CHECKOUT_EMAIL = null;
+      document.getElementById("checkout-panel").innerHTML = '<p class="pay-wait">Loading secure checkout...</p>';
+    }
+
+    if (!SESSION || SESSION.email !== email) warmSession(email);
+    const d = await SESSION.promise;
     if (!d || !d.ok || !d.client_secret) return false;
 
-    document.getElementById("lead-form").hidden = true;
-    const pay = document.getElementById("lead-pay");
-    pay.hidden = false;
-    document.querySelector(".modal-card").classList.add("wide");
-
+    showPay();
     const stripe = Stripe(STRIPE_PK);
     CHECKOUT = await stripe.initEmbeddedCheckout({clientSecret: d.client_secret});
+    CHECKOUT_EMAIL = email;
     document.getElementById("checkout-panel").innerHTML = "";
     CHECKOUT.mount("#checkout-panel");
     cap('checkout_mounted', {where: LEAD_CTX.where, tier: 'workshop_' + LEAD_CTX.tier, price: LEAD_CTX.price});
@@ -584,13 +615,12 @@ async function openCheckout(leadId, email) {
   }
 }
 
+/* Back does NOT destroy the checkout. It stays mounted and hidden, so returning is
+   instant and no second lead row or session is created. */
 function backToForm() {
-  try { if (CHECKOUT) { CHECKOUT.destroy(); CHECKOUT = null; } } catch (e) {}
   document.getElementById("lead-pay").hidden = true;
-  document.getElementById("checkout-panel").innerHTML = '<p class="pay-wait">Loading secure checkout...</p>';
   document.querySelector(".modal-card").classList.remove("wide");
-  const f = document.getElementById("lead-form");
-  f.hidden = false;
+  document.getElementById("lead-form").hidden = false;
   const btn = document.getElementById("lead-submit");
   btn.disabled = false; btn.textContent = "Reserve seat";
   cap('checkout_back_to_form', {where: LEAD_CTX.where});
@@ -605,6 +635,16 @@ function backToForm() {
     if (e.key === "Escape" && $modal().classList.contains("open")) closeLead("escape");
   });
   $modal().addEventListener("click", (e) => { if (e.target === $modal()) closeLead("backdrop"); });
+
+  // Start the Stripe session as soon as the email is usable, so the round trip overlaps
+  // with them filling in the phone and the goal instead of delaying the button.
+  const emailEl = document.getElementById("lead-email");
+  const tryWarm = () => {
+    const v = emailEl.value.trim();
+    if (/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/.test(v)) warmSession(v);
+  };
+  emailEl.addEventListener("blur", tryWarm);
+  emailEl.addEventListener("change", tryWarm);
 
   const mark = (id, bad) => document.getElementById(id).classList.toggle("bad", bad);
 
@@ -636,7 +676,7 @@ function backToForm() {
     const btn = document.getElementById("lead-submit");
     btn.disabled = true; btn.textContent = "One moment...";
 
-    cap('lead_submitted', {
+    cap(LEAD_ID ? 'lead_resubmitted' : 'lead_submitted', {
       where: LEAD_CTX.where, tier: 'workshop_' + LEAD_CTX.tier, price: LEAD_CTX.price,
       answered_goal: goal.length > 2,
       seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL,
@@ -652,29 +692,36 @@ function backToForm() {
       utm_source: new URLSearchParams(location.search).get("utm_source"),
     };
 
-    // The lead is written first, then checkout opens on the second screen of this modal.
+    // Lead write and checkout run in PARALLEL, not one after the other. The session is
+    // usually already warm from the email field, so this is close to instant.
     // Every failure path falls back to the hosted payment link: a problem with our own
     // endpoint, Stripe.js or the session must never be the reason someone cannot pay.
     // 8s ceiling so a hung request cannot strand a buyer on this form.
     let done = false;
-    const fallback = (id) => { if (!done) { done = true; goToStripe(id, email); } };
-    const timer = setTimeout(() => fallback(null), 8000);
+    const fallback = () => { if (!done) { done = true; goToStripe(LEAD_ID, email); } };
+    const timer = setTimeout(fallback, 8000);
 
-    fetch(LEAD_URL, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(payload),
-      keepalive: true,
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        const id = d && d.ok ? d.id : null;
-        if (!STRIPE_PK || typeof Stripe === "undefined") return fallback(id);
-        return openCheckout(id, email).then((ok) => {
-          if (ok) { done = true; clearTimeout(timer); } else { fallback(id); }
-        });
-      })
-      .catch(() => fallback(null));
+    // Written once per modal session. Going back and submitting again must not create a
+    // second row, which is exactly what the old sequential version did.
+    const leadWrite = LEAD_ID
+      ? Promise.resolve(LEAD_ID)
+      : fetch(LEAD_URL, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload),
+          keepalive: true,
+        })
+          .then((r) => r.json())
+          .then((d) => { if (d && d.ok) LEAD_ID = d.id; return LEAD_ID; })
+          .catch(() => null);
+
+    if (!STRIPE_PK || typeof Stripe === "undefined") {
+      leadWrite.then(fallback);
+    } else {
+      Promise.all([leadWrite, openCheckout(null, email)])
+        .then(([, ok]) => { if (ok) { done = true; clearTimeout(timer); } else { fallback(); } })
+        .catch(fallback);
+    }
   });
 })();
 
