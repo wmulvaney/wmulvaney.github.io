@@ -6,15 +6,40 @@ import './TestPage.css';
 const SPOTIFY_SHOW = 'https://open.spotify.com/show/50se7WW88PmujAJqhj7cmE?si=eace6536010d4f9b';
 
 /* ── Slide data ──────────────────────────────────────────── */
+const INTRO_CALL = 'https://cal.com/william-mulvaney-s0q4fq/introwithwill3';
+const COMEDY_IG = 'https://www.instagram.com/will.m.comedy/';
+
+// Workshop popup comes down on its own once the event is over
+const WORKSHOP_ENDS = new Date('2026-10-17T15:00:00-05:00');
+
 const slides = [
   {
     id: 'about',
-    kicker: 'Engineer · Entrepreneur · Podcaster',
+    kicker: 'Engineer · Coach · Podcaster',
     titleLines: ['William', 'Mulvaney'],
-    bio: 'Building habit systems, documenting the journey, and sharing actionable stories about discipline, technology, and personal performance.',
+    bio: 'Trying to build a better life, which sometimes means doing hard things. Right now that means podcasting, coaching, and, more recently, stand-up comedy.',
     cta: { label: 'Join the Community', href: 'https://www.skool.com/grooves-8558' },
     card: { label: 'About' },
     bg: { type: 'video' },
+  },
+  {
+    id: 'coaching',
+    kicker: 'Men\'s Coaching · Dating · Fitness · Discipline',
+    titleLines: ['Let\'s', 'Work.'],
+    bio: 'Private 1-on-1 coaching for men in their 20s and 30s ready to build from the ground up. My clients tend to focus on dating, fitness, and staying disciplined in general. Feel free to book an intro call to learn more.',
+    cta: { label: 'Book a 1-1 Intro', href: INTRO_CALL },
+    ctaSecondary: { label: 'Dating Workshop', href: '/workshop/' },
+    card: { label: 'Coaching' },
+    bg: {
+      type: 'image',
+      src: '/contact.jpeg',
+      style: {
+        backgroundSize: 'auto 150%',
+        backgroundPosition: '80% top',
+        backgroundRepeat: 'no-repeat',
+        filter: 'brightness(1.05) grayscale(0)',
+      },
+    },
   },
   {
     id: 'podcast',
@@ -23,34 +48,24 @@ const slides = [
     bio: 'Raw conversations about discipline, entrepreneurship, and building a life you\'re proud of. New episodes drop every week on Spotify and Apple Podcasts.',
     cta: { label: 'Listen Now', href: SPOTIFY_SHOW },
     card: { label: 'Podcast' },
-    bg: {
-      type: 'image',
-      src: '/1429109-200.png',
-      style: {
-        backgroundSize: '55% auto',
-        backgroundPosition: '82% center',
-        backgroundRepeat: 'no-repeat',
-        backgroundColor: '#06101a',
-        filter: 'brightness(0.62) grayscale(0.25)',
-      },
-    },
+    bg: { type: 'studio' },
   },
   {
-    id: 'grooves',
-    kicker: 'Habit Tracking, Reimagined',
-    titleLines: ['Grooves', 'App'],
-    bio: 'AI-powered habit tracking that learns what actually works for you. Discover patterns, optimize your days, and build systems that stick — starting from where you are now.',
-    cta: { label: 'Try Grooves Free', href: 'https://mygrooves.app?source=will' },
-    card: { label: 'Grooves' },
+    id: 'standup',
+    kicker: 'Stand-up · Open Mics',
+    titleLines: ['Stand-', 'Up.'],
+    bio: 'I\'m a brand new open mic\'er. I started doing stand-up to see what happens when I get on stage with five minutes and a few jokes. Some sets go well, some don\'t.',
+    cta: { label: 'Follow @will.m.comedy', href: COMEDY_IG },
+    card: { label: 'Stand-up' },
     bg: {
       type: 'image',
-      src: '/phones.png',
+      src: '/standup.jpg',
       style: {
-        backgroundSize: 'auto 90%',
-        backgroundPosition: '88% 105%',
+        // Portrait photo: fit the height so the head and mic stay in frame
+        backgroundSize: 'auto 100%',
+        backgroundPosition: 'right top',
         backgroundRepeat: 'no-repeat',
-        backgroundColor: '#040d18',
-        filter: 'brightness(0.78)',
+        filter: 'brightness(0.9)',
       },
     },
   },
@@ -61,12 +76,7 @@ const slides = [
     bio: 'Long-form writing on the systems behind high performance, entrepreneurship, and living with intention. Subscribe free — paid tier for those who want to go deeper.',
     cta: { label: 'Read the Newsletter', href: 'https://williammulvaney.substack.com' },
     card: { label: 'Writing' },
-    bg: {
-      type: 'gradient',
-      style: {
-        background: 'radial-gradient(ellipse 70% 90% at 78% 50%, #0d2236 0%, #03080f 65%)',
-      },
-    },
+    bg: { type: 'desk' },
   },
   {
     id: 'community',
@@ -84,24 +94,6 @@ const slides = [
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         filter: 'brightness(0.7) grayscale(0.2)',
-      },
-    },
-  },
-  {
-    id: 'coaching',
-    kicker: 'Men\'s Coaching · Dating · Fitness · Self-Expression',
-    titleLines: ['Build Your', 'Life.'],
-    bio: 'Private 1-on-1 coaching for men in their 20s and 30s ready to build from the ground up. We focus on the three pillars that actually move the needle: fitness, dating, and self-expression. Work on these long enough and who you are on the inside starts matching who you show up as in every room.',
-    cta: { label: "Let's Talk", href: '#' },
-    card: { label: 'Coaching' },
-    bg: {
-      type: 'image',
-      src: '/contact.jpeg',
-      style: {
-        backgroundSize: 'auto 150%',
-        backgroundPosition: '80% top',
-        backgroundRepeat: 'no-repeat',
-        filter: 'brightness(1.05) grayscale(0)',
       },
     },
   },
@@ -150,6 +142,66 @@ const socialLinks = [
 ];
 const WRITING_INDEX = slides.findIndex(s => s.id === 'writing');
 
+/* ── Looping side list ───────────────────────────────────── */
+// Drifts upward on its own; hovering pauses it and the wheel scrolls it by hand.
+// Children are rendered twice, so wrapping at half the height is seamless.
+function LoopingList({ visible, speed, className, children }) {
+  const ref = useRef(null);
+  const holdRef = useRef(false);
+  const releaseRef = useRef(null);
+
+  useEffect(() => {
+    if (!visible) return undefined;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let raf;
+    let last = performance.now();
+    let pos = ref.current ? ref.current.scrollTop : 0;
+
+    const tick = (now) => {
+      const el = ref.current;
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      if (el) {
+        if (holdRef.current || reduceMotion) pos = el.scrollTop;
+        else pos += speed * dt;
+        const half = el.scrollHeight / 2;
+        if (half > 0) {
+          if (pos >= half) pos -= half;
+          if (pos <= 0) pos += half;
+        }
+        el.scrollTop = pos;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [visible, speed]);
+
+  useEffect(() => () => clearTimeout(releaseRef.current), []);
+
+  const hold = () => { clearTimeout(releaseRef.current); holdRef.current = true; };
+  const release = (delay = 0) => {
+    clearTimeout(releaseRef.current);
+    releaseRef.current = setTimeout(() => { holdRef.current = false; }, delay);
+  };
+
+  return (
+    <div
+      ref={ref}
+      className={`vignelli-bg-scroll ${className} ${visible ? 'is-visible' : ''}`}
+      onMouseEnter={hold}
+      onMouseLeave={() => release()}
+      onTouchStart={hold}
+      onTouchEnd={() => release(2500)}
+    >
+      <div className="vignelli-bg-scroll-inner">
+        {children}
+        {children}
+      </div>
+    </div>
+  );
+}
+
 /* ── Component ───────────────────────────────────────────── */
 export default function TestPage() {
   const [activeIndex,  setActiveIndex]  = useState(0);
@@ -157,12 +209,7 @@ export default function TestPage() {
   const [phase,        setPhase]        = useState('idle');
   const [episodes,       setEpisodes]       = useState([]);
   const [articles,       setArticles]       = useState([]);
-  const [showContact,    setShowContact]    = useState(false);
-  const [formData,       setFormData]       = useState({ name: '', email: '', message: '' });
-  const [formSubmitted,  setFormSubmitted]  = useState(false);
-  const [formLoading,    setFormLoading]    = useState(false);
-  const [formError,      setFormError]      = useState('');
-  const [showToast,      setShowToast]      = useState(true);
+  const [showToast,      setShowToast]      = useState(() => new Date() < WORKSHOP_ENDS);
   const [showStackModal, setShowStackModal] = useState(false);
   const [stackEmail,     setStackEmail]     = useState('');
   const [stackSubmitted, setStackSubmitted] = useState(false);
@@ -206,7 +253,8 @@ export default function TestPage() {
   }, []);
 
   const selectSlide = (i) => {
-    if (i === activeIndex || phase !== 'idle') return;
+    // No mid-transition lock: if a timer never fires (e.g. a hot reload), the tabs would freeze for good
+    if (i === activeIndex) return;
 
     setActiveIndex(i);
     setPhase('exiting');
@@ -237,6 +285,8 @@ export default function TestPage() {
   useEffect(() => {
     const cooldown = { t: 0 };
     const onWheel = (e) => {
+      // Wheel over an episode/essay list scrolls the list, not the slides
+      if (e.target instanceof Element && e.target.closest('.vignelli-bg-scroll.is-visible')) return;
       const now = Date.now();
       if (now - cooldown.t < 750) return;   // one slide per scroll gesture
       if (Math.abs(e.deltaY) < 15) return;  // ignore tiny trackpad nudges
@@ -260,41 +310,11 @@ export default function TestPage() {
   // Escape closes modals
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') { setShowContact(false); setShowStackModal(false); }
+      if (e.key === 'Escape') setShowStackModal(false);
     };
-    if (showContact || showStackModal) window.addEventListener('keydown', onKey);
+    if (showStackModal) window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [showContact, showStackModal]);
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    setFormLoading(true);
-    setFormError('');
-    try {
-      const res = await fetch('https://formsubmit.co/ajax/w.mulvaney00@gmail.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          _subject: `Message from ${formData.name} — williammulvaney.com`,
-          _captcha: 'false',
-        }),
-      });
-      if (!res.ok) throw new Error('Send failed');
-      setFormSubmitted(true);
-      setTimeout(() => {
-        setShowContact(false);
-        setFormSubmitted(false);
-        setFormData({ name: '', email: '', message: '' });
-      }, 2500);
-    } catch {
-      setFormError('Something went wrong — please try again.');
-    } finally {
-      setFormLoading(false);
-    }
-  };
+  }, [showStackModal]);
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
@@ -373,6 +393,40 @@ export default function TestPage() {
               </video>
             );
           }
+          if (s.bg.type === 'studio') {
+            return (
+              <div key={s.id} className={`vignelli-bg-layer vignelli-studio ${isActive ? 'is-visible' : ''}`}>
+                <div className="vignelli-studio-glow" />
+                <div className="vignelli-vinyl">
+                  <img src="/podcast-label.jpg" alt="" className="vignelli-vinyl-label" />
+                </div>
+                <div className="vignelli-on-air"><span className="vignelli-on-air-dot" />On Air</div>
+                <div className="vignelli-eq">
+                  {Array.from({ length: 48 }, (_, n) => (
+                    <span key={n} style={{ animationDelay: `${-((n * 137) % 1100)}ms`, animationDuration: `${700 + ((n * 61) % 600)}ms` }} />
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          if (s.bg.type === 'desk') {
+            return (
+              <div key={s.id} className={`vignelli-bg-layer vignelli-desk ${isActive ? 'is-visible' : ''}`}>
+                <div className="vignelli-desk-glow" />
+                <div className="vignelli-paper">
+                  <span className="vignelli-paper-heading" />
+                  {[92, 100, 84, 97, 100, 61, 0, 95, 100, 88, 74].map((w, n) => (
+                    <span
+                      key={n}
+                      className="vignelli-paper-line"
+                      style={{ '--w': `${w}%`, animationDelay: `${n * 420}ms` }}
+                    />
+                  ))}
+                  <span className="vignelli-paper-caret" />
+                </div>
+              </div>
+            );
+          }
           return (
             <div
               key={s.id}
@@ -387,53 +441,42 @@ export default function TestPage() {
         <div className="vignelli-overlay" />
       </div>
 
-      {/* ── Podcast episode scroll (right-side background) ── */}
+      {/* ── Podcast episode scroll (right-side column) ── */}
       {episodes.length > 0 && (
-        <div
-          className={`vignelli-bg-scroll ${podcastScrollVisible ? 'is-visible' : ''}`}
-          aria-hidden="true"
-        >
-          <div className="vignelli-bg-scroll-inner">
-            {/* Duplicate list for seamless loop: scroll -50% = exactly one list height */}
-            {[...episodes, ...episodes].map((ep, i) => (
-              <a
-                key={i}
-                href={SPOTIFY_SHOW}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="vignelli-bg-scroll-item"
-                tabIndex={podcastScrollVisible ? 0 : -1}
-              >
-                <span className="vignelli-bg-scroll-title">{ep.title}</span>
-                {ep.pubDate && <span className="vignelli-bg-scroll-date">{ep.pubDate}</span>}
-              </a>
-            ))}
-          </div>
-        </div>
+        <LoopingList visible={podcastScrollVisible} speed={24} className="vignelli-side-scroll">
+          {episodes.map((ep, i) => (
+            <a
+              key={i}
+              href={SPOTIFY_SHOW}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="vignelli-bg-scroll-item"
+              tabIndex={podcastScrollVisible ? 0 : -1}
+            >
+              <span className="vignelli-bg-scroll-title">{ep.title}</span>
+              {ep.pubDate && <span className="vignelli-bg-scroll-date">{ep.pubDate}</span>}
+            </a>
+          ))}
+        </LoopingList>
       )}
 
-      {/* ── Substack essay scroll (writing slide background) ── */}
+      {/* ── Substack essay scroll (right-side column) ── */}
       {articles.length > 0 && (
-        <div
-          className={`vignelli-bg-scroll vignelli-essay-scroll ${activeIndex === WRITING_INDEX ? 'is-visible' : ''}`}
-          aria-hidden="true"
-        >
-          <div className="vignelli-bg-scroll-inner">
-            {[...articles, ...articles].map((a, i) => (
-              <a
-                key={i}
-                href={a.link || 'https://williammulvaney.substack.com'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="vignelli-bg-scroll-item"
-                tabIndex={activeIndex === WRITING_INDEX ? 0 : -1}
-              >
-                <span className="vignelli-bg-scroll-title">{a.title}</span>
-                {a.pubDate && <span className="vignelli-bg-scroll-date">{a.pubDate}</span>}
-              </a>
-            ))}
-          </div>
-        </div>
+        <LoopingList visible={activeIndex === WRITING_INDEX} speed={24} className="vignelli-side-scroll vignelli-essay-scroll">
+          {articles.map((a, i) => (
+            <a
+              key={i}
+              href={a.link || 'https://williammulvaney.substack.com'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="vignelli-bg-scroll-item"
+              tabIndex={activeIndex === WRITING_INDEX ? 0 : -1}
+            >
+              <span className="vignelli-bg-scroll-title">{a.title}</span>
+              {a.pubDate && <span className="vignelli-bg-scroll-date">{a.pubDate}</span>}
+            </a>
+          ))}
+        </LoopingList>
       )}
 
       {/* ── Nav ── */}
@@ -480,10 +523,6 @@ export default function TestPage() {
                   {newsletterError && <p className="vignelli-newsletter-error">{newsletterError}</p>}
                 </form>
               )
-            ) : slide.id === 'coaching' ? (
-              <button className="vignelli-cta" onClick={() => setShowContact(true)}>
-                {slide.cta.label} ›
-              </button>
             ) : (
               <a
                 href={slide.cta.href}
@@ -498,8 +537,8 @@ export default function TestPage() {
               <a
                 href={slide.ctaSecondary.href}
                 className="vignelli-cta-secondary"
-                target="_blank"
-                rel="noopener noreferrer"
+                target={slide.ctaSecondary.href.startsWith('http') ? '_blank' : undefined}
+                rel={slide.ctaSecondary.href.startsWith('http') ? 'noopener noreferrer' : undefined}
               >
                 {slide.ctaSecondary.label} ›
               </a>
@@ -538,85 +577,15 @@ export default function TestPage() {
       </div>
 
 
-      {/* ── Contact form modal ── */}
-      {showContact && (
-        <div className="vignelli-form-backdrop" onClick={() => setShowContact(false)}>
-          <div className="vignelli-form-modal" onClick={e => e.stopPropagation()}>
-            <button className="vignelli-form-close" onClick={() => setShowContact(false)} aria-label="Close">×</button>
-
-            {formSubmitted ? (
-              <div className="vignelli-form-success">
-                <p className="vignelli-form-kicker">Message sent</p>
-                <h2 className="vignelli-form-heading">Talk soon.</h2>
-              </div>
-            ) : (
-              <>
-                <p className="vignelli-form-kicker">Get in Touch</p>
-                <h2 className="vignelli-form-heading">Say<br />Hello.</h2>
-                <form className="vignelli-form" onSubmit={handleFormSubmit}>
-                  <div className="vignelli-form-field">
-                    <label className="vignelli-form-label">Name</label>
-                    <input
-                      className="vignelli-form-input"
-                      type="text"
-                      placeholder="Your name"
-                      value={formData.name}
-                      onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
-                      required
-                    />
-                  </div>
-                  <div className="vignelli-form-field">
-                    <label className="vignelli-form-label">Email</label>
-                    <input
-                      className="vignelli-form-input"
-                      type="email"
-                      placeholder="your@email.com"
-                      value={formData.email}
-                      onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
-                      required
-                    />
-                  </div>
-                  <div className="vignelli-form-field">
-                    <label className="vignelli-form-label">Message</label>
-                    <textarea
-                      className="vignelli-form-textarea"
-                      placeholder="What's on your mind?"
-                      rows={5}
-                      value={formData.message}
-                      onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
-                      required
-                    />
-                  </div>
-                  {formError && (
-                    <p className="vignelli-form-error">{formError}</p>
-                  )}
-                  <button
-                    type="submit"
-                    className="vignelli-cta vignelli-form-submit"
-                    disabled={formLoading}
-                  >
-                    {formLoading ? 'Sending…' : 'Send Message ›'}
-                  </button>
-                </form>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ── Willpower Board toast ── */}
+      {/* ── Workshop toast ── */}
       {showToast && (
         <div className="vignelli-toast">
           <button className="vignelli-toast-close" onClick={() => setShowToast(false)} aria-label="Dismiss">×</button>
-          <p className="vignelli-toast-heading">The Willpower Board</p>
-          <p className="vignelli-toast-sub">Real people, real habits, tracked in the open.</p>
-          <a
-            className="vignelli-toast-btn"
-            href="https://board.williammulvaney.com"
-            target="_blank"
-            rel="noreferrer"
-          >
-            See the Board ›
+          <p className="vignelli-toast-kicker">Live · Sat, Oct 17 · 1 PM CT</p>
+          <p className="vignelli-toast-heading">Dating Discipline Workshop</p>
+          <p className="vignelli-toast-sub">Two hours on how I meet women in real life and go on more dates.</p>
+          <a className="vignelli-toast-btn" href="/workshop/">
+            Save a Seat ›
           </a>
         </div>
       )}

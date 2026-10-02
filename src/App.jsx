@@ -72,13 +72,13 @@ const platformLinks = [
   }
 ];
 
-const roleRibbon = new Array(8).fill('Engineer').flatMap((role) => [role, 'Entrepreneur', 'Podcaster']).join('  |  ');
+const roleRibbon = new Array(8).fill('Engineer').flatMap((role) => [role, 'Coach', 'Podcaster']).join('  |  ');
 
 const pageMeta = {
   default: {
     title: 'William Mulvaney | Official Site',
     description: 'Stories about willpower, discipline, creative work, business building, and events.',
-    ogTitle: 'William Mulvaney | Entrepreneur & Podcaster',
+    ogTitle: 'William Mulvaney | Engineer, Coach, Podcaster',
     ogDescription: 'Podcast, newsletter, business, reading, events, and contact in one page.',
     image: '/willpower_logo.svg'
   }
@@ -100,7 +100,7 @@ const PageTitle = () => {
       'https://www.instagram.com/willpower_lifestyle/',
       'https://www.youtube.com/@willpower_lifestyle'
     ],
-    jobTitle: 'Entrepreneur and Podcast Host',
+    jobTitle: 'Engineer, Coach, and Podcaster',
     image,
     description: meta.description
   };
@@ -621,7 +621,7 @@ const Home = ({ currentEpisode, handleEpisodeSelect, isPlaying, setIsPlaying, on
       </div>
 
       <div className="hero-copy">
-        <p className="hero-kicker">Engineer · Entrepreneur · Podcaster</p>
+        <p className="hero-kicker">Engineer · Coach · Podcaster</p>
         <h1 className="hero-title">William Mulvaney</h1>
         <p className="hero-lede">
           Building habit systems, documenting the journey, and sharing actionable stories about discipline, tech, and personal performance.

@@ -360,7 +360,10 @@
   right: 0;
   bottom: 140px; /* above selector */
   z-index: 1;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
   opacity: 0;
   transition: opacity 700ms ease;
   pointer-events: none;
@@ -385,24 +388,12 @@
   pointer-events: auto;
 }
 
+.vignelli-bg-scroll::-webkit-scrollbar { display: none; }
+
 .vignelli-bg-scroll-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: bgScrollUp 120s linear infinite;
-}
-
-.vignelli-bg-scroll:not(.is-visible) .vignelli-bg-scroll-inner {
-  animation-play-state: paused;
-}
-
-.vignelli-bg-scroll.is-visible .vignelli-bg-scroll-inner:hover {
-  animation-play-state: paused;
-}
-
-@keyframes bgScrollUp {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-50%); }
 }
 
 .vignelli-bg-scroll-item {
@@ -447,6 +438,270 @@
   font-weight: 700;
   font-style: italic;
   letter-spacing: 0;
+}
+
+/* Podcast episodes + essays: a column on the right instead of full-width */
+.vignelli-side-scroll {
+  left: auto;
+  right: clamp(7rem, 11vw, 10rem); /* clears the right timeline */
+  width: min(28vw, 400px);
+  top: 210px; /* below the workshop popup */
+  bottom: 150px;
+  border-left: 1px solid rgba(71, 157, 194, 0.25);
+  padding-left: 1.25rem;
+}
+
+.vignelli-side-scroll .vignelli-bg-scroll-inner {
+  align-items: stretch;
+}
+
+.vignelli-side-scroll .vignelli-bg-scroll-item {
+  align-items: flex-start;
+  text-align: left;
+  padding: 1rem 0.25rem;
+}
+
+.vignelli-side-scroll .vignelli-bg-scroll-title {
+  font-size: clamp(0.95rem, 1.25vw, 1.15rem);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* ── Podcast studio background ─────────────────────────── */
+.vignelli-studio {
+  background:
+    radial-gradient(ellipse 60% 70% at 52% 45%, rgba(71, 157, 194, 0.16) 0%, transparent 70%),
+    #05101a;
+  overflow: hidden;
+}
+
+.vignelli-studio-glow {
+  position: absolute;
+  left: 46%;
+  top: 44%;
+  width: 70vmin;
+  height: 70vmin;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(71, 157, 194, 0.28) 0%, transparent 65%);
+  animation: studioPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes studioPulse {
+  0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(0.96); }
+  50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.04); }
+}
+
+.vignelli-vinyl {
+  position: absolute;
+  left: 46%;
+  top: 44%;
+  width: min(54vh, 27vw);
+  aspect-ratio: 1;
+  margin: calc(min(54vh, 27vw) / -2) 0 0 calc(min(54vh, 27vw) / -2);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 0 34%, rgba(255, 255, 255, 0.05) 34.5% 35%, transparent 35.5%),
+    repeating-radial-gradient(circle, #101318 0 2px, #22272e 2px 3px),
+    #101318;
+  box-shadow: 0 0 60px rgba(71, 157, 194, 0.35), 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 0 0 6px #08090b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: vinylSpin 9s linear infinite;
+}
+
+/* Light sheen that stays put while the record turns underneath */
+.vignelli-vinyl::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0 10%, rgba(255, 255, 255, 0.09) 14%, transparent 20% 60%, rgba(255, 255, 255, 0.07) 64%, transparent 70%);
+  animation: vinylSpin 9s linear infinite reverse;
+}
+
+.vignelli-vinyl-label {
+  width: 33%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes vinylSpin {
+  to { transform: rotate(360deg); }
+}
+
+.vignelli-on-air {
+  position: absolute;
+  left: 46%;
+  top: calc(44% - min(27vh, 13.5vw) - 2.6rem);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(255, 90, 90, 0.55);
+  border-radius: 3px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #ff7a7a;
+  text-shadow: 0 0 10px rgba(255, 90, 90, 0.7);
+  animation: onAirFlicker 3.2s steps(1) infinite;
+}
+
+.vignelli-on-air-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff5a5a;
+  box-shadow: 0 0 10px #ff5a5a;
+}
+
+@keyframes onAirFlicker {
+  0%, 100% { opacity: 1; }
+  92%      { opacity: 0.45; }
+  94%      { opacity: 1; }
+  96%      { opacity: 0.6; }
+}
+
+/* Equalizer bars along the bottom edge */
+.vignelli-eq {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 140px;
+  height: 26vh;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 0 4px;
+  opacity: 0.5;
+  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 100%);
+  mask-image: linear-gradient(to top, black 0%, transparent 100%);
+}
+
+.vignelli-eq span {
+  flex: 1;
+  height: 100%;
+  background: linear-gradient(to top, #479dc2, rgba(71, 157, 194, 0.15));
+  transform-origin: bottom;
+  animation: eqBounce 900ms ease-in-out infinite alternate;
+}
+
+@keyframes eqBounce {
+  0%   { transform: scaleY(0.12); }
+  40%  { transform: scaleY(0.55); }
+  70%  { transform: scaleY(0.3); }
+  100% { transform: scaleY(0.9); }
+}
+
+.vignelli-studio:not(.is-visible) *,
+.vignelli-studio:not(.is-visible)::after {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vignelli-studio *,
+  .vignelli-vinyl::after { animation: none !important; }
+}
+
+/* ── Writing desk background ───────────────────────────── */
+.vignelli-desk {
+  background:
+    radial-gradient(ellipse 60% 70% at 51% 45%, rgba(71, 157, 194, 0.12) 0%, transparent 70%),
+    #05101a;
+  overflow: hidden;
+}
+
+.vignelli-desk-glow {
+  position: absolute;
+  left: 51%;
+  top: 44%;
+  width: 64vmin;
+  height: 64vmin;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(240, 220, 170, 0.14) 0%, transparent 65%);
+}
+
+/* A sheet of paper that writes itself, line by line, then starts over */
+.vignelli-paper {
+  position: absolute;
+  left: 51%;
+  top: 44%;
+  --pw: min(36vh, 20vw);
+  width: var(--pw);
+  aspect-ratio: 8.5 / 11;
+  transform: translate(-50%, -50%) rotate(-4deg);
+  /* sized off the sheet itself; % padding would use the whole screen width */
+  padding: calc(var(--pw) * 0.12) calc(var(--pw) * 0.1) calc(var(--pw) * 0.1) calc(var(--pw) * 0.17);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--pw) * 0.065);
+  background:
+    linear-gradient(to right, transparent 10.5%, rgba(200, 70, 70, 0.45) 10.5% 11%, transparent 11%),
+    #e8e2d4;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(240, 220, 170, 0.18);
+  filter: brightness(0.82);
+}
+
+.vignelli-paper-heading,
+.vignelli-paper-line {
+  display: block;
+  height: 3px;
+  border-radius: 2px;
+  background: #1c2a3a;
+  transform-origin: left;
+}
+
+.vignelli-paper-heading {
+  width: 55%;
+  height: 7px;
+  margin-bottom: calc(var(--pw) * 0.03);
+}
+
+.vignelli-paper-line {
+  width: var(--w);
+  transform: scaleX(0);
+  animation: paperWrite 9s ease-out infinite;
+}
+
+@keyframes paperWrite {
+  0%   { transform: scaleX(0); opacity: 1; }
+  7%   { transform: scaleX(1); opacity: 1; }
+  78%  { transform: scaleX(1); opacity: 1; }
+  88%  { transform: scaleX(1); opacity: 0; }
+  100% { transform: scaleX(0); opacity: 0; }
+}
+
+.vignelli-paper-caret {
+  width: 2px;
+  height: 14px;
+  background: #1c2a3a;
+  animation: caretBlink 1s steps(1) infinite;
+}
+
+@keyframes caretBlink {
+  50% { opacity: 0; }
+}
+
+.vignelli-desk:not(.is-visible) * {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vignelli-desk * { animation: none !important; }
+  .vignelli-paper-line { transform: none; }
+}
+
+/* Fade the photo's left edge into the page instead of a hard line */
+.vignelli-bg-layer--standup {
+  -webkit-mask-image: linear-gradient(to right, transparent 46%, black 64%);
+  mask-image: linear-gradient(to right, transparent 46%, black 64%);
 }
 
 /* ── Social links (top-right in nav) ──────────────────── */
@@ -720,6 +975,15 @@ button.vignelli-cta-secondary {
 
 .vignelli-toast-close:hover { color: #fff; }
 
+.vignelli-toast-kicker {
+  margin: 0;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #479dc2;
+}
+
 .vignelli-toast-heading {
   font-family: 'Playfair Display', serif;
   font-size: 0.95rem;
@@ -811,6 +1075,41 @@ button.vignelli-cta-secondary {
     font-size: 0.55rem;
   }
 
+  /* Side lists go back to a full-width background on phones */
+  .vignelli-side-scroll {
+    left: 0;
+    right: 0;
+    width: auto;
+    top: 0;
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .vignelli-side-scroll .vignelli-bg-scroll-inner { align-items: center; }
+
+  .vignelli-side-scroll .vignelli-bg-scroll-item {
+    align-items: center;
+    text-align: center;
+    padding: 0.9rem 5%;
+  }
+
+  .vignelli-side-scroll .vignelli-bg-scroll-title {
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  .vignelli-vinyl,
+  .vignelli-on-air,
+  .vignelli-paper { display: none; }
+
+  .vignelli-eq { bottom: 115px; height: 18vh; opacity: 0.35; }
+
+  .vignelli-bg-layer--standup {
+    background-size: cover !important;
+    background-position: 40% top !important;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
   /* Zoom out coaching image on mobile */
   .vignelli-bg-layer--coaching {
     background-size: auto 65% !important;
@@ -822,6 +1121,8 @@ button.vignelli-cta-secondary {
   .vignelli-sel-card { min-width: 80px; }
 
   .vignelli-sel-card--community { min-width: 120px; }
+
+  .vignelli-sel-card--standup { min-width: 100px; }
 
   .vignelli-sel-label {
     font-size: 0.6rem;
@@ -838,6 +1139,8 @@ button.vignelli-cta-secondary {
     padding: 12px 16px 12px;
     gap: 4px;
   }
+
+  .vignelli-toast-kicker { text-align: center; }
 
   .vignelli-toast-heading {
     font-size: 0.85rem;
