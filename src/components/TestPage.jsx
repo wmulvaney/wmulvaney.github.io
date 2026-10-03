@@ -583,7 +583,7 @@ export default function TestPage() {
           <button className="vignelli-toast-close" onClick={() => setShowToast(false)} aria-label="Dismiss">×</button>
           <p className="vignelli-toast-kicker">Live · Sat, Oct 17 · 1 PM CT</p>
           <p className="vignelli-toast-heading">Dating Discipline Workshop</p>
-          <p className="vignelli-toast-sub">Two hours on how I meet women in real life and go on more dates.</p>
+          <p className="vignelli-toast-sub">A 2-hour workshop to change your dating life in 90 days.</p>
           <a className="vignelli-toast-btn" href="/workshop/">
             Save a Seat ›
           </a>
