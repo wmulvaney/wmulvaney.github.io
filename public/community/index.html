@@ -649,12 +649,11 @@ function vSetup(){
 
   if (name === "clarify"){
     body = eb+"<h2>What do you want?</h2>"+
-      "<p class='muted'>Say it in your own words. It doesn't need to be measurable yet.</p>"+
-      "<label class='q'><textarea id='f_want' data-sales='want' placeholder='To be someone who does what they say they will, and to wake up clear-headed and in control of my day.'>"+esc(q.want)+"</textarea></label>"+
-      "<label class='q'>What made you look into this now?<span class='hint'>Something happened recently, or you're tired of something. What was it?</span><textarea id='f_why' data-sales='why' placeholder='I looked at my screen time and it was 6 hours a day. Or: I skipped the gym again and I am sick of starting over every Monday.'>"+esc(q.why)+"</textarea></label>";
+            "<label class='q'><textarea id='f_want' data-sales='want' placeholder='Be detailed. What does your life look like when you have it?'>"+esc(q.want)+"</textarea></label>"+
+      "<label class='q'>What made you look into this now?<textarea id='f_why' data-sales='why' placeholder='Be detailed. What happened, or what are you tired of?'>"+esc(q.why)+"</textarea></label>";
   } else if (name === "track"){
     body = eb+"<h2>What's the first change?</h2>"+wantCard()+
-      "<p class='muted'>Pick the one change that would move you toward it the most right now. You can take on another after your first 30 days.</p>"+
+      
       "<div class='stack'><b>Start something</b><button class='choice "+(q.addiction==="start"?"on":"")+"' data-act='pickaddiction' data-v='start'><b>A daily habit I keep putting off</b><span class='muted'>Training, writing, building something, waking up early.</span></button></div>"+
       "<div class='stack'><b>Stop something</b><div class='addgrid'>"+
       ADDICTIONS.map(function(a){ return "<button class='choice "+(q.addiction===a.v?"on":"")+"' data-act='pickaddiction' data-v='"+a.v+"'><b>"+esc(a.t)+"</b></button>"; }).join("")+"</div></div>"+
@@ -663,9 +662,9 @@ function vSetup(){
     if (isDo()){
       var c = p.checks||{};
       body = eb+"<h2>What will you add?</h2>"+wantCard()+
-        "<label class='q'>Day 30 milestone<span class='hint'>Something with a yes or no answer on Day 30.</span><input type='text' id='f_milestone' data-field='milestone' value='"+esc(p.milestone)+"' placeholder='Log 20 workouts and add 10 lb to my squat'></label>"+
+        "<label class='q'>Day 30 milestone<input type='text' id='f_milestone' data-field='milestone' value='"+esc(p.milestone)+"' placeholder='Something you can answer yes or no on Day 30'></label>"+
         "<div class='examples'>"+["20 workouts logged","Perform 3 jokes at an open mic","Write 10,000 words","Ship the landing page"].map(function(x){return "<button class='ex' data-act='fill' data-f='milestone' data-v='"+esc(x)+"'>"+esc(x)+"</button>";}).join("")+"</div>"+
-        "<label class='q'>Daily action<span class='hint'>10 minutes or less. The minimum, not the dream version.</span><input type='text' id='f_action' data-field='action' value='"+esc(p.action)+"' placeholder='10 minutes of resistance training'></label>"+
+        "<label class='q'>Daily action<input type='text' id='f_action' data-field='action' value='"+esc(p.action)+"' placeholder='10 minutes or less'></label>"+
         "<div class='examples'>"+["10 minutes of resistance training","Write one joke","Write for 10 minutes","10 minutes on the hardest task first"].map(function(x){return "<button class='ex' data-act='fill' data-f='action' data-v='"+esc(x)+"'>"+esc(x)+"</button>";}).join("")+"</div>"+
         "<div class='eyebrow' style='margin-top:6px'>Check your action passes all three</div>"+
         chk("essence","It's the essence of the goal","One joke, not \"be a comedian.\"",c.essence)+
@@ -674,10 +673,10 @@ function vSetup(){
     } else {
       var c2 = p.checks||{};
       body = eb+"<h2>Your rule for "+esc(addictionName())+"</h2>"+wantCard()+
-        "<label class='q'>Your rule<span class='hint'>A clear yes or no line. \"No phone in the bedroom after 9pm,\" not \"use my phone less.\"</span><input type='text' id='f_rule' data-field='rule' value='"+esc(p.rule)+"' placeholder='No phone in the bedroom after 9pm'></label>"+
+        "<label class='q'>Your rule<input type='text' id='f_rule' data-field='rule' value='"+esc(p.rule)+"' placeholder='A clear yes or no rule'></label>"+
         "<div class='examples'>"+addiction().rules.map(function(x){return "<button class='ex' data-act='fill' data-f='rule' data-v='"+esc(x)+"'>"+esc(x)+"</button>";}).join("")+"</div>"+
         chk("boolean","Tomorrow, I'll know for sure if I held it","No gray area, no \"mostly.\"",c2.boolean)+
-        "<label class='q'>When the urge hits, I will...<span class='hint'>Your replacement. Something low-effort you can do right then.</span><input type='text' id='f_replacement' data-field='replacement' value='"+esc(p.replacement)+"' placeholder='Plug the phone in the kitchen and read'></label>"+
+        "<label class='q'>When the urge hits, I will...<input type='text' id='f_replacement' data-field='replacement' value='"+esc(p.replacement)+"' placeholder='Something easy you can do right away'></label>"+
         "<div class='examples'>"+["Take a 10-minute walk, no headphones","Drink a glass of water and wait 10 minutes","Read a physical book","Text a friend"].map(function(x){return "<button class='ex' data-act='fill' data-f='replacement' data-v='"+esc(x)+"'>"+esc(x)+"</button>";}).join("")+"</div>";
     }
   } else if (name === "label"){
@@ -691,18 +690,18 @@ function vSetup(){
       "<button class='choice' data-act='back'><b>Not quite</b><span class='muted'>Go back and change it.</span></button></div>";
   } else if (name === "past"){
     body = eb+"<h2>How long has this been going on?</h2>"+chips("howlong", HOWLONG, false)+
-      "<div class='stack'><b>What have you already tried?</b><span class='small muted'>Pick all that apply.</span>"+chips("tried", triedList(), true)+
-      "<input type='text' id='f_triedOther' data-sales='triedOther' value='"+esc(q.triedOther)+"' placeholder='Something else?'></div>"+
-      "<label class='q'>Why didn't it stick?<span class='hint'>Be honest. Nobody else sees this.</span><textarea id='f_whyFailed' data-sales='whyFailed' placeholder='I went hard for two weeks, missed a few days on a trip, and never got back into it.'>"+esc(q.whyFailed)+"</textarea></label>";
+      "<div class='stack'><b>What have you already tried?</b>"+chips("tried", triedList(), true)+
+      "<input type='text' id='f_triedOther' data-sales='triedOther' value='"+esc(q.triedOther)+"' placeholder='Anything else?'></div>"+
+      "<label class='q'>Why didn't it stick?<textarea id='f_whyFailed' data-sales='whyFailed' placeholder='Be detailed. What happened, and when did it fall apart?'>"+esc(q.whyFailed)+"</textarea></label>";
   } else if (name === "stuck"){
     body = eb+"<h2>Why haven't you done it yet?</h2>"+
-      "<p class='muted'>What's been stopping you? Pick all that apply.</p>"+chips("stuck", STUCK, true)+
-      "<label class='q'>What happens if nothing changes?<span class='hint'>Picture a year from now, same habits. What does it cost you?</span><textarea id='f_cost' data-sales='cost' placeholder='"+(isDo()?"Another year of feeling soft and tired, and telling myself next month.":"Another year of losing my nights and waking up foggy. My kid keeps asking me to put it down.")+"'>"+esc(q.cost)+"</textarea></label>";
+      chips("stuck", STUCK, true)+
+      "<label class='q'>What happens if nothing changes?<textarea id='f_cost' data-sales='cost' placeholder='Be detailed. Think about your health, relationships, work and how you see yourself a year from now.'>"+esc(q.cost)+"</textarea></label>";
   } else if (name === "vacation"){
     body = eb+"<h2>Now picture Day 30</h2>"+
-      "<p class='muted'>It worked. You "+(isDo()?"did it nearly every day for a month":"held the rule for a month")+", and you don't have to force it anymore.</p>"+
-      "<label class='q'>What's different about your life?<span class='hint'>How you feel waking up, what you're proud of, what other people notice.</span><textarea id='f_vacation' data-sales='vacation' placeholder='"+(isDo()?"I have more energy, my clothes fit better, and I trust myself again when I say I will do something.":"I sleep better, I read again, and my mornings feel like mine.")+"'>"+esc(q.vacation)+"</textarea></label>"+
-      "<label class='q'>Why does that matter to you?<span class='hint'>You'll read this again on Day 30.</span><textarea id='f_vision' data-field='vision'>"+esc(p.vision)+"</textarea></label>";
+      
+      "<label class='q'>What's different about your life?<textarea id='f_vacation' data-sales='vacation' placeholder='Be detailed. How you feel waking up, what you are proud of, what other people notice.'>"+esc(q.vacation)+"</textarea></label>"+
+      "<label class='q'>Why does that matter to you?<textarea id='f_vision' data-field='vision' placeholder='Be detailed. You will read this again on Day 30.'>"+esc(p.vision)+"</textarea></label>";
   } else if (name === "reinforce"){
     body = eb+"<h2>Application received.</h2>"+
       "<div class='prose'><p>Will reads every application. If yours isn't accepted, you'll get a full refund. You don't need to wait to start, though.</p><p>A lot of people never get past wanting to change. They read another book, listen to another episode, and wait until they feel ready. You've already decided, which is often the hardest step.</p>"+
