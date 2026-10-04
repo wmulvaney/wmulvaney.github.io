@@ -196,6 +196,8 @@ blockquote.cost{border-left-color:var(--warn)}
 .obj.yours{border-color:var(--accent)}
 .obj p{max-width:62ch}
 .cta{align-items:flex-start}
+.hero-video{width:100%;max-width:560px}
+.hero-video video{display:block;width:100%;aspect-ratio:1/1;height:auto;background:#000;border:1px solid rgba(255,255,255,0.22)}
 .pain{background:var(--soft);border-color:transparent}
 .painlist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
 .painlist li{padding-left:22px;position:relative;font-weight:600}
@@ -551,6 +553,7 @@ function vWelcome(){
    "<div class='eyebrow'>The Willpower Community</div>",
    "<h1>Start living<br><span class='x'>on purpose.</span></h1>",
    "<p class='lede'>Imagine waking up clear-headed, getting things done, and ending the day proud of how you spent it. Join a group of people living this way.</p>",
+   "<div class='hero-video'><video id='heroVideo' controls playsinline preload='metadata' poster='/community/willpower-ad-poster.jpg'><source src='/community/willpower-ad.mp4' type='video/mp4'></video></div>",
    cta,
   "</section>",
   "<div class='card pain'><div class='eyebrow'>Right now</div><h2>You know you're capable of more.</h2><ul class='painlist'>",
@@ -1138,6 +1141,7 @@ document.addEventListener("keydown", function(e){ if (e.key==="Escape" && docume
 })();
 render();
 })();
+document.addEventListener('play', function(e){ if (e.target && e.target.id === 'heroVideo' && !window.__heroPlayed){ window.__heroPlayed = true; try { posthog.capture('community_video_play', {}); } catch(err){} } }, true);
 </script>
 </body>
 </html>
