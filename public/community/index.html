@@ -778,7 +778,7 @@ function goCheckout(){
   }
   S.paid = true; UI.step = PRE + 1; save(); saveUI(); render(); window.scrollTo(0,0);
 }
-// Stripe Payment Link: $99 application today + Willpower Community $19/mo after a 30-day trial.
+// Stripe Payment Link: $99 30-Day Willpower Walkthrough today + Willpower Community $19/mo after a 30-day trial.
 // metadata product=community (stripe-webhook marks the application paid). Success URL:
 // https://williammulvaney.com/community/?paid=1. Empty = preview mode (no charge).
 var STRIPE_COMMUNITY_URL = "https://buy.stripe.com/fZudRaclA0MVacQ7RhfjG0o";
@@ -801,7 +801,7 @@ function objections(){
   out.push(["\"Do I have to share personal stuff?\"", "No. A check-in can be one line, like \"Day 12, done.\" You don't have to say what you're working on. Share as much or as little as you want."]);
   out.push(["\"Is this a recovery program?\"", "No. It's a group of people building discipline and living more intentionally, which for a lot of members includes putting down a habit like drinking or scrolling. It isn't medical treatment. If you're dealing with a severe addiction, or you drink heavily every day, talk to a doctor too."]);
   out.push(["\"What if I miss days?\"", "You will. Five out of seven days counts as a winning week. Just try not to miss two days in a row, and the app reminds you if you've missed one."]);
-  out.push(["\"What happens after the first month?\"", "You stay for $19 a month, or you cancel. Nothing locks you in. Most people's next 30 days start the day after their first 30 end, and the community is where you keep going."]);
+  out.push(["\"What happens after the first month?\"", "You stay in the community for $19 a month, or you cancel. Nothing locks you in. The walkthrough is yours either way, and you can start it again with your next goal whenever you want."]);
   out.push(["\"What if it doesn't work for me?\"", GUARANTEE]);
   out.push(["\"Who's behind this?\"", "William Mulvaney, host of the Willpower Podcast (120+ episodes). He's run a 100-mile ultramarathon, started stand-up as a self-conscious introvert, and sat a 10-day silent meditation retreat. He's also failed at most of these habits before one attempt finally held. He's talked openly on the show about his own fights with his phone, porn and late-night eating. He built this group so you don't have to keep starting over by yourself."]);
   return out;
@@ -811,14 +811,14 @@ function vOffer(){
   var howlong = (HOWLONG.filter(function(o){ return o.v===q.howlong; })[0]||{}).t || "";
   var stuckTxt = STUCK.filter(function(o){ return q.stuck.indexOf(o.v) > -1; }).map(function(o){ return o.t.replace(/^I /,"you ").replace(/^My /,"your ").replace(/I've/,"you've").replace(/I doubt myself/,"you doubt yourself").replace(/ me$/,""); });
   var price = "<div class='card price' id='buy'>"+
-    "<div class='row' style='justify-content:space-between;align-items:flex-end'><div><div class='eyebrow'>Apply to the Willpower Community</div><div class='amount'>$99</div></div><div class='small muted' style='text-align:right'>Includes your first month<br>and your guided first 30 days</div></div>"+
-    "<ul class='gets'><li>A community of people building discipline and living on purpose, checking in every day</li><li>Support on the days that go badly</li><li>Will in the group, answering questions</li><li>Your guided first 30 days, built from the plan above</li><li>Short lessons, daily check-ins and your X calendar</li></ul>"+
+    "<div class='row' style='justify-content:space-between;align-items:flex-end'><div><div class='eyebrow'>The 30-Day Willpower Walkthrough</div><div class='amount'>$99</div></div><div class='small muted' style='text-align:right'>Yours to repeat<br>as many times as you want</div></div>"+
+    "<ul class='gets'><li>The 30-day guided Willpower Walkthrough, built from the plan above</li><li>Short lessons, daily check-ins and your X calendar</li><li>Repeat the walkthrough as many times as you want after your first</li><li>Your first month in the Willpower Community free: people building discipline and checking in every day</li><li>Will in the group, answering questions</li></ul>"+
     "<div class='stack'><label class='q'>First name<input type='text' id='a_name' data-sales='name' autocomplete='given-name' value='"+esc(q.name||"")+"'></label>"+
     "<label class='q'>Email<span class='hint'>Will replies to every application here.</span><input type='text' id='a_email' data-sales='email' inputmode='email' autocomplete='email' value='"+esc(q.email||"")+"'></label>"+
     "<input type='text' id='a_website' tabindex='-1' autocomplete='off' aria-hidden='true' style='position:absolute;left:-9999px;width:1px;height:1px;opacity:0'>"+
     "<div id='buyerr' class='banner warn small' hidden></div></div>"+
     "<button class='btn block big' data-act='buy'>Submit my application · $99</button>"+
-    "<div class='small muted' style='text-align:center'><b>If your application isn't accepted, you'll be refunded in full.</b><br>Once you're in, it's $19/mo to stay. Cancel anytime.</div>"+
+    "<div class='small muted' style='text-align:center'><b>If your application isn't accepted, you'll be refunded in full.</b><br>Your first month in the community is free, then $19/mo. Cancel anytime.</div>"+
     "<div class='guarantee'><b>The do-the-work guarantee.</b> "+esc(GUARANTEE)+"</div>"+
     (STRIPE_COMMUNITY_URL ? "" : "<div class='banner info small'>Preview: checkout isn't connected yet. This button submits without charging.</div>")+
     "</div>";
@@ -842,7 +842,7 @@ function vOffer(){
     "</div></div>"+
     price+
     "<section class='stack-lg'><div><div class='eyebrow'>Still deciding?</div><h2>Questions people ask before applying</h2></div>"+obs+"</section>"+
-    "<div class='card accent stack'><h3>Day 30 is "+esc(niceDate(addDays(ymd(new Date()),29)))+" either way.</h3><p>You can get there having made the change, or not.</p><button class='btn block big' data-act='buy'>Submit my application · $99</button><div class='small muted' style='text-align:center'>If your application isn't accepted, you'll be refunded in full. Includes your first month and your guided first 30 days, then $19/mo.</div></div>"+
+    "<div class='card accent stack'><h3>Day 30 is "+esc(niceDate(addDays(ymd(new Date()),29)))+" either way.</h3><p>You can get there having made the change, or not.</p><button class='btn block big' data-act='buy'>Submit my application · $99</button><div class='small muted' style='text-align:center'>If your application isn't accepted, you'll be refunded in full. The $99 covers the 30-day walkthrough, yours to repeat anytime. Your first month in the community is free, then $19/mo.</div></div>"+
     "<div class='row' style='justify-content:space-between'><button class='linkbtn' data-act='back'>Back to my answers</button><button class='linkbtn' data-act='notready'>Not ready yet. Save my application.</button></div>";
 }
 
