@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#040b12" />
+<title>The Willpower Community · William Mulvaney</title>
+<meta name="description" content="A group for people building discipline and living on purpose. Apply to join the Willpower Community with William Mulvaney." />
+<meta property="og:title" content="The Willpower Community" />
+<meta property="og:description" content="Start living on purpose. Join a group of people building discipline together." />
+<meta property="og:image" content="https://williammulvaney.com/workshop/img/couple-crown.jpg" />
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="apple-touch-icon" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* Layout: one narrow training-log column. The 30-day X calendar is the anchor; everything else is a card stacked above or below it. */
+:root{
+  /* Same design language as /group, /workshop and the guide pages. */
+  --bg:#040b12; --card:rgba(10,26,39,0.72); --fg:rgba(255,255,255,0.92); --muted:rgba(255,255,255,0.58); --line:rgba(255,255,255,0.1); --soft:rgba(255,255,255,0.045);
+  --accent:#479dc2; --accent-ink:#fff; --accent-soft:rgba(71,157,194,0.14);
+  --good:#5cc38f; --good-soft:rgba(92,195,143,0.12); --warn:#e3ad55; --warn-soft:rgba(227,173,85,0.12);
+  --display:'Playfair Display', Georgia, serif;
+  --body:'Space Grotesk', system-ui, -apple-system, sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+#app{max-width:680px;margin:0 auto;padding:0 16px;padding-block:20px 64px;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:var(--display);font-weight:800;line-height:1.02;margin:0;text-wrap:balance;letter-spacing:.005em}
+h1{font-size:clamp(44px,11vw,76px);text-transform:uppercase}
+h2{font-size:30px;text-transform:uppercase}
+h3{font-size:22px;text-transform:uppercase}
+p{margin:0}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.stack-lg{display:flex;flex-direction:column;gap:20px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card.accent{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.prose{display:flex;flex-direction:column;gap:12px;max-width:62ch}
+.prose strong{font-weight:700}
+.prose ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+blockquote{margin:0;padding:12px 16px;border-left:4px solid var(--accent);background:var(--soft);border-radius:0 10px 10px 0;font-weight:600}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-family:var(--display);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.brand .x{color:var(--accent)}
+.iconbtn{background:none;border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:6px 14px;font:600 14px var(--body);cursor:pointer}
+.iconbtn:hover{background:var(--soft)}
+
+/* buttons & inputs */
+button{font-family:var(--body)}
+.btn{appearance:none;border:0;border-radius:10px;padding:13px 20px;font:700 16px var(--body);cursor:pointer;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{filter:brightness(1.06)}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--soft)}
+.btn.block{width:100%}
+.linkbtn{background:none;border:0;padding:0;color:var(--muted);font:600 14px var(--body);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+label.q{display:flex;flex-direction:column;gap:6px;font-weight:600}
+label.q .hint{font-weight:400;font-size:14px;color:var(--muted)}
+textarea,input[type=text],input[type=number]{width:100%;font:16px/1.45 var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+textarea{min-height:84px;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.check{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:var(--bg)}
+.check input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:none}
+.check b{display:block}
+.choices{display:grid;gap:10px}
+.choice{text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:14px 16px;cursor:pointer;font:500 15px/1.4 var(--body);display:flex;flex-direction:column;gap:2px}
+.choice b{font-size:16px}
+.choice.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+/* welcome */
+.hero{padding-block:18px 6px;display:flex;flex-direction:column;gap:14px}
+.hero h1 .x{color:var(--accent)}
+.lede{font-size:18px;max-width:52ch}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.tracks{grid-template-columns:1fr}}
+.track{cursor:pointer;text-align:left;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;font:inherit}
+.track:hover{border-color:var(--accent)}
+.track .tag{font-family:var(--display);font-weight:900;font-size:34px;text-transform:uppercase;line-height:1}
+.track .tag em{font-style:normal;color:var(--accent)}
+.timeline{display:grid;gap:0}
+.tl{display:grid;grid-template-columns:92px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--line)}
+.tl:first-child{border-top:0}
+.tl .when{font-family:var(--display);font-weight:800;font-size:18px;text-transform:uppercase;color:var(--accent)}
+.principles{counter-reset:p;display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.principles li{display:grid;grid-template-columns:28px 1fr;gap:8px}
+.principles li::before{counter-increment:p;content:counter(p);font-family:var(--display);font-weight:900;font-size:22px;color:var(--accent);line-height:1.1}
+.rules{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--soft);font-size:13px;font-weight:600;white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.accent{background:var(--accent-soft);color:var(--accent)}
+
+/* setup wizard */
+.progress{display:flex;gap:6px}
+.progress span{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.progress span.on{background:var(--accent)}
+.wiz-nav{display:flex;justify-content:space-between;gap:10px}
+.examples{display:flex;flex-wrap:wrap;gap:6px}
+.ex{border:1px dashed var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:5px 11px;font:500 13px var(--body);cursor:pointer}
+.ex:hover{color:var(--fg);border-color:var(--muted)}
+.commit{font-family:var(--display);font-weight:900;font-size:clamp(30px,7vw,44px);text-transform:uppercase;line-height:1.05;text-wrap:balance}
+
+/* today */
+.dayhead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.daynum{font-family:var(--display);font-weight:900;font-size:clamp(64px,18vw,104px);line-height:.85;text-transform:uppercase;font-variant-numeric:tabular-nums}
+.daynum small{font-size:.38em;color:var(--muted);font-weight:800}
+.weekname{font-family:var(--display);font-weight:800;font-size:22px;text-transform:uppercase}
+.lessoncard{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.lessoncard .t{min-width:0;flex:1 1 260px}
+.item{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:14px 0;border-top:1px solid var(--line)}
+.item:first-of-type{border-top:0;padding-top:4px}
+.item .lbl{min-width:0;flex:1 1 240px}
+.item .lbl b{display:block}
+.yn{display:flex;gap:8px}
+.yn button{min-width:64px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:700 15px var(--body);cursor:pointer}
+.yn button.yes.on{background:var(--good);border-color:var(--good);color:#fff}
+.yn button.no.on{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.done-tag{font-weight:700;color:var(--good);font-size:14px}
+.banner{padding:12px 16px;border-radius:12px;font-weight:600;font-size:15px}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.info{background:var(--soft)}
+.banner.good{background:var(--good-soft);color:var(--good)}
+.plan-today{background:var(--soft);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:4px 12px;font-size:15px}
+.kv dt{color:var(--muted);font-weight:600}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+@media (max-width:520px){.cal{grid-template-columns:repeat(6,1fr)}}
+.cell{position:relative;aspect-ratio:1;max-width:100%;border:1px solid var(--line);border-radius:8px;background:var(--bg);display:flex;align-items:flex-start;justify-content:flex-start;padding:4px 6px;font:700 12px var(--body);color:var(--muted);cursor:pointer;font-variant-numeric:tabular-nums}
+.cell[disabled]{cursor:default;opacity:.55}
+.cell.today{border:2px solid var(--fg);color:var(--fg)}
+.cell.no::after{content:"";position:absolute;left:28%;right:28%;top:50%;height:3px;border-radius:2px;background:var(--muted);opacity:.6}
+.cell svg{position:absolute;inset:14%;width:72%;height:72%}
+.cell svg path{stroke:var(--accent);stroke-width:13;stroke-linecap:round;fill:none}
+.cell.fresh svg path{stroke-dasharray:140;stroke-dashoffset:140;animation:draw .35s ease-out forwards}
+.cell.fresh svg path:nth-child(2){animation-delay:.18s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.cell.fresh svg path{animation:none;stroke-dashoffset:0}}
+.weeks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media (max-width:520px){.weeks{grid-template-columns:repeat(2,1fr)}}
+.wk{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.wk .n{font-family:var(--display);font-weight:800;font-size:24px;font-variant-numeric:tabular-nums}
+.wk.won{border-color:var(--good);background:var(--good-soft)}
+.wk.won .n{color:var(--good)}
+
+/* plan / stack */
+.stackitem{display:grid;grid-template-columns:72px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.stackitem:first-child{border-top:0}
+.stackitem .when{font-family:var(--display);font-weight:800;font-size:16px;text-transform:uppercase;color:var(--accent)}
+.stackitem.locked{opacity:.5}
+.stackitem.locked .when{color:var(--muted)}
+.lessonlist{display:flex;flex-direction:column}
+.lessonlist button{display:flex;justify-content:space-between;gap:12px;align-items:center;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:12px 0;color:var(--fg);font:500 15px var(--body);cursor:pointer}
+.lessonlist button:first-child{border-top:0}
+.lessonlist button[disabled]{color:var(--muted);cursor:default}
+
+/* lesson */
+.lesson-head{display:flex;flex-direction:column;gap:8px}
+.answer{background:var(--soft);border-radius:10px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* finish */
+.bigstat{font-family:var(--display);font-weight:900;font-size:clamp(72px,20vw,120px);line-height:.85;color:var(--accent);font-variant-numeric:tabular-nums}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat .n{font-family:var(--display);font-weight:800;font-size:32px;line-height:1;font-variant-numeric:tabular-nums}
+
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:8px 14px;font:600 14px var(--body);cursor:pointer}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.mirror{background:var(--soft);border-radius:12px;padding:16px 18px}
+.mirror .big{font-family:var(--display);font-weight:800;font-size:28px;line-height:1.05;text-transform:uppercase;overflow-wrap:anywhere}
+.offer-h{font-size:clamp(38px,9vw,60px)}
+.price{border:2px solid var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.amount{font-family:var(--display);font-weight:900;font-size:72px;line-height:.9;color:var(--accent);font-variant-numeric:tabular-nums}
+.gets{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.gets li{display:grid;grid-template-columns:22px 1fr;gap:6px}
+.gets li::before{content:"\2715";color:var(--accent);font-weight:900}
+.btn.big{padding:17px 22px;font-size:18px}
+.guarantee{border-top:1px solid var(--line);padding-top:12px;font-size:14px}
+blockquote.cost{border-left-color:var(--warn)}
+.diffs{display:flex;flex-direction:column;gap:12px}
+.diff{display:flex;flex-direction:column;gap:4px}
+.diff .was{font-size:13px;font-weight:700;color:var(--muted);text-decoration:line-through;text-decoration-color:var(--accent);text-decoration-thickness:2px}
+.obj{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.obj.yours{border-color:var(--accent)}
+.obj p{max-width:62ch}
+.cta{align-items:flex-start}
+.hero-video{width:100%;max-width:560px}
+.hero-copy{display:flex;flex-direction:column;gap:14px;min-width:0}
+/* Front page: hero copy and the video side by side on wide screens; the
+   sections below keep the narrow reading column. */
+#app.wide{max-width:1100px}
+#app.wide > :not(.top):not(.hero-split){width:100%;max-width:720px;margin-inline:auto}
+@media (min-width:880px){
+  .hero-split{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:48px;align-items:center;padding-block:36px 24px}
+  .hero-split .hero-video{max-width:none;justify-self:end}
+}
+.hero-video video{display:block;width:100%;aspect-ratio:1/1;height:auto;background:#000;border:1px solid rgba(255,255,255,0.22)}
+.pain{background:var(--soft);border-color:transparent}
+.painlist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.painlist li{padding-left:22px;position:relative;font-weight:600}
+.painlist li::before{content:"\2715";position:absolute;left:0;color:var(--muted);font-weight:900}
+.dream{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:640px){.dream{grid-template-columns:1fr}}
+.dreamcard{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.dk{font-family:var(--display);font-weight:900;font-size:30px;text-transform:uppercase;line-height:1;color:var(--accent)}
+.addgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.addgrid .choice{align-items:flex-start}
+.footer{text-align:center;font-size:13px;color:var(--muted)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;padding:16px;z-index:10}
+.sheet{background:var(--card);border-radius:16px;max-width:520px;width:100%;padding:20px;display:flex;flex-direction:column;gap:14px;max-height:90vh;overflow:auto;border:1px solid var(--line)}
+@media (min-width:600px){.overlay{align-items:center}}
+
+/* ---- williammulvaney.com styling ---- */
+html,body{margin:0;padding:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{position:relative;overflow-x:hidden;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 45% at 75% -10%, rgba(71,157,194,0.14), transparent 60%),radial-gradient(ellipse 55% 40% at 10% 110%, rgba(71,157,194,0.07), transparent 60%)}
+#app{position:relative;z-index:1;max-width:720px;padding-block:24px 110px}
+h1,h2,h3{font-family:var(--display);text-transform:none;letter-spacing:-0.01em;color:#fff}
+h1{font-weight:900;font-size:clamp(40px,8vw,64px);line-height:1.04}
+h2{font-weight:700;font-size:clamp(24px,4vw,32px);line-height:1.2}
+h3{font-weight:700;font-size:21px;line-height:1.25}
+.eyebrow{font-size:10px;letter-spacing:0.28em;color:rgba(71,157,194,0.95);font-weight:600}
+.home-link{display:inline-block}
+.home-link img{height:40px;width:auto;display:block;opacity:.9;filter:brightness(0) invert(1)}
+.card,.choice,.check,textarea,input[type=text],input[type=number],.obj,.dreamcard,.wk,.stat,.sheet,.yn button,.banner,.plan-today,.mirror,.answer,.iconbtn,.btn,.chip,.ex,.pill,blockquote,.progress span{border-radius:0}
+.card,.obj,.dreamcard{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.card.accent,.price{border-color:rgba(71,157,194,0.55);background:linear-gradient(180deg, rgba(71,157,194,0.10), var(--card));box-shadow:none}
+.btn{font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:17px 30px}
+.btn.big{font-size:13px;padding:19px 32px}
+.btn:hover{filter:none;background:#3a7e9b}
+.btn.ghost{border-color:rgba(255,255,255,0.22)}
+.btn.ghost:hover{background:rgba(255,255,255,0.05)}
+.iconbtn{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;padding:9px 14px;border-color:rgba(255,255,255,0.22)}
+.choice.on,.card.accent{box-shadow:none}
+.choice.on{border-color:var(--accent);background:var(--accent-soft)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+textarea,input[type=text],input[type=number]{background:rgba(255,255,255,0.03)}
+.daynum,.weekname,.tl .when,.principles li::before,.commit,.mirror .big,.amount,.dk,.bigstat,.stat .n,.wk .n,.stackitem .when{font-family:var(--display);text-transform:none;letter-spacing:-0.01em}
+.daynum{font-weight:900}
+.weekname{font-size:20px;color:#fff}
+.tl .when,.stackitem .when{font-size:17px}
+.mirror .big{font-size:24px;line-height:1.2;color:#fff}
+.dk{font-size:26px}
+.commit{font-size:clamp(26px,5.5vw,36px);line-height:1.2;color:#fff}
+.amount{color:#fff}
+.bigstat{color:var(--accent)}
+.lede{color:var(--muted);font-size:17px;line-height:1.7}
+.prose,.obj p,.dreamcard p,.tl div,.card p{line-height:1.7}
+.cell{border-radius:2px}
+.yn button.yes.on{background:var(--accent);border-color:var(--accent)}
+.wk.won{border-color:var(--accent);background:var(--accent-soft)}
+.wk.won .n{color:var(--accent)}
+.done-tag{color:var(--accent)}
+.pill.good{background:var(--accent-soft);color:var(--accent)}
+.pain{background:rgba(255,255,255,0.03);border-color:var(--line)}
+.overlay{background:rgba(0,0,0,.6)}
+.sheet{background:#0a1a27}
+.footer{letter-spacing:0.1em}
+</style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '526303911209957');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=526303911209957&ev=PageView&noscript=1"/></noscript>
+<!-- PostHog analytics (start) -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
+posthog.register({funnel_product: 'community', funnel_price: 99, funnel_page: 'landing'});
+</script>
+<!-- PostHog analytics (end) -->
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- state ---------- */
+var LS_KEY = "wp30_state_v1", LS_UI = "wp30_ui_v1", LS_PREVIEW = "wp30_preview_day";
+function blank(){
+  return {v:1, track:null,
+    setup:{vision:"", milestone:"", action:"", when:"", rule:"", replacement:"", env:"", envDone:false, checks:{}},
+    sales:{want:"", why:"", addiction:"", howlong:"", tried:[], triedOther:"", whyFailed:"", stuck:[], cost:"", vacation:"", labelOk:""},
+    paid:false, repeat:false, start:null, lessons:{}, log:{}, weekly:{}, tiw:{}, review:null, completed:false, updatedAt:0};
+}
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+function merge(base, obj){ var o = blank(); for (var k in obj) o[k]=obj[k]; o.setup = Object.assign(blank().setup, obj.setup||{}); o.sales = Object.assign(blank().sales, obj.sales||{}); return o; }
+
+var S = (function(){ try{ var raw=lsGet(LS_KEY); return raw? merge(blank(), JSON.parse(raw)) : blank(); }catch(e){ return blank(); } })();
+var UI = (function(){ try{ return JSON.parse(lsGet(LS_UI)||"{}"); }catch(e){ return {}; } })();
+UI.route = UI.route || null; UI.step = UI.step || 0;
+var fresh = null; // day just marked with an X, for the draw animation
+
+var cloudRef = null, storeMode = "device", pend = false, writing = false, tmr = null;
+function save(){
+  S.updatedAt = Date.now();
+  lsSet(LS_KEY, JSON.stringify(S));
+  if (cloudRef){ pend = true; clearTimeout(tmr); tmr = setTimeout(flush, 700); }
+}
+function saveUI(){ lsSet(LS_UI, JSON.stringify({route:UI.route, step:UI.step})); }
+async function flush(){
+  if (writing || !pend || !cloudRef) return;
+  writing = true; pend = false;
+  try { await cloudRef.set(JSON.parse(JSON.stringify(S))); }
+  catch(e){
+    if (e && e.code === "unavailable"){ pend = true; setTimeout(flush, 1500 + Math.random()*1500); }
+    else { cloudRef = null; storeMode = "device"; }
+  }
+  writing = false;
+  if (pend) flush();
+}
+async function initCloud(){
+  try{
+    if (!window.claude || !window.claude.use) return;
+    var res = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    var db = res[0], user = res[1];
+    if (!db || !user) return;
+    var id = await user.id();
+    if (!id) return;
+    var ref = db.doc("data/users/" + id + "/challenge");
+    var snap = await ref.get();
+    if (snap.exists){
+      var d = JSON.parse(JSON.stringify(snap.data()));
+      if ((d.updatedAt||0) > (S.updatedAt||0)){ S = merge(blank(), d); lsSet(LS_KEY, JSON.stringify(S)); render(); }
+      else if ((S.updatedAt||0) > (d.updatedAt||0)){ await ref.set(JSON.parse(JSON.stringify(S))); }
+    } else if (S.updatedAt){ await ref.set(JSON.parse(JSON.stringify(S))); }
+    cloudRef = ref; storeMode = "account";
+    var el = document.getElementById("savemode"); if (el) el.textContent = saveLabel();
+  }catch(e){ cloudRef = null; storeMode = "device"; }
+}
+function saveLabel(){ return "Your progress is saved on this device."; }
+
+/* ---------- dates ---------- */
+function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function toUTC(s){ var p=s.split("-"); return Date.UTC(+p[0], +p[1]-1, +p[2]); }
+function addDays(s,n){ var d=new Date(toUTC(s)+n*86400000); return d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0")+"-"+String(d.getUTCDate()).padStart(2,"0"); }
+function realDay(){ if(!S.start) return 0; return Math.round((toUTC(ymd(new Date())) - toUTC(S.start))/86400000) + 1; }
+function previewDay(){ var v = parseInt(lsGet(LS_PREVIEW),10); return isNaN(v) ? null : v; }
+function curDay(){ var p = previewDay(); return p !== null && S.start ? p : realDay(); }
+function niceDate(s){ var d=new Date(toUTC(s)); return d.toLocaleDateString(undefined,{weekday:"long", month:"long", day:"numeric", timeZone:"UTC"}); }
+
+/* ---------- helpers ---------- */
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function isDo(){ return S.track === "do"; }
+function coreText(){ return isDo() ? (S.setup.action || "your daily action") : (S.setup.rule || "your rule"); }
+function weekOf(d){ return d<=7?1: d<=14?2: d<=21?3: 4; }
+var WEEKS = [[1,7],[8,14],[15,21],[22,30]];
+var WEEK_NAMES = {1:"Just the core", 2:"Add: Tomorrow I Will", 3:"Add: Feedback", 4:"Prove it"};
+function weekName(w){ if (w===3 && !isDo()) return "Add: Dopamine Reset"; return WEEK_NAMES[w]; }
+function logOf(d){ return S.log[d] || (S.log[d] = {}); }
+function coreYes(d){ return S.log[d] && S.log[d].core === true; }
+function countYes(a,b){ var n=0; for (var i=a;i<=b;i++) if (coreYes(i)) n++; return n; }
+function bestStreak(){ var best=0,cur=0; for (var i=1;i<=30;i++){ if (coreYes(i)){cur++; best=Math.max(best,cur);} else cur=0; } return best; }
+function need(len){ return Math.ceil(len*5/7); }
+
+/* ---------- lessons ---------- */
+var LESSONS = [
+{day:1, title:"Just the core", kicker:"Week 1 starts",
+ body:function(){ return isDo() ? [
+  "<p>Today you start. For the next seven days you only have one thing to do: <strong>"+esc(coreText())+"</strong>. Don't add a new morning routine or a diet on top of it.</p>",
+  "<p>When you get one thing right, the other things get easier. When you try to change five things at once, you usually end up doing none of them by February.</p>",
+  "<blockquote>We're not aiming for perfection. We're aiming for reps.</blockquote>",
+  "<p><strong>How tracking works:</strong> every day you'll tap <em>Yes</em> or <em>No</em> on today's action. Every yes puts an X on your calendar. Five out of seven days counts as a winning week.</p>",
+  "<p>Stick to the minimum. If you feel like doing more once you start, go ahead, but you only promised yourself the small version.</p>"
+ ].join("") : [
+  "<p>Today you start. For the next seven days you only have one thing to do: <strong>"+esc(coreText())+"</strong>. Leave everything else alone for now.</p>",
+  "<p>Your rule has a clear yes or no answer, so there's nothing to argue with yourself about on the couch at 10pm. You made the decision today.</p>",
+  "<blockquote>Decide once, then stop negotiating with yourself.</blockquote>",
+  "<p><strong>How tracking works:</strong> every morning you'll check off whether you held the rule <em>yesterday</em>. Every yes puts an X on your calendar. Five out of seven days counts as a winning week.</p>",
+  "<p>When the urge hits, you have a plan: <strong>"+esc(S.setup.replacement||"your replacement")+"</strong>.</p>"
+ ].join(""); },
+ qs:function(){ return isDo()
+  ? [{id:"when", label:"When and where will you do it each day?", hint:"Be specific. \"After my coffee, at my desk\" beats \"sometime today.\"", type:"short"}]
+  : [{id:"trigger", label:"When does the urge usually hit hardest?", hint:"Time, place, and how you're feeling. Example: \"Around 10pm on the couch when I'm bored.\"", type:"text"}]; },
+ done:function(a){ if (a.when) S.setup.when = a.when; if (a.trigger) S.setup.trigger = a.trigger; }
+},
+{day:3, title:"Why it feels hard right now", kicker:"Day 3",
+ body:function(){ return isDo() ? [
+  "<p>If the first couple of days felt like pushing a car uphill, that's normal. It doesn't mean this won't work.</p>",
+  "<p>Your brain doesn't want to spend energy on something it hasn't seen pay off yet. People who seem disciplined aren't wired differently. They've just seen the payoff enough times that they want to do it.</p>",
+  "<blockquote>Small action + reward = big action.</blockquote>",
+  "<p>That's why the action is so small. You can keep doing it before you get anything out of it, and you keep showing up until the reward starts coming. After you do it today, notice anything good you get from it, like more energy, feeling proud, a pump, or a sentence you like.</p>"
+ ].join("") : [
+  "<p>The urges are usually strongest on days 2 through 5.</p>",
+  "<p>Before you stop, you expect it to hurt. Once you've actually stopped, it's usually fine. Being afraid of stopping is harder than stopping.</p>",
+  "<p>High-stimulation habits make normal life feel flat for a while after you quit. That doesn't mean you need the habit. Your brain is adjusting. Give it a couple of weeks and things that take effort start to feel worth doing again.</p>",
+  "<blockquote>It isn't your fault, but it is your responsibility.</blockquote>"
+ ].join(""); },
+ qs:function(){ return [{id:"hard", label:"What's felt harder than you expected so far? What's felt easier?", type:"text"}]; }
+},
+{day:5, title:"Design beats discipline", kicker:"Day 5",
+ body:function(){ return [
+  "<p>This part sounds backwards: <strong>when you need less willpower, you build more.</strong> Every time you make the right choice when it's easy, the habit gets a little stronger. The easiest place to practice is wherever there's the least temptation.</p>",
+  "<p>Gladiators trained with heavy wooden swords and fought with light metal ones. They made training hard and the real fight easy. Keeping cookies in the pantry to \"test yourself\" does the opposite, and every time you give in, you lose ground.</p>",
+  isDo() ? "<p>For you, that means making the action as easy as possible to start: shoes by the door, the doc already open, the guitar out of the case.</p>"
+         : "<p>For you, that means making the thing hard to get to: out of the room, out of the house, logged out, or deleted. Needing distance from it doesn't make you weak. Putting distance between you and it is how this works.</p>",
+  "<p>On Day 0 you changed this: <strong>"+esc(S.setup.env||"your environment")+"</strong>.</p>"
+ ].join(""); },
+ qs:function(){ return [{id:"env2", label:"Is your environment change working? What's one more tweak you can make today?", hint:"Make the right choice easier or the wrong one harder.", type:"text"}]; },
+ done:function(a){ if (a.env2) S.setup.env2 = a.env2; }
+},
+{day:8, title:"Add: Tomorrow I Will", kicker:"Week 2 starts", unlock:"tiw",
+ body:function(){ return [
+  "<p>You finished week one. This week you add one small thing that takes a minute each night.</p>",
+  "<p><strong>Tomorrow I Will.</strong> Before bed, write what you'll do tomorrow, the biggest obstacle that could stop you, and an if-then plan for that obstacle. You'll do it right here in the app, and tomorrow morning it'll be waiting for you as today's plan.</p>",
+  "<p>Why it works:</p><ul><li><strong>You need a will before you can have willpower.</strong> Without a plan, your day goes to whatever comes up first. This way you decide the night before.</li><li><strong>It plans for the obstacle.</strong> Plans usually fall apart when something comes up that you didn't plan for. In the research, if-then plans more than quadrupled how often people followed through.</li><li><strong>It gets the worries out of your head</strong>, which helps you sleep. Anything that improves your sleep improves your willpower.</li></ul>",
+  "<blockquote>Example: \"If I get home wiped out, then I'll do the 10 minutes anyway and stop right at 10.\"</blockquote>"
+ ].join(""); },
+ qs:function(){ return [{id:"tiwtime", label:"What time will you write it each night?", hint:"Tie it to something you already do, like brushing your teeth.", type:"short"}]; },
+ done:function(a){ if (a.tiwtime) S.setup.tiwTime = a.tiwtime; }
+},
+{day:11, title:"Never miss twice", kicker:"Day 11",
+ body:function(){ return [
+  "<p>You'll miss a day at some point. Everyone does. The rule is to <strong>never miss twice in a row.</strong></p>",
+  "<blockquote>Everything matters and nothing matters. One skip means nothing. Two in a row starts a new habit.</blockquote>",
+  isDo() ? "<p>On a bad day, do a smaller version instead of skipping it. Put on your shoes, open the file, or drive to the gym and sit in the parking lot for one song. Even that first small step counts.</p>"
+         : "<p>If you slip, <strong>don't reset to zero</strong> and don't make it a character judgment. Write down what happened right before it: the time, the place, and how you felt. Most cravings come from habit or emotion, like boredom, stress, or a pit in your stomach that feels like hunger. Then change something about your surroundings instead of beating yourself up.</p>",
+  "<p>You either win or you learn. If you learn something from a miss, you're still making progress.</p>"
+ ].join(""); },
+ qs:function(){ return isDo()
+  ? [{id:"minimum", label:"What's the bad-day minimum version of your action?", hint:"So small you'd feel silly skipping it.", type:"short"}]
+  : [{id:"slipplan", label:"If you slip, what's your first move the next morning?", hint:"Example: \"Write the trigger down, then move the charger further away.\"", type:"text"}]; },
+ done:function(a){ if (a.minimum) S.setup.minimum = a.minimum; if (a.slipplan) S.setup.slipplan = a.slipplan; }
+},
+{day:15, title:"", kicker:"Week 3 starts", unlock:"wk3",
+ titleFn:function(){ return isDo() ? "Add: Real feedback" : "Add: Daily Dopamine Reset"; },
+ body:function(){ return isDo() ? [
+  "<p>Getting quick, real feedback is what makes you want to keep doing something, instead of having to force yourself.</p>",
+  "<p>Seinfeld's famous \"don't break the chain\" calendar worked for two reasons people tend to miss. He picked the most important part of the craft, which was writing one joke a day. And he went on stage and found out whether the jokes landed.</p>",
+  "<p>This week and next, get <strong>real-world feedback at least once a week.</strong> Real-world reactions are better than asking a friend: did people laugh, buy, watch, or reply? Did the number go up? Examples: an open mic, posting the work, a progress photo, a body measurement, logging your lifts and beating last week.</p>",
+  "<blockquote>You might need an open mic, some way to put the work in front of people.</blockquote>"
+ ].join("") : [
+  "<p>You've cut out something that was giving you easy, fake rewards. Now you help your brain get used to normal ones again.</p>",
+  "<p>Dopamine works less like a reward and more like a vote for what to do next. When you get a lot of easy dopamine, it takes more to get your attention, so things that take effort, like a run, a book, or a real conversation, stop feeling worth doing.</p>",
+  "<p>This week add a <strong>10-minute Daily Dopamine Reset</strong>: ten minutes of very low stimulation. For example, a walk with no podcast or music, folding laundry, or sitting still. Ten minutes is enough.</p>",
+  "<p>It's also a good thing to do when an urge hits. Instead of trying to hold out, go do your 10 minutes.</p>"
+ ].join(""); },
+ qs:function(){ return isDo()
+  ? [{id:"feedback", label:"Where will you get real feedback this week?", type:"short"}]
+  : [{id:"reset", label:"What will your 10 minutes be, and when?", hint:"Example: \"Walk the dog with no headphones after dinner.\"", type:"short"}]; },
+ done:function(a){ if (a.feedback) S.setup.feedback = a.feedback; if (a.reset) S.setup.reset = a.reset; }
+},
+{day:18, title:"Challenge, not threat", kicker:"Day 18",
+ body:function(){ return [
+  "<p>When something hard shows up, your body sizes it up in one of two ways. <strong>Threat</strong>: you think your resources aren't enough, your blood vessels tighten, and your thinking slows. <strong>Challenge</strong>: you think your resources are enough, and you get adrenaline and sharper focus. You perform better in the same situation.</p>",
+  "<p>Telling yourself to toughen up doesn't help when you're in threat mode. Asking yourself a question does. In the hard moment, take one deep breath and ask:</p>",
+  "<blockquote>Do I have the resources to get through this?</blockquote>",
+  "<p>Usually the honest answer is yes. Most fears are bigger than the situation calls for.</p>"
+ ].join(""); },
+ qs:function(){ return [{id:"boss", label:"Name the hardest moment you expect in the next week.", type:"short"},
+                        {id:"resources", label:"List the resources you already have for it.", hint:"Skills, people, past wins, your plan, this app.", type:"text"}]; }
+},
+{day:22, title:"Add nothing", kicker:"Week 4 starts",
+ body:function(){ return [
+  "<p>This week you add nothing new. Keep doing what you're doing and let it get boring. Doing the basic, boring stuff is what gets results.</p>",
+  "<p>Every time you keep a promise to yourself, even a small one, you strengthen your identity as someone who follows through. What you do is the only real evidence of who you are. You don't need to feel like that person yet. Just keep showing up.</p>",
+  "<blockquote>We are what we repeatedly do.</blockquote>",
+  "<p>So stop saying you're <em>trying</em> to be that kind of person.</p>"
+ ].join(""); },
+ qs:function(){ return [{id:"identity", label:"Finish the sentence: I am someone who...", type:"short"}]; },
+ done:function(a){ if (a.identity) S.setup.identity = a.identity; }
+},
+{day:26, title:"It only has to work once", kicker:"Day 26",
+ body:function(){ return [
+  "<p>Almost everyone with a habit that stuck failed at it many times first. They'd keep it up for a few months or a week, then drop it, until one attempt finally lasted.</p>",
+  "<blockquote>All you need is for it to work once.</blockquote>",
+  "<p>Play the long game. Build your habits like a table you'll eat every meal at for the rest of your life, not a cheap one for a one-year lease. Build it one brick at a time. Quick wins tend to disappear just as quickly.</p>",
+  "<p>You have four days left. After that, you decide what the next 30 days look like.</p>"
+ ].join(""); },
+ qs:function(){ return [{id:"different", label:"What made this attempt different from the ones that didn't stick?", type:"text"}]; }
+},
+{day:30, title:"Day 30 review", kicker:"Finish line", review:true,
+ body:function(){
+  var total = countYes(1,30), won = WEEKS.filter(function(w){ return countYes(w[0],w[1]) >= need(w[1]-w[0]+1); }).length;
+  return [
+  "<p>You made it to Day 30. Here's how it went:</p>",
+  "<div class='stats3'><div class='stat'><div class='n'>"+total+"/30</div><div class='small muted'>days with an X</div></div><div class='stat'><div class='n'>"+won+"/4</div><div class='small muted'>winning weeks</div></div><div class='stat'><div class='n'>"+bestStreak()+"</div><div class='small muted'>best streak</div></div></div>",
+  "<p>On Day 0 you wrote why this matters:</p><div class='answer'>"+esc(S.setup.vision)+"</div>",
+  isDo() ? "<p>Your milestone was: <strong>"+esc(S.setup.milestone)+"</strong></p>" : "<p>Your rule was: <strong>"+esc(S.setup.rule)+"</strong></p>",
+  "<p>Now decide what's next. Discipline comes from working toward something specific, so pick the next thing to work toward.</p>"
+ ].join(""); },
+ qs:function(){ return [
+  {id:"milestoneMet", label: isDo() ? "Did you hit your Day 30 milestone?" : "Is the rule now something you just do?", type:"choice",
+   options:[{v:"yes",t:"Yes"},{v:"close",t:"Close"},{v:"no",t:"Not yet"}]},
+  {id:"choice", label:"What's next?", type:"choice", options: isDo()
+   ? [{v:"level",t:"Level up",d:"Set a bigger milestone 1 to 6 months out and make it real."},{v:"keep",t:"Keep it",d:"Same action, another 30 days."},{v:"adjust",t:"Adjust it",d:"Change the action so it fits better."}]
+   : [{v:"keep",t:"Keep the rule",d:"It stays, and you pick the next environment change."},{v:"level",t:"Tighten it",d:"Make the rule stricter or extend it."},{v:"adjust",t:"Adjust it",d:"Change the rule so it actually holds."}]},
+  {id:"next", label: isDo() ? "Your next milestone (yes/no, 1 to 6 months out). How will you make it real?" : "What's your next environment change, or the next thing you'll quit?",
+   hint: isDo() ? "Pay for the race. Sign up for the meet. Tell someone the date." : "Example: \"Phone stays in the kitchen after 9pm, every night.\"", type:"text"}
+ ]; },
+ done:function(a){ S.review = a; S.completed = true; }
+}
+];
+function lessonTitle(L){ return L.titleFn ? L.titleFn() : L.title; }
+function lessonFor(day){ for (var i=0;i<LESSONS.length;i++) if (LESSONS[i].day===day) return LESSONS[i]; return null; }
+function pendingLesson(day){ for (var i=0;i<LESSONS.length;i++){ var L=LESSONS[i]; if (L.day<=day && !(S.lessons[L.day]&&S.lessons[L.day].done)) return L; } return null; }
+
+var TIPS = [
+ "Willpower is your ability to make what you want happen. You're doing that today.",
+ "Five out of seven days is a win. You don't need to be perfect.",
+ "When you need less willpower, you build more. Check your environment.",
+ "Decide once. There's nothing to negotiate today.",
+ "Small action plus reward equals big action.",
+ "Anything that improves your sleep improves your willpower.",
+ "Do I have the resources to get through this? Usually yes.",
+ "Create before you consume.",
+ "One miss means nothing. Never miss twice.",
+ "We are what we repeatedly do.",
+ "It's simple, but it isn't easy. Do the boring basic thing today.",
+ "It only has to work once."
+];
+
+/* ---------- rendering ---------- */
+var app = document.getElementById("app");
+function route(){
+  if (!S.track || !S.start) return UI.route === "setup" ? "setup" : "welcome";
+  if (UI.route && UI.route.indexOf("lesson:")===0) return UI.route;
+  if (S.completed && curDay() >= 30) return "done";
+  return "today";
+}
+function topbar(extra){
+  return "<div class='top'><a class='home-link' href='https://williammulvaney.com/' aria-label='William Mulvaney home'><img src='/willpower_logo.svg' alt='William Mulvaney'></a>"+(extra||"")+"</div>";
+}
+function render(){
+  var r = route();
+  app.classList.toggle("wide", r === "welcome");
+  if (r === "welcome") app.innerHTML = vWelcome();
+  else if (r === "setup") app.innerHTML = vSetup();
+  else if (r.indexOf("lesson:")===0) app.innerHTML = vLesson(+r.split(":")[1]);
+  else if (r === "done") app.innerHTML = vDone();
+  else app.innerHTML = vToday();
+  fresh = null;
+}
+
+function vWelcome(){
+  var cta = "<div class='stack cta'><button class='btn big' data-act='getstarted'>"+(S.sales.want && !S.start ? "Continue my application" : "Apply to join")+"</button><span class='small muted'>Applications take about 5 minutes.</span></div>";
+  return topbar("") + [
+  "<section class='hero hero-split'><div class='hero-copy'>",
+   "<div class='eyebrow'>The Willpower Community</div>",
+   "<h1>Start living<br><span class='x'>on purpose.</span></h1>",
+   "<p class='lede'>Imagine waking up clear-headed, getting things done, and ending the day proud of how you spent it. Join a group of people living this way.</p>",
+   cta,
+  "</div>",
+   "<div class='hero-video'><video id='heroVideo' controls playsinline preload='metadata' poster='/community/willpower-ad-poster.jpg'><source src='/community/willpower-ad.mp4' type='video/mp4'></video></div>",
+  "</section>",
+  "<div class='card pain'><div class='eyebrow'>Right now</div><h2>You know you're capable of more.</h2><ul class='painlist'>",
+   "<li>You tell yourself you'll start Monday. Monday comes and goes.</li>",
+   "<li>You check your screen time and don't want to believe the number.</li>",
+   "<li>You said no drinks this week. It's Wednesday and you're on your second.</li>",
+   "<li>You've started the gym, the diet, the early mornings more times than you can count.</li>",
+   "<li>You lie in bed at night thinking about everything you didn't do today.</li>",
+  "</ul><p>The worst part isn't the lost time. Every promise you break to yourself makes the next one easier to break, until your own word stops meaning much. Other people pick up on that too.</p></div>",
+  "<div class='stack-lg'><div><div class='eyebrow'>A year from now</div><h2>What changes when you keep your word</h2></div><div class='dream'>",
+   "<div class='dreamcard'><span class='dk'>Discipline</span><p>You do what you said you'd do, without arguing with yourself about it. The hard thing gets done first. The phone, the snacks and the drink don't run your evenings anymore.</p></div>",
+   "<div class='dreamcard'><span class='dk'>Recognition</span><p>People notice. Your partner, your friends and the people you work with see that you've changed, and they start asking what you're doing differently.</p></div>",
+   "<div class='dreamcard'><span class='dk'>Respect</span><p>From the people around you, and from yourself. When you say you'll do something, everyone, including you, knows it's going to happen.</p></div>",
+  "</div></div>",
+  "<div class='card accent'><h3>You don't get there alone</h3><p>The Willpower Community is a group of people who decided to stop drifting and start living on purpose. Everyone checks in every day. When you're surrounded by people who keep their word, keeping yours gets a lot easier.</p>"+cta+"</div>",
+  "<div class='card'><h3>Who's behind this</h3><p>William Mulvaney hosts the Willpower Podcast (120+ episodes). He's run a 100-mile ultramarathon, started stand-up as a self-conscious introvert, and talked openly on the show about his own fights with his phone and late-night eating. He built this group so you don't have to keep starting over by yourself.</p></div>",
+  "<p class='small muted'>The community isn't medical treatment. If you're dealing with a severe addiction, or you drink heavily every day, talk to a doctor too.</p>"
+  ].join("");
+}
+function tl(w,t){ return "<div class='tl'><div class='when'>"+w+"</div><div>"+t+"</div></div>"; }
+
+/* setup wizard: Day 0 follows the CLOSER framework, then the offer, then onboarding */
+var STEPS = ["clarify","track","core","label","past","stuck","vacation","offer","reinforce","env","commit"];
+var PRE = 7; // steps before the offer
+var HOWLONG = [{v:"weeks",t:"A few weeks"},{v:"months",t:"Months"},{v:"year",t:"About a year"},{v:"years",t:"Years"}];
+var TRIED = {
+  do:[{v:"allin",t:"Going all in at once",fix:"Going all in usually leads to burning out. This time you do one thing for 10 minutes and add one small habit a week."},
+      {v:"apps",t:"Habit apps and trackers",fix:"An app tracks what you do. This tells you what to do next, and the lessons and check-ins change each week."},
+      {v:"content",t:"Books, podcasts, YouTube",fix:"Reading and listening feel like progress, but they don't change what you do. Here the reading takes 2 minutes and the rest is doing."},
+      {v:"harder",t:"Just trying harder",fix:"Trying harder only lasts as long as your grit does. This works by changing your surroundings and getting you real feedback."},
+      {v:"resolution",t:"New Year's resolutions",fix:"Resolutions are vague and never end. This has a specific milestone and ends after 30 days."},
+      {v:"coach",t:"A program or coach",fix:"Generic programs don't fit your life. This plan uses the answers you gave today."}],
+  quit:[{v:"cold",t:"Cold turkey on willpower",fix:"Going cold turkey means fighting the urge every night. This time you change your surroundings so the urge comes up less."},
+      {v:"delete",t:"Deleting it, then going back",fix:"Deleting it left a gap. This time you have something else to do when the urge hits, and a daily 10-minute reset."},
+      {v:"limits",t:"Limits and timers",fix:"It's easy to talk yourself past a limit at 11pm. A clear rule is harder to argue with, because you already decided."},
+      {v:"justonce",t:"\"Just once\" or \"only weekends\" rules",fix:"Rules with exceptions keep you arguing with yourself. Yours has a clear yes or no answer."},
+      {v:"content",t:"Books, podcasts, YouTube",fix:"Knowing why it's bad didn't change what you did. Here the reading takes 2 minutes and the rest is doing."},
+      {v:"harder",t:"Just trying harder",fix:"Forcing yourself to resist treats this like a character flaw. It's a habit, and you can change what triggers it."}]
+};
+var STUCK = [
+  {v:"time",t:"I don't have time"},
+  {v:"motivation",t:"My motivation fades"},
+  {v:"start",t:"I don't know where to start"},
+  {v:"crash",t:"I start strong, then crash"},
+  {v:"life",t:"Life gets in the way"},
+  {v:"urge",t:"The urge wins in the moment"},
+  {v:"failed",t:"I've failed so many times I doubt myself"}
+];
+var ADDICTIONS = [
+  {v:"porn", t:"Porn", rules:["No porn","No phone in the bedroom","No porn, and a blocker on every device"], env:["Installed a blocker on every device","Phone charges outside the bedroom","Deleted the apps and bookmarks"]},
+  {v:"food", t:"Junk food", rules:["No junk food in the house","No food 3 hours before bed","No fast food","No sweets on weekdays"], env:["Threw out the junk food","Took it off my grocery list","Fruit on the counter instead"]},
+  {v:"alcohol", t:"Alcohol", rules:["No alcohol","No drinking at home","No drinking on weeknights"], env:["Cleared the alcohol out of the house","Stocked seltzer and NA drinks","Told my friends I'm not drinking"]},
+  {v:"nicotine", t:"Nicotine", rules:["No nicotine","No vaping","No nicotine pouches"], env:["Threw out every vape and pouch","Stopped carrying cash for the gas station","Told the people I usually use with"]},
+  {v:"scrolling", t:"Scrolling", rules:["No social media before noon","No phone in the bedroom after 9pm","Social apps deleted from my phone"], env:["Deleted the apps","Phone charger moved to the kitchen","Logged out on every device"]},
+  {v:"tv", t:"TV and streaming", rules:["No TV on weeknights","No TV after 9pm","One episode max, autoplay off"], env:["Turned off autoplay","Logged out of the streaming apps","Unplugged the TV"]},
+  {v:"other", t:"Something else", rules:["No phone in the bedroom after 9pm","No purchases over $30 without a 48-hour wait"], env:["Got it out of the house","Deleted the app","Logged out on every device"]}
+];
+function addiction(){ for (var i=0;i<ADDICTIONS.length;i++) if (ADDICTIONS[i].v===S.sales.addiction) return ADDICTIONS[i]; return ADDICTIONS[ADDICTIONS.length-1]; }
+function addictionName(){ var a = addiction(); return a.v==="other" ? "it" : a.t.toLowerCase(); }
+function triedList(){ return TRIED[S.track||"do"]; }
+function wantText(){ return S.sales.want || (isDo() ? (S.setup.milestone || coreText()) : coreText()); }
+function wantCard(){ return S.sales.want ? "<div class='mirror'><div class='small muted'>What you want</div><div class='big'>"+esc(S.sales.want)+"</div></div>" : ""; }
+function stepOk(name){
+  var p = S.setup, c = p.checks||{}, q = S.sales;
+  switch(name){
+    case "clarify": return q.want.trim().length>0 && q.why.trim().length>0;
+    case "track": return !!S.sales.addiction;
+    case "core": return isDo() ? !!(p.milestone.trim() && p.action.trim() && c.essence && c.small && c.feedback) : !!(p.rule.trim() && p.replacement.trim() && c.boolean);
+    case "past": return !!q.howlong && (q.tried.length>0 || q.triedOther.trim().length>0) && q.whyFailed.trim().length>0;
+    case "stuck": return q.stuck.length>0 && q.cost.trim().length>0;
+    case "vacation": return q.vacation.trim().length>0 && p.vision.trim().length>0;
+    case "env": return p.env.trim().length>0;
+    case "commit": return !!p.committed;
+  }
+  return true;
+}
+function skipStep(name){
+  if (name === "offer" || name === "reinforce") return S.paid && S.repeat;
+  if (S.repeat && (name === "label" || name === "past" || name === "stuck")) return true;
+  return false;
+}
+function chips(key, list, multi){
+  var cur = S.sales[key];
+  return "<div class='examples'>"+list.map(function(o){
+    var on = multi ? cur.indexOf(o.v) > -1 : cur === o.v;
+    return "<button class='chip "+(on?"on":"")+"' data-act='"+(multi?"toggle":"pickone")+"' data-k='"+key+"' data-v='"+o.v+"' aria-pressed='"+on+"'>"+esc(o.t)+"</button>";
+  }).join("")+"</div>";
+}
+function vSetup(){
+  var st = Math.min(UI.step||0, STEPS.length-1), name = STEPS[st];
+  if (name === "offer") return vOffer();
+  var p = S.setup, q = S.sales, body = "";
+  var pre = st < PRE, idx = pre ? st : st - PRE - 1, total = pre ? PRE : 3;
+  var bar = "<div class='progress'>"+Array.apply(null,{length:total}).map(function(_,i){ return "<span class='"+(i<=idx?"on":"")+"'></span>"; }).join("")+"</div>";
+  var eb = "<div class='eyebrow'>"+(pre ? "Your application · Step "+(idx+1)+" of "+total : "Getting started · "+(idx+1)+" of "+total)+"</div>";
+
+  if (name === "clarify"){
+    body = eb+"<h2>What do you want?</h2>"+
+            "<label class='q'><textarea id='f_want' data-sales='want' placeholder='Be detailed. What does your life look like when you have it?'>"+esc(q.want)+"</textarea></label>"+
+      "<label class='q'>What made you look into this now?<textarea id='f_why' data-sales='why' placeholder='Be detailed. What happened, or what are you tired of?'>"+esc(q.why)+"</textarea></label>";
+  } else if (name === "track"){
+    body = eb+"<h2>What's the first change?</h2>"+wantCard()+
+      
+      "<div class='stack'><b>Start something</b><button class='choice "+(q.addiction==="start"?"on":"")+"' data-act='pickaddiction' data-v='start'><b>A daily habit I keep putting off</b><span class='muted'>Training, writing, building something, waking up early.</span></button></div>"+
+      "<div class='stack'><b>Stop something</b><div class='addgrid'>"+
+      ADDICTIONS.map(function(a){ return "<button class='choice "+(q.addiction===a.v?"on":"")+"' data-act='pickaddiction' data-v='"+a.v+"'><b>"+esc(a.t)+"</b></button>"; }).join("")+"</div></div>"+
+      (q.addiction==="alcohol" ? "<div class='banner warn small'>If you drink heavily every day, talk to a doctor before you stop. Alcohol withdrawal can be dangerous.</div>" : "");
+  } else if (name === "core"){
+    if (isDo()){
+      var c = p.checks||{};
+      body = eb+"<h2>What will you add?</h2>"+wantCard()+
+        "<label class='q'>Day 30 milestone<input type='text' id='f_milestone' data-field='milestone' value='"+esc(p.milestone)+"' placeholder='Something you can answer yes or no on Day 30'></label>"+
+        "<div class='examples'>"+["20 workouts logged","Perform 3 jokes at an open mic","Write 10,000 words","Ship the landing page"].map(function(x){return "<button class='ex' data-act='fill' data-f='milestone' data-v='"+esc(x)+"'>"+esc(x)+"</button>";}).join("")+"</div>"+
+        "<label class='q'>Daily action<input type='text' id='f_action' data-field='action' value='"+esc(p.action)+"' placeholder='10 minutes or less'></label>"+
+        "<div class='examples'>"+["10 minutes of resistance training","Write one joke","Write for 10 minutes","10 minutes on the hardest task first"].map(function(x){return "<button class='ex' data-act='fill' data-f='action' data-v='"+esc(x)+"'>"+esc(x)+"</button>";}).join("")+"</div>"+
+        "<div class='eyebrow' style='margin-top:6px'>Check your action passes all three</div>"+
+        chk("essence","It's the essence of the goal","One joke, not \"be a comedian.\"",c.essence)+
+        chk("small","It's small enough to do with zero reward","You could grit through it on your worst day.",c.small)+
+        chk("feedback","It's likely to give some feedback or reward","A pump, a finished page, a number that moves.",c.feedback);
+    } else {
+      var c2 = p.checks||{};
+      body = eb+"<h2>Your rule for "+esc(addictionName())+"</h2>"+wantCard()+
+        "<label class='q'>Your rule<input type='text' id='f_rule' data-field='rule' value='"+esc(p.rule)+"' placeholder='A clear yes or no rule'></label>"+
+        "<div class='examples'>"+addiction().rules.map(function(x){return "<button class='ex' data-act='fill' data-f='rule' data-v='"+esc(x)+"'>"+esc(x)+"</button>";}).join("")+"</div>"+
+        chk("boolean","Tomorrow, I'll know for sure if I held it","No gray area, no \"mostly.\"",c2.boolean)+
+        "<label class='q'>When the urge hits, I will...<input type='text' id='f_replacement' data-field='replacement' value='"+esc(p.replacement)+"' placeholder='Something easy you can do right away'></label>"+
+        "<div class='examples'>"+["Take a 10-minute walk, no headphones","Drink a glass of water and wait 10 minutes","Read a physical book","Text a friend"].map(function(x){return "<button class='ex' data-act='fill' data-f='replacement' data-v='"+esc(x)+"'>"+esc(x)+"</button>";}).join("")+"</div>";
+    }
+  } else if (name === "label"){
+    body = eb+"<h2>Here's where you are</h2>"+
+      "<div class='mirror'><div class='small muted'>You want</div><div class='big'>"+esc(q.want)+"</div>"+
+      "<div class='small muted' style='margin-top:10px'>Your first change</div><div><b>"+esc(isDo() ? "Start: "+coreText() : "Stop: "+addiction().t+". Rule: "+coreText())+"</b></div>"+
+      "<div class='small muted' style='margin-top:10px'>And right now</div><div>"+esc(q.why)+"</div></div>"+
+      "<div class='prose'><p>There's a gap between what you want and what you're actually doing. Willpower is <strong>your ability to close that gap</strong> and make what you want happen.</p>"+
+      "<p>Most people try to close it by trying harder. Next, a few questions about what you've tried so far.</p></div>"+
+      "<div class='choices'><button class='choice "+(q.labelOk==="yes"?"on":"")+"' data-act='pickone' data-k='labelOk' data-v='yes'><b>Yes, that's me</b></button>"+
+      "<button class='choice' data-act='back'><b>Not quite</b><span class='muted'>Go back and change it.</span></button></div>";
+  } else if (name === "past"){
+    body = eb+"<h2>How long has this been going on?</h2>"+chips("howlong", HOWLONG, false)+
+      "<div class='stack'><b>What have you already tried?</b>"+chips("tried", triedList(), true)+
+      "<input type='text' id='f_triedOther' data-sales='triedOther' value='"+esc(q.triedOther)+"' placeholder='Anything else?'></div>"+
+      "<label class='q'>Why didn't it stick?<textarea id='f_whyFailed' data-sales='whyFailed' placeholder='Be detailed. What happened, and when did it fall apart?'>"+esc(q.whyFailed)+"</textarea></label>";
+  } else if (name === "stuck"){
+    body = eb+"<h2>Why haven't you done it yet?</h2>"+
+      chips("stuck", STUCK, true)+
+      "<label class='q'>What happens if nothing changes?<textarea id='f_cost' data-sales='cost' placeholder='Be detailed. Think about your health, relationships, work and how you see yourself a year from now.'>"+esc(q.cost)+"</textarea></label>";
+  } else if (name === "vacation"){
+    body = eb+"<h2>Now picture Day 30</h2>"+
+      
+      "<label class='q'>What's different about your life?<textarea id='f_vacation' data-sales='vacation' placeholder='Be detailed. How you feel waking up, what you are proud of, what other people notice.'>"+esc(q.vacation)+"</textarea></label>"+
+      "<label class='q'>Why does that matter to you?<textarea id='f_vision' data-field='vision' placeholder='Be detailed. You will read this again on Day 30.'>"+esc(p.vision)+"</textarea></label>";
+  } else if (name === "reinforce"){
+    body = eb+"<h2>Application received.</h2>"+
+      "<div class='prose'><p>Will reads every application. When you're accepted, you'll get an email with your login for the community app. If you aren't accepted, you'll get a full refund. You don't need to wait to start the walkthrough, though.</p><p>A lot of people never get past wanting to change. They read another book, listen to another episode, and wait until they feel ready. You've already decided, which is often the hardest step.</p>"+
+      "<p>Here's what the next 30 days look like:</p><ul>"+
+      "<li><strong>Every day:</strong> a 10-second check-in. Every yes puts an X on your calendar, and you post it in the community.</li>"+
+      "<li><strong>Every few days:</strong> a 2-minute lesson.</li>"+
+      "<li><strong>Every week:</strong> one small habit gets added to your stack.</li>"+
+      "</ul>"+
+      "<blockquote>Five out of seven days counts as a win. You don't need to be perfect.</blockquote>"+
+      "<p>There are two quick things to do before Day 1.</p></div>";
+  } else if (name === "env"){
+    body = eb+"<h2>Change one thing in your environment</h2>"+
+      "<p class='muted'>"+(isDo()?"Remove friction so the action is the easy choice.":"Make it harder to get to, or get rid of it completely.")+"</p>"+
+      "<label class='q'>The change<input type='text' id='f_env' data-field='env' value='"+esc(p.env)+"' placeholder='"+(isDo()?"Gym bag packed and by the door":"Phone charger moved to the kitchen")+"'></label>"+
+      "<div class='examples'>"+(isDo()?["Gym bag packed by the door","Doc open on my desktop","Guitar out of the case","Workout clothes laid out"]:addiction().env).map(function(x){return "<button class='ex' data-act='fill' data-f='env' data-v='"+esc(x)+"'>"+esc(x)+"</button>";}).join("")+"</div>"+
+      chk("envDone","I did it already","Best done right now, before you start.",p.envDone, true);
+  } else {
+    body = eb+"<h2>Commit out loud</h2>"+
+      "<div class='card' style='background:var(--soft);border:0'><div class='small muted'>Your "+(isDo()?"action":"rule")+"</div><div style='font-weight:700;font-size:18px'>"+esc(coreText())+"</div></div>"+
+      "<p>Start within 24 hours. When does Day 1 begin?</p>"+
+      "<div class='choices'><button class='choice "+(UI.startOpt!=="tomorrow"?"on":"")+"' data-act='startopt' data-v='today'><b>Today</b><span class='muted'>"+esc(niceDate(ymd(new Date())))+"</span></button>"+
+      "<button class='choice "+(UI.startOpt==="tomorrow"?"on":"")+"' data-act='startopt' data-v='tomorrow'><b>Tomorrow</b><span class='muted'>"+esc(niceDate(addDays(ymd(new Date()),1)))+"</span></button></div>"+
+      "<p>Now say this out loud.</p><p class='commit'>\"I commit to doing this in the next 24 hours.\"</p>"+
+      chk("committed","I said it out loud","",p.committed, true);
+  }
+  var ok = stepOk(name) && (name !== "label" || q.labelOk === "yes");
+  var nextLabel = name === "vacation" ? "Review my application" : name === "reinforce" ? "Let's set it up" : "Continue";
+  var firstPost = st === PRE + 1;
+  var nav = "<div class='wiz-nav'>"+(st>0 && !firstPost ? "<button class='btn ghost' data-act='back'>Back</button>" : st===0 ? "<button class='btn ghost' data-act='home'>Cancel</button>" : "<span></span>")+
+    (st<STEPS.length-1?"<button class='btn' data-act='next' "+(ok?"":"disabled")+">"+nextLabel+"</button>":"<button class='btn' data-act='begin' "+(ok?"":"disabled")+">Start Day 1</button>")+"</div>";
+  return topbar("") + bar + "<div class='card stack-lg'>"+body+"</div>" + nav;
+}
+function chk(key,title,sub,on,top){
+  return "<label class='check'><input type='checkbox' id='c_"+key+"' data-check='"+key+"' "+(top?"data-top='1' ":"")+(on?"checked":"")+"><span><b>"+title+"</b>"+(sub?"<span class='small muted'>"+sub+"</span>":"")+"</span></label>";
+}
+
+/* the offer (after S in CLOSER), with E as a long scroll of objections */
+var APPLY_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/community-application";
+function label(list, v){ for (var i=0;i<list.length;i++) if (list[i].v===v) return list[i].t; return v; }
+function applicationAnswers(){
+  var q = S.sales, p = S.setup;
+  return {
+    want:q.want, why:q.why,
+    firstChange: isDo() ? "Start something" : "Stop: "+addiction().t,
+    rule: isDo() ? "" : p.rule, replacement: isDo() ? "" : p.replacement,
+    action: isDo() ? p.action : "", milestone: isDo() ? p.milestone : "",
+    howlong: label(HOWLONG, q.howlong),
+    tried: q.tried.map(function(v){ return label(triedList(), v); }).concat(q.triedOther ? [q.triedOther] : []),
+    whyFailed:q.whyFailed,
+    stuck: q.stuck.map(function(v){ return label(STUCK, v); }),
+    cost:q.cost, vacation:q.vacation, vision:p.vision
+  };
+}
+function postJSON(body){
+  var ctrl = ("AbortController" in window) ? new AbortController() : null;
+  var t = setTimeout(function(){ if (ctrl) ctrl.abort(); }, 8000);
+  return fetch(APPLY_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined})
+    .then(function(r){ return r.json(); }).catch(function(){ return {ok:false}; }).then(function(r){ clearTimeout(t); return r; });
+}
+function submitApplication(){
+  var w = document.getElementById("a_website");
+  var utm = (location.search.match(/[?&]utm_source=([^&]+)/)||[])[1] || null;
+  return postJSON({stage:"submitted", name:(S.sales.name||"").trim(), email:(S.sales.email||"").trim(), answers:applicationAnswers(),
+                   referrer: document.referrer || null, utm_source: utm ? decodeURIComponent(utm) : null, website: w ? w.value : ""})
+    .then(function(r){ if (!r || !r.ok) cap("community_application_failed", {}); else cap("community_application_submitted", {}); return r && r.ok ? r.id : null; });
+}
+function goCheckout(){
+  try { fbq('track', 'InitiateCheckout', {value: 99, currency: 'USD', content_name: 'Willpower Community'}); } catch(err){}
+  cap("checkout_click", {tier: "community", price: 99, addiction: S.sales.addiction});
+  if (STRIPE_COMMUNITY_URL){
+    var url = STRIPE_COMMUNITY_URL + (S.sales.email ? (STRIPE_COMMUNITY_URL.indexOf("?")>-1?"&":"?") + "prefilled_email=" + encodeURIComponent(S.sales.email.trim()) : "");
+    setTimeout(function(){ window.location.href = url; }, 250); return;
+  }
+  S.paid = true; UI.step = PRE + 1; save(); saveUI(); render(); window.scrollTo(0,0);
+}
+// Stripe Payment Link: $99 30-Day Willpower Walkthrough today + Willpower Community $19/mo after a 30-day trial.
+// metadata product=community (stripe-webhook marks the application paid). Success URL:
+// https://williammulvaney.com/community/?paid=1. Empty = preview mode (no charge).
+var STRIPE_COMMUNITY_URL = "https://buy.stripe.com/fZudRaclA0MVacQ7RhfjG0o";
+function cap(ev, props){ try { posthog.capture(ev, props || {}); } catch(e){} }
+var GUARANTEE = "Do the 30 days. Check in on at least 25 of them. If you did the work and nothing changed, email Will and get your full $99 back.";
+function objections(){
+  var q = S.sales, out = [], seen = {};
+  var map = {
+    time:["\"I don't have time.\"", "The daily action is "+(isDo()?"10 minutes":"one rule, which takes zero minutes")+". The check-in takes 10 seconds. Lessons take 2 minutes, every few days. It takes less time each day than one scroll session. It's kept small on purpose, because bigger commitments are the first thing to go when life gets busy."],
+    motivation:["\"My motivation always fades.\"", "This doesn't depend on motivation. Motivation comes from seeing results, so the challenge builds in ways to see them early. People who seem disciplined aren't wired differently. They've just seen the payoff enough times. You don't need discipline to start, because it builds as you go."],
+    start:["\"I don't know where to start.\"", "You already have a plan. It's above, based on your answers. Day 1 tells you exactly what to do, and each lesson after that tells you what to add next."],
+    crash:["\"I start strong, then crash.\"", "Going all in on day one is usually what causes the crash, and people end up back at zero by week three. Here you start with one small thing and add one habit a week. Five out of seven days counts as a win, so one bad day won't end it."],
+    life:["\"Life gets in the way.\"", "It will. In week two you start a one-minute nightly plan where you name tomorrow's biggest obstacle and what you'll do if it happens. In the research, plans like this more than quadrupled follow-through. You'll also set a smaller version of your action for bad days, so a rough day still counts."],
+    urge:["\"The urge wins in the moment.\"", "Then don't rely on resisting it in the moment. You change your surroundings ahead of time so the temptation isn't there, you have something else ready to do when the urge hits, and from week three you add a daily 10-minute reset that helps your brain adjust."],
+    failed:["\"I've failed at this so many times.\"", "So has almost everyone with a habit that stuck. Most people try and quit many times before one attempt lasts, and it only has to work once. The problem was probably the approach, not you."]
+  };
+  q.stuck.forEach(function(k){ if (map[k]){ out.push(map[k].concat(["yours"])); seen[k]=1; } });
+  ["failed","time","motivation"].forEach(function(k){ if (!seen[k]) out.push(map[k]); });
+  out.push(["\"Can't I just do this on my own?\"", "You can try. Most of what you've tried so far was probably done alone, where skipping a day costs nothing and nobody notices. In the community, people see your check-in every day. Compare the price to what you said another year of this would cost you: "+(q.cost?"\u201C"+esc(q.cost)+"\u201D":"what another year of this costs you")+"."]);
+  out.push(["\"Do I have to share personal stuff?\"", "No. A check-in can be one line, like \"Day 12, done.\" You don't have to say what you're working on. Share as much or as little as you want."]);
+  out.push(["\"Is this a recovery program?\"", "No. It's a group of people building discipline and living more intentionally, which for a lot of members includes putting down a habit like drinking or scrolling. It isn't medical treatment. If you're dealing with a severe addiction, or you drink heavily every day, talk to a doctor too."]);
+  out.push(["\"What if I miss days?\"", "You will. Five out of seven days counts as a winning week. Just try not to miss two days in a row, and the app reminds you if you've missed one."]);
+  out.push(["\"What happens after 30 days?\"", "You stay in the community for $19 a month, or you cancel. Nothing locks you in. The walkthrough is yours either way, and you can start it again with your next goal whenever you want."]);
+  out.push(["\"What if it doesn't work for me?\"", GUARANTEE]);
+  out.push(["\"Who's behind this?\"", "William Mulvaney, host of the Willpower Podcast (120+ episodes). He's run a 100-mile ultramarathon, started stand-up as a self-conscious introvert, and sat a 10-day silent meditation retreat. He's also failed at most of these habits before one attempt finally held. He's talked openly on the show about his own fights with his phone, porn and late-night eating. He built this group so you don't have to keep starting over by yourself."]);
+  return out;
+}
+function vOffer(){
+  var q = S.sales, p = S.setup, tried = triedList().filter(function(o){ return q.tried.indexOf(o.v) > -1; });
+  var howlong = (HOWLONG.filter(function(o){ return o.v===q.howlong; })[0]||{}).t || "";
+  var stuckTxt = STUCK.filter(function(o){ return q.stuck.indexOf(o.v) > -1; }).map(function(o){ return o.t.replace(/^I /,"you ").replace(/^My /,"your ").replace(/I've/,"you've").replace(/I doubt myself/,"you doubt yourself").replace(/ me$/,""); });
+  var price = "<div class='card price' id='buy'>"+
+    "<div class='row' style='justify-content:space-between;align-items:flex-end'><div><div class='eyebrow'>The 30-Day Willpower Walkthrough</div><div class='amount'>$99</div></div><div class='small muted' style='text-align:right'>For your first<br>30-day walkthrough</div></div>"+
+    "<ul class='gets'><li>The 30-day guided Willpower Walkthrough, built from the plan above</li><li>Short lessons, daily check-ins and your X calendar</li><li>Repeat the walkthrough as many times as you want after your first</li><li>The Willpower Community: people building discipline and checking in every day</li><li>Will in the group, answering questions</li></ul>"+
+    "<div class='stack'><label class='q'>First name<input type='text' id='a_name' data-sales='name' autocomplete='given-name' value='"+esc(q.name||"")+"'></label>"+
+    "<label class='q'>Email<span class='hint'>Will replies to every application here.</span><input type='text' id='a_email' data-sales='email' inputmode='email' autocomplete='email' value='"+esc(q.email||"")+"'></label>"+
+    "<input type='text' id='a_website' tabindex='-1' autocomplete='off' aria-hidden='true' style='position:absolute;left:-9999px;width:1px;height:1px;opacity:0'>"+
+    "<div id='buyerr' class='banner warn small' hidden></div></div>"+
+    "<button class='btn block big' data-act='buy'>Submit my application · $99</button>"+
+    "<div class='small muted' style='text-align:center'><b>If your application isn't accepted, you'll be refunded in full.</b><br>After 30 days, the community is $19/mo. Cancel anytime.</div>"+
+    "<div class='guarantee'><b>The do-the-work guarantee.</b> "+esc(GUARANTEE)+"</div>"+
+    (STRIPE_COMMUNITY_URL ? "" : "<div class='banner info small'>Preview: checkout isn't connected yet. This button submits without charging.</div>")+
+    "</div>";
+  var obs = objections().map(function(o){ return "<div class='obj"+(o[2]?" yours":"")+"'>"+(o[2]?"<span class='pill accent'>You said this</span>":"")+"<h3>"+o[0]+"</h3><p>"+o[1]+"</p></div>"; }).join("");
+  return topbar("") +
+    "<section class='hero'><div class='eyebrow'>Your application is ready</div><h2 class='offer-h'>Your 30-day plan, and the people who'll help you keep it</h2></section>"+
+    "<div class='card'><h3>Where you are</h3><dl class='kv'>"+
+      "<dt>You want</dt><dd>"+esc(wantText())+"</dd>"+(isDo() ? "<dt>First change</dt><dd>Start: "+esc(coreText())+"</dd>" : "<dt>In the way</dt><dd>"+esc(addiction().t)+"</dd><dt>Your rule</dt><dd>"+esc(coreText())+"</dd>")+
+      (howlong?"<dt>For</dt><dd>"+esc(howlong)+"</dd>":"")+
+      ((tried.length||q.triedOther)?"<dt>You've tried</dt><dd>"+esc(tried.map(function(o){return o.t;}).concat(q.triedOther?[q.triedOther]:[]).join(", "))+"</dd>":"")+
+      (stuckTxt.length?"<dt>What stops you</dt><dd>"+esc(stuckTxt.join(", "))+"</dd>":"")+
+    "</dl>"+(q.cost?"<div><div class='small muted'>If nothing changes</div><blockquote class='cost'>"+esc(q.cost)+"</blockquote></div>":"")+"</div>"+
+    "<div class='card'><h3>Where you're going</h3><blockquote>"+esc(q.vacation)+"</blockquote><p class='small muted'>Why it matters: "+esc(p.vision)+"</p></div>"+
+    "<div class='card'><h3>Why this time is different</h3><div class='diffs'><div class='diff'><span class='was'>Doing it on your own</span><p>This time other people are checking in next to you every day, and they'll notice if you go quiet.</p></div>"+tried.map(function(o){ return "<div class='diff'><span class='was'>"+esc(o.t)+"</span><p>"+esc(o.fix)+"</p></div>"; }).join("")+"</div></div>"+
+    "<div class='card'><h3>Your first 30 days in the community</h3><div>"+
+      si("Day 1", isDo()?"Daily action":"Your rule", esc(coreText())+(isDo()&&p.milestone?"<br><span class='small muted'>Milestone: "+esc(p.milestone)+"</span>":"")+(!isDo()&&p.replacement?"<br><span class='small muted'>When the urge hits: "+esc(p.replacement)+"</span>":""), false)+
+      si("Day 8","Tomorrow I Will","One minute each night: tomorrow's plan, the obstacle, an if-then.", false)+
+      si("Day 15", isDo()?"Real feedback":"Dopamine Reset", isDo()?"Once a week, put the work in front of the real world.":"Ten low-stimulation minutes a day.", false)+
+      si("Day 22","Add nothing","Keep doing your daily habits without adding anything new.", false)+
+      si("Day 30","Review","Count it, reread your why, set the next goal.", false)+
+    "</div></div>"+
+    price+
+    "<section class='stack-lg'><div><div class='eyebrow'>Still deciding?</div><h2>Questions people ask before applying</h2></div>"+obs+"</section>"+
+    "<div class='card accent stack'><h3>Day 30 is "+esc(niceDate(addDays(ymd(new Date()),29)))+" either way.</h3><p>You can get there having made the change, or not.</p><button class='btn block big' data-act='buy'>Submit my application · $99</button><div class='small muted' style='text-align:center'>If your application isn't accepted, you'll be refunded in full. $99 is for your first 30-day walkthrough. After 30 days, the community is $19/mo.</div></div>"+
+    "<div class='row' style='justify-content:space-between'><button class='linkbtn' data-act='back'>Back to my answers</button><button class='linkbtn' data-act='notready'>Not ready yet. Save my application.</button></div>";
+}
+
+/* today */
+function vToday(){
+  var day = curDay(), pv = previewDay();
+  var head = topbar("<button class='iconbtn' data-act='settings'>Plan &amp; settings</button>");
+  var out = [head];
+  if (pv !== null) out.push("<div class='banner info row' style='justify-content:space-between'><span>Previewing Day "+pv+". Anything you log here is saved.</span><button class='linkbtn' data-act='exitpreview'>Back to today</button></div>");
+
+  if (day < 1){
+    out.push("<div class='dayhead'><div><div class='eyebrow'>Day 0</div><div class='daynum'>Ready</div></div></div>");
+    out.push("<div class='card accent'><h3>Day 1 starts tomorrow</h3><p>"+esc(niceDate(S.start))+". Your first lesson unlocks then.</p>"+
+      (S.setup.envDone?"":"<p><b>Tonight:</b> make your environment change. "+esc(S.setup.env)+"</p>")+"</div>");
+    out.push(vPlan(day));
+    out.push(vCalendar(day));
+    out.push(footer());
+    return out.join("");
+  }
+  var d = Math.min(day,30), w = weekOf(d);
+  out.push("<div class='dayhead'><div><div class='eyebrow'>"+esc(niceDate(addDays(S.start,d-1)))+"</div><div class='daynum'>Day "+d+" <small>/ 30</small></div></div><div style='text-align:right'><div class='eyebrow'>Week "+w+"</div><div class='weekname'>"+esc(weekName(w))+"</div></div></div>");
+
+  var L = pendingLesson(day);
+  if (L){
+    out.push("<div class='card accent lessoncard'><div class='t'><div class='eyebrow'>"+(L.day===d?"Today's lesson":"Lesson from Day "+L.day)+" · 2 min</div><h3>"+esc(lessonTitle(L))+"</h3></div><button class='btn' data-act='open' data-v='"+L.day+"'>Start lesson</button></div>");
+  } else {
+    out.push("<div class='banner info'>"+esc(TIPS[(d-1)%TIPS.length])+"</div>");
+  }
+
+  // never miss twice
+  var warn = false;
+  if (isDo()){ if (d>=3 && !coreYes(d-1) && !coreYes(d-2) && !coreYes(d)) warn = true; }
+  else { if (d>=3 && S.log[d-1] && S.log[d-1].core===false && S.log[d-2] && S.log[d-2].core===false) warn = true; }
+  if (warn) out.push("<div class='banner warn'>Two misses in a row. Never miss twice: one rep today resets it."+(isDo()&&S.setup.minimum?" Bad-day minimum: "+esc(S.setup.minimum)+".":"")+"</div>");
+
+  // last night's plan
+  var plan = S.tiw[d-1];
+  if (plan) out.push("<div class='plan-today'><div class='eyebrow'>Your plan from last night</div><div style='font-weight:600;white-space:pre-wrap'>"+esc(plan.will)+"</div>"+
+    (plan.obstacle?"<div class='small'><span class='muted'>Obstacle:</span> "+esc(plan.obstacle)+"</div>":"")+
+    (plan.ifthen?"<div class='small'><span class='muted'>If-then:</span> "+esc(plan.ifthen)+"</div>":"")+"</div>");
+
+  out.push(vCheckin(d, day));
+  if (d >= 8 && (S.lessons[8]&&S.lessons[8].done)) out.push(vTIW(d));
+  out.push(vCalendar(day));
+  out.push(vPlan(day));
+  out.push(vLessonList(day));
+  out.push(footer());
+  return out.join("");
+}
+function yn(key, val){
+  return "<div class='yn'><button class='yes "+(val===true?"on":"")+"' data-act='yn' data-k='"+key+"' data-v='1' aria-pressed='"+(val===true)+"'>Yes</button><button class='no "+(val===false?"on":"")+"' data-act='yn' data-k='"+key+"' data-v='0' aria-pressed='"+(val===false)+"'>No</button></div>";
+}
+function vCheckin(d, day){
+  var rows = [];
+  if (isDo()){
+    rows.push(item("Did you do it today?", esc(coreText())+(S.setup.when?" · "+esc(S.setup.when):""), yn("core:"+d, (S.log[d]||{}).core)));
+  } else {
+    if (d >= 2) rows.push(item("Did you hold your rule yesterday?", "Day "+(d-1)+" · "+esc(coreText()), yn("core:"+(d-1), (S.log[d-1]||{}).core)));
+    else rows.push(item("Hold your rule today", esc(coreText())+". Tomorrow morning you'll check off how today went.", "<span class='pill accent'>Day 1</span>"));
+    if (day >= 30) rows.push(item("Did you hold it today?", "Day 30 · the last one", yn("core:30", (S.log[30]||{}).core)));
+  }
+  if (d >= 9 && S.lessons[8] && S.lessons[8].done){
+    var inApp = !!S.tiw[d-1];
+    rows.push(item("Did you write Tomorrow I Will last night?", inApp ? "Written in the app." : "On paper counts too.",
+      inApp ? "<span class='done-tag'>&#10003; Done</span>" : yn("tiw:"+(d-1), (S.log[d-1]||{}).tiw)));
+  }
+  if (d >= 15 && S.lessons[15] && S.lessons[15].done){
+    if (isDo()){
+      var wk = weekOf(d), wd = S.weekly[wk] || {};
+      rows.push(item("Real feedback this week", (S.setup.feedback?esc(S.setup.feedback)+". ":"")+"Once a week is the goal.",
+        wd.feedback ? "<span class='done-tag'>&#10003; Done this week</span> <button class='linkbtn' data-act='fbundo' data-v='"+wk+"'>Undo</button>" : "<button class='btn ghost' data-act='fb' data-v='"+wk+"'>I got feedback</button>"));
+    } else {
+      rows.push(item("10-minute Dopamine Reset today?", S.setup.reset?esc(S.setup.reset):"Ten minutes of low stimulation.", yn("reset:"+d, (S.log[d]||{}).reset)));
+    }
+  }
+  return "<div class='card'><div class='row' style='justify-content:space-between'><h3>Check in</h3><span class='small muted'>"+(isDo()?"Log today":"Log yesterday")+"</span></div><div>"+rows.join("")+"</div>"+
+    "<div class='row' style='justify-content:space-between;border-top:1px solid var(--line);padding-top:12px'><span class='small muted'>Post your check-in in the community.</span><button class='btn ghost' data-act='copypost' data-v='"+d+"'>Copy my check-in</button></div><div id='postbox' class='answer small' hidden></div></div>";
+}
+function item(title, sub, ctrl){ return "<div class='item'><div class='lbl'><b>"+title+"</b><span class='small muted'>"+sub+"</span></div>"+ctrl+"</div>"; }
+function vTIW(d){
+  var t = S.tiw[d];
+  if (t && !UI.editTIW) return "<div class='card'><div class='row' style='justify-content:space-between'><h3>Tomorrow I Will</h3><span class='done-tag'>&#10003; Written</span></div><div style='white-space:pre-wrap'>"+esc(t.will)+"</div><button class='linkbtn' data-act='edittiw' style='align-self:flex-start'>Edit</button></div>";
+  t = t || {};
+  return "<div class='card'><div><h3>Tomorrow I Will</h3><p class='small muted'>Tonight"+(S.setup.tiwTime?", "+esc(S.setup.tiwTime):"")+". One minute.</p></div>"+
+    "<label class='q'>Tomorrow I will...<textarea id='t_will' placeholder='"+esc(isDo()?coreText()+" after coffee, then call the landlord.":"Hold my rule. Walk after dinner instead of opening the app.")+"'>"+esc(t.will||"")+"</textarea></label>"+
+    "<label class='q'>Biggest obstacle<input type='text' id='t_obstacle' value='"+esc(t.obstacle||"")+"' placeholder='Getting home late and wiped out'></label>"+
+    "<label class='q'>If-then plan<input type='text' id='t_ifthen' value='"+esc(t.ifthen||"")+"' placeholder='If I get home wiped out, then I do the 10 minutes anyway'></label>"+
+    "<button class='btn' data-act='savetiw' data-v='"+d+"'>Save for tomorrow</button></div>";
+}
+function vCalendar(day){
+  var cells = [];
+  for (var i=1;i<=30;i++){
+    var l = S.log[i]||{}, cls = "cell", can = isDo() ? i<=day : (i<day || (i===30 && day>=30));
+    if (i===day) cls += " today";
+    if (l.core===false) cls += " no";
+    if (fresh===i) cls += " fresh";
+    var mark = l.core===true ? "<svg viewBox='0 0 100 100' aria-hidden='true'><path d='M18 20 L82 84'/><path d='M80 18 L20 82'/></svg>" : "";
+    cells.push("<button class='"+cls+"' data-act='cell' data-v='"+i+"' "+(can?"":"disabled")+" aria-label='Day "+i+(l.core===true?", done":l.core===false?", missed":"")+"'>"+i+mark+"</button>");
+  }
+  var weeks = WEEKS.map(function(w,ix){
+    var len = w[1]-w[0]+1, n = countYes(w[0],w[1]), won = n >= need(len);
+    return "<div class='wk "+(won?"won":"")+"'><span class='eyebrow'>Week "+(ix+1)+"</span><span class='n'>"+n+"/"+len+"</span><span class='small muted'>"+(won?"Won":"Need "+need(len))+"</span></div>";
+  }).join("");
+  return "<div class='card'><div class='row' style='justify-content:space-between'><h3>The calendar</h3><span class='small muted'>"+countYes(1,30)+" X's · tap a past day to fix it</span></div><div class='cal'>"+cells.join("")+"</div><div class='weeks'>"+weeks+"</div></div>";
+}
+function vPlan(day){
+  var p = S.setup, rows = [];
+  rows.push(si("Day 1", isDo()?"Daily action":"Your rule", esc(coreText())+(isDo()&&p.milestone?"<br><span class='small muted'>Milestone: "+esc(p.milestone)+"</span>":"")+(!isDo()&&p.replacement?"<br><span class='small muted'>When the urge hits: "+esc(p.replacement)+"</span>":""), false));
+  rows.push(si("Day 8", "Tomorrow I Will", "One minute each night: tomorrow's plan, the obstacle, an if-then.", day<8));
+  rows.push(si("Day 15", isDo()?"Real feedback":"Dopamine Reset", isDo()?"Once a week, put the work in front of the real world.":"Ten low-stimulation minutes a day.", day<15));
+  rows.push(si("Day 22", "Add nothing", "Keep doing your daily habits without adding anything new.", day<22));
+  rows.push(si("Day 30", "Review", "Count it, reread your why, set the next goal.", day<30));
+  return "<div class='card'><h3>Your stack</h3><div>"+rows.join("")+"</div><div class='small muted'>Environment: "+esc(p.env)+(p.env2?" · "+esc(p.env2):"")+"</div></div>";
+}
+function si(when, title, body, locked){ return "<div class='stackitem "+(locked?"locked":"")+"'><div class='when'>"+when+"</div><div><b>"+title+"</b>"+(locked?" <span class='pill'>Locked</span>":"")+"<div class='small'>"+body+"</div></div></div>"; }
+function vLessonList(day){
+  return "<div class='card'><h3>Lessons</h3><div class='lessonlist'>"+LESSONS.map(function(L){
+    var done = S.lessons[L.day]&&S.lessons[L.day].done, open = L.day<=day;
+    return "<button data-act='open' data-v='"+L.day+"' "+(open?"":"disabled")+"><span><span class='small muted'>Day "+L.day+"</span><br>"+esc(lessonTitle(L))+"</span>"+(done?"<span class='done-tag'>&#10003;</span>":open?"<span class='pill accent'>New</span>":"<span class='pill'>Day "+L.day+"</span>")+"</button>";
+  }).join("")+"</div></div>";
+}
+function footer(){ return "<p class='footer' id='savemode'>"+saveLabel()+"</p>"; }
+
+/* lesson view */
+function vLesson(n){
+  var L = lessonFor(n); if (!L) { UI.route=null; return vToday(); }
+  var rec = S.lessons[n] || {}, ans = UI.draft && UI.draftDay===n ? UI.draft : (rec.answers || {});
+  if (!(UI.draft && UI.draftDay===n)){ UI.draft = Object.assign({}, ans); UI.draftDay = n; }
+  var qs = L.qs().map(function(q){
+    var v = UI.draft[q.id] || "";
+    if (q.type === "choice") return "<div class='stack'><b>"+esc(q.label)+"</b><div class='choices'>"+q.options.map(function(o){
+      return "<button class='choice "+(v===o.v?"on":"")+"' data-act='qchoice' data-q='"+q.id+"' data-v='"+o.v+"'><b>"+esc(o.t)+"</b>"+(o.d?"<span class='muted'>"+esc(o.d)+"</span>":"")+"</button>"; }).join("")+"</div></div>";
+    var input = q.type === "short" ? "<input type='text' id='q_"+q.id+"' data-q='"+q.id+"' value='"+esc(v)+"'>" : "<textarea id='q_"+q.id+"' data-q='"+q.id+"'>"+esc(v)+"</textarea>";
+    return "<label class='q'>"+esc(q.label)+(q.hint?"<span class='hint'>"+esc(q.hint)+"</span>":"")+input+"</label>";
+  }).join("");
+  var ok = L.qs().every(function(q){ return (UI.draft[q.id]||"").trim().length>0; });
+  return topbar("<button class='iconbtn' data-act='closelesson'>Back</button>") +
+    "<div class='card stack-lg'><div class='lesson-head'><div class='eyebrow'>"+esc(L.kicker)+" · Day "+L.day+"</div><h2>"+esc(lessonTitle(L))+"</h2></div><div class='prose'>"+L.body()+"</div>"+
+    "<div class='stack-lg' style='border-top:1px solid var(--line);padding-top:18px'><div class='eyebrow'>Your answers</div>"+qs+"</div>"+
+    "<button class='btn block' data-act='complete' data-v='"+n+"' id='completebtn' "+(ok?"":"disabled")+">"+(L.review?"Finish the challenge":rec.done?"Save answers":"Complete lesson")+"</button></div>";
+}
+
+/* finish */
+function vDone(){
+  var total = countYes(1,30), won = WEEKS.filter(function(w){ return countYes(w[0],w[1]) >= need(w[1]-w[0]+1); }).length, r = S.review||{};
+  var verdict = won >= 3 ? (isDo() ? "You built it." : "You held it.") : won >= 2 ? "You learned what works." : "You won or you learned. This was learning.";
+  return topbar("<button class='iconbtn' data-act='settings'>Plan &amp; settings</button>") +
+    "<section class='hero'><div class='eyebrow'>30 days complete</div><div class='bigstat'>"+total+"<span style='font-size:.4em;color:var(--muted)'>/30</span></div><h1 style='font-size:clamp(36px,9vw,56px)'>"+esc(verdict)+"</h1></section>"+
+    "<div class='stats3'><div class='stat'><div class='n'>"+won+"/4</div><div class='small muted'>winning weeks</div></div><div class='stat'><div class='n'>"+bestStreak()+"</div><div class='small muted'>best streak</div></div><div class='stat'><div class='n'>"+Object.keys(S.tiw).length+"</div><div class='small muted'>nightly plans</div></div></div>"+
+    vCalendar(31)+
+    "<div class='card'><h3>Your record</h3><dl class='kv'><dt>Why</dt><dd>"+esc(S.setup.vision)+"</dd><dt>"+(isDo()?"Action":"Rule")+"</dt><dd>"+esc(coreText())+"</dd>"+
+    (S.setup.identity?"<dt>Identity</dt><dd>I am someone who "+esc(S.setup.identity.replace(/^i am someone who\s*/i,""))+"</dd>":"")+
+    "<dt>Next</dt><dd>"+esc(r.next||"")+"</dd></dl></div>"+
+    "<div class='card'><h3>Next 30 days</h3><p>Start another 30 days, with the same rule or the next thing you want to put down. Your answers carry over, so setup only takes a minute.</p><div class='row'><button class='btn' data-act='again' data-v='"+S.track+"'>Start another 30 days</button></div></div>"+
+    footer();
+}
+
+/* settings sheet */
+function openSheet(){
+  var p = S.setup, el = document.createElement("div");
+  el.className = "overlay"; el.id = "sheet";
+  el.innerHTML = "<div class='sheet' role='dialog' aria-modal='true' aria-label='Plan and settings'><div class='row' style='justify-content:space-between'><h3>Plan &amp; settings</h3><button class='iconbtn' data-act='closesheet'>Close</button></div>"+
+    "<label class='q'>Why it matters<textarea data-field='vision' id='s_vision'>"+esc(p.vision)+"</textarea></label>"+
+    (isDo() ? "<label class='q'>Daily action<input type='text' data-field='action' id='s_action' value='"+esc(p.action)+"'></label><label class='q'>Milestone<input type='text' data-field='milestone' id='s_milestone' value='"+esc(p.milestone)+"'></label>"
+            : "<label class='q'>Rule<input type='text' data-field='rule' id='s_rule' value='"+esc(p.rule)+"'></label><label class='q'>When the urge hits<input type='text' data-field='replacement' id='s_replacement' value='"+esc(p.replacement)+"'></label>")+
+    "<label class='q'>Environment change<input type='text' data-field='env' id='s_env' value='"+esc(p.env)+"'></label>"+
+    "<div class='stack' style='border-top:1px solid var(--line);padding-top:14px'><b>Preview a day</b><span class='small muted'>Jump to any day to see what it looks like. Your real day is "+Math.max(realDay(),0)+".</span><div class='row'><input type='number' id='s_preview' min='0' max='31' value='"+(previewDay()!==null?previewDay():Math.max(realDay(),0))+"' style='max-width:110px'><button class='btn ghost' data-act='setpreview'>Preview</button>"+(previewDay()!==null?"<button class='linkbtn' data-act='exitpreview'>Back to today</button>":"")+"</div></div>"+
+    "<div class='stack' style='border-top:1px solid var(--line);padding-top:14px'><b>Start over</b><span class='small muted'>Erases your calendar, answers and plan.</span>"+
+    (UI.confirmReset ? "<div class='row'><button class='btn' data-act='reset'>Yes, erase everything</button><button class='btn ghost' data-act='noreset'>Keep it</button></div>" : "<button class='btn ghost' data-act='askreset' style='align-self:flex-start'>Reset challenge</button>")+"</div>"+
+    "<p class='small muted' id='savemode2'>"+saveLabel()+"</p></div>";
+  closeSheet(); document.body.appendChild(el);
+}
+function closeSheet(){ var s=document.getElementById("sheet"); if (s) s.remove(); }
+
+/* ---------- events ---------- */
+document.addEventListener("click", function(e){
+  var b = e.target.closest("[data-act]"); if (!b) return;
+  if (e.target.id === "sheet") return;
+  var a = b.getAttribute("data-act"), v = b.getAttribute("data-v");
+  switch(a){
+    case "pick": UI.route = "setup"; UI.step = 0; save(); saveUI(); render(); window.scrollTo(0,0); break;
+    case "settrack": S.track = v; save(); render(); break;
+    case "home": UI.route = null; UI.step = 0; saveUI(); render(); break;
+    case "next": cap("community_step", {step: STEPS[UI.step]}); UI.step++; while (UI.step < STEPS.length-1 && skipStep(STEPS[UI.step])) UI.step++; saveUI(); render(); window.scrollTo(0,0); break;
+    case "back": UI.step = Math.max(0,UI.step-1); while (UI.step > 0 && skipStep(STEPS[UI.step])) UI.step--; saveUI(); render(); window.scrollTo(0,0); break;
+    case "toggle": var arr = S.sales[b.getAttribute("data-k")], ix = arr.indexOf(v); if (ix>-1) arr.splice(ix,1); else arr.push(v); save(); render(); break;
+    case "pickone": S.sales[b.getAttribute("data-k")] = v; save(); render(); break;
+    case "buy":
+      if (b.disabled) break;
+      var em = (S.sales.email||"").trim().toLowerCase();
+      if (!/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(em)){
+        var err = document.getElementById("buyerr"); err.textContent = "Add your email so Will can reply to your application."; err.hidden = false;
+        document.getElementById("buy").scrollIntoView({behavior:"smooth", block:"center"}); setTimeout(function(){ document.getElementById("a_email").focus(); }, 300);
+        break;
+      }
+      b.disabled = true; b.textContent = "Submitting...";
+      submitApplication().then(function(id){ if (id) { S.appId = id; save(); } goCheckout(); });
+      break;
+    case "notready": UI.route = null; saveUI(); render(); window.scrollTo(0,0); break;
+    case "copypost":
+      var pd = +v, txt;
+      if (isDo()) txt = "Day "+pd+" of 30. "+(coreYes(pd)?"Done":"Not yet today")+": "+coreText()+".";
+      else txt = "Day "+pd+" of 30. "+(pd>1 ? (coreYes(pd-1)?"Held my rule yesterday":"Missed my rule yesterday, back at it today") : "Starting today")+": "+coreText()+".";
+      var box = document.getElementById("postbox");
+      box.textContent = txt; box.hidden = false;
+      try { navigator.clipboard.writeText(txt).then(function(){ b.textContent = "Copied"; }, function(){ b.textContent = "Select the text below"; }); } catch(err){ b.textContent = "Select the text below"; }
+      break;
+    case "pickaddiction": S.sales.addiction = v; S.track = v === "start" ? "do" : "quit"; save(); render(); break;
+    case "getstarted": cap("community_apply_click", {}); UI.route = "setup"; if (!S.sales.want) UI.step = 0; saveUI(); render(); window.scrollTo(0,0); break;
+    case "resume": UI.route = "setup"; saveUI(); render(); window.scrollTo(0,0); break;
+    case "fill": S.setup[b.getAttribute("data-f")] = v; save(); render(); break;
+    case "startopt": UI.startOpt = v; render(); break;
+    case "begin":
+      S.start = UI.startOpt === "tomorrow" ? addDays(ymd(new Date()),1) : ymd(new Date());
+      UI.route = null; UI.step = 0; save(); saveUI(); render(); window.scrollTo(0,0); break;
+    case "open": UI.route = "lesson:"+v; UI.draft = null; saveUI(); render(); window.scrollTo(0,0); break;
+    case "closelesson": UI.route = null; UI.draft = null; saveUI(); render(); window.scrollTo(0,0); break;
+    case "qchoice": UI.draft[b.getAttribute("data-q")] = v; render(); break;
+    case "complete":
+      var n = +v, L = lessonFor(n);
+      S.lessons[n] = {done:true, answers:Object.assign({}, UI.draft)};
+      if (L.done) L.done(UI.draft);
+      UI.route = null; UI.draft = null; save(); saveUI(); render(); window.scrollTo(0,0); break;
+    case "yn":
+      var k = b.getAttribute("data-k").split(":"), dd = +k[1], val = v === "1", lg = logOf(dd);
+      if (lg[k[0]] === val) delete lg[k[0]]; else lg[k[0]] = val;
+      if (k[0]==="core" && lg.core===true) fresh = dd;
+      save(); render(); break;
+    case "cell":
+      var c = +v, lc = logOf(c);
+      if (lc.core === undefined) { lc.core = true; fresh = c; } else if (lc.core === true) lc.core = false; else delete lc.core;
+      save(); render(); break;
+    case "fb": S.weekly[+v] = {feedback:true}; save(); render(); break;
+    case "fbundo": delete S.weekly[+v]; save(); render(); break;
+    case "edittiw": UI.editTIW = true; render(); break;
+    case "savetiw":
+      var will = (document.getElementById("t_will")||{}).value||"";
+      if (!will.trim()) { document.getElementById("t_will").focus(); break; }
+      S.tiw[+v] = {will:will, obstacle:(document.getElementById("t_obstacle")||{}).value||"", ifthen:(document.getElementById("t_ifthen")||{}).value||""};
+      logOf(+v).tiw = true; UI.editTIW = false; save(); render(); break;
+    case "settings": UI.confirmReset = false; openSheet(); break;
+    case "closesheet": closeSheet(); render(); break;
+    case "setpreview":
+      var pvv = parseInt(document.getElementById("s_preview").value,10);
+      if (!isNaN(pvv)) lsSet(LS_PREVIEW, String(Math.max(0,Math.min(31,pvv))));
+      closeSheet(); UI.route = null; render(); window.scrollTo(0,0); break;
+    case "exitpreview": lsDel(LS_PREVIEW); closeSheet(); render(); break;
+    case "askreset": UI.confirmReset = true; openSheet(); break;
+    case "noreset": UI.confirmReset = false; openSheet(); break;
+    case "reset": S = blank(); UI = {route:null, step:0}; lsDel(LS_PREVIEW); save(); saveUI(); closeSheet(); render(); window.scrollTo(0,0); break;
+    case "again":
+      var keep = S.setup, tr = v;
+      var keepSales = S.sales;
+      S = blank(); S.track = tr; S.paid = true; S.repeat = true; S.sales = keepSales; S.sales.vacation = ""; S.sales.want = ""; S.sales.why = ""; S.sales.addiction = "";
+      S.setup.vision = keep.vision;
+      if (tr === "do"){ S.setup.milestone = ""; S.setup.action = keep.action||""; } else { S.setup.rule = keep.rule||""; S.setup.replacement = keep.replacement||""; }
+      UI.route = "setup"; UI.step = 0; lsDel(LS_PREVIEW); save(); saveUI(); render(); window.scrollTo(0,0); break;
+  }
+});
+document.addEventListener("click", function(e){ if (e.target.id === "sheet"){ closeSheet(); render(); } });
+document.addEventListener("input", function(e){
+  var t = e.target;
+  if (t.hasAttribute("data-field")){ S.setup[t.getAttribute("data-field")] = t.value; save(); refreshNav(); }
+  else if (t.hasAttribute("data-sales")){ S.sales[t.getAttribute("data-sales")] = t.value; save(); refreshNav(); var be = document.getElementById("buyerr"); if (be) be.hidden = true; }
+  else if (t.hasAttribute("data-q") && UI.draft){ UI.draft[t.getAttribute("data-q")] = t.value; var L = lessonFor(UI.draftDay), btn = document.getElementById("completebtn");
+    if (L && btn) btn.disabled = !L.qs().every(function(q){ return (UI.draft[q.id]||"").trim().length>0; }); }
+});
+document.addEventListener("change", function(e){
+  var t = e.target;
+  if (t.hasAttribute("data-check")){
+    var k = t.getAttribute("data-check");
+    if (t.hasAttribute("data-top")) S.setup[k] = t.checked; else { S.setup.checks = S.setup.checks||{}; S.setup.checks[k] = t.checked; }
+    save(); refreshNav();
+  }
+});
+function refreshNav(){
+  if (route() !== "setup") return;
+  var btn = document.querySelector(".wiz-nav [data-act=next], .wiz-nav [data-act=begin]"); if (!btn) return;
+  var name = STEPS[Math.min(UI.step,STEPS.length-1)];
+  btn.disabled = !(stepOk(name) && (name !== "label" || S.sales.labelOk === "yes"));
+}
+document.addEventListener("keydown", function(e){ if (e.key==="Escape" && document.getElementById("sheet")){ closeSheet(); render(); } });
+
+// Back from Stripe: ?paid=1 marks the application as submitted.
+(function(){
+  try {
+    if (/[?&]paid=1/.test(location.search) && S.track){
+      S.paid = true; UI.route = "setup"; UI.step = PRE + 1; save(); saveUI();
+      cap("community_paid", {});
+      if (S.appId) postJSON({stage:"paid", id:S.appId});
+      history.replaceState(null, "", location.pathname);
+    }
+  } catch(e){}
+})();
+render();
+})();
+document.addEventListener('play', function(e){ if (e.target && e.target.id === 'heroVideo' && !window.__heroPlayed){ window.__heroPlayed = true; try { posthog.capture('community_video_play', {}); } catch(err){} } }, true);
+</script>
+</body>
+</html>
