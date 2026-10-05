@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#040b12" />
+<title>Dating Coaching · William Mulvaney</title>
+<meta name="description" content="1-on-1 coaching for men who want to meet women in real life, sober, without the apps. Book a free discovery call and leave with a clear action plan." />
+<meta property="og:title" content="Dating Coaching with William Mulvaney" />
+<meta property="og:description" content="Meet women in real life, sober, without the apps. Book a free discovery call." />
+<meta property="og:image" content="https://williammulvaney.com/dating-coaching/img/approach.jpg" />
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="apple-touch-icon" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Same design language as /workshop and the guide pages: near-black navy stage,
+     steel-blue accent, Playfair Display headings, Space Grotesk UI, square corners. */
+  :root {
+    --bg: #040b12;
+    --surface: rgba(10, 26, 39, 0.72);
+    --surface-strong: #0a1a27;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.22);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.58);
+    --faint: rgba(255, 255, 255, 0.34);
+    --accent: #479dc2;
+    --accent-press: #3a7e9b;
+    --accent-soft: rgba(71, 157, 194, 0.12);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 45% at 75% -10%, rgba(71, 157, 194, 0.14), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 10% 110%, rgba(71, 157, 194, 0.07), transparent 60%);
+  }
+  .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 24px 20px 110px; }
+  .home-link { display: inline-block; margin: 6px 0 4px; }
+  .home-link img { height: 42px; width: auto; display: block; opacity: 0.9; filter: brightness(0) invert(1); }
+
+  .kicker { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(71, 157, 194, 0.95); margin-bottom: 14px; line-height: 1.8; }
+  h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(34px, 5.6vw, 54px); line-height: 1.06; color: #fff; margin: 0 0 10px; letter-spacing: -0.01em; }
+  .h1-sub { font-family: var(--font-display); font-weight: 700; font-size: clamp(19px, 2.6vw, 25px); line-height: 1.3; color: rgba(255,255,255,0.8); margin: 0 0 18px; }
+  h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(24px, 3.5vw, 32px); color: #fff; margin: 0 0 14px; line-height: 1.2; }
+  .lede { color: var(--muted); font-size: 16px; line-height: 1.7; max-width: 560px; margin: 0 0 22px; }
+  p.body { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 640px; margin: 0 0 16px; }
+  p.body b { color: var(--text); font-weight: 600; }
+
+  .hero { display: grid; grid-template-columns: 1fr; gap: 34px; align-items: center; padding: 40px 0 20px; }
+  @media (min-width: 780px) { .hero { grid-template-columns: minmax(0, 1fr) 340px; } }
+  .hero-photo { position: relative; width: 100%; max-width: 340px; margin: 0 auto; aspect-ratio: 4 / 5; border: 1px solid var(--border-strong); box-shadow: var(--shadow); overflow: hidden; transform: rotate(1.4deg); }
+  .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 50%; display: block; }
+  .hero-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(4,11,18,0.9) 100%); }
+  .hero-photo .cap { position: absolute; left: 16px; right: 16px; bottom: 14px; z-index: 2; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.75); line-height: 1.7; }
+
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+  .fact { border: 1px solid var(--border-strong); padding: 8px 12px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
+
+  .btn {
+    font-family: var(--font-ui); cursor: pointer; border: 1px solid transparent; border-radius: 0;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 17px 30px; transition: all 160ms ease; display: inline-block; text-decoration: none; text-align: center;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-press); border-color: var(--accent-press); }
+  .fine { font-size: 12px; color: var(--faint); line-height: 1.6; margin-top: 12px; max-width: 460px; }
+
+  .divider-lbl { color: var(--faint); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin: 56px 0 28px; display: flex; align-items: center; gap: 12px; }
+  .divider-lbl::before, .divider-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.09); }
+
+  .with-img { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
+  @media (min-width: 760px) {
+    .with-img { grid-template-columns: minmax(0, 1fr) 340px; }
+    .with-img.flip { grid-template-columns: 340px minmax(0, 1fr); }
+    .with-img.flip .sect-img { order: -1; }
+  }
+  .sect-img { width: 100%; max-width: 340px; margin: 0 auto; display: block; border: 1px solid var(--border-strong); aspect-ratio: 4 / 5; object-fit: cover; }
+  @media (max-width: 759px) { .sect-img { max-width: 100%; aspect-ratio: 3 / 2; } }
+  .sect-label { font-size: 10px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: 0.22em; margin: 0 0 12px; }
+
+  /* numbered reasons */
+  .reasons { display: grid; gap: 0; border-top: 1px solid var(--border); }
+  .rs { display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .rs .n { font-family: var(--font-display); font-weight: 900; font-size: 24px; color: var(--accent); line-height: 1; }
+  .rs .t { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 5px; line-height: 1.4; }
+  .rs .d { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+  ul.checks { list-style: none; margin: 0 0 18px; padding: 0; }
+  ul.checks li { padding: 8px 0 8px 30px; position: relative; font-size: 15.5px; line-height: 1.55; color: var(--text); }
+  ul.checks li::before { content: "✓"; position: absolute; left: 0; top: 8px; color: var(--accent); font-weight: 800; }
+
+  .promise { border: 1px solid rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.10), var(--surface)); padding: 26px 24px 10px; }
+
+  /* proof photos */
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 640px; margin: 22px auto 0; }
+  .pair img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border: 1px solid var(--border-strong); display: block; }
+  .pair img:first-child { transform: rotate(-1.2deg); }
+  .pair img:last-child { transform: rotate(1.2deg); }
+  @media (min-width: 760px) { .centered { text-align: center; } .centered .body { margin-left: auto; margin-right: auto; } }
+
+  .cta-band { text-align: center; border: 1px solid rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.12), var(--surface)); padding: 30px 22px; margin: 44px 0; }
+  .cta-band h3 { font-family: var(--font-display); font-weight: 700; font-size: 23px; color: #fff; margin: 0 0 8px; line-height: 1.25; }
+  .cta-band .cta-sub { color: var(--muted); font-size: 14px; margin: 0 auto 18px; max-width: 460px; line-height: 1.6; }
+
+  /* about */
+  .about { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
+  @media (min-width: 720px) { .about { grid-template-columns: 220px 1fr; } }
+  @media (max-width: 719px) { .about { justify-items: center; text-align: center; } }
+  .about img { width: 100%; max-width: 260px; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 30%; border: 1px solid var(--border-strong); display: block; }
+
+  /* faq */
+  details { border-bottom: 1px solid var(--border); padding: 16px 0; }
+  details summary { cursor: pointer; list-style: none; font-size: 15px; font-weight: 600; color: #fff; display: flex; justify-content: space-between; gap: 16px; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after { content: "+"; color: var(--accent); font-weight: 700; }
+  details[open] summary::after { content: "–"; }
+  details p { margin: 10px 0 0; font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* sticky bar: every screen size, once the hero button has scrolled away */
+  .sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(4, 11, 18, 0.94); border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); transform: translateY(110%); transition: transform 200ms ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .sticky.show { transform: none; }
+  .sticky-in { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .sticky .s-txt { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .sticky .s-txt b { color: #fff; font-size: 14px; }
+  .sticky .btn-primary { padding: 13px 18px; white-space: nowrap; }
+  @media (max-width: 400px) { .sticky .btn-primary { padding: 13px 12px; letter-spacing: 0.12em; } }
+
+  footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
+</style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '526303911209957');
+fbq('track', 'PageView');
+fbq('track', 'ViewContent', {content_name: 'Dating Coaching', content_category: 'coaching'});
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=526303911209957&ev=PageView&noscript=1"/></noscript>
+<!-- PostHog analytics (start) -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
+posthog.register({funnel_product: 'coaching', funnel_page: 'landing'});
+</script>
+<!-- PostHog analytics (end) -->
+</head>
+<body>
+<div class="wrap">
+
+<a class="home-link" href="https://williammulvaney.com/" aria-label="William Mulvaney home"><img src="willpower_logo.svg" alt="William Mulvaney" /></a>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div>
+    <div class="kicker">1-on-1 dating coaching</div>
+    <h1>Meet women in real life.</h1>
+    <p class="h1-sub">Sober, in the middle of a normal day, without the apps.</p>
+    <p class="lede">I coach men to walk up to the women they're attracted to and start a real conversation. Book a free discovery call and leave with a clear action plan to uplevel your dating life.</p>
+    <div class="facts">
+      <span class="fact">Free call</span>
+      <span class="fact">1-on-1</span>
+      <span class="fact">Leave with an action plan</span>
+    </div>
+    <a class="btn btn-primary js-book" data-where="hero" href="/book/">Book free discovery call</a>
+    <p class="fine">No cost, no obligation. A few quick questions first so I come prepared.</p>
+  </div>
+  <div class="hero-photo">
+    <img src="img/approach.jpg" alt="William talking with a woman on a sidewalk while walking his dog" />
+    <div class="cap">No apps. No alcohol. Just a conversation.</div>
+  </div>
+</section>
+
+<!-- ================= APPS ================= -->
+<div class="divider-lbl">The apps</div>
+<section class="with-img">
+  <div>
+    <h2>Dating apps suck. You already know that.</h2>
+    <p class="body">You swipe for an hour. You get a few matches. Half of them never reply, and the conversations that do start die after three messages.</p>
+    <p class="body">You're being judged on six photos and a sentence, next to hundreds of other guys doing the exact same thing. <b>That isn't a reflection of what you have to offer.</b> It's just a bad way to meet people.</p>
+  </div>
+  <img class="sect-img" src="img/scene-kitchen.jpg" alt="A man sitting alone at his kitchen table in the evening" loading="lazy" />
+</section>
+
+<!-- ================= WHY APPROACHING ================= -->
+<div class="divider-lbl">A better way</div>
+<section class="with-img flip">
+  <div>
+    <h2>Walking up to her, sober, is the best way to meet a woman.</h2>
+    <div class="reasons">
+      <div class="rs"><div class="n">1</div><div><div class="t">You choose who you talk to.</div><div class="d">Not whoever an algorithm decides to show you. The woman you noticed at the coffee shop, the grocery store, or on the trail.</div></div></div>
+      <div class="rs"><div class="n">2</div><div><div class="t">She gets to see the real you.</div><div class="d">Your energy, your humor, how you carry yourself. Not just your looks in six photos.</div></div></div>
+      <div class="rs"><div class="n">3</div><div><div class="t">You stand out.</div><div class="d">Almost no guy does this anymore. When you do, you're the only one.</div></div></div>
+      <div class="rs"><div class="n">4</div><div><div class="t">It's completely free.</div><div class="d">No subscriptions, no boosts, no premium tier. You just leave the house.</div></div></div>
+      <div class="rs"><div class="n">5</div><div><div class="t">You build real confidence.</div><div class="d">Every conversation is proof you can do something hard. That confidence shows up everywhere in your life, and it's extremely attractive.</div></div></div>
+    </div>
+  </div>
+  <img class="sect-img" src="img/scene-conversation.jpg" alt="A man and a woman laughing together outside a coffee shop" loading="lazy" />
+</section>
+
+<section class="cta-band">
+  <h3>Want to know where to start?</h3>
+  <p class="cta-sub">On the call we look at where your dating life is now and what's in the way. You leave with a clear plan, whether or not we work together.</p>
+  <a class="btn btn-primary js-book" data-where="reasons" href="/book/">Book free discovery call</a>
+</section>
+
+<!-- ================= FEAR ================= -->
+<div class="divider-lbl">The real problem</div>
+<section class="with-img">
+  <div>
+    <h2>The problem is you're scared. I used to be terrified.</h2>
+    <p class="body">For years I'd see a woman I wanted to talk to and walk right past her. I'd rehearse a sentence ten times, never say it, and replay it the whole way home.</p>
+    <p class="body">When I finally got past that fear, I paid attention to what actually worked. Then I turned it into a system, so other guys can learn to actually do it instead of just thinking about it.</p>
+  </div>
+  <img class="sect-img" src="img/scene-walk-past.jpg" alt="A man glancing back at a woman he just walked past on a city sidewalk" loading="lazy" />
+</section>
+
+<section class="with-img flip" style="margin-top:34px">
+  <div class="promise">
+    <h2>You will actually get through it.</h2>
+    <p class="body">Not read about it. Not think about it for another year. Walk up and talk to her.</p>
+    <ul class="checks">
+      <li>You'll know what to say, and when to say it, without memorizing lines</li>
+      <li>You'll get rejected less</li>
+      <li>And when it does happen, you won't care nearly as much</li>
+    </ul>
+    <p class="body">The fear doesn't go away by waiting for it to go away. It goes away one conversation at a time, with someone in your corner who has been exactly where you are.</p>
+  </div>
+  <img class="sect-img" src="img/approach-aisle.jpg" alt="William talking with a woman in a grocery store aisle" loading="lazy" />
+</section>
+
+<!-- ================= SHOW ME ================= -->
+<div class="divider-lbl">Show me</div>
+<section class="centered">
+  <h2>If it could happen for me, it can happen for you.</h2>
+  <p class="body">When I first saw Carsyn, I thought she was way out of my league. I walked up and talked to her anyway. I'd spent years assuming women like her wouldn't be interested in a guy like me, and counting myself out before I ever said a word.</p>
+  <p class="body">I wasn't a natural. I was the guy who walked past. The only difference now is that I learned how to do it, and you can too.</p>
+  <div class="pair">
+    <img src="img/couple-crown.jpg" alt="William and Carsyn" loading="lazy" />
+    <img src="img/couple-hike.jpg" alt="William and Carsyn on a hike" loading="lazy" />
+  </div>
+</section>
+
+<section class="cta-band">
+  <h3>Your turn.</h3>
+  <p class="cta-sub">Book a free discovery call. You'll leave with a clear action plan to uplevel your dating life.</p>
+  <a class="btn btn-primary js-book" data-where="proof" href="/book/">Book free discovery call</a>
+</section>
+
+<!-- ================= FAQ ================= -->
+<div class="divider-lbl">FAQ</div>
+<section style="max-width:760px;margin:0 auto">
+  <details><summary>What happens on the discovery call?</summary><p>We talk through where your dating life is right now, what you want it to look like, and what's been stopping you. You leave with a clear action plan you can start on that week. If coaching makes sense, we'll talk about it. If it doesn't, you still keep the plan.</p></details>
+  <details><summary>Is it actually free?</summary><p>Yes. No card, no obligation.</p></details>
+  <details><summary>I'm not outgoing. Is this still for me?</summary><p>Yes. I wasn't either. You don't need to become a different person. You need reps, and someone helping you make sense of each one.</p></details>
+  <details><summary>I'm not good looking. Why would I do this?</summary><p>In person, looks are one part of the picture instead of the whole thing. How you carry yourself, how you talk, and whether you're comfortable in your own skin carry more weight than most guys expect, and all of that gets better with practice.</p></details>
+  <details><summary>Is this pickup?</summary><p>No. No tricks, no routines, no lines. It's learning to walk up to a woman you're interested in and have an honest conversation.</p></details>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<div class="divider-lbl">Who am I</div>
+<section class="about">
+  <img src="img/approach-yeti.jpg" alt="William Mulvaney talking with a woman outside a storefront" loading="lazy" />
+  <div>
+    <h2>William Mulvaney</h2>
+    <p class="body">I coach men on dating and fitness and host The Willpower Podcast. I have run a 100 mile ultramarathon, I do standup comedy, and I used to be a software engineer.</p>
+    <p class="body">I have approached over a thousand women, and the first ones were rough. Everything I coach is what I actually did, and what I have seen work with the men I coach.</p>
+  </div>
+</section>
+
+<section class="cta-band" style="margin-top:44px">
+  <h3>Stop walking past her.</h3>
+  <p class="cta-sub">Free discovery call. Clear action plan. No obligation.</p>
+  <a class="btn btn-primary js-book" data-where="footer" href="/book/">Book free discovery call</a>
+</section>
+
+<footer>© William Mulvaney · Coaching</footer>
+</div><!-- /wrap -->
+
+<div class="sticky" id="sticky">
+  <div class="sticky-in">
+    <div class="s-txt"><b>Free discovery call</b><br/>Leave with an action plan</div>
+    <a class="btn btn-primary js-book" data-where="sticky" href="/book/">Book free call</a>
+  </div>
+</div>
+
+<script>
+const T0 = Date.now();
+let MAX_SCROLL = 0;
+function secondsOnPage() { return Math.round((Date.now() - T0) / 1000); }
+function cap(event, props, leaving) {
+  try { posthog.capture(event, props || {}, leaving ? {send_instantly: true, transport: 'sendBeacon'} : undefined); } catch (e) {}
+}
+
+// Every CTA carries the ad's query string through to /book, so attribution survives.
+document.querySelectorAll('.js-book').forEach(function (a) {
+  if (location.search) a.href = '/book/' + location.search;
+  a.addEventListener('click', function () {
+    const where = a.getAttribute('data-where');
+    try { fbq('track', 'InitiateCheckout', {content_name: 'discovery-call', content_category: where}); } catch (e) {}
+    cap('cta_click', {where: where, seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL}, true);
+  });
+});
+
+// Sticky bar once the hero button scrolls away.
+(function () {
+  const bar = document.getElementById('sticky');
+  const heroBtn = document.querySelector('.hero .js-book');
+  if (!bar || !heroBtn || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver(([e]) => bar.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(heroBtn);
+})();
+
+(function analytics() {
+  const marks = [25, 50, 75, 90];
+  const seen = {};
+  function onScroll() {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = h > 0 ? Math.min(100, Math.round((window.scrollY / h) * 100)) : 100;
+    if (pct > MAX_SCROLL) MAX_SCROLL = pct;
+    marks.forEach(function (m) { if (pct >= m && !seen[m]) { seen[m] = 1; cap('scroll_depth', {depth: m}); } });
+  }
+  window.addEventListener('scroll', onScroll, {passive: true});
+  onScroll();
+
+  if ('IntersectionObserver' in window) {
+    const sectionSeen = {};
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        const name = (e.target.textContent || '').trim();
+        if (!name || sectionSeen[name]) return;
+        sectionSeen[name] = 1;
+        cap('section_view', {section: name, seconds_on_page: secondsOnPage()});
+      });
+    }, {threshold: 0.6});
+    document.querySelectorAll('.divider-lbl').forEach(function (el) { io.observe(el); });
+  }
+
+  let faqOrder = 0;
+  document.querySelectorAll('details').forEach(function (d) {
+    d.addEventListener('toggle', function () {
+      if (!d.open) return;
+      faqOrder += 1;
+      cap('faq_open', {question: ((d.querySelector('summary') || {}).textContent || '').trim(), order: faqOrder});
+    });
+  });
+
+  window.addEventListener('pagehide', function () {
+    cap('coaching_page_exit', {max_scroll_pct: MAX_SCROLL, seconds_on_page: secondsOnPage(), faq_opened: faqOrder}, true);
+  });
+})();
+</script>
+</body>
+</html>
