@@ -1,14 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Willpower Lifestyle</title>
-    <script type="module" crossorigin src="/assets/index-Bc_fPfIv.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BT6oZFEj.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html> 
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#040b12" />
+<title>Book a Discovery Call · William Mulvaney</title>
+<meta name="description" content="Book a free discovery call with William Mulvaney. Leave with a clear action plan to uplevel your dating life." />
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #040b12;
+    --surface: rgba(10, 26, 39, 0.72);
+    --surface-strong: #0a1a27;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.22);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.58);
+    --faint: rgba(255, 255, 255, 0.34);
+    --accent: #479dc2;
+    --accent-press: #3a7e9b;
+    --accent-soft: rgba(71, 157, 194, 0.12);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 45% at 75% -10%, rgba(71, 157, 194, 0.14), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 10% 110%, rgba(71, 157, 194, 0.07), transparent 60%);
+  }
+  .wrap { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 24px 16px 80px; }
+  .wrap.wide { max-width: 1000px; }
+  .home-link { display: inline-block; margin: 6px 0 4px; }
+  .home-link img { height: 38px; width: auto; display: block; opacity: 0.9; filter: brightness(0) invert(1); }
+
+  .kicker { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(71, 157, 194, 0.95); margin: 30px 0 12px; }
+  h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(30px, 5vw, 44px); line-height: 1.1; color: #fff; margin: 0 0 12px; }
+  .lede { color: var(--muted); font-size: 16px; line-height: 1.65; margin: 0 0 26px; }
+  .lede b { color: var(--text); font-weight: 600; }
+
+  .card { background: var(--surface-strong); border: 1px solid var(--border-strong); box-shadow: var(--shadow); padding: 26px 24px 24px; }
+  .progress { height: 3px; background: rgba(255,255,255,0.08); margin: -26px -24px 22px; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 220ms ease; }
+  .count { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint); margin-bottom: 10px; }
+  .q { font-family: var(--font-display); font-weight: 700; font-size: clamp(21px, 3.4vw, 26px); line-height: 1.25; color: #fff; margin: 0 0 18px; }
+  .q label { cursor: default; }
+
+  input[type=text], input[type=email], input[type=number], textarea {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 0;
+    color: var(--text); font-family: var(--font-ui); font-size: 16px; padding: 14px; transition: border-color 140ms ease;
+  }
+  textarea { min-height: 120px; resize: vertical; line-height: 1.5; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.28); }
+  .bad input, .bad textarea { border-color: #f87171; }
+  .err { display: none; font-size: 12px; color: #f87171; margin-top: 8px; }
+  .bad .err { display: block; }
+
+  .opts { display: grid; gap: 8px; }
+  .opt { text-align: left; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text); font-family: var(--font-ui); font-size: 15px; padding: 14px 16px; cursor: pointer; transition: all 140ms ease; border-radius: 0; line-height: 1.4; }
+  .opt:hover { border-color: rgba(71, 157, 194, 0.6); }
+  .opt.on { border-color: var(--accent); background: var(--accent-soft); }
+
+  .nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 20px; }
+  .btn { font-family: var(--font-ui); cursor: pointer; border: 1px solid transparent; border-radius: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; padding: 16px 26px; transition: all 160ms ease; }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-press); border-color: var(--accent-press); }
+  .btn-primary[disabled] { opacity: 0.6; cursor: default; }
+  .back { background: none; border: none; color: var(--faint); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 0; cursor: pointer; }
+  .back:hover { color: var(--text); }
+  .back[hidden] { display: inline-block; visibility: hidden; }
+  .hint { font-size: 11px; color: var(--faint); margin-top: 12px; letter-spacing: 0.04em; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .cal-wrap { position: relative; border: 1px solid var(--border-strong); background: var(--surface-strong); min-height: 600px; }
+  .cal-wrap::before { content: "Loading calendar..."; position: absolute; top: 60px; left: 0; right: 0; text-align: center; color: var(--faint); font-size: 13px; }
+  #cal-inline { position: relative; }
+  #cal-inline { width: 100%; min-height: 600px; overflow: auto; }
+  .fallback { font-size: 12px; color: var(--faint); margin-top: 12px; text-align: center; }
+  .fallback a { color: var(--accent); }
+  footer { margin-top: 50px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; }
+</style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '526303911209957');
+fbq('track', 'PageView');
+fbq('track', 'ViewContent', {content_name: 'book-a-call', content_category: 'discovery'});
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=526303911209957&ev=PageView&noscript=1"/></noscript>
+<!-- PostHog analytics (start) -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
+posthog.register({funnel_product: 'coaching', funnel_page: 'book'});
+</script>
+<!-- PostHog analytics (end) -->
+</head>
+<body>
+<div class="wrap" id="wrap">
+
+<a class="home-link" href="/dating-coaching/" aria-label="Back to coaching"><img src="willpower_logo.svg" alt="William Mulvaney" /></a>
+
+<!-- ============ STEP 1: questions ============ -->
+<div id="intake">
+  <div class="kicker">Free discovery call</div>
+  <h1>Book your discovery call</h1>
+  <p class="lede">Answer a few quick questions so I come prepared. On the call, <b>you'll leave with a clear action plan to uplevel your dating life.</b></p>
+
+  <form class="card" id="form" novalidate autocomplete="on">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="step"></div>
+    <div class="hp" aria-hidden="true"><input type="text" id="website" tabindex="-1" autocomplete="off" /></div>
+    <div class="nav">
+      <button type="button" class="back" id="back">&larr; Back</button>
+      <button type="submit" class="btn btn-primary" id="next">Next</button>
+    </div>
+  </form>
+</div>
+
+<!-- ============ STEP 2: calendar ============ -->
+<div id="booking" hidden>
+  <div class="kicker">Last step</div>
+  <h1>Pick a time</h1>
+  <p class="lede">Thanks<span id="first-name"></span>. Grab a time that works and I'll see you on the call. <b>You'll leave with a clear action plan to uplevel your dating life.</b></p>
+  <div class="cal-wrap"><div id="cal-inline"></div></div>
+  <p class="fallback">Calendar not loading? <a href="https://cal.com/william-mulvaney-s0q4fq/discovery-call" target="_blank" rel="noopener">Open it in a new tab</a>.</p>
+  <button type="button" class="back" id="edit" style="display:block;margin:6px auto 0">&larr; Edit my answers</button>
+</div>
+
+<footer>© William Mulvaney · Coaching</footer>
+</div>
+
+<script>
+/* The same questions Blaine asks (datingbyblaine.com/start), one per screen.
+   The calendar stays locked until they are answered, and the answers go to
+   discovery-application, which stores them and emails Will before the call. */
+const APPLY_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/discovery-application";
+const CAL_LINK = "william-mulvaney-s0q4fq/discovery-call";
+const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/;
+
+const STEPS = [
+  {key: "name", q: "What's your name?", type: "text", ph: "First and last", ac: "name"},
+  {key: "email", q: "What's your email?", type: "email", ph: "you@example.com", ac: "email",
+    check: v => EMAIL_RE.test(v) || "Please enter a valid email."},
+  {key: "location", q: "Where do you live?", type: "text", ph: "City, state", ac: "address-level2"},
+  {key: "age", q: "How old are you?", type: "number", ph: "Age",
+    check: v => (+v >= 16 && +v <= 99) || "Please enter your age."},
+  {key: "life", q: "What do you do for work? What do you do for fun?", type: "textarea", ph: "A couple of sentences is plenty."},
+  {key: "goals", q: "What are your top 1-3 dating goals and challenges right now?", type: "textarea", ph: "Be as specific as you can. This is what we'll work on."},
+  {key: "invest", q: "Can you comfortably invest in yourself, and your dating life?", type: "choice", opts: [
+    "I can comfortably invest $1,000+ USD in myself",
+    "It's a stretch, but $1,000+ USD isn't out of my budget",
+    "That's out of budget, but I could invest ~$200 USD in myself",
+    "I can't invest much right now",
+  ]},
+  {key: "else", q: "What else should I know about you?", type: "textarea", ph: "Optional", optional: true},
+  {key: "source", q: "Last question! How'd you find me?", type: "choice", opts: [
+    "Instagram", "Facebook", "TikTok", "YouTube", "The Willpower Podcast", "Google search", "Other",
+  ]},
+];
+
+const A = {};
+let i = 0;
+let APP_ID = null;
+const $ = id => document.getElementById(id);
+function cap(event, props, leaving) {
+  try { posthog.capture(event, props || {}, leaving ? {send_instantly: true, transport: 'sendBeacon'} : undefined); } catch (e) {}
+}
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+function render() {
+  const s = STEPS[i];
+  $("bar").style.width = Math.round((i / STEPS.length) * 100) + "%";
+  $("count").textContent = `Question ${i + 1} of ${STEPS.length}`;
+  $("back").hidden = i === 0;
+  $("next").textContent = i === STEPS.length - 1 ? "See available times" : "Next";
+  $("next").style.display = s.type === "choice" && !A[s.key] ? "none" : "";
+  const v = A[s.key] || "";
+  let field;
+  if (s.type === "choice") {
+    field = `<div class="opts">${s.opts.map(o => `<button type="button" class="opt${o === v ? " on" : ""}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
+  } else if (s.type === "textarea") {
+    field = `<textarea id="f" placeholder="${esc(s.ph)}">${esc(v)}</textarea>`;
+  } else {
+    const extra = s.type === "number" ? ' inputmode="numeric" min="16" max="99"' : s.type === "email" ? ' inputmode="email"' : "";
+    field = `<input id="f" type="${s.type}" value="${esc(v)}" placeholder="${esc(s.ph)}"${s.ac ? ` autocomplete="${s.ac}"` : ""}${extra} />`;
+  }
+  $("step").innerHTML = `<div class="q"><label for="f">${esc(s.q)}</label></div><div id="fw">${field}<div class="err" id="err"></div></div>` +
+    (s.type === "textarea" ? `<div class="hint">${s.optional ? "Optional. " : ""}Shift + Enter for a new line.</div>` : "");
+  const f = $("f");
+  if (f) {
+    setTimeout(() => f.focus(), 30);
+    if (s.type === "textarea") f.addEventListener("keydown", e => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); next(); }
+    });
+  }
+  document.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
+    A[s.key] = b.getAttribute("data-v");
+    document.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === b));
+    setTimeout(next, 160);
+  }));
+}
+
+function next() {
+  const s = STEPS[i];
+  if (s.type !== "choice") {
+    const val = $("f").value.trim();
+    let msg = null;
+    if (!val && !s.optional) msg = "Please answer this one.";
+    else if (val && s.check) { const r = s.check(val); if (r !== true) msg = r; }
+    if (msg) { $("fw").classList.add("bad"); $("err").textContent = msg; $("f").focus(); return; }
+    A[s.key] = val;
+  } else if (!A[s.key]) return;
+  cap("intake_step", {step: i + 1, key: s.key});
+  if (i < STEPS.length - 1) { i++; render(); return; }
+  submit();
+}
+
+$("form").addEventListener("submit", e => { e.preventDefault(); next(); });
+$("back").addEventListener("click", () => { if (i > 0) { i--; render(); } });
+
+function submit() {
+  const btn = $("next");
+  btn.disabled = true; btn.textContent = "One moment...";
+  $("bar").style.width = "100%";
+  try { posthog.identify(A.email, {email: A.email, name: A.name}); } catch (e) {}
+  try { fbq('track', 'Lead', {content_name: 'discovery-call'}); } catch (e) {}
+  cap("intake_submitted", {invest: A.invest, source: A.source}, true);
+
+  const answers = {};
+  STEPS.forEach(s => { if (s.key !== "name" && s.key !== "email" && A[s.key]) answers[s.key] = A[s.key]; });
+  const qs = new URLSearchParams(location.search);
+  // The calendar opens whatever happens here: a problem on our side must never be
+  // the reason someone cannot book. 6s ceiling so a hung request cannot strand them.
+  const req = fetch(APPLY_URL, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      stage: "submitted", name: A.name, email: A.email, answers,
+      website: $("website").value,
+      referrer: document.referrer || null,
+      utm_source: qs.get("utm_source") || qs.get("c"),
+    }),
+    keepalive: true,
+  }).then(r => r.json()).then(d => { if (d && d.ok) APP_ID = d.id; else cap("intake_save_failed", {reason: d && d.error}); })
+    .catch(e => cap("intake_save_failed", {reason: String(e)}));
+  Promise.race([req, new Promise(r => setTimeout(r, 6000))]).then(showCalendar);
+}
+
+let CAL_LOADED = false;
+function showCalendar() {
+  $("intake").hidden = true;
+  $("booking").hidden = false;
+  $("wrap").classList.add("wide");
+  $("first-name").textContent = A.name ? ", " + A.name.split(" ")[0] : "";
+  window.scrollTo({top: 0});
+  if (CAL_LOADED) return;
+  CAL_LOADED = true;
+
+  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  Cal("init", "discovery", {origin: "https://cal.com"});
+  Cal.ns.discovery("inline", {
+    elementOrSelector: "#cal-inline",
+    calLink: CAL_LINK,
+    config: {layout: "month_view", theme: "dark", name: A.name || "", email: A.email || ""},
+  });
+  Cal.ns.discovery("ui", {theme: "dark", layout: "month_view", cssVarsPerTheme: {dark: {"cal-brand": "#479dc2"}}, hideEventTypeDetails: false});
+  // The Meta Schedule event fires from Cal.com's own pixel integration on booking,
+  // so it is deliberately not fired again here.
+  Cal.ns.discovery("on", {action: "bookingSuccessful", callback: () => {
+    cap("discovery_booked", {}, true);
+    if (APP_ID) fetch(APPLY_URL, {method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({stage: "booked", id: APP_ID}), keepalive: true}).catch(() => {});
+  }});
+  cap("calendar_shown", {});
+}
+
+$("edit").addEventListener("click", () => {
+  $("booking").hidden = true;
+  $("intake").hidden = false;
+  $("wrap").classList.remove("wide");
+  const btn = $("next"); btn.disabled = false;
+  i = 0; render();
+});
+
+render();
+cap("intake_start", {});
+</script>
+</body>
+</html>
