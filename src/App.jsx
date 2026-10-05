@@ -15,7 +15,6 @@ import ReadingList from './components/ReadingList';
 import Business from './components/Business';
 import ContactForm from './components/ContactForm';
 import TestPage from './components/TestPage';
-import BookPage from './components/BookPage';
 import './styles/Dashboard.css';
 
 const heroMetrics = [
@@ -894,7 +893,6 @@ function App() {
           <main className="site-main">
             <Routes>
               <Route path="/" element={<TestPage />} />
-              <Route path="/book" element={<BookPage />} />
               <Route path="*" element={<TestPage />} />
             </Routes>
           </main>
