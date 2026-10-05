@@ -38,8 +38,6 @@ jobs:
       run: |
         echo 'williammulvaney.com' > dist/CNAME
         cp dist/index.html dist/404.html
-        mkdir -p dist/book
-        cp dist/index.html dist/book/index.html
         touch dist/.nojekyll
         
     - name: Deploy to GitHub Pages
