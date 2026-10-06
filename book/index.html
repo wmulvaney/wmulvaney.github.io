@@ -173,16 +173,13 @@ const STEPS = [
   {key: "life", q: "What do you do for work? What do you do for fun?", type: "textarea", ph: "A couple of sentences is plenty."},
   {key: "goals", q: "What are your top 1-3 dating goals and challenges right now?", type: "textarea", ph: "Be as specific as you can. This is what we'll work on."},
   {key: "invest", q: "Can you comfortably invest in yourself, and your dating life?",
-    sub: "Think coaching, dates, new clothes, a gym membership: anything that moves your dating life forward.", type: "choice", opts: [
+    sub: "Think first dates, coaching, new clothes, a gym membership.", type: "choice", opts: [
     "I can comfortably invest $1,000+ USD in myself",
     "It's a stretch, but $1,000+ USD isn't out of my budget",
     "That's out of budget, but I could invest ~$200 USD in myself",
     "I can't invest much right now",
   ]},
   {key: "else", q: "What else should I know about you?", type: "textarea", ph: "Optional", optional: true},
-  {key: "source", q: "Last question! How'd you find me?", type: "choice", opts: [
-    "Instagram", "Facebook", "TikTok", "YouTube", "The Willpower Podcast", "Google search", "Other",
-  ]},
 ];
 
 const LAYOUT = (() => {
@@ -243,8 +240,7 @@ function renderSingle() {
   $("next").textContent = "See available times";
   $("next").style.display = "";
   $("step").innerHTML = STEPS.map(s => {
-    const q = s.q.replace(/^Last question! /, "");
-    return `<div class="qblock"><div class="q q-sm"><label for="f-${s.key}">${esc(q)}${s.optional ? ' <span class="opt-tag">Optional</span>' : ""}</label></div>${s.sub ? `<p class="qsub">${esc(s.sub)}</p>` : ""}` +
+    return `<div class="qblock"><div class="q q-sm"><label for="f-${s.key}">${esc(s.q)}${s.optional ? ' <span class="opt-tag">Optional</span>' : ""}</label></div>${s.sub ? `<p class="qsub">${esc(s.sub)}</p>` : ""}` +
       `<div id="fw-${s.key}">${fieldHtml(s, "f-" + s.key)}<div class="err" id="err-${s.key}"></div></div></div>`;
   }).join("");
   document.querySelectorAll(".opts").forEach(g => g.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
@@ -303,7 +299,7 @@ function submit() {
   $("bar").style.width = "100%";
   try { posthog.identify(A.email, {email: A.email, name: A.name}); } catch (e) {}
   try { fbq('track', 'Lead', {content_name: 'discovery-call'}); } catch (e) {}
-  cap("intake_submitted", {invest: A.invest, source: A.source}, true);
+  cap("intake_submitted", {invest: A.invest}, true);
 
   const answers = {};
   STEPS.forEach(s => { if (s.key !== "name" && s.key !== "email" && A[s.key]) answers[s.key] = A[s.key]; });
