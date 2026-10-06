@@ -56,7 +56,7 @@
 
   .hero { display: grid; grid-template-columns: 1fr; gap: 34px; align-items: center; padding: 40px 0 20px; }
   @media (min-width: 780px) { .hero { grid-template-columns: minmax(0, 1fr) 340px; } }
-  .hero-photo { position: relative; width: 100%; max-width: 340px; margin: 0 auto; aspect-ratio: 4 / 5; border: 1px solid var(--border-strong); box-shadow: var(--shadow); overflow: hidden; transform: rotate(1.4deg); }
+  .hero-photo { position: relative; width: 100%; max-width: 340px; margin: 0 auto; aspect-ratio: 4 / 5; border: 1px solid var(--border-strong); box-shadow: var(--shadow); overflow: hidden; }
   .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 50%; display: block; }
   .hero-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(4,11,18,0.9) 100%); }
   .hero-photo .cap { position: absolute; left: 16px; right: 16px; bottom: 14px; z-index: 2; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.75); line-height: 1.7; }
@@ -124,8 +124,6 @@
   /* proof photos */
   .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 640px; margin: 22px auto 0; }
   .pair img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border: 1px solid var(--border-strong); display: block; }
-  .pair img:first-child { transform: rotate(-1.2deg); }
-  .pair img:last-child { transform: rotate(1.2deg); }
   @media (min-width: 760px) { .centered { text-align: center; } .centered .body { margin-left: auto; margin-right: auto; } }
 
   .cta-band { text-align: center; border: 1px solid rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.12), var(--surface)); padding: 30px 22px; margin: 44px 0; }
@@ -221,7 +219,7 @@ posthog.register({funnel_product: 'coaching', funnel_page: 'landing'});
 <div class="divider-lbl">A better way</div>
 <section class="with-img flip">
   <div>
-    <h2>Walking up to her, sober, is the best way to meet a woman.</h2>
+    <h2>Real-world approaching is where you stand out.</h2>
     <div class="reasons">
       <div class="rs"><div class="n">1</div><div><div class="t">You choose who you talk to.</div><div class="d">Not whoever an algorithm decides to show you. The woman you noticed at the coffee shop, the grocery store, or on the trail.</div></div></div>
       <div class="rs"><div class="n">2</div><div><div class="t">She gets to see the real you.</div><div class="d">Your energy, your humor, how you carry yourself. Not just your looks in six photos.</div></div></div>
