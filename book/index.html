@@ -8,6 +8,8 @@
 <title>Book a Discovery Call · William Mulvaney</title>
 <meta name="description" content="Book a free discovery call with William Mulvaney. Leave with a clear action plan to uplevel your dating life." />
 <link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://app.cal.com" />
+<link rel="preconnect" href="https://cal.com" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -89,6 +91,9 @@
   .cal-wrap::before { content: "Loading calendar..."; position: absolute; top: 60px; left: 0; right: 0; text-align: center; color: var(--faint); font-size: 13px; }
   #cal-inline { position: relative; }
   #cal-inline { width: 100%; min-height: 600px; overflow: auto; }
+  /* The calendar is mounted while they are still answering, clipped to 1px rather than
+     hidden, so it is already drawn when they submit. */
+  #booking.prerender { height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
   .fallback { font-size: 12px; color: var(--faint); margin-top: 12px; text-align: center; }
   .fallback a { color: var(--accent); }
   footer { margin-top: 50px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; }
@@ -278,6 +283,8 @@ function next() {
     A[s.key] = val;
   } else if (!A[s.key]) return;
   cap("intake_step", {step: i + 1, key: s.key});
+  save();
+  warm();
   if (i < STEPS.length - 1) { i++; render(); return; }
   submit();
 }
@@ -318,47 +325,122 @@ function submit() {
     keepalive: true,
   }).then(r => r.json()).then(d => { if (d && d.ok) APP_ID = d.id; else cap("intake_save_failed", {reason: d && d.error}); })
     .catch(e => cap("intake_save_failed", {reason: String(e)}));
-  Promise.race([req, new Promise(r => setTimeout(r, 6000))]).then(showCalendar);
+  Promise.race([req, new Promise(r => setTimeout(r, 6000))]).then(() => {
+    save({done: true});
+    showCalendar();
+  });
 }
 
-let CAL_LOADED = false;
-function showCalendar() {
-  $("intake").hidden = true;
-  $("booking").hidden = false;
-  $("wrap").classList.add("wide");
-  $("first-name").textContent = A.name ? ", " + A.name.split(" ")[0] : "";
-  window.scrollTo({top: 0});
-  if (CAL_LOADED) return;
-  CAL_LOADED = true;
+/* ---------- Calendar: loaded early, revealed on submit ----------
+   The embed is mounted as soon as a usable name and email exist (the first two
+   questions), with those prefilled, while they answer the rest. Submitting only
+   reveals it. If they change their name or email later, it is remounted. */
+(function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
 
-  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-  Cal("init", "discovery", {origin: "https://cal.com"});
-  Cal.ns.discovery("inline", {
+let CAL_FOR = null;    // "name|email" the mounted calendar was prefilled with
+let CAL_N = 0;         // each remount gets its own namespace
+let REVEALED = false;
+
+function currentContact() {
+  if (LAYOUT === "single") {
+    const n = $("f-name"), e = $("f-email");
+    return {name: n ? n.value.trim() : (A.name || ""), email: e ? e.value.trim() : (A.email || "")};
+  }
+  return {name: A.name || "", email: A.email || ""};
+}
+
+function mountCalendar(name, email) {
+  const key = name + "|" + email;
+  if (CAL_FOR === key) return;
+  CAL_FOR = key;
+  CAL_N += 1;
+  const ns = "discovery" + CAL_N;
+  $("cal-inline").innerHTML = "";
+  if (!REVEALED) { $("booking").classList.add("prerender"); $("booking").hidden = false; }
+  Cal("init", ns, {origin: "https://cal.com"});
+  Cal.ns[ns]("inline", {
     elementOrSelector: "#cal-inline",
     calLink: CAL_LINK,
-    config: {layout: "month_view", theme: "dark", name: A.name || "", email: A.email || ""},
+    config: {layout: "month_view", theme: "dark", name: name, email: email},
   });
-  Cal.ns.discovery("ui", {theme: "dark", layout: "month_view", cssVarsPerTheme: {dark: {"cal-brand": "#479dc2"}}, hideEventTypeDetails: false});
+  Cal.ns[ns]("ui", {theme: "dark", layout: "month_view", cssVarsPerTheme: {dark: {"cal-brand": "#479dc2"}}, hideEventTypeDetails: false});
   // The Meta Schedule event fires from Cal.com's own pixel integration on booking,
   // so it is deliberately not fired again here.
-  Cal.ns.discovery("on", {action: "bookingSuccessful", callback: () => {
+  Cal.ns[ns]("on", {action: "bookingSuccessful", callback: () => {
     cap("discovery_booked", {}, true);
+    save({booked: true});
     if (APP_ID) fetch(APPLY_URL, {method: "POST", headers: {"Content-Type": "application/json"},
       body: JSON.stringify({stage: "booked", id: APP_ID}), keepalive: true}).catch(() => {});
   }});
+  cap("calendar_mounted", {early: !REVEALED});
+}
+
+// Warm the calendar once the name and email are usable.
+function warm() {
+  const c = currentContact();
+  if (c.name.length >= 2 && EMAIL_RE.test(c.email)) mountCalendar(c.name, c.email);
+}
+$("form").addEventListener("focusout", () => setTimeout(warm, 0));
+$("form").addEventListener("change", warm);
+
+function showCalendar() {
+  REVEALED = true;
+  mountCalendar(A.name || "", A.email || "");   // no-op when already warm with these details
+  $("intake").hidden = true;
+  $("booking").hidden = false;
+  $("booking").classList.remove("prerender");
+  $("wrap").classList.add("wide");
+  $("first-name").textContent = A.name ? ", " + A.name.split(" ")[0] : "";
+  window.scrollTo({top: 0});
   cap("calendar_shown", {});
 }
 
 $("edit").addEventListener("click", () => {
-  $("booking").hidden = true;
+  REVEALED = false;
+  save({done: false});
+  $("booking").classList.add("prerender");     // keep it mounted, just clipped again
   $("intake").hidden = false;
   $("wrap").classList.remove("wide");
   const btn = $("next"); btn.disabled = false;
   i = 0; render();
 });
 
+/* ---------- Survive a refresh ----------
+   Answers in progress and "already reached the calendar" are kept in sessionStorage,
+   so a refresh puts them back where they were instead of on an empty form. */
+const STORE = "book_intake_v1";
+let SAVED = {};
+function save(extra) {
+  try {
+    SAVED = Object.assign(SAVED, extra || {}, {answers: A, app_id: APP_ID});
+    sessionStorage.setItem(STORE, JSON.stringify(SAVED));
+  } catch (e) {}
+}
+function load() {
+  try { return JSON.parse(sessionStorage.getItem(STORE) || "{}") || {}; } catch (e) { return {}; }
+}
+// Keep a draft as they type or pick.
+$("form").addEventListener("input", e => {
+  const id = e.target.id || "";
+  if (LAYOUT === "single" && id.startsWith("f-")) A[id.slice(2)] = e.target.value;
+  else if (id === "f") A[STEPS[i].key] = e.target.value;
+  save();
+  // Typing pauses count too, not only leaving the field.
+  clearTimeout(window.__warmT); window.__warmT = setTimeout(warm, 700);
+});
+$("form").addEventListener("click", e => { if (e.target.classList.contains("opt")) setTimeout(save, 0); });
+
+SAVED = load();
+if (SAVED.answers) Object.assign(A, SAVED.answers);
+if (SAVED.app_id) APP_ID = SAVED.app_id;
 render();
-cap("intake_start", {});
+if (SAVED.done && A.name && A.email) {
+  showCalendar();
+  cap("calendar_restored", {booked: !!SAVED.booked});
+} else {
+  warm();
+  cap("intake_start", {restored: !!SAVED.answers});
+}
 </script>
 </body>
 </html>
