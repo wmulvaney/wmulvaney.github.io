@@ -78,6 +78,9 @@
   .back { background: none; border: none; color: var(--faint); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 0; cursor: pointer; }
   .back:hover { color: var(--text); }
   .back[hidden] { display: inline-block; visibility: hidden; }
+  .qblock { margin-bottom: 26px; }
+  .q.q-sm { font-size: clamp(18px, 2.6vw, 21px); margin-bottom: 12px; }
+  .opt-tag { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin-left: 6px; }
   .hint { font-size: 11px; color: var(--faint); margin-top: 12px; letter-spacing: 0.04em; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
@@ -146,9 +149,15 @@ posthog.register({funnel_product: 'coaching', funnel_page: 'book'});
 </div>
 
 <script>
-/* The same questions Blaine asks (datingbyblaine.com/start), one per screen.
-   The calendar stays locked until they are answered, and the answers go to
-   discovery-application, which stores them and emails Will before the call. */
+/* The same questions Blaine asks (datingbyblaine.com/start). The calendar stays
+   locked until they are answered, and the answers go to discovery-application,
+   which stores them and emails Will before the call.
+
+   Two layouts, same questions and same submit:
+     "single" = every question on one page (default)
+     "steps"  = one question per screen with a progress bar
+   Switch the default here; ?layout=steps or ?layout=single overrides it for testing. */
+const DEFAULT_LAYOUT = "single";
 const APPLY_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/discovery-application";
 const CAL_LINK = "william-mulvaney-s0q4fq/discovery-call";
 const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/;
@@ -174,6 +183,12 @@ const STEPS = [
   ]},
 ];
 
+const LAYOUT = (() => {
+  const q = new URLSearchParams(location.search).get("layout");
+  return q === "steps" || q === "single" ? q : DEFAULT_LAYOUT;
+})();
+try { posthog.register({book_layout: LAYOUT}); } catch (e) {}
+
 const A = {};
 let i = 0;
 let APP_ID = null;
@@ -183,32 +198,34 @@ function cap(event, props, leaving) {
 }
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 
+function fieldHtml(s, id) {
+  const v = A[s.key] || "";
+  if (s.type === "choice") {
+    return `<div class="opts" data-key="${s.key}">${s.opts.map(o => `<button type="button" class="opt${o === v ? " on" : ""}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
+  }
+  if (s.type === "textarea") return `<textarea id="${id}" placeholder="${esc(s.ph)}">${esc(v)}</textarea>`;
+  const extra = s.type === "number" ? ' inputmode="numeric" min="16" max="99"' : s.type === "email" ? ' inputmode="email"' : "";
+  return `<input id="${id}" type="${s.type}" value="${esc(v)}" placeholder="${esc(s.ph)}"${s.ac ? ` autocomplete="${s.ac}"` : ""}${extra} />`;
+}
+
+// Returns an error message, or null when the answer is fine.
+function problem(s, val) {
+  if (!val) return s.optional ? null : (s.type === "choice" ? "Please pick one." : "Please answer this one.");
+  if (s.check) { const r = s.check(val); if (r !== true) return r; }
+  return null;
+}
+
 function render() {
+  if (LAYOUT === "single") return renderSingle();
   const s = STEPS[i];
   $("bar").style.width = Math.round((i / STEPS.length) * 100) + "%";
   $("count").textContent = `Question ${i + 1} of ${STEPS.length}`;
   $("back").hidden = i === 0;
   $("next").textContent = i === STEPS.length - 1 ? "See available times" : "Next";
   $("next").style.display = s.type === "choice" && !A[s.key] ? "none" : "";
-  const v = A[s.key] || "";
-  let field;
-  if (s.type === "choice") {
-    field = `<div class="opts">${s.opts.map(o => `<button type="button" class="opt${o === v ? " on" : ""}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
-  } else if (s.type === "textarea") {
-    field = `<textarea id="f" placeholder="${esc(s.ph)}">${esc(v)}</textarea>`;
-  } else {
-    const extra = s.type === "number" ? ' inputmode="numeric" min="16" max="99"' : s.type === "email" ? ' inputmode="email"' : "";
-    field = `<input id="f" type="${s.type}" value="${esc(v)}" placeholder="${esc(s.ph)}"${s.ac ? ` autocomplete="${s.ac}"` : ""}${extra} />`;
-  }
-  $("step").innerHTML = `<div class="q"><label for="f">${esc(s.q)}</label></div><div id="fw">${field}<div class="err" id="err"></div></div>` +
-    (s.type === "textarea" ? `<div class="hint">${s.optional ? "Optional. " : ""}Shift + Enter for a new line.</div>` : "");
+  $("step").innerHTML = `<div class="q"><label for="f">${esc(s.q)}</label></div><div id="fw">${fieldHtml(s, "f")}<div class="err" id="err"></div></div>`;
   const f = $("f");
-  if (f) {
-    setTimeout(() => f.focus(), 30);
-    if (s.type === "textarea") f.addEventListener("keydown", e => {
-      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); next(); }
-    });
-  }
+  if (f) setTimeout(() => f.focus(), 30);
   document.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
     A[s.key] = b.getAttribute("data-v");
     document.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === b));
@@ -216,13 +233,49 @@ function render() {
   }));
 }
 
+// Every question on one page. Choices only highlight; nothing advances on its own.
+function renderSingle() {
+  $("bar").parentNode.style.display = "none";
+  $("count").style.display = "none";
+  $("back").hidden = true;
+  $("next").textContent = "See available times";
+  $("next").style.display = "";
+  $("step").innerHTML = STEPS.map(s => {
+    const q = s.q.replace(/^Last question! /, "");
+    return `<div class="qblock"><div class="q q-sm"><label for="f-${s.key}">${esc(q)}${s.optional ? ' <span class="opt-tag">Optional</span>' : ""}</label></div>` +
+      `<div id="fw-${s.key}">${fieldHtml(s, "f-" + s.key)}<div class="err" id="err-${s.key}"></div></div></div>`;
+  }).join("");
+  document.querySelectorAll(".opts").forEach(g => g.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
+    A[g.getAttribute("data-key")] = b.getAttribute("data-v");
+    g.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === b));
+    $("fw-" + g.getAttribute("data-key")).classList.remove("bad");
+  })));
+}
+
+function submitSingle() {
+  let first = null;
+  STEPS.forEach(s => {
+    if (s.type !== "choice") A[s.key] = $("f-" + s.key).value.trim();
+    const msg = problem(s, A[s.key]);
+    $("fw-" + s.key).classList.toggle("bad", !!msg);
+    $("err-" + s.key).textContent = msg || "";
+    if (msg && !first) first = s;
+  });
+  if (first) {
+    cap("intake_invalid", {first: first.key});
+    $("fw-" + first.key).scrollIntoView({behavior: "smooth", block: "center"});
+    const el = $("f-" + first.key); if (el) el.focus({preventScroll: true});
+    return;
+  }
+  submit();
+}
+
 function next() {
+  if (LAYOUT === "single") return submitSingle();
   const s = STEPS[i];
   if (s.type !== "choice") {
     const val = $("f").value.trim();
-    let msg = null;
-    if (!val && !s.optional) msg = "Please answer this one.";
-    else if (val && s.check) { const r = s.check(val); if (r !== true) msg = r; }
+    const msg = problem(s, val);
     if (msg) { $("fw").classList.add("bad"); $("err").textContent = msg; $("f").focus(); return; }
     A[s.key] = val;
   } else if (!A[s.key]) return;
@@ -232,6 +285,14 @@ function next() {
 }
 
 $("form").addEventListener("submit", e => { e.preventDefault(); next(); });
+// One-page layout: Enter in a short field moves to the next field instead of submitting.
+$("form").addEventListener("keydown", e => {
+  if (LAYOUT !== "single" || e.key !== "Enter" || e.target.tagName !== "INPUT") return;
+  e.preventDefault();
+  const fields = [...$("form").querySelectorAll("input:not(#website), textarea, .opt")];
+  const nxt = fields[fields.indexOf(e.target) + 1];
+  if (nxt) nxt.focus();
+});
 $("back").addEventListener("click", () => { if (i > 0) { i--; render(); } });
 
 function submit() {
