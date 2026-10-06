@@ -357,13 +357,15 @@ function mountCalendar(name, email) {
   const ns = "discovery" + CAL_N;
   $("cal-inline").innerHTML = "";
   if (!REVEALED) { $("booking").classList.add("prerender"); $("booking").hidden = false; }
+  // No layout is set here on purpose: the default view (weekly, month, column) comes
+  // from the event's Booking layout setting in Cal.com.
   Cal("init", ns, {origin: "https://cal.com"});
   Cal.ns[ns]("inline", {
     elementOrSelector: "#cal-inline",
     calLink: CAL_LINK,
-    config: {layout: "month_view", theme: "dark", name: name, email: email},
+    config: {theme: "dark", name: name, email: email},
   });
-  Cal.ns[ns]("ui", {theme: "dark", layout: "month_view", cssVarsPerTheme: {dark: {"cal-brand": "#479dc2"}}, hideEventTypeDetails: false});
+  Cal.ns[ns]("ui", {theme: "dark", cssVarsPerTheme: {dark: {"cal-brand": "#479dc2"}}, hideEventTypeDetails: false});
   // The Meta Schedule event fires from Cal.com's own pixel integration on booking,
   // so it is deliberately not fired again here.
   Cal.ns[ns]("on", {action: "bookingSuccessful", callback: () => {
