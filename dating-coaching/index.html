@@ -85,6 +85,27 @@
   }
   .sect-img { width: 100%; max-width: 340px; margin: 0 auto; display: block; border: 1px solid var(--border-strong); aspect-ratio: 4 / 5; object-fit: cover; }
   @media (max-width: 759px) { .sect-img { max-width: 100%; aspect-ratio: 3 / 2; } }
+  /* phone mockup: the profile scrolls inside the screen, a finger drags it up */
+  .phone { width: 100%; max-width: 280px; margin: 0 auto; padding: 11px; background: #111820; border: 1px solid var(--border-strong); border-radius: 44px; box-shadow: var(--shadow), inset 0 0 0 2px rgba(255,255,255,0.04); transform: rotate(-1.4deg); }
+  .phone-screen { position: relative; aspect-ratio: 9 / 19.5; border-radius: 34px; overflow: hidden; background: #fff; }
+  .phone-screen::before { content: ""; position: absolute; z-index: 3; top: 9px; left: 50%; width: 30%; height: 22px; transform: translateX(-50%); background: #000; border-radius: 12px; }
+  .phone-screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; animation: profile-scroll 8s ease-in-out infinite; }
+  .finger { position: absolute; z-index: 4; left: 58%; top: 74%; opacity: 0; pointer-events: none; animation: finger-swipe 8s ease-in-out infinite; }
+  .finger .touch { position: absolute; left: -17px; top: -17px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.45); border: 2px solid rgba(255,255,255,0.85); box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
+  .finger .hand { position: absolute; left: -14px; top: -6px; font-size: 40px; line-height: 1; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35)); }
+  @keyframes profile-scroll {
+    0%, 14% { object-position: 50% 0%; }
+    52%, 82% { object-position: 50% 100%; }
+    96%, 100% { object-position: 50% 0%; }
+  }
+  @keyframes finger-swipe {
+    0%, 8% { opacity: 0; transform: translateY(16px); }
+    14% { opacity: 1; transform: translateY(0); }
+    52% { opacity: 1; transform: translateY(-190px); }
+    60%, 100% { opacity: 0; transform: translateY(-190px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .phone-screen img, .finger { animation: none; } }
+  @media (max-width: 759px) { .phone { max-width: 250px; transform: none; } }
   .sect-label { font-size: 10px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: 0.22em; margin: 0 0 12px; }
 
   /* numbered reasons */
@@ -184,11 +205,16 @@ posthog.register({funnel_product: 'coaching', funnel_page: 'landing'});
 <div class="divider-lbl">The apps</div>
 <section class="with-img">
   <div>
-    <h2>Dating apps suck. You already know that.</h2>
-    <p class="body">You swipe for an hour. You get a few matches. Half of them never reply, and the conversations that do start die after three messages.</p>
-    <p class="body">You're being judged on six photos and a sentence, next to hundreds of other guys doing the exact same thing. <b>That isn't a reflection of what you have to offer.</b> It's just a bad way to meet people.</p>
+    <h2>Dating apps suck. Need I say more?</h2>
+    <p class="body">The apps are designed to make money off of you and keep you coming back. On them, you're one of many desperate men hoping she'll do you the favor of going on one date with you.</p>
+    <p class="body"><b>Meanwhile, you don't even know if she wants to date, or is just looking for a free dinner.</b></p>
   </div>
-  <img class="sect-img" src="/dating-coaching/img/scene-kitchen.jpg" alt="A man sitting alone at his kitchen table in the evening" loading="lazy" />
+  <div class="phone" role="img" aria-label="A dating app profile being scrolled on a phone: Ashley, 25, interests expensive gifts and dinner dates, only taking 6 feet and up seriously">
+    <div class="phone-screen">
+      <img src="/dating-coaching/img/app-profile.jpg" alt="" loading="lazy" />
+      <div class="finger" aria-hidden="true"><span class="touch"></span><span class="hand">👆</span></div>
+    </div>
+  </div>
 </section>
 
 <!-- ================= WHY APPROACHING ================= -->
