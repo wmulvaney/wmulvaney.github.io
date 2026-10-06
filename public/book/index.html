@@ -79,6 +79,7 @@
   .back:hover { color: var(--text); }
   .back[hidden] { display: inline-block; visibility: hidden; }
   .qblock { margin-bottom: 26px; }
+  .qsub { color: var(--muted); font-size: 14px; line-height: 1.55; margin: -8px 0 14px; }
   .q.q-sm { font-size: clamp(18px, 2.6vw, 21px); margin-bottom: 12px; }
   .opt-tag { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin-left: 6px; }
   .hint { font-size: 11px; color: var(--faint); margin-top: 12px; letter-spacing: 0.04em; }
@@ -171,7 +172,8 @@ const STEPS = [
     check: v => (+v >= 16 && +v <= 99) || "Please enter your age."},
   {key: "life", q: "What do you do for work? What do you do for fun?", type: "textarea", ph: "A couple of sentences is plenty."},
   {key: "goals", q: "What are your top 1-3 dating goals and challenges right now?", type: "textarea", ph: "Be as specific as you can. This is what we'll work on."},
-  {key: "invest", q: "Can you comfortably invest in yourself, and your dating life?", type: "choice", opts: [
+  {key: "invest", q: "Can you comfortably invest in yourself, and your dating life?",
+    sub: "Think coaching, dates, new clothes, a gym membership: anything that moves your dating life forward.", type: "choice", opts: [
     "I can comfortably invest $1,000+ USD in myself",
     "It's a stretch, but $1,000+ USD isn't out of my budget",
     "That's out of budget, but I could invest ~$200 USD in myself",
@@ -223,7 +225,7 @@ function render() {
   $("back").hidden = i === 0;
   $("next").textContent = i === STEPS.length - 1 ? "See available times" : "Next";
   $("next").style.display = s.type === "choice" && !A[s.key] ? "none" : "";
-  $("step").innerHTML = `<div class="q"><label for="f">${esc(s.q)}</label></div><div id="fw">${fieldHtml(s, "f")}<div class="err" id="err"></div></div>`;
+  $("step").innerHTML = `<div class="q"><label for="f">${esc(s.q)}</label></div>${s.sub ? `<p class="qsub">${esc(s.sub)}</p>` : ""}<div id="fw">${fieldHtml(s, "f")}<div class="err" id="err"></div></div>`;
   const f = $("f");
   if (f) setTimeout(() => f.focus(), 30);
   document.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
@@ -242,7 +244,7 @@ function renderSingle() {
   $("next").style.display = "";
   $("step").innerHTML = STEPS.map(s => {
     const q = s.q.replace(/^Last question! /, "");
-    return `<div class="qblock"><div class="q q-sm"><label for="f-${s.key}">${esc(q)}${s.optional ? ' <span class="opt-tag">Optional</span>' : ""}</label></div>` +
+    return `<div class="qblock"><div class="q q-sm"><label for="f-${s.key}">${esc(q)}${s.optional ? ' <span class="opt-tag">Optional</span>' : ""}</label></div>${s.sub ? `<p class="qsub">${esc(s.sub)}</p>` : ""}` +
       `<div id="fw-${s.key}">${fieldHtml(s, "f-" + s.key)}<div class="err" id="err-${s.key}"></div></div></div>`;
   }).join("");
   document.querySelectorAll(".opts").forEach(g => g.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
