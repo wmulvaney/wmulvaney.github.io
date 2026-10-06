@@ -58,8 +58,6 @@
   @media (min-width: 780px) { .hero { grid-template-columns: minmax(0, 1fr) 340px; } }
   .hero-photo { position: relative; width: 100%; max-width: 340px; margin: 0 auto; aspect-ratio: 4 / 5; border: 1px solid var(--border-strong); box-shadow: var(--shadow); overflow: hidden; }
   .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 50%; display: block; }
-  .hero-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(4,11,18,0.9) 100%); }
-  .hero-photo .cap { position: absolute; left: 16px; right: 16px; bottom: 14px; z-index: 2; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.75); line-height: 1.7; }
 
   .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
   .fact { border: 1px solid var(--border-strong); padding: 8px 12px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
@@ -195,7 +193,6 @@ posthog.register({funnel_product: 'coaching', funnel_page: 'landing'});
   </div>
   <div class="hero-photo">
     <img src="/dating-coaching/img/approach.jpg" alt="William talking with a woman on a sidewalk while walking his dog" />
-    <div class="cap">No apps. No alcohol. Just confidence.</div>
   </div>
 </section>
 
@@ -224,7 +221,7 @@ posthog.register({funnel_product: 'coaching', funnel_page: 'landing'});
       <div class="rs"><div class="n">1</div><div><div class="t">You choose who you talk to.</div><div class="d">Not whoever an algorithm decides to show you. The woman you noticed at the coffee shop, the grocery store, or on the trail.</div></div></div>
       <div class="rs"><div class="n">2</div><div><div class="t">She gets to see the real you.</div><div class="d">Your energy, your humor, how you carry yourself. Not just your looks in six photos.</div></div></div>
       <div class="rs"><div class="n">3</div><div><div class="t">You stand out.</div><div class="d">Almost no guy does this anymore. When you do, you're the only one.</div></div></div>
-      <div class="rs"><div class="n">4</div><div><div class="t">It's completely free.</div><div class="d">No subscriptions, no boosts, no premium tier. You just leave the house.</div></div></div>
+      <div class="rs"><div class="n">4</div><div><div class="t">It's completely free.</div><div class="d">No subscriptions, no boosts, no premium tier.</div></div></div>
       <div class="rs"><div class="n">5</div><div><div class="t">You build real confidence.</div><div class="d">Every conversation is proof you can do something hard. That confidence shows up everywhere in your life, and it's extremely attractive.</div></div></div>
     </div>
   </div>
@@ -243,7 +240,7 @@ posthog.register({funnel_product: 'coaching', funnel_page: 'landing'});
   <div>
     <h2>You're scared. And guess what, that's normal.</h2>
     <p class="body">Every guy is terrified of doing this, which is exactly what makes you stand out so much once you can.</p>
-    <p class="body">I used to be terrified at the thought. <b>You just have to trust that a process that has worked before will work for you.</b></p>
+    <p class="body">I used to be terrified at the thought of talking to an attractive stranger. <b>You just have to trust that a process that has worked before will work for you.</b></p>
   </div>
   <img class="sect-img" src="/dating-coaching/img/walk-past.jpg" alt="A man glancing over at a woman outside a coffee shop as he walks past her" loading="lazy" style="aspect-ratio:1/1;object-position:50% 40%" />
 </section>
@@ -291,7 +288,7 @@ posthog.register({funnel_product: 'coaching', funnel_page: 'landing'});
 <!-- ================= ABOUT ================= -->
 <div class="divider-lbl">Who am I</div>
 <section class="about">
-  <img src="/dating-coaching/img/approach-yeti.jpg" alt="William Mulvaney talking with a woman outside a storefront" loading="lazy" />
+  <img src="/dating-coaching/img/headshot.jpg" alt="William Mulvaney" loading="lazy" style="object-position:50% 35%" />
   <div>
     <h2>William Mulvaney</h2>
     <p class="body">I coach men on dating and fitness and host The Willpower Podcast. I have run a 100 mile ultramarathon, I do standup comedy, and I used to be a software engineer.</p>
