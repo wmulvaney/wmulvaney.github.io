@@ -307,7 +307,18 @@ function submit() {
   btn.disabled = true; btn.textContent = "One moment...";
   $("bar").style.width = "100%";
   try { posthog.identify(A.email, {email: A.email, name: A.name}); } catch (e) {}
-  try { fbq('track', 'Lead', {content_name: 'discovery-call'}); } catch (e) {}
+  // Meta pixel events, by the investment answer (the campaign optimizes on Lead):
+  //   $1,000+ (first two answers)  -> Lead + SubmitApplication (qualified, its own Ads Manager column)
+  //   ~$200                        -> Lead
+  //   "I can't invest much"        -> nothing, so Meta does not look for more people like them
+  // The page itself behaves the same for everyone.
+  const INVEST_AT = STEPS.find(s => s.key === "invest").opts.indexOf(A.invest);
+  if (INVEST_AT !== 3) {
+    try { fbq('track', 'Lead', {content_name: 'discovery-call'}); } catch (e) {}
+  }
+  if (INVEST_AT === 0 || INVEST_AT === 1) {
+    try { fbq('track', 'SubmitApplication', {content_name: 'discovery-call-qualified'}); } catch (e) {}
+  }
   SUBMITTED = true;
   cap("intake_submitted", Object.assign({invest: A.invest}, progress()), true);
 
