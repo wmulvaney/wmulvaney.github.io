@@ -228,6 +228,7 @@ function render() {
   $("next").textContent = i === STEPS.length - 1 ? "See available times" : "Next";
   $("next").style.display = s.type === "choice" && !A[s.key] ? "none" : "";
   $("step").innerHTML = `<div class="q"><label for="f">${esc(s.q)}</label></div>${s.sub ? `<p class="qsub">${esc(s.sub)}</p>` : ""}<div id="fw">${fieldHtml(s, "f")}<div class="err" id="err"></div></div>`;
+  markSeen(s.key);
   const f = $("f");
   if (f) setTimeout(() => f.focus(), 30);
   document.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
@@ -253,6 +254,7 @@ function renderSingle() {
     g.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === b));
     $("fw-" + g.getAttribute("data-key")).classList.remove("bad");
   })));
+  observeQuestions();
 }
 
 function submitSingle() {
@@ -306,7 +308,8 @@ function submit() {
   $("bar").style.width = "100%";
   try { posthog.identify(A.email, {email: A.email, name: A.name}); } catch (e) {}
   try { fbq('track', 'Lead', {content_name: 'discovery-call'}); } catch (e) {}
-  cap("intake_submitted", {invest: A.invest}, true);
+  SUBMITTED = true;
+  cap("intake_submitted", Object.assign({invest: A.invest}, progress()), true);
 
   const answers = {};
   STEPS.forEach(s => { if (s.key !== "name" && s.key !== "email" && A[s.key]) answers[s.key] = A[s.key]; });
@@ -431,6 +434,81 @@ $("form").addEventListener("input", e => {
   clearTimeout(window.__warmT); window.__warmT = setTimeout(warm, 700);
 });
 $("form").addEventListener("click", e => { if (e.target.classList.contains("opt")) setTimeout(save, 0); });
+
+/* ---------- How far they get ----------
+   Which questions they scroll to, start, and answer, and what they had done when
+   they left without submitting. Never sends what they typed, only which questions
+   and how many characters. Each question fires each event once per page load. */
+const T0 = Date.now();
+const SEEN = new Set(), STARTED = new Set(), ANSWERED = new Set();
+let SUBMITTED = false, LEFT = false, MAX_SCROLL = 0, LAST_KEY = null;
+const idx = key => STEPS.findIndex(s => s.key === key) + 1;
+const keyOf = el => (el && el.id === "f") ? STEPS[i].key : (el && el.id && el.id.startsWith("f-")) ? el.id.slice(2) : null;
+
+function markSeen(key) {
+  if (SEEN.has(key)) return;
+  SEEN.add(key);
+  cap("intake_question_seen", {key, question: idx(key), of: STEPS.length});
+}
+let OBS = null;
+function observeQuestions() {
+  if (!("IntersectionObserver" in window)) return;
+  if (OBS) OBS.disconnect();
+  OBS = new IntersectionObserver(entries => entries.forEach(en => {
+    if (en.isIntersecting) markSeen(en.target.querySelector("[id^='fw-']").id.slice(3));
+  }), {threshold: 0.6});
+  document.querySelectorAll(".qblock").forEach(b => OBS.observe(b));
+}
+function markStarted(key) {
+  LAST_KEY = key;
+  if (!key || STARTED.has(key)) return;
+  STARTED.add(key);
+  cap("intake_question_started", {key, question: idx(key)});
+}
+function markAnswered(key) {
+  if (!key || ANSWERED.has(key) || !String(A[key] || "").trim()) return;
+  ANSWERED.add(key);
+  const s = STEPS[idx(key) - 1];
+  const props = {key, question: idx(key), answered: ANSWERED.size};
+  if (s.type === "textarea") props.chars = String(A[key]).trim().length;
+  cap("intake_question_answered", props);
+}
+function progress() {
+  const seenIdx = [...SEEN].map(idx);
+  return {
+    answered: ANSWERED.size,
+    answered_keys: STEPS.filter(s => ANSWERED.has(s.key)).map(s => s.key).join(","),
+    furthest_seen: seenIdx.length ? Math.max(...seenIdx) : 0,
+    of: STEPS.length,
+    last_key: LAST_KEY,
+    max_scroll_pct: MAX_SCROLL,
+    seconds: Math.round((Date.now() - T0) / 1000),
+  };
+}
+$("form").addEventListener("focusin", e => markStarted(keyOf(e.target)));
+$("form").addEventListener("focusout", e => markAnswered(keyOf(e.target)));
+$("form").addEventListener("click", e => {
+  if (!e.target.classList.contains("opt")) return;
+  const g = e.target.closest(".opts");
+  const key = g ? g.getAttribute("data-key") : STEPS[i].key;
+  markStarted(key);
+  setTimeout(() => markAnswered(key), 0);
+});
+window.addEventListener("scroll", () => {
+  const h = document.documentElement.scrollHeight - innerHeight;
+  if (h > 0) MAX_SCROLL = Math.max(MAX_SCROLL, Math.round(scrollY / h * 100));
+}, {passive: true});
+function leave() {
+  if (SUBMITTED || LEFT || REVEALED) return;
+  LEFT = true;
+  cap("intake_abandoned", progress(), true);
+}
+window.addEventListener("pagehide", leave);
+// Phones rarely fire pagehide, so a hidden tab counts as leaving. If they come back,
+// it can fire again later; analysis treats anyone who submitted as not abandoned.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") leave(); else LEFT = false;
+});
 
 SAVED = load();
 if (SAVED.answers) Object.assign(A, SAVED.answers);
