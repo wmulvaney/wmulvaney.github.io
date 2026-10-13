@@ -178,6 +178,8 @@
   .opt:hover { border-color: rgba(71, 157, 194, 0.6); }
   .opt.on { border-color: var(--accent); background: var(--accent-soft); }
   .checkline { display: flex; gap: 12px; align-items: flex-start; background: rgba(255,255,255,0.04); border: 1px solid var(--border); padding: 14px 16px; cursor: pointer; font-size: 15px; line-height: 1.5; color: var(--text); }
+  .checklist { display: grid; gap: 8px; }
+  .other-text { margin-top: 8px; }
   .checkline input { flex: none; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
   .btn-primary[disabled] { opacity: 0.6; cursor: default; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
@@ -386,8 +388,8 @@ const FIELDS = [
   {key: "age", q: "How old are you?", type: "number", ph: "Age", pair: 2,
     check: v => (+v >= 16 && +v <= 99) || "Please enter your age."},
   {key: "location", q: "Where do you live?", type: "text", ph: "City, state", ac: "address-level2"},
-  {key: "focus", q: "What do you want to work on?", sub: "Pick all that apply.", type: "multi",
-    opts: ["Dating", "Fitness", "Discipline", "The things I don't talk about"]},
+  {key: "focus", q: "What do you want to work on?", sub: "Check all that apply.", type: "checklist",
+    opts: ["Dating", "Fitness", "General discipline / following through", "Career / business", "Social life", "Other"]},
   {key: "story", q: "What's going on right now, and what do you want to change?", type: "textarea",
     ph: "Be as specific as you can. This is what we'll work on."},
   {key: "life", q: "What do you do for work? What do you do for fun?", type: "textarea", ph: "A couple of sentences is plenty."},
@@ -405,6 +407,10 @@ function fieldHtml(f) {
   if (f.type === "choice" || f.type === "multi") {
     return `<div class="opts${f.type === "multi" ? " multi" : ""}" data-key="${f.key}" data-type="${f.type}">` +
       f.opts.map(o => `<button type="button" class="opt" data-v="${esc(o)}" aria-pressed="false">${esc(o)}</button>`).join("") + `</div>`;
+  }
+  if (f.type === "checklist") {
+    return `<div class="checklist">` + f.opts.map((o, n) => `<label class="checkline"><input type="checkbox" name="${f.key}" value="${esc(o)}" id="${n ? "" : id}" /><span>${esc(o)}</span></label>`).join("") +
+      `</div><input type="text" id="${id}-other" class="other-text" placeholder="What else do you want to work on?" hidden />`;
   }
   if (f.type === "check") return `<label class="checkline"><input type="checkbox" id="${id}" /><span>${esc(f.text)}</span></label>`;
   if (f.type === "textarea") return `<textarea id="${id}" placeholder="${esc(f.ph)}"></textarea>`;
@@ -435,6 +441,22 @@ document.querySelectorAll(".opts").forEach(g => g.querySelectorAll(".opt").forEa
   cap("intake_question_answered", {key: key});
 })));
 
+// Checklist: "Other" opens a text field, and its text rides along in the answer.
+const otherChecked = key => !!document.querySelector(`input[name="${key}"][value="Other"]:checked`);
+function checklistValue(key) {
+  return [...document.querySelectorAll(`input[name="${key}"]:checked`)].map(c => {
+    if (c.value !== "Other") return c.value;
+    const t = $("f-" + key + "-other").value.trim();
+    return t ? "Other: " + t : "Other";
+  }).join(", ");
+}
+document.querySelectorAll('input[name="focus"]').forEach(c => c.addEventListener("change", () => {
+  const other = $("f-focus-other");
+  other.hidden = !otherChecked("focus");
+  if (c.value === "Other" && c.checked) other.focus();
+  $("fw-focus").classList.remove("bad");
+}));
+
 let STARTED = false;
 $("form").addEventListener("focusin", () => { if (!STARTED) { STARTED = true; cap("intake_started", {seconds_on_page: secondsOnPage()}); } });
 // Enter in a short field moves on instead of submitting.
@@ -451,10 +473,12 @@ $("form").addEventListener("submit", e => {
   let first = null;
   FIELDS.forEach(f => {
     if (f.type === "check") A[f.key] = $("f-" + f.key).checked ? "yes" : "";
+    else if (f.type === "checklist") A[f.key] = checklistValue(f.key);
     else if (f.type !== "choice" && f.type !== "multi") A[f.key] = $("f-" + f.key).value.trim();
     const v = A[f.key] || "";
     let msg = null;
-    if (!v) msg = f.optional ? null : f.type === "choice" || f.type === "multi" ? "Please pick at least one." : f.type === "check" ? "Please check the box to continue." : "Please answer this one.";
+    if (f.type === "checklist" && otherChecked(f.key) && !$("f-" + f.key + "-other").value.trim()) msg = "Tell me what else you want to work on.";
+    else if (!v) msg = f.optional ? null : f.type === "choice" || f.type === "multi" || f.type === "checklist" ? "Please pick at least one." : f.type === "check" ? "Please check the box to continue." : "Please answer this one.";
     else if (f.check) { const r = f.check(v); if (r !== true) msg = r; }
     $("fw-" + f.key).classList.toggle("bad", !!msg);
     $("err-" + f.key).textContent = msg || "";
