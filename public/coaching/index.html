@@ -139,8 +139,10 @@
   .vsl-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--faint); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
   .vsl-empty .play { width: 64px; height: 64px; border: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: center; }
   .vsl-empty .play::before { content: ""; margin-left: 5px; border-style: solid; border-width: 11px 0 11px 18px; border-color: transparent transparent transparent rgba(255,255,255,0.5); }
-  .vsl-photos { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border-strong); }
-  .vsl-photos img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .vsl-photos { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); gap: 1px; background: var(--border-strong); }
+  /* phones: photos go 2x2 in a square box until the video replaces them */
+  @media (max-width: 619px) { .vsl:has(.vsl-photos) { aspect-ratio: 1 / 1; } .vsl-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); } }
+  .vsl-photos img { width: 100%; height: 100%; min-height: 0; object-fit: cover; display: block; }
   .hero-top { padding: 34px 0 0; }
   .hero-top .lede { max-width: 640px; }
 
@@ -230,6 +232,7 @@ posthog.register({funnel_product: 'work_with_me', funnel_page: 'landing'});
     <div class="vsl-photos">
       <img src="/coaching/img/spartan-stone.jpg" alt="William carrying a stone during a Spartan race" style="object-position:50% 35%" />
       <img src="/coaching/img/couple.jpg" alt="William and his girlfriend on a hike" style="object-position:62% 40%" />
+      <img src="/coaching/img/running.jpg" alt="William running past a statue in Bali" style="object-position:80% 60%" />
       <img src="/coaching/img/couple-2.jpg" alt="William and his girlfriend smiling in an elevator" style="object-position:55% 60%" />
     </div>
   </div>
