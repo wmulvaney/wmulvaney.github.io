@@ -8,7 +8,7 @@
 <meta name="description" content="Coaching for men: dating, fitness, discipline, and the things men carry without talking about. Book a free intro call." />
 <meta property="og:title" content="Work with William Mulvaney" />
 <meta property="og:description" content="Coaching for men: dating, fitness, discipline, and the things men carry without talking about." />
-<meta property="og:image" content="https://williammulvaney.com/dating-coaching/img/headshot.jpg" />
+<meta property="og:image" content="https://williammulvaney.com/coaching/img/spartan-stone.jpg" />
 <link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
 <link rel="apple-touch-icon" href="/willpower_logo.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -139,6 +139,8 @@
   .vsl-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--faint); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
   .vsl-empty .play { width: 64px; height: 64px; border: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: center; }
   .vsl-empty .play::before { content: ""; margin-left: 5px; border-style: solid; border-width: 11px 0 11px 18px; border-color: transparent transparent transparent rgba(255,255,255,0.5); }
+  .vsl-photos { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border-strong); }
+  .vsl-photos img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .hero-top { padding: 34px 0 0; }
   .hero-top .lede { max-width: 640px; }
 
@@ -222,8 +224,11 @@ posthog.register({funnel_product: 'work_with_me', funnel_page: 'landing'});
   <p class="h1-sub">Dating, fitness, discipline, and whatever else you're stuck on.</p>
 
   <div class="vsl">
-    <!-- VSL: paste the video embed here (YouTube/Vimeo iframe or <video>), then delete the .vsl-empty div -->
-    <div class="vsl-empty"><span class="play"></span>Video coming soon</div>
+    <!-- VSL: paste the video embed here (YouTube/Vimeo iframe or <video>), then delete the .vsl-photos div -->
+    <div class="vsl-photos">
+      <img src="/coaching/img/spartan-stone.jpg" alt="William carrying a stone during a Spartan race" style="object-position:50% 35%" />
+      <img src="/coaching/img/couple.jpg" alt="William and his girlfriend on a hike" style="object-position:50% 40%" />
+    </div>
   </div>
 
   <p class="lede">Coaching for men in their 20s and 30s who are ready to build a life they're proud of. Apply for a free intro call. We'll look at where you are, where you want to be, and what's getting in the way.</p>
