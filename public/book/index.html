@@ -180,6 +180,7 @@ const STEPS = [
   {key: "location", q: "Where do you live?", type: "text", ph: "City, state", ac: "address-level2"},
   {key: "age", q: "How old are you?", type: "number", ph: "Age",
     check: v => (+v >= 16 && +v <= 99) || "Please enter your age."},
+  {key: "gender", q: "What's your gender?", type: "choice", opts: ["Man", "Woman", "Other"]},
   {key: "life", q: "What do you do for work? What do you do for fun?", type: "textarea", ph: "A couple of sentences is plenty."},
   {key: "goals", q: "What are your top 1-3 dating goals and challenges right now?", type: "textarea", ph: "Be as specific as you can. This is what we'll work on."},
   {key: "invest", q: "Can you comfortably invest in yourself, and your dating life?",
@@ -320,12 +321,14 @@ function submit() {
   //   $1,000+ (first two answers)  -> Lead + SubmitApplication (qualified, its own Ads Manager column)
   //   ~$200                        -> Lead
   //   "I can't invest much"        -> nothing, so Meta does not look for more people like them
+  //   Gender "Woman"               -> nothing either (the coaching is for men)
   // The page itself behaves the same for everyone.
   const INVEST_AT = STEPS.find(s => s.key === "invest").opts.indexOf(A.invest);
-  if (INVEST_AT !== 3) {
+  const TO_META = A.gender !== "Woman";
+  if (TO_META && INVEST_AT !== 3) {
     try { fbq('track', 'Lead', {content_name: 'discovery-call'}); } catch (e) {}
   }
-  if (INVEST_AT === 0 || INVEST_AT === 1) {
+  if (TO_META && (INVEST_AT === 0 || INVEST_AT === 1)) {
     try { fbq('track', 'SubmitApplication', {content_name: 'discovery-call-qualified'}); } catch (e) {}
   }
   SUBMITTED = true;
