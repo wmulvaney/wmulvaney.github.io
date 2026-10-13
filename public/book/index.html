@@ -56,7 +56,7 @@
   .q { font-family: var(--font-display); font-weight: 700; font-size: clamp(21px, 3.4vw, 26px); line-height: 1.25; color: #fff; margin: 0 0 18px; }
   .q label { cursor: default; }
 
-  input[type=text], input[type=email], input[type=number], textarea {
+  input[type=text], input[type=email], input[type=tel], input[type=number], textarea {
     width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 0;
     color: var(--text); font-family: var(--font-ui); font-size: 16px; padding: 14px; transition: border-color 140ms ease;
   }
@@ -172,6 +172,8 @@ const STEPS = [
   {key: "name", q: "What's your name?", type: "text", ph: "First and last", ac: "name"},
   {key: "email", q: "What's your email?", type: "email", ph: "you@example.com", ac: "email",
     check: v => EMAIL_RE.test(v) || "Please enter a valid email."},
+  {key: "phone", q: "What's your phone number?", type: "tel", ph: "(555) 555-5555", ac: "tel",
+    check: v => /^\d{10,15}$/.test(v.replace(/\D/g, "")) || "Please enter a valid phone number."},
   {key: "location", q: "Where do you live?", type: "text", ph: "City, state", ac: "address-level2"},
   {key: "age", q: "How old are you?", type: "number", ph: "Age",
     check: v => (+v >= 16 && +v <= 99) || "Please enter your age."},
@@ -208,7 +210,7 @@ function fieldHtml(s, id) {
     return `<div class="opts" data-key="${s.key}">${s.opts.map(o => `<button type="button" class="opt${o === v ? " on" : ""}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
   }
   if (s.type === "textarea") return `<textarea id="${id}" placeholder="${esc(s.ph)}">${esc(v)}</textarea>`;
-  const extra = s.type === "number" ? ' inputmode="numeric" min="16" max="99"' : s.type === "email" ? ' inputmode="email"' : "";
+  const extra = s.type === "number" ? ' inputmode="numeric" min="16" max="99"' : s.type === "email" ? ' inputmode="email"' : s.type === "tel" ? ' inputmode="tel"' : "";
   return `<input id="${id}" type="${s.type}" value="${esc(v)}" placeholder="${esc(s.ph)}"${s.ac ? ` autocomplete="${s.ac}"` : ""}${extra} />`;
 }
 
