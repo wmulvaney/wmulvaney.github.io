@@ -8,8 +8,7 @@
 <title>Book a Discovery Call · William Mulvaney</title>
 <meta name="description" content="Book a free discovery call with William Mulvaney. Leave with a clear action plan to uplevel your dating life." />
 <link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
-<link rel="preconnect" href="https://app.cal.com" />
-<link rel="preconnect" href="https://cal.com" />
+<link rel="preconnect" href="https://calendar.google.com" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -90,10 +89,10 @@
   .hint { font-size: 11px; color: var(--faint); margin-top: 12px; letter-spacing: 0.04em; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
-  .cal-wrap { position: relative; border: 1px solid var(--border-strong); background: var(--surface-strong); min-height: 600px; }
-  .cal-wrap::before { content: "Loading calendar..."; position: absolute; top: 60px; left: 0; right: 0; text-align: center; color: var(--faint); font-size: 13px; }
-  #cal-inline { position: relative; }
-  #cal-inline { width: 100%; min-height: 600px; overflow: auto; }
+  .cal-wrap { position: relative; border: 1px solid var(--border-strong); background: #fff; }
+  .cal-wrap::before { content: "Loading calendar..."; position: absolute; top: 60px; left: 0; right: 0; text-align: center; color: #888; font-size: 13px; }
+  .cal-wrap iframe { position: relative; display: block; width: 100%; height: 760px; border: 0; }
+  @media (max-width: 619px) { .cal-wrap iframe { height: 900px; } }
   /* The calendar is mounted while they are still answering, clipped to 1px rather than
      hidden, so it is already drawn when they submit. */
   #booking.prerender { height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
@@ -149,8 +148,8 @@ posthog.register({funnel_product: 'coaching', funnel_page: 'book'});
   <div class="kicker">Last step</div>
   <h1>Pick a time</h1>
   <p class="lede">Thanks<span id="first-name"></span>. Grab a time that works and I'll see you on the call. <b>You'll leave with a clear action plan to uplevel your dating life.</b></p>
-  <div class="cal-wrap"><div id="cal-inline"></div></div>
-  <p class="fallback">Calendar not loading? <a href="https://cal.com/william-mulvaney-s0q4fq/discovery-call" target="_blank" rel="noopener">Open it in a new tab</a>.</p>
+  <div class="cal-wrap"><iframe id="cal-frame" title="Book a discovery call with William Mulvaney"></iframe></div>
+  <p class="fallback">Calendar not loading? <a href="https://calendar.app.google/8rFifwNA37CAEYmH8" target="_blank" rel="noopener">Open it in a new tab</a>.</p>
   <button type="button" class="back" id="edit" style="display:block;margin:6px auto 0">&larr; Edit my answers</button>
 </div>
 
@@ -168,7 +167,7 @@ posthog.register({funnel_product: 'coaching', funnel_page: 'book'});
    Switch the default here; ?layout=steps or ?layout=single overrides it for testing. */
 const DEFAULT_LAYOUT = "single";
 const APPLY_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/discovery-application";
-const CAL_LINK = "william-mulvaney-s0q4fq/discovery-call";
+const CAL_EMBED = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0kLWdlhwzA92gMdXpA6rQpipMbwamcm1z0P2qSunfGdGyGqb9jrTFrxL5EhJjankwQk6NhaGZs?gv=true";
 const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/;
 
 const STEPS = [
@@ -358,13 +357,11 @@ function submit() {
 }
 
 /* ---------- Calendar: loaded early, revealed on submit ----------
-   The embed is mounted as soon as a usable name and email exist (the first two
-   questions), with those prefilled, while they answer the rest. Submitting only
-   reveals it. If they change their name or email later, it is remounted. */
-(function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-
-let CAL_FOR = null;    // "name|email" the mounted calendar was prefilled with
-let CAL_N = 0;         // each remount gets its own namespace
+   Google Calendar appointment schedule, embedded the same way as /coaching. The frame
+   starts loading as soon as a usable name and email exist, while they answer the rest,
+   so it is already drawn when they submit. Google's page is cross-origin, so this page
+   cannot see when someone books: Google emails Will each booking instead. */
+let CAL_MOUNTED = false;
 let REVEALED = false;
 
 function currentContact() {
@@ -375,45 +372,25 @@ function currentContact() {
   return {name: A.name || "", email: A.email || ""};
 }
 
-function mountCalendar(name, email) {
-  const key = name + "|" + email;
-  if (CAL_FOR === key) return;
-  CAL_FOR = key;
-  CAL_N += 1;
-  const ns = "discovery" + CAL_N;
-  $("cal-inline").innerHTML = "";
+function mountCalendar() {
+  if (CAL_MOUNTED) return;
+  CAL_MOUNTED = true;
   if (!REVEALED) { $("booking").classList.add("prerender"); $("booking").hidden = false; }
-  // No layout is set here on purpose: the default view (weekly, month, column) comes
-  // from the event's Booking layout setting in Cal.com.
-  Cal("init", ns, {origin: "https://cal.com"});
-  Cal.ns[ns]("inline", {
-    elementOrSelector: "#cal-inline",
-    calLink: CAL_LINK,
-    config: {theme: "dark", name: name, email: email},
-  });
-  Cal.ns[ns]("ui", {theme: "dark", cssVarsPerTheme: {dark: {"cal-brand": "#479dc2"}}, hideEventTypeDetails: false});
-  // The Meta Schedule event fires from Cal.com's own pixel integration on booking,
-  // so it is deliberately not fired again here.
-  Cal.ns[ns]("on", {action: "bookingSuccessful", callback: () => {
-    cap("discovery_booked", {}, true);
-    save({booked: true});
-    if (APP_ID) fetch(APPLY_URL, {method: "POST", headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({stage: "booked", id: APP_ID}), keepalive: true}).catch(() => {});
-  }});
+  $("cal-frame").src = CAL_EMBED;
   cap("calendar_mounted", {early: !REVEALED});
 }
 
 // Warm the calendar once the name and email are usable.
 function warm() {
   const c = currentContact();
-  if (c.name.length >= 2 && EMAIL_RE.test(c.email)) mountCalendar(c.name, c.email);
+  if (c.name.length >= 2 && EMAIL_RE.test(c.email)) mountCalendar();
 }
 $("form").addEventListener("focusout", () => setTimeout(warm, 0));
 $("form").addEventListener("change", warm);
 
 function showCalendar() {
   REVEALED = true;
-  mountCalendar(A.name || "", A.email || "");   // no-op when already warm with these details
+  mountCalendar();   // no-op when already loaded in the background
   $("intake").hidden = true;
   $("booking").hidden = false;
   $("booking").classList.remove("prerender");
