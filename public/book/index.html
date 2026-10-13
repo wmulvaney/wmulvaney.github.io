@@ -71,6 +71,9 @@
   .opt { text-align: left; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text); font-family: var(--font-ui); font-size: 15px; padding: 14px 16px; cursor: pointer; transition: all 140ms ease; border-radius: 0; line-height: 1.4; }
   .opt:hover { border-color: rgba(71, 157, 194, 0.6); }
   .opt.on { border-color: var(--accent); background: var(--accent-soft); }
+  .checkline { display: flex; gap: 12px; align-items: flex-start; background: rgba(255,255,255,0.04); border: 1px solid var(--border); padding: 14px 16px; cursor: pointer; font-size: 15px; line-height: 1.5; color: var(--text); }
+  .checkline input { flex: none; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+  .bad .checkline { border-color: #f87171; }
 
   .nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 20px; }
   .btn { font-family: var(--font-ui); cursor: pointer; border: 1px solid transparent; border-radius: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; padding: 16px 26px; transition: all 160ms ease; }
@@ -187,6 +190,8 @@ const STEPS = [
     "I can't invest much right now",
   ]},
   {key: "else", q: "What else should I know about you?", type: "textarea", ph: "Optional", optional: true},
+  {key: "text_ok", q: "Confirming your call", type: "check",
+    text: "Will will text you to confirm your call time. I understand that I must respond via text or my spot will be given up."},
 ];
 
 const LAYOUT = (() => {
@@ -209,6 +214,7 @@ function fieldHtml(s, id) {
   if (s.type === "choice") {
     return `<div class="opts" data-key="${s.key}">${s.opts.map(o => `<button type="button" class="opt${o === v ? " on" : ""}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
   }
+  if (s.type === "check") return `<label class="checkline"><input type="checkbox" id="${id}"${v === "yes" ? " checked" : ""} /><span>${esc(s.text)}</span></label>`;
   if (s.type === "textarea") return `<textarea id="${id}" placeholder="${esc(s.ph)}">${esc(v)}</textarea>`;
   const extra = s.type === "number" ? ' inputmode="numeric" min="16" max="99"' : s.type === "email" ? ' inputmode="email"' : s.type === "tel" ? ' inputmode="tel"' : "";
   return `<input id="${id}" type="${s.type}" value="${esc(v)}" placeholder="${esc(s.ph)}"${s.ac ? ` autocomplete="${s.ac}"` : ""}${extra} />`;
@@ -216,7 +222,7 @@ function fieldHtml(s, id) {
 
 // Returns an error message, or null when the answer is fine.
 function problem(s, val) {
-  if (!val) return s.optional ? null : (s.type === "choice" ? "Please pick one." : "Please answer this one.");
+  if (!val) return s.optional ? null : (s.type === "choice" ? "Please pick one." : s.type === "check" ? "Please check the box to continue." : "Please answer this one.");
   if (s.check) { const r = s.check(val); if (r !== true) return r; }
   return null;
 }
@@ -262,7 +268,8 @@ function renderSingle() {
 function submitSingle() {
   let first = null;
   STEPS.forEach(s => {
-    if (s.type !== "choice") A[s.key] = $("f-" + s.key).value.trim();
+    if (s.type === "check") A[s.key] = $("f-" + s.key).checked ? "yes" : "";
+    else if (s.type !== "choice") A[s.key] = $("f-" + s.key).value.trim();
     const msg = problem(s, A[s.key]);
     $("fw-" + s.key).classList.toggle("bad", !!msg);
     $("err-" + s.key).textContent = msg || "";
@@ -281,7 +288,7 @@ function next() {
   if (LAYOUT === "single") return submitSingle();
   const s = STEPS[i];
   if (s.type !== "choice") {
-    const val = $("f").value.trim();
+    const val = s.type === "check" ? ($("f").checked ? "yes" : "") : $("f").value.trim();
     const msg = problem(s, val);
     if (msg) { $("fw").classList.add("bad"); $("err").textContent = msg; $("f").focus(); return; }
     A[s.key] = val;
@@ -440,8 +447,9 @@ function load() {
 // Keep a draft as they type or pick.
 $("form").addEventListener("input", e => {
   const id = e.target.id || "";
-  if (LAYOUT === "single" && id.startsWith("f-")) A[id.slice(2)] = e.target.value;
-  else if (id === "f") A[STEPS[i].key] = e.target.value;
+  const val = e.target.type === "checkbox" ? (e.target.checked ? "yes" : "") : e.target.value;
+  if (LAYOUT === "single" && id.startsWith("f-")) A[id.slice(2)] = val;
+  else if (id === "f") A[STEPS[i].key] = val;
   save();
   // Typing pauses count too, not only leaving the field.
   clearTimeout(window.__warmT); window.__warmT = setTimeout(warm, 700);
