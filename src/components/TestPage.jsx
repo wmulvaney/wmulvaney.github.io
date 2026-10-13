@@ -6,7 +6,6 @@ import './TestPage.css';
 const SPOTIFY_SHOW = 'https://open.spotify.com/show/50se7WW88PmujAJqhj7cmE?si=eace6536010d4f9b';
 
 /* ── Slide data ──────────────────────────────────────────── */
-const INTRO_CALL = 'https://cal.com/william-mulvaney-s0q4fq/introwithwill3';
 const COMEDY_IG = 'https://www.instagram.com/will.m.comedy/';
 
 // Workshop popup comes down on its own once the event is over
@@ -27,9 +26,9 @@ const slides = [
     kicker: 'Men\'s Coaching · Dating · Fitness · Discipline',
     titleLines: ['Let\'s', 'Work.'],
     bio: 'Private 1-on-1 coaching for men in their 20s and 30s ready to build from the ground up. My clients tend to focus on dating, fitness, and staying disciplined in general. Feel free to book an intro call to learn more.',
-    cta: { label: 'Book a 1-1 Intro', href: INTRO_CALL },
+    cta: { label: 'Work with me', href: '/coaching/' },
     ctaSecondary: { label: 'Dating Workshop', href: '/workshop/' },
-    card: { label: 'Coaching' },
+    card: { label: 'Work with me' },
     bg: {
       type: 'image',
       src: '/contact.jpeg',
