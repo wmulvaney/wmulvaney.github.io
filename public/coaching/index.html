@@ -34,6 +34,7 @@
     --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
   html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
   body { min-height: 100vh; position: relative; overflow-x: hidden; }
   body::before {
@@ -124,6 +125,7 @@
   /* sticky bar: every screen size, once the hero button has scrolled away */
   .sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(4, 11, 18, 0.94); border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); transform: translateY(110%); transition: transform 200ms ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
   .sticky.show { transform: none; }
+  .in-apply .sticky.show { transform: translateY(110%); }
   .sticky-in { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .sticky .s-txt { font-size: 12px; color: var(--muted); line-height: 1.4; }
   .sticky .s-txt b { color: #fff; font-size: 14px; }
@@ -148,6 +150,45 @@
   .area h3 { font-family: var(--font-display); font-weight: 700; font-size: 21px; color: #fff; margin: 0 0 8px; line-height: 1.25; }
   .area p { font-size: 14.5px; color: var(--muted); line-height: 1.7; margin: 0; }
   .area.deep { border-color: rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.10), var(--surface)); }
+  /* intake form + calendar (same form styling as /book) */
+  .card { background: var(--surface-strong); border: 1px solid var(--border-strong); box-shadow: var(--shadow); padding: 26px 24px 24px; }
+  .qblock { margin-bottom: 26px; }
+  .q { font-family: var(--font-display); font-weight: 700; font-size: clamp(18px, 2.6vw, 21px); line-height: 1.25; color: #fff; margin: 0 0 12px; }
+  .qsub { color: var(--muted); font-size: 14px; line-height: 1.55; margin: -4px 0 14px; }
+  .opt-tag { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin-left: 6px; }
+  .row2 { display: grid; grid-template-columns: 1fr; gap: 0 14px; }
+  @media (min-width: 620px) { .row2 { grid-template-columns: 1fr 1fr; } }
+  input[type=text], input[type=email], input[type=tel], input[type=number], textarea {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 0;
+    color: var(--text); font-family: var(--font-ui); font-size: 16px; padding: 14px; transition: border-color 140ms ease;
+  }
+  textarea { min-height: 120px; resize: vertical; line-height: 1.5; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.28); }
+  .bad input, .bad textarea, .bad .checkline { border-color: #f87171; }
+  .bad .opt { border-color: rgba(248,113,113,0.6); }
+  .err { display: none; font-size: 12px; color: #f87171; margin-top: 8px; }
+  .bad .err { display: block; }
+  .opts { display: grid; gap: 8px; }
+  .opts.multi { grid-template-columns: 1fr; }
+  @media (min-width: 620px) { .opts.multi { grid-template-columns: 1fr 1fr; } }
+  .opt { text-align: left; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text); font-family: var(--font-ui); font-size: 15px; padding: 14px 16px; cursor: pointer; transition: all 140ms ease; border-radius: 0; line-height: 1.4; }
+  .opt:hover { border-color: rgba(71, 157, 194, 0.6); }
+  .opt.on { border-color: var(--accent); background: var(--accent-soft); }
+  .checkline { display: flex; gap: 12px; align-items: flex-start; background: rgba(255,255,255,0.04); border: 1px solid var(--border); padding: 14px 16px; cursor: pointer; font-size: 15px; line-height: 1.5; color: var(--text); }
+  .checkline input { flex: none; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+  .btn-primary[disabled] { opacity: 0.6; cursor: default; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .linkish { background: none; border: none; color: var(--faint); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 0; cursor: pointer; display: block; margin: 8px auto 0; }
+  .linkish:hover { color: var(--text); }
+  /* Google's booking page is light, so it sits on a white panel */
+  .cal-wrap { position: relative; border: 1px solid var(--border-strong); background: #fff; box-shadow: var(--shadow); }
+  .cal-wrap::before { content: "Loading calendar..."; position: absolute; top: 60px; left: 0; right: 0; text-align: center; color: #888; font-size: 13px; }
+  .cal-wrap iframe { position: relative; display: block; width: 100%; height: 760px; border: 0; }
+  @media (max-width: 619px) { .cal-wrap iframe { height: 900px; } }
+  .fallback { font-size: 12px; color: var(--faint); margin-top: 12px; text-align: center; }
+  .fallback a { color: var(--accent); }
+  #apply { scroll-margin-top: 16px; max-width: 760px; margin: 0 auto; }
 </style>
 <!-- Meta Pixel -->
 <script>
@@ -185,13 +226,13 @@ posthog.register({funnel_product: 'work_with_me', funnel_page: 'landing'});
     <div class="vsl-empty"><span class="play"></span>Video coming soon</div>
   </div>
 
-  <p class="lede">Private coaching for men in their 20s and 30s who are ready to build a life they're proud of. Book a free intro call. We'll look at where you are, where you want to be, and what's getting in the way.</p>
+  <p class="lede">Private coaching for men in their 20s and 30s who are ready to build a life they're proud of. Apply for a free intro call. We'll look at where you are, where you want to be, and what's getting in the way.</p>
   <div class="facts">
     <span class="fact">Free intro call</span>
     <span class="fact">1-on-1</span>
     <span class="fact">No obligation</span>
   </div>
-  <a class="btn btn-primary js-book" data-where="hero" href="https://calendar.app.google/8rFifwNA37CAEYmH8" target="_blank" rel="noopener noreferrer">Book a free intro call</a>
+  <a class="btn btn-primary js-book" data-where="hero" href="#apply">Apply for a free intro call</a>
 </section>
 
 <!-- ================= WHAT WE WORK ON ================= -->
@@ -226,7 +267,7 @@ posthog.register({funnel_product: 'work_with_me', funnel_page: 'landing'});
 <section class="cta-band">
   <h3>Not sure where to start?</h3>
   <p class="cta-sub">That's what the intro call is for. We'll figure out what to work on first.</p>
-  <a class="btn btn-primary js-book" data-where="areas" href="https://calendar.app.google/8rFifwNA37CAEYmH8" target="_blank" rel="noopener noreferrer">Book a free intro call</a>
+  <a class="btn btn-primary js-book" data-where="areas" href="#apply">Apply for a free intro call</a>
 </section>
 
 <!-- ================= HOW IT WORKS ================= -->
@@ -234,7 +275,7 @@ posthog.register({funnel_product: 'work_with_me', funnel_page: 'landing'});
 <section>
   <h2>Simple process.</h2>
   <div class="reasons">
-    <div class="rs"><div class="n">1</div><div><div class="t">Book a free intro call.</div><div class="d">Pick a time that works for you. It's just a conversation, no pitch you have to sit through.</div></div></div>
+    <div class="rs"><div class="n">1</div><div><div class="t">Apply for a free intro call.</div><div class="d">Answer a few quick questions, then pick a time that works for you. It's just a conversation, no pitch you have to sit through.</div></div></div>
     <div class="rs"><div class="n">2</div><div><div class="t">We map out where you are.</div><div class="d">What's going well, what isn't, and what you want your life to look like. You leave with a clear next step either way.</div></div></div>
     <div class="rs"><div class="n">3</div><div><div class="t">If it's a fit, we get to work.</div><div class="d">Regular 1-on-1 calls, a plan built around your life, and someone in your corner who expects you to show up.</div></div></div>
   </div>
@@ -261,10 +302,26 @@ posthog.register({funnel_product: 'work_with_me', funnel_page: 'landing'});
   <details><summary>What does coaching cost?</summary><p>We'll go over it on the intro call if it looks like a fit. No pressure either way.</p></details>
 </section>
 
-<section class="cta-band" style="margin-top:44px">
-  <h3>Let's work.</h3>
-  <p class="cta-sub">Free intro call. 1-on-1. No obligation.</p>
-  <a class="btn btn-primary js-book" data-where="footer" href="https://calendar.app.google/8rFifwNA37CAEYmH8" target="_blank" rel="noopener noreferrer">Book a free intro call</a>
+<!-- ================= APPLY + CALENDAR ================= -->
+<div class="divider-lbl">Apply</div>
+<section id="apply">
+  <div id="intake">
+    <h2>Apply for a free intro call.</h2>
+    <p class="body">Answer a few quick questions so I come prepared. Once you submit, you'll pick a time right here.</p>
+    <form class="card" id="form" novalidate autocomplete="on" style="margin-top:20px">
+      <div id="fields"></div>
+      <div class="hp" aria-hidden="true"><input type="text" id="website" tabindex="-1" autocomplete="off" /></div>
+      <button type="submit" class="btn btn-primary" id="submit" style="width:100%">See available times</button>
+    </form>
+  </div>
+
+  <div id="booking" hidden>
+    <h2>Pick a time<span id="first-name"></span>.</h2>
+    <p class="body">Grab a time that works and I'll see you on the call.</p>
+    <div class="cal-wrap" style="margin-top:20px"><iframe id="cal-frame" title="Book an intro call with William Mulvaney" loading="lazy"></iframe></div>
+    <p class="fallback">Calendar not loading? <a href="https://calendar.app.google/8rFifwNA37CAEYmH8" target="_blank" rel="noopener">Open it in a new tab</a>.</p>
+    <button type="button" class="linkish" id="edit">&larr; Edit my answers</button>
+  </div>
 </section>
 
 <footer>© William Mulvaney · Coaching</footer>
@@ -273,7 +330,7 @@ posthog.register({funnel_product: 'work_with_me', funnel_page: 'landing'});
 <div class="sticky" id="sticky">
   <div class="sticky-in">
     <div class="s-txt"><b>Free intro call</b><br/>1-on-1 with Will</div>
-    <a class="btn btn-primary js-book" data-where="sticky" href="https://calendar.app.google/8rFifwNA37CAEYmH8" target="_blank" rel="noopener noreferrer">Book free call</a>
+    <a class="btn btn-primary js-book" data-where="sticky" href="#apply">Apply now</a>
   </div>
 </div>
 
@@ -300,6 +357,165 @@ document.querySelectorAll('.js-book').forEach(function (a) {
   if (!bar || !heroBtn || !('IntersectionObserver' in window)) return;
   new IntersectionObserver(([e]) => bar.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(heroBtn);
 })();
+
+/* ---------- Intake, then calendar ----------
+   Same flow as /book: the calendar unlocks once the questions are answered, and the
+   answers go to discovery-application (stored + emailed to Will) with form "coaching". */
+const APPLY_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/discovery-application";
+const CAL_EMBED = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0kLWdlhwzA92gMdXpA6rQpipMbwamcm1z0P2qSunfGdGyGqb9jrTFrxL5EhJjankwQk6NhaGZs?gv=true";
+const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/;
+const INVEST_OPTS = [
+  "I can comfortably invest $1,000+ USD in myself",
+  "It's a stretch, but $1,000+ USD isn't out of my budget",
+  "That's out of budget, but I could invest ~$200 USD in myself",
+  "I can't invest much right now",
+];
+const FIELDS = [
+  {key: "name", q: "What's your name?", type: "text", ph: "First and last", ac: "name", pair: 1},
+  {key: "email", q: "What's your email?", type: "email", ph: "you@example.com", ac: "email", pair: 2,
+    check: v => EMAIL_RE.test(v) || "Please enter a valid email."},
+  {key: "phone", q: "Phone number", type: "tel", ph: "(555) 555-5555", ac: "tel", pair: 1,
+    check: v => /^\d{10,15}$/.test(v.replace(/\D/g, "")) || "Please enter a valid phone number."},
+  {key: "age", q: "How old are you?", type: "number", ph: "Age", pair: 2,
+    check: v => (+v >= 16 && +v <= 99) || "Please enter your age."},
+  {key: "location", q: "Where do you live?", type: "text", ph: "City, state", ac: "address-level2"},
+  {key: "focus", q: "What do you want to work on?", sub: "Pick all that apply.", type: "multi",
+    opts: ["Dating", "Fitness", "Discipline", "The things I don't talk about"]},
+  {key: "story", q: "What's going on right now, and what do you want to change?", type: "textarea",
+    ph: "Be as specific as you can. This is what we'll work on."},
+  {key: "life", q: "What do you do for work? What do you do for fun?", type: "textarea", ph: "A couple of sentences is plenty."},
+  {key: "invest", q: "Can you comfortably invest in yourself right now?", sub: "Think coaching, a gym membership, new clothes.", type: "choice", opts: INVEST_OPTS},
+  {key: "else", q: "What else should I know about you?", type: "textarea", ph: "Optional", optional: true},
+  {key: "text_ok", q: "Confirming your call", type: "check",
+    text: "Will will text you to confirm your call time. I understand that I must respond via text or my spot will be given up."},
+];
+const A = {};
+const $ = id => document.getElementById(id);
+const esc = v => String(v).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+function fieldHtml(f) {
+  const id = "f-" + f.key;
+  if (f.type === "choice" || f.type === "multi") {
+    return `<div class="opts${f.type === "multi" ? " multi" : ""}" data-key="${f.key}" data-type="${f.type}">` +
+      f.opts.map(o => `<button type="button" class="opt" data-v="${esc(o)}" aria-pressed="false">${esc(o)}</button>`).join("") + `</div>`;
+  }
+  if (f.type === "check") return `<label class="checkline"><input type="checkbox" id="${id}" /><span>${esc(f.text)}</span></label>`;
+  if (f.type === "textarea") return `<textarea id="${id}" placeholder="${esc(f.ph)}"></textarea>`;
+  const extra = f.type === "number" ? ' inputmode="numeric" min="16" max="99"' : f.type === "email" ? ' inputmode="email"' : f.type === "tel" ? ' inputmode="tel"' : "";
+  return `<input id="${id}" type="${f.type}" placeholder="${esc(f.ph)}"${f.ac ? ` autocomplete="${f.ac}"` : ""}${extra} />`;
+}
+function block(f) {
+  return `<div class="qblock"><div class="q"><label for="f-${f.key}">${esc(f.q)}${f.optional ? ' <span class="opt-tag">Optional</span>' : ""}</label></div>` +
+    (f.sub ? `<p class="qsub">${esc(f.sub)}</p>` : "") +
+    `<div id="fw-${f.key}">${fieldHtml(f)}<div class="err" id="err-${f.key}"></div></div></div>`;
+}
+// Short fields sit two to a row on wider screens.
+let html = "";
+for (let k = 0; k < FIELDS.length; k++) {
+  const f = FIELDS[k], g = FIELDS[k + 1];
+  if (f.pair === 1 && g && g.pair === 2) { html += `<div class="row2">${block(f)}${block(g)}</div>`; k++; }
+  else html += block(f);
+}
+$("fields").innerHTML = html;
+
+document.querySelectorAll(".opts").forEach(g => g.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
+  const key = g.getAttribute("data-key");
+  if (g.getAttribute("data-type") === "multi") b.classList.toggle("on");
+  else g.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === b));
+  g.querySelectorAll(".opt").forEach(x => x.setAttribute("aria-pressed", x.classList.contains("on")));
+  A[key] = [...g.querySelectorAll(".opt.on")].map(x => x.getAttribute("data-v")).join(", ");
+  $("fw-" + key).classList.remove("bad");
+  cap("intake_question_answered", {key: key});
+})));
+
+let STARTED = false;
+$("form").addEventListener("focusin", () => { if (!STARTED) { STARTED = true; cap("intake_started", {seconds_on_page: secondsOnPage()}); } });
+// Enter in a short field moves on instead of submitting.
+$("form").addEventListener("keydown", e => {
+  if (e.key !== "Enter" || e.target.tagName !== "INPUT") return;
+  e.preventDefault();
+  const all = [...$("form").querySelectorAll("input:not(#website), textarea, .opt")];
+  const nxt = all[all.indexOf(e.target) + 1];
+  if (nxt) nxt.focus();
+});
+
+$("form").addEventListener("submit", e => {
+  e.preventDefault();
+  let first = null;
+  FIELDS.forEach(f => {
+    if (f.type === "check") A[f.key] = $("f-" + f.key).checked ? "yes" : "";
+    else if (f.type !== "choice" && f.type !== "multi") A[f.key] = $("f-" + f.key).value.trim();
+    const v = A[f.key] || "";
+    let msg = null;
+    if (!v) msg = f.optional ? null : f.type === "choice" || f.type === "multi" ? "Please pick at least one." : f.type === "check" ? "Please check the box to continue." : "Please answer this one.";
+    else if (f.check) { const r = f.check(v); if (r !== true) msg = r; }
+    $("fw-" + f.key).classList.toggle("bad", !!msg);
+    $("err-" + f.key).textContent = msg || "";
+    if (msg && !first) first = f;
+  });
+  if (first) {
+    cap("intake_invalid", {first: first.key});
+    $("fw-" + first.key).scrollIntoView({behavior: "smooth", block: "center"});
+    return;
+  }
+  submit();
+});
+
+let APP_ID = null;
+function submit() {
+  const btn = $("submit");
+  btn.disabled = true; btn.textContent = "One moment...";
+  try { posthog.identify(A.email, {email: A.email, name: A.name}); } catch (e) {}
+  // Meta events by the investment answer, same as /book:
+  //   $1,000+ -> Lead + SubmitApplication, ~$200 -> Lead, can't invest -> nothing.
+  const at = INVEST_OPTS.indexOf(A.invest);
+  if (at !== 3) { try { fbq('track', 'Lead', {content_name: 'intro-call'}); } catch (e) {} }
+  if (at === 0 || at === 1) { try { fbq('track', 'SubmitApplication', {content_name: 'intro-call-qualified'}); } catch (e) {} }
+  cap("intake_submitted", {invest: A.invest, focus: A.focus, seconds_on_page: secondsOnPage()}, true);
+
+  const answers = {form: "coaching"};
+  FIELDS.forEach(f => { if (f.key !== "name" && f.key !== "email" && A[f.key]) answers[f.key] = A[f.key]; });
+  const qs = new URLSearchParams(location.search);
+  // The calendar opens whatever happens here: a problem on our side must never be
+  // the reason someone cannot book. 6s ceiling so a hung request cannot strand them.
+  const req = fetch(APPLY_URL, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      stage: "submitted", name: A.name, email: A.email, answers,
+      website: $("website").value,
+      referrer: document.referrer || null,
+      utm_source: qs.get("utm_source") || qs.get("c"),
+    }),
+    keepalive: true,
+  }).then(r => r.json()).then(d => { if (d && d.ok) APP_ID = d.id; else cap("intake_save_failed", {reason: d && d.error}); })
+    .catch(e => cap("intake_save_failed", {reason: String(e)}));
+  Promise.race([req, new Promise(r => setTimeout(r, 6000))]).then(showCalendar);
+}
+
+function showCalendar() {
+  if (!$("cal-frame").src) $("cal-frame").src = CAL_EMBED;
+  $("intake").hidden = true;
+  $("booking").hidden = false;
+  $("first-name").textContent = A.name ? ", " + A.name.split(" ")[0] : "";
+  $("apply").scrollIntoView({block: "start"});
+  try { sessionStorage.setItem("coaching_intake_done", "1"); } catch (e) {}
+  cap("calendar_shown", {});
+}
+$("edit").addEventListener("click", () => {
+  $("booking").hidden = true;
+  $("intake").hidden = false;
+  const btn = $("submit"); btn.disabled = false; btn.textContent = "See available times";
+  try { sessionStorage.removeItem("coaching_intake_done"); } catch (e) {}
+  $("apply").scrollIntoView({block: "start"});
+});
+// A refresh after submitting goes straight back to the calendar.
+try { if (sessionStorage.getItem("coaching_intake_done")) showCalendar(); } catch (e) {}
+
+// Hide the sticky bar while the form or calendar is on screen.
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(([e]) => document.body.classList.toggle('in-apply', e.isIntersecting), {threshold: 0}).observe($("apply"));
+}
 
 (function analytics() {
   const marks = [25, 50, 75, 90];
