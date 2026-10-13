@@ -25,7 +25,7 @@ const slides = [
     id: 'coaching',
     kicker: 'Men\'s Coaching · Dating · Fitness · Discipline',
     titleLines: ['Work', 'with me.'],
-    bio: 'Private 1-on-1 coaching for men in their 20s and 30s ready to build from the ground up. My clients tend to focus on dating, fitness, and staying disciplined in general. Feel free to book an intro call to learn more.',
+    bio: '1-on-1 and group coaching for men in their 20s and 30s ready to build from the ground up. My clients tend to focus on dating, fitness, and staying disciplined in general. Feel free to book an intro call to learn more.',
     cta: { label: 'Book a 1-1 Intro', href: '/coaching/' },
     ctaSecondary: { label: 'Dating Workshop', href: '/workshop/' },
     card: { label: 'Coaching' },
