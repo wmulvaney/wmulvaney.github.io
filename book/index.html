@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#040b12" />
+<title>Book a Discovery Call · William Mulvaney</title>
+<meta name="description" content="Book a free discovery call with William Mulvaney. Leave with a clear action plan to uplevel your dating life." />
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://calendar.google.com" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #040b12;
+    --surface: rgba(10, 26, 39, 0.72);
+    --surface-strong: #0a1a27;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.22);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.58);
+    --faint: rgba(255, 255, 255, 0.34);
+    --accent: #479dc2;
+    --accent-press: #3a7e9b;
+    --accent-soft: rgba(71, 157, 194, 0.12);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 45% at 75% -10%, rgba(71, 157, 194, 0.14), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 10% 110%, rgba(71, 157, 194, 0.07), transparent 60%);
+  }
+  .wrap { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 24px 16px 80px; }
+  .wrap.wide { max-width: 1000px; }
+  .home-link { display: inline-block; margin: 6px 0 4px; }
+  .home-link img { height: 38px; width: auto; display: block; opacity: 0.9; filter: brightness(0) invert(1); }
+
+  .kicker { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(71, 157, 194, 0.95); margin: 30px 0 12px; }
+  h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(30px, 5vw, 44px); line-height: 1.1; color: #fff; margin: 0 0 12px; }
+  .lede { color: var(--muted); font-size: 16px; line-height: 1.65; margin: 0 0 26px; }
+  .lede b { color: var(--text); font-weight: 600; }
+
+  .card { background: var(--surface-strong); border: 1px solid var(--border-strong); box-shadow: var(--shadow); padding: 26px 24px 24px; }
+  .progress { height: 3px; background: rgba(255,255,255,0.08); margin: -26px -24px 22px; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 220ms ease; }
+  .count { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint); margin-bottom: 10px; }
+  .q { font-family: var(--font-display); font-weight: 700; font-size: clamp(21px, 3.4vw, 26px); line-height: 1.25; color: #fff; margin: 0 0 18px; }
+  .q label { cursor: default; }
+
+  input[type=text], input[type=email], input[type=tel], input[type=number], textarea {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 0;
+    color: var(--text); font-family: var(--font-ui); font-size: 16px; padding: 14px; transition: border-color 140ms ease;
+  }
+  textarea { min-height: 120px; resize: vertical; line-height: 1.5; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.28); }
+  .bad input, .bad textarea { border-color: #f87171; }
+  .err { display: none; font-size: 12px; color: #f87171; margin-top: 8px; }
+  .bad .err { display: block; }
+
+  .opts { display: grid; gap: 8px; }
+  .opt { text-align: left; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text); font-family: var(--font-ui); font-size: 15px; padding: 14px 16px; cursor: pointer; transition: all 140ms ease; border-radius: 0; line-height: 1.4; }
+  .opt:hover { border-color: rgba(71, 157, 194, 0.6); }
+  .opt.on { border-color: var(--accent); background: var(--accent-soft); }
+  .checkline { display: flex; gap: 12px; align-items: flex-start; background: rgba(255,255,255,0.04); border: 1px solid var(--border); padding: 14px 16px; cursor: pointer; font-size: 15px; line-height: 1.5; color: var(--text); }
+  .checkline input { flex: none; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+  .bad .checkline { border-color: #f87171; }
+
+  .nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 20px; }
+  .btn { font-family: var(--font-ui); cursor: pointer; border: 1px solid transparent; border-radius: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; padding: 16px 26px; transition: all 160ms ease; }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-press); border-color: var(--accent-press); }
+  .btn-primary[disabled] { opacity: 0.6; cursor: default; }
+  .back { background: none; border: none; color: var(--faint); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 0; cursor: pointer; }
+  .back:hover { color: var(--text); }
+  .back[hidden] { display: inline-block; visibility: hidden; }
+  .qblock { margin-bottom: 26px; }
+  .qsub { color: var(--muted); font-size: 14px; line-height: 1.55; margin: -8px 0 14px; }
+  .q.q-sm { font-size: clamp(18px, 2.6vw, 21px); margin-bottom: 12px; }
+  .opt-tag { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin-left: 6px; }
+  .hint { font-size: 11px; color: var(--faint); margin-top: 12px; letter-spacing: 0.04em; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .cal-wrap { position: relative; border: 1px solid var(--border-strong); background: #fff; }
+  .cal-wrap::before { content: "Loading calendar..."; position: absolute; top: 60px; left: 0; right: 0; text-align: center; color: #888; font-size: 13px; }
+  .cal-wrap iframe { position: relative; display: block; width: 100%; height: 760px; border: 0; background: #fff; }
+  @media (max-width: 619px) { .cal-wrap iframe { height: 900px; } }
+  /* The calendar is mounted while they are still answering, clipped to 1px rather than
+     hidden, so it is already drawn when they submit. */
+  #booking.prerender { height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
+  .fallback { font-size: 12px; color: var(--faint); margin-top: 12px; text-align: center; }
+  .fallback a { color: var(--accent); }
+  footer { margin-top: 50px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; }
+</style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '526303911209957');
+fbq('track', 'PageView');
+fbq('track', 'ViewContent', {content_name: 'book-a-call', content_category: 'discovery'});
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=526303911209957&ev=PageView&noscript=1"/></noscript>
+<!-- PostHog analytics (start) -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
+posthog.register({funnel_product: 'coaching', funnel_page: 'book'});
+</script>
+<!-- PostHog analytics (end) -->
+</head>
+<body>
+<div class="wrap" id="wrap">
+
+<a class="home-link" href="/dating-coaching/" aria-label="Back to coaching"><img src="willpower_logo.svg" alt="William Mulvaney" /></a>
+
+<!-- ============ STEP 1: questions ============ -->
+<div id="intake">
+  <div class="kicker">Free discovery call</div>
+  <h1>Book your discovery call</h1>
+  <p class="lede">Answer a few quick questions so I come prepared. <b>You'll leave with a clear action plan to uplevel your dating life.</b></p>
+
+  <form class="card" id="form" novalidate autocomplete="on">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="step"></div>
+    <div class="hp" aria-hidden="true"><input type="text" id="website" tabindex="-1" autocomplete="off" /></div>
+    <div class="nav">
+      <button type="button" class="back" id="back">&larr; Back</button>
+      <button type="submit" class="btn btn-primary" id="next">Next</button>
+    </div>
+  </form>
+</div>
+
+<!-- ============ STEP 2: calendar ============ -->
+<div id="booking" hidden>
+  <div class="kicker">Last step</div>
+  <h1>Pick a time</h1>
+  <p class="lede">Thanks<span id="first-name"></span>. Grab a time that works and I'll see you on the call. <b>You'll leave with a clear action plan to uplevel your dating life.</b></p>
+  <div class="cal-wrap"><iframe id="cal-frame" title="Book a discovery call with William Mulvaney"></iframe></div>
+  <p class="fallback">Calendar not loading? <a href="https://calendar.app.google/8rFifwNA37CAEYmH8" target="_blank" rel="noopener">Open it in a new tab</a>.</p>
+  <button type="button" class="back" id="edit" style="display:block;margin:6px auto 0">&larr; Edit my answers</button>
+</div>
+
+<footer>© William Mulvaney · Coaching</footer>
+</div>
+
+<script>
+/* The same questions Blaine asks (datingbyblaine.com/start). The calendar stays
+   locked until they are answered, and the answers go to discovery-application,
+   which stores them and emails Will before the call.
+
+   Two layouts, same questions and same submit:
+     "single" = every question on one page (default)
+     "steps"  = one question per screen with a progress bar
+   Switch the default here; ?layout=steps or ?layout=single overrides it for testing. */
+const DEFAULT_LAYOUT = "single";
+const APPLY_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/discovery-application";
+const CAL_EMBED = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0kLWdlhwzA92gMdXpA6rQpipMbwamcm1z0P2qSunfGdGyGqb9jrTFrxL5EhJjankwQk6NhaGZs?gv=true";
+const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/;
+
+const STEPS = [
+  {key: "name", q: "What's your name?", type: "text", ph: "First and last", ac: "name"},
+  {key: "email", q: "What's your email?", type: "email", ph: "you@example.com", ac: "email",
+    check: v => EMAIL_RE.test(v) || "Please enter a valid email."},
+  {key: "phone", q: "What's your phone number?", type: "tel", ph: "(555) 555-5555", ac: "tel",
+    check: v => /^\d{10,15}$/.test(v.replace(/\D/g, "")) || "Please enter a valid phone number."},
+  {key: "location", q: "Where do you live?", type: "text", ph: "City, state", ac: "address-level2"},
+  {key: "age", q: "How old are you?", type: "number", ph: "Age",
+    check: v => (+v >= 16 && +v <= 99) || "Please enter your age."},
+  {key: "gender", q: "What's your gender?", type: "choice", opts: ["Man", "Woman", "Other"]},
+  {key: "life", q: "What do you do for work? What do you do for fun?", type: "textarea", ph: "A couple of sentences is plenty."},
+  {key: "goals", q: "What are your top 1-3 dating goals and challenges right now?", type: "textarea", ph: "Be as specific as you can. This is what we'll work on."},
+  {key: "invest", q: "Can you comfortably invest in yourself, and your dating life?",
+    sub: "Think first dates, coaching, new clothes, a gym membership.", type: "choice", opts: [
+    "I can comfortably invest $1,000+ USD in myself",
+    "It's a stretch, but $1,000+ USD isn't out of my budget",
+    "That's out of budget, but I could invest ~$200 USD in myself",
+    "I can't invest much right now",
+  ]},
+  {key: "else", q: "What else should I know about you?", type: "textarea", ph: "Optional", optional: true},
+  {key: "text_ok", q: "Confirming your call", type: "check",
+    text: "I understand Will is going to text me to confirm my call time. If I don't respond, my spot will be given up."},
+];
+
+const LAYOUT = (() => {
+  const q = new URLSearchParams(location.search).get("layout");
+  return q === "steps" || q === "single" ? q : DEFAULT_LAYOUT;
+})();
+try { posthog.register({book_layout: LAYOUT}); } catch (e) {}
+
+const A = {};
+let i = 0;
+let APP_ID = null;
+const $ = id => document.getElementById(id);
+function cap(event, props, leaving) {
+  try { posthog.capture(event, props || {}, leaving ? {send_instantly: true, transport: 'sendBeacon'} : undefined); } catch (e) {}
+}
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+function fieldHtml(s, id) {
+  const v = A[s.key] || "";
+  if (s.type === "choice") {
+    return `<div class="opts" data-key="${s.key}">${s.opts.map(o => `<button type="button" class="opt${o === v ? " on" : ""}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
+  }
+  if (s.type === "check") return `<label class="checkline"><input type="checkbox" id="${id}"${v === "yes" ? " checked" : ""} /><span>${esc(s.text)}</span></label>`;
+  if (s.type === "textarea") return `<textarea id="${id}" placeholder="${esc(s.ph)}">${esc(v)}</textarea>`;
+  const extra = s.type === "number" ? ' inputmode="numeric" min="16" max="99"' : s.type === "email" ? ' inputmode="email"' : s.type === "tel" ? ' inputmode="tel"' : "";
+  return `<input id="${id}" type="${s.type}" value="${esc(v)}" placeholder="${esc(s.ph)}"${s.ac ? ` autocomplete="${s.ac}"` : ""}${extra} />`;
+}
+
+// Returns an error message, or null when the answer is fine.
+function problem(s, val) {
+  if (!val) return s.optional ? null : (s.type === "choice" ? "Please pick one." : s.type === "check" ? "Please check the box to continue." : "Please answer this one.");
+  if (s.check) { const r = s.check(val); if (r !== true) return r; }
+  return null;
+}
+
+function render() {
+  if (LAYOUT === "single") return renderSingle();
+  const s = STEPS[i];
+  $("bar").style.width = Math.round((i / STEPS.length) * 100) + "%";
+  $("count").textContent = `Question ${i + 1} of ${STEPS.length}`;
+  $("back").hidden = i === 0;
+  $("next").textContent = i === STEPS.length - 1 ? "See available times" : "Next";
+  $("next").style.display = s.type === "choice" && !A[s.key] ? "none" : "";
+  $("step").innerHTML = `<div class="q"><label for="f">${esc(s.q)}</label></div>${s.sub ? `<p class="qsub">${esc(s.sub)}</p>` : ""}<div id="fw">${fieldHtml(s, "f")}<div class="err" id="err"></div></div>`;
+  markSeen(s.key);
+  const f = $("f");
+  if (f) setTimeout(() => f.focus(), 30);
+  document.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
+    A[s.key] = b.getAttribute("data-v");
+    document.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === b));
+    setTimeout(next, 160);
+  }));
+}
+
+// Every question on one page. Choices only highlight; nothing advances on its own.
+function renderSingle() {
+  $("bar").parentNode.style.display = "none";
+  $("count").style.display = "none";
+  $("back").hidden = true;
+  $("next").textContent = "See available times";
+  $("next").style.display = "";
+  $("step").innerHTML = STEPS.map(s => {
+    return `<div class="qblock"><div class="q q-sm"><label for="f-${s.key}">${esc(s.q)}${s.optional ? ' <span class="opt-tag">Optional</span>' : ""}</label></div>${s.sub ? `<p class="qsub">${esc(s.sub)}</p>` : ""}` +
+      `<div id="fw-${s.key}">${fieldHtml(s, "f-" + s.key)}<div class="err" id="err-${s.key}"></div></div></div>`;
+  }).join("");
+  document.querySelectorAll(".opts").forEach(g => g.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
+    A[g.getAttribute("data-key")] = b.getAttribute("data-v");
+    g.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === b));
+    $("fw-" + g.getAttribute("data-key")).classList.remove("bad");
+  })));
+  observeQuestions();
+}
+
+function submitSingle() {
+  let first = null;
+  STEPS.forEach(s => {
+    if (s.type === "check") A[s.key] = $("f-" + s.key).checked ? "yes" : "";
+    else if (s.type !== "choice") A[s.key] = $("f-" + s.key).value.trim();
+    const msg = problem(s, A[s.key]);
+    $("fw-" + s.key).classList.toggle("bad", !!msg);
+    $("err-" + s.key).textContent = msg || "";
+    if (msg && !first) first = s;
+  });
+  if (first) {
+    cap("intake_invalid", {first: first.key});
+    $("fw-" + first.key).scrollIntoView({behavior: "smooth", block: "center"});
+    const el = $("f-" + first.key); if (el) el.focus({preventScroll: true});
+    return;
+  }
+  submit();
+}
+
+function next() {
+  if (LAYOUT === "single") return submitSingle();
+  const s = STEPS[i];
+  if (s.type !== "choice") {
+    const val = s.type === "check" ? ($("f").checked ? "yes" : "") : $("f").value.trim();
+    const msg = problem(s, val);
+    if (msg) { $("fw").classList.add("bad"); $("err").textContent = msg; $("f").focus(); return; }
+    A[s.key] = val;
+  } else if (!A[s.key]) return;
+  cap("intake_step", {step: i + 1, key: s.key});
+  save();
+  warm();
+  if (i < STEPS.length - 1) { i++; render(); return; }
+  submit();
+}
+
+$("form").addEventListener("submit", e => { e.preventDefault(); next(); });
+// One-page layout: Enter in a short field moves to the next field instead of submitting.
+$("form").addEventListener("keydown", e => {
+  if (LAYOUT !== "single" || e.key !== "Enter" || e.target.tagName !== "INPUT") return;
+  e.preventDefault();
+  const fields = [...$("form").querySelectorAll("input:not(#website), textarea, .opt")];
+  const nxt = fields[fields.indexOf(e.target) + 1];
+  if (nxt) nxt.focus();
+});
+$("back").addEventListener("click", () => { if (i > 0) { i--; render(); } });
+
+function submit() {
+  const btn = $("next");
+  btn.disabled = true; btn.textContent = "One moment...";
+  $("bar").style.width = "100%";
+  try { posthog.identify(A.email, {email: A.email, name: A.name}); } catch (e) {}
+  // Meta pixel events, by the investment answer (the campaign optimizes on Lead):
+  //   $1,000+ (first two answers)  -> Lead + SubmitApplication (qualified, its own Ads Manager column)
+  //   ~$200                        -> Lead
+  //   "I can't invest much"        -> nothing, so Meta does not look for more people like them
+  //   Gender "Woman"               -> nothing either (the coaching is for men)
+  // The page itself behaves the same for everyone.
+  const INVEST_AT = STEPS.find(s => s.key === "invest").opts.indexOf(A.invest);
+  const TO_META = A.gender !== "Woman";
+  if (TO_META && INVEST_AT !== 3) {
+    try { fbq('track', 'Lead', {content_name: 'discovery-call'}); } catch (e) {}
+  }
+  if (TO_META && (INVEST_AT === 0 || INVEST_AT === 1)) {
+    try { fbq('track', 'SubmitApplication', {content_name: 'discovery-call-qualified'}); } catch (e) {}
+  }
+  SUBMITTED = true;
+  cap("intake_submitted", Object.assign({invest: A.invest}, progress()), true);
+
+  const answers = {};
+  STEPS.forEach(s => { if (s.key !== "name" && s.key !== "email" && A[s.key]) answers[s.key] = A[s.key]; });
+  const qs = new URLSearchParams(location.search);
+  // The calendar opens whatever happens here: a problem on our side must never be
+  // the reason someone cannot book. 6s ceiling so a hung request cannot strand them.
+  const req = fetch(APPLY_URL, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      stage: "submitted", name: A.name, email: A.email, answers,
+      website: $("website").value,
+      referrer: document.referrer || null,
+      utm_source: qs.get("utm_source") || qs.get("c"),
+    }),
+    keepalive: true,
+  }).then(r => r.json()).then(d => { if (d && d.ok) APP_ID = d.id; else cap("intake_save_failed", {reason: d && d.error}); })
+    .catch(e => cap("intake_save_failed", {reason: String(e)}));
+  Promise.race([req, new Promise(r => setTimeout(r, 6000))]).then(() => {
+    save({done: true});
+    showCalendar();
+  });
+}
+
+/* ---------- Calendar: loaded early, revealed on submit ----------
+   Google Calendar appointment schedule, embedded the same way as /coaching. The frame
+   starts loading as soon as a usable name and email exist, while they answer the rest,
+   so it is already drawn when they submit. Google's page is cross-origin, so this page
+   cannot see when someone books: Google emails Will each booking instead. */
+let CAL_MOUNTED = false;
+let REVEALED = false;
+
+function currentContact() {
+  if (LAYOUT === "single") {
+    const n = $("f-name"), e = $("f-email");
+    return {name: n ? n.value.trim() : (A.name || ""), email: e ? e.value.trim() : (A.email || "")};
+  }
+  return {name: A.name || "", email: A.email || ""};
+}
+
+function mountCalendar() {
+  if (CAL_MOUNTED) return;
+  CAL_MOUNTED = true;
+  if (!REVEALED) { $("booking").classList.add("prerender"); $("booking").hidden = false; }
+  $("cal-frame").src = CAL_EMBED;
+  cap("calendar_mounted", {early: !REVEALED});
+}
+
+// Warm the calendar once the name and email are usable.
+function warm() {
+  const c = currentContact();
+  if (c.name.length >= 2 && EMAIL_RE.test(c.email)) mountCalendar();
+}
+$("form").addEventListener("focusout", () => setTimeout(warm, 0));
+$("form").addEventListener("change", warm);
+
+function showCalendar() {
+  REVEALED = true;
+  mountCalendar();   // no-op when already loaded in the background
+  $("intake").hidden = true;
+  $("booking").hidden = false;
+  $("booking").classList.remove("prerender");
+  $("wrap").classList.add("wide");
+  $("first-name").textContent = A.name ? ", " + A.name.split(" ")[0] : "";
+  window.scrollTo({top: 0});
+  cap("calendar_shown", {});
+}
+
+$("edit").addEventListener("click", () => {
+  REVEALED = false;
+  save({done: false});
+  $("booking").classList.add("prerender");     // keep it mounted, just clipped again
+  $("intake").hidden = false;
+  $("wrap").classList.remove("wide");
+  const btn = $("next"); btn.disabled = false;
+  i = 0; render();
+});
+
+/* ---------- Survive a refresh ----------
+   Answers in progress and "already reached the calendar" are kept in sessionStorage,
+   so a refresh puts them back where they were instead of on an empty form. */
+const STORE = "book_intake_v1";
+let SAVED = {};
+function save(extra) {
+  try {
+    SAVED = Object.assign(SAVED, extra || {}, {answers: A, app_id: APP_ID});
+    sessionStorage.setItem(STORE, JSON.stringify(SAVED));
+  } catch (e) {}
+}
+function load() {
+  try { return JSON.parse(sessionStorage.getItem(STORE) || "{}") || {}; } catch (e) { return {}; }
+}
+// Keep a draft as they type or pick.
+$("form").addEventListener("input", e => {
+  const id = e.target.id || "";
+  const val = e.target.type === "checkbox" ? (e.target.checked ? "yes" : "") : e.target.value;
+  if (LAYOUT === "single" && id.startsWith("f-")) A[id.slice(2)] = val;
+  else if (id === "f") A[STEPS[i].key] = val;
+  save();
+  // Typing pauses count too, not only leaving the field.
+  clearTimeout(window.__warmT); window.__warmT = setTimeout(warm, 700);
+});
+$("form").addEventListener("click", e => { if (e.target.classList.contains("opt")) setTimeout(save, 0); });
+
+/* ---------- How far they get ----------
+   Which questions they scroll to, start, and answer, and what they had done when
+   they left without submitting. Never sends what they typed, only which questions
+   and how many characters. Each question fires each event once per page load. */
+const T0 = Date.now();
+const SEEN = new Set(), STARTED = new Set(), ANSWERED = new Set();
+let SUBMITTED = false, LEFT = false, MAX_SCROLL = 0, LAST_KEY = null;
+const idx = key => STEPS.findIndex(s => s.key === key) + 1;
+const keyOf = el => (el && el.id === "f") ? STEPS[i].key : (el && el.id && el.id.startsWith("f-")) ? el.id.slice(2) : null;
+
+function markSeen(key) {
+  if (SEEN.has(key)) return;
+  SEEN.add(key);
+  cap("intake_question_seen", {key, question: idx(key), of: STEPS.length});
+}
+let OBS = null;
+function observeQuestions() {
+  if (!("IntersectionObserver" in window)) return;
+  if (OBS) OBS.disconnect();
+  OBS = new IntersectionObserver(entries => entries.forEach(en => {
+    if (en.isIntersecting) markSeen(en.target.querySelector("[id^='fw-']").id.slice(3));
+  }), {threshold: 0.6});
+  document.querySelectorAll(".qblock").forEach(b => OBS.observe(b));
+}
+function markStarted(key) {
+  LAST_KEY = key;
+  if (!key || STARTED.has(key)) return;
+  STARTED.add(key);
+  cap("intake_question_started", {key, question: idx(key)});
+}
+function markAnswered(key) {
+  if (!key || ANSWERED.has(key) || !String(A[key] || "").trim()) return;
+  ANSWERED.add(key);
+  const s = STEPS[idx(key) - 1];
+  const props = {key, question: idx(key), answered: ANSWERED.size};
+  if (s.type === "textarea") props.chars = String(A[key]).trim().length;
+  cap("intake_question_answered", props);
+}
+function progress() {
+  const seenIdx = [...SEEN].map(idx);
+  return {
+    answered: ANSWERED.size,
+    answered_keys: STEPS.filter(s => ANSWERED.has(s.key)).map(s => s.key).join(","),
+    furthest_seen: seenIdx.length ? Math.max(...seenIdx) : 0,
+    of: STEPS.length,
+    last_key: LAST_KEY,
+    max_scroll_pct: MAX_SCROLL,
+    seconds: Math.round((Date.now() - T0) / 1000),
+  };
+}
+$("form").addEventListener("focusin", e => markStarted(keyOf(e.target)));
+$("form").addEventListener("focusout", e => markAnswered(keyOf(e.target)));
+$("form").addEventListener("click", e => {
+  if (!e.target.classList.contains("opt")) return;
+  const g = e.target.closest(".opts");
+  const key = g ? g.getAttribute("data-key") : STEPS[i].key;
+  markStarted(key);
+  setTimeout(() => markAnswered(key), 0);
+});
+window.addEventListener("scroll", () => {
+  const h = document.documentElement.scrollHeight - innerHeight;
+  if (h > 0) MAX_SCROLL = Math.max(MAX_SCROLL, Math.round(scrollY / h * 100));
+}, {passive: true});
+function leave() {
+  if (SUBMITTED || LEFT || REVEALED) return;
+  LEFT = true;
+  cap("intake_abandoned", progress(), true);
+}
+window.addEventListener("pagehide", leave);
+// Phones rarely fire pagehide, so a hidden tab counts as leaving. If they come back,
+// it can fire again later; analysis treats anyone who submitted as not abandoned.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") leave(); else LEFT = false;
+});
+
+SAVED = load();
+if (SAVED.answers) Object.assign(A, SAVED.answers);
+if (SAVED.app_id) APP_ID = SAVED.app_id;
+render();
+if (SAVED.done && A.name && A.email) {
+  showCalendar();
+  cap("calendar_restored", {booked: !!SAVED.booked});
+} else {
+  warm();
+  cap("intake_start", {restored: !!SAVED.answers});
+}
+</script>
+</body>
+</html>

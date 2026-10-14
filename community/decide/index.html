@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="referrer" content="no-referrer" />
+<meta name="theme-color" content="#040b12" />
+<title>Community decision · William Mulvaney</title>
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Will's accept / reject page for paid Willpower Community applications.
+     Opened from the "Paid, needs your decision" email. Loading it only previews;
+     nothing changes until the button is pressed. */
+  :root {
+    --bg: #040b12; --surface: rgba(10, 26, 39, 0.72); --border: rgba(255, 255, 255, 0.1);
+    --text: rgba(255, 255, 255, 0.92); --muted: rgba(255, 255, 255, 0.58); --faint: rgba(255, 255, 255, 0.34);
+    --accent: #479dc2; --accept: #2f7d4f; --reject: #a33b2f;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 32px 20px 80px; }
+  .home-link img { height: 38px; width: auto; display: block; opacity: 0.9; filter: brightness(0) invert(1); }
+  .kicker { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); margin: 28px 0 10px; }
+  h1 { font-family: var(--font-display); font-weight: 900; font-size: 38px; line-height: 1.1; margin: 0 0 18px; color: #fff; }
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin: 0 0 18px; }
+  dl { display: grid; grid-template-columns: 90px 1fr; gap: 8px 14px; margin: 0; font-size: 15px; }
+  dt { color: var(--faint); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding-top: 3px; }
+  dd { margin: 0; overflow-wrap: anywhere; line-height: 1.5; }
+  p { color: var(--muted); line-height: 1.7; font-size: 15px; margin: 0 0 14px; }
+  p b { color: var(--text); }
+  .btn { display: block; width: 100%; border: 0; cursor: pointer; font-family: var(--font-ui); font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; padding: 18px; color: #fff; text-align: center; text-decoration: none; }
+  .btn.accept { background: var(--accept); }
+  .btn.reject { background: var(--reject); }
+  .btn.link { background: transparent; border: 1px solid rgba(255,255,255,0.22); margin-top: 10px; }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .msg { padding: 14px 16px; border: 1px solid var(--border); margin: 0 0 16px; font-size: 15px; line-height: 1.6; }
+  .msg.ok { border-color: rgba(92,195,143,0.5); background: rgba(92,195,143,0.08); }
+  .msg.err { border-color: rgba(227,90,74,0.5); background: rgba(227,90,74,0.08); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="home-link" href="https://williammulvaney.com/"><img src="/willpower_logo.svg" alt="William Mulvaney" /></a>
+  <div class="kicker">Willpower Community</div>
+  <h1 id="title">Loading application...</h1>
+  <div id="msg" class="msg" hidden></div>
+  <div id="details" class="card" hidden>
+    <dl>
+      <dt>Name</dt><dd id="d-name"></dd>
+      <dt>Email</dt><dd id="d-email"></dd>
+      <dt>Wants</dt><dd id="d-want"></dd>
+      <dt>Paid</dt><dd id="d-paid"></dd>
+      <dt>Status</dt><dd id="d-status"></dd>
+    </dl>
+  </div>
+  <p id="explain" hidden></p>
+  <button id="go" class="btn" hidden></button>
+  <div id="after" hidden></div>
+</div>
+<script>
+(function () {
+  var API = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/community-decision";
+  var q = new URLSearchParams(location.search);
+  var id = q.get("id") || "", action = q.get("a") || "", sig = q.get("s") || "";
+  var $ = function (i) { return document.getElementById(i); };
+
+  function show(el, text) { el.textContent = text; el.hidden = false; }
+  function message(text, kind) { var m = $("msg"); m.className = "msg " + (kind || ""); show(m, text); }
+  function call(confirm) {
+    return fetch(API, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: id, action: action, sig: sig, confirm: confirm }) })
+      .then(function (r) { return r.json(); })
+      .catch(function () { return { ok: false, error: "Couldn't reach the server. Try again in a minute." }; });
+  }
+  function fill(d) {
+    $("d-name").textContent = d.name || "(no name)";
+    $("d-email").textContent = d.email || "";
+    $("d-want").textContent = d.want || "(no answer on file)";
+    $("d-paid").textContent = d.paid ? "Yes" : "Not yet";
+    $("d-status").textContent = d.status;
+    $("details").hidden = false;
+  }
+  function stripeLinks(links) {
+    var a = $("after"); a.innerHTML = ""; a.hidden = false;
+    var p = document.createElement("p");
+    p.innerHTML = "<b>Next, in Stripe:</b> refund the $99 payment and cancel the $19/mo subscription so they aren't charged after the trial.";
+    a.appendChild(p);
+    [["Open the customer in Stripe", links && links.customer], ["Open the subscription in Stripe", links && links.subscription]].forEach(function (x) {
+      if (!x[1]) return;
+      var l = document.createElement("a"); l.className = "btn link"; l.href = x[1]; l.target = "_blank"; l.rel = "noopener"; l.textContent = x[0];
+      a.appendChild(l);
+    });
+  }
+
+  if (!id || (action !== "accept" && action !== "reject") || !sig) {
+    show($("title"), "This link isn't complete.");
+    message("Open the Accept or Reject button from the email again.", "err");
+    return;
+  }
+
+  call(false).then(function (d) {
+    if (!d.ok) { show($("title"), "Can't open this application."); message(d.error || "Something went wrong.", "err"); return; }
+    fill(d);
+    if (d.status === "accepted") { show($("title"), "Already accepted."); message("They have an account and community access.", "ok"); return; }
+    if (d.status === "rejected") { show($("title"), "Already rejected."); stripeLinks(d.links); return; }
+    if (d.status === "withdrawn") { show($("title"), "Withdrawn."); message("They cancelled their subscription before you decided. Nothing to do except refund the $99 if you want to.", "err"); stripeLinks(d.links); return; }
+
+    var go = $("go");
+    if (action === "accept") {
+      show($("title"), "Accept " + (d.name || "this applicant") + "?");
+      show($("explain"), "This creates their app account, gives them community access, and emails them how to sign in.");
+      go.className = "btn accept"; go.textContent = "Accept and create account";
+      if (!d.paid) { go.disabled = true; message("They haven't paid yet, so you can't accept them.", "err"); }
+    } else {
+      show($("title"), "Reject " + (d.name || "this applicant") + "?");
+      show($("explain"), "This marks the application rejected. They don't get an account. You'll get links to refund and cancel in Stripe.");
+      go.className = "btn reject"; go.textContent = "Reject application";
+    }
+    go.hidden = false;
+    go.onclick = function () {
+      go.disabled = true; go.textContent = "Working...";
+      call(true).then(function (r) {
+        go.hidden = true; $("explain").hidden = true;
+        if (!r.ok) { message(r.error || "Something went wrong.", "err"); go.hidden = false; go.disabled = false; go.textContent = "Try again"; return; }
+        $("d-status").textContent = r.status;
+        if (r.status === "accepted") {
+          show($("title"), "Accepted.");
+          message(r.already ? "They were already accepted." : (r.emailed ? "Account created. They've been emailed how to sign in." : "Account created, but the welcome email didn't send. Email them the app link yourself: coaching.williammulvaney.com"), r.emailed || r.already ? "ok" : "err");
+        } else {
+          show($("title"), "Rejected.");
+          stripeLinks(r.links);
+        }
+      });
+    };
+  });
+})();
+</script>
+</body>
+</html>
