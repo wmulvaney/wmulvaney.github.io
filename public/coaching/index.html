@@ -135,6 +135,10 @@
   footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
   /* video slot: drop an <iframe> or <video> inside .vsl and delete .vsl-empty */
   .vsl { position: relative; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--border-strong); background: var(--surface-strong); box-shadow: var(--shadow); overflow: hidden; margin: 0 0 28px; }
+  @supports not (aspect-ratio: 1 / 1) {
+    .vsl { height: 0; padding-top: 56.25%; }
+    @media (max-width: 619px) { .vsl.has-photos { padding-top: 133.33%; } }
+  }
   .vsl iframe, .vsl video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
   .vsl-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--faint); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
   .vsl-empty .play { width: 64px; height: 64px; border: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: center; }
@@ -143,11 +147,11 @@
   .vsl-photos { position: absolute; inset: 0; display: grid; gap: 1px; background: var(--border-strong);
     grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr));
     grid-template-areas: "a b b c" "a d e c"; }
-  .vsl-photos img { width: 100%; height: 100%; min-height: 0; object-fit: cover; display: block; }
+  .vsl-photos .tile { min-width: 0; min-height: 0; background-size: cover; background-repeat: no-repeat; background-color: var(--surface-strong); }
   .vsl-photos .p-a { grid-area: a; } .vsl-photos .p-b { grid-area: b; } .vsl-photos .p-c { grid-area: c; }
   .vsl-photos .p-d { grid-area: d; } .vsl-photos .p-e { grid-area: e; }
   @media (max-width: 619px) {
-    .vsl:has(.vsl-photos) { aspect-ratio: 3 / 4; }
+    .vsl.has-photos { aspect-ratio: 3 / 4; }
     .vsl-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr));
       grid-template-areas: "b b" "a d" "c e"; }
   }
@@ -235,14 +239,14 @@ posthog.register({funnel_product: 'work_with_me', funnel_page: 'landing'});
   <h1>Work with me.</h1>
   <p class="h1-sub">Dating, fitness, discipline, and whatever else you're stuck on.</p>
 
-  <div class="vsl">
-    <!-- VSL: paste the video embed here (YouTube/Vimeo iframe or <video>), then delete the .vsl-photos div -->
+  <div class="vsl has-photos">
+    <!-- VSL: paste the video embed here (YouTube/Vimeo iframe or <video>), then delete the .vsl-photos div and the has-photos class -->
     <div class="vsl-photos">
-      <img class="p-a" src="/coaching/img/spartan-stone.jpg" alt="William carrying a stone during a Spartan race" style="object-position:50% 35%" />
-      <img class="p-b" src="/coaching/img/jiu-jitsu.jpg" alt="William with his jiu-jitsu coaches and teammates" style="object-position:50% 45%" />
-      <img class="p-c" src="/coaching/img/running.jpg" alt="William running past a statue in Bali" style="object-position:78% 60%" />
-      <img class="p-d" src="/coaching/img/couple.jpg" alt="William and his girlfriend on a hike" style="object-position:62% 40%" />
-      <img class="p-e" src="/coaching/img/couple-2.jpg" alt="William and his girlfriend smiling in an elevator" style="object-position:55% 55%" />
+      <div class="tile p-a" role="img" aria-label="William carrying a stone during a Spartan race" style="background-image:url('/coaching/img/spartan-stone.jpg');background-position:50% 35%"></div>
+      <div class="tile p-b" role="img" aria-label="William with his jiu-jitsu coaches and teammates" style="background-image:url('/coaching/img/jiu-jitsu.jpg');background-position:50% 45%"></div>
+      <div class="tile p-c" role="img" aria-label="William running past a statue in Bali" style="background-image:url('/coaching/img/running.jpg');background-position:78% 60%"></div>
+      <div class="tile p-d" role="img" aria-label="William and his girlfriend on a hike" style="background-image:url('/coaching/img/couple.jpg');background-position:62% 40%"></div>
+      <div class="tile p-e" role="img" aria-label="William and his girlfriend smiling in an elevator" style="background-image:url('/coaching/img/couple-2.jpg');background-position:55% 55%"></div>
     </div>
   </div>
 
