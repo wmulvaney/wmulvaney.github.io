@@ -189,11 +189,13 @@
   .modal h3 { font-family: var(--font-display); font-weight: 900; font-size: 25px; line-height: 1.2; margin: 0 0 22px; }
   .fld { margin-bottom: 15px; }
   .fld label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); margin-bottom: 7px; }
-  .fld input, .fld textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 0; color: var(--text); font-family: var(--font-ui); font-size: 15px; padding: 13px 14px; transition: border-color 140ms ease; }
+  .fld input, .fld textarea, .fld select { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 0; color: var(--text); font-family: var(--font-ui); font-size: 15px; padding: 13px 14px; transition: border-color 140ms ease; }
   .fld textarea { min-height: 88px; resize: vertical; line-height: 1.5; }
-  .fld input:focus, .fld textarea:focus { outline: none; border-color: var(--accent); }
+  .fld input:focus, .fld textarea:focus, .fld select:focus { outline: none; border-color: var(--accent); }
+  .fld select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, rgba(255,255,255,0.45) 50%), linear-gradient(135deg, rgba(255,255,255,0.45) 50%, transparent 50%); background-position: calc(100% - 20px) 21px, calc(100% - 14px) 21px; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; }
+  .fld select option { background: var(--surface-strong); color: var(--text); }
   .fld input::placeholder, .fld textarea::placeholder { color: rgba(255,255,255,0.28); }
-  .fld.bad input, .fld.bad textarea { border-color: #f87171; }
+  .fld.bad input, .fld.bad textarea, .fld.bad select { border-color: #f87171; }
   .fld .err { display: none; font-size: 11px; color: #f87171; margin-top: 6px; letter-spacing: 0.04em; }
   .fld.bad .err { display: block; }
   .modal .btn-primary { width: 100%; margin-top: 4px; }
@@ -260,8 +262,7 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
       <span class="fact">Q&amp;A included</span>
     </div>
     <div class="datechips">
-      <span class="datechip"><b>Sat Oct 24</b> &middot; <span class="js-t1">1:00 PM CT</span></span>
-      <span class="datechip"><b>Sat Nov 7</b> &middot; <span class="js-t2">1:00 PM CT</span></span>
+      <span class="datechip"><b class="js-date">Sat Oct 24</b> &middot; <span class="js-time">1:00 PM CT</span></span>
     </div>
     <span class="freetag">Free</span>
     <div style="margin-top:18px"><button class="btn-primary js-buy" onclick="openReg('hero')">Save my spot</button></div>
@@ -335,7 +336,7 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
 <div class="divider-lbl">FAQ</div>
 <section style="max-width:760px;margin:0 auto">
   <details><summary>Is it actually free?</summary><div class="ans">Yes. No card, no obligation.</div></details>
-  <details><summary>What if I can't make that date?</summary><div class="ans">There are two sessions, Saturday October 24 and Saturday November 7, both at 1:00 PM Central. Pick whichever one works. If something comes up, just reply to the confirmation email and I'll move you to the other one.</div></details>
+  <details><summary>What if I can't make that date?</summary><div class="ans">Reply to your confirmation email and I'll move you to the next session.</div></details>
   <details><summary>I'm not outgoing. Is this still for me?</summary><div class="ans">Yes. I wasn't either. You don't need to become a different person. You need reps, and someone helping you make sense of each one.</div></details>
   <details><summary>I'm not good looking. Why would I do this?</summary><div class="ans">In person, looks are one part of the picture instead of the whole thing. How you carry yourself, how you talk, and whether you're comfortable in your own skin carry more weight than most guys expect, and all of that gets better with practice.</div></details>
   <details><summary>Is this pickup?</summary><div class="ans">No. No tricks, no routines, no lines. It's learning to walk up to a woman you're interested in and have an honest conversation.</div></details>
@@ -344,7 +345,7 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
 <!-- ================= CLOSING CTA ================= -->
 <section class="cta-band" style="margin-top:44px">
   <h2 style="text-align:center">Stop walking past her.</h2>
-  <p class="cta-sub" style="text-align:center">One hour, live, free. Saturday <span class="js-when-both">October 24 or November 7, 1:00 PM Central</span>.</p>
+  <p class="cta-sub" style="text-align:center">One hour, live, free. <span class="js-when-long">Saturday, October 24, 1:00 PM Central</span>.</p>
   <div style="text-align:center"><button class="btn-primary js-buy" onclick="openReg('footer')">Save my spot</button></div>
 </section>
 
@@ -363,7 +364,7 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
 </div><!-- /wrap -->
 
 <div class="sticky" id="sticky">
-  <div class="s-txt"><b>Free</b> &middot; 1 hour<br/>Sat <span class="js-when-short">Oct 24 or Nov 7</span></div>
+  <div class="s-txt"><b>Free</b> &middot; 1 hour<br/><span class="js-when-short">Sat Oct 24</span></div>
   <button class="btn-primary js-buy" onclick="openReg('sticky')">Save my spot</button>
 </div>
 
@@ -372,13 +373,7 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
     <button class="modal-close" type="button" onclick="closeReg()" aria-label="Close">&times;</button>
     <h3 id="reg-title">Save your spot</h3>
     <form id="reg-form" novalidate>
-      <div class="fld" id="fld-session">
-        <label>Which session?</label>
-        <div class="sessions" id="sessions">
-          <label class="sess on"><input type="radio" name="session" value="apps-vs-real-life-2026-10-24" checked /><span><b>Saturday, October 24</b><span class="js-s1">1:00 PM Central &middot; 1 hour</span></span></label>
-          <label class="sess"><input type="radio" name="session" value="apps-vs-real-life-2026-11-07" /><span><b>Saturday, November 7</b><span class="js-s2">1:00 PM Central &middot; 1 hour</span></span></label>
-        </div>
-      </div>
+      <p class="why" style="margin:0 0 18px"><span class="js-when-long">Saturday, October 24, 1:00 PM Central</span> &middot; 1 hour &middot; free</p>
       <div class="fld" id="fld-name">
         <label for="reg-name">Your name</label>
         <input id="reg-name" type="text" autocomplete="name" placeholder="First and last" />
@@ -393,6 +388,28 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
         <label for="reg-phone">Phone</label>
         <input id="reg-phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(555) 555-5555" />
         <div class="err">Please enter your phone number.</div>
+      </div>
+      <div class="fld" id="fld-age">
+        <label for="reg-age">Age</label>
+        <input id="reg-age" type="number" inputmode="numeric" min="18" max="99" placeholder="e.g. 32" />
+        <div class="err">Please enter your age.</div>
+      </div>
+      <div class="fld" id="fld-situation">
+        <label for="reg-situation">Where are you at right now?</label>
+        <select id="reg-situation">
+          <option value="">Choose one</option>
+          <option>Mostly using dating apps</option>
+          <option>Tried the apps and gave up</option>
+          <option>Not really dating at all right now</option>
+          <option>Dating, but not the women I actually want</option>
+          <option>Coming out of a long relationship</option>
+        </select>
+        <div class="err">Please pick one.</div>
+      </div>
+      <div class="fld" id="fld-goal">
+        <label for="reg-goal">What would you want to be different after this?</label>
+        <textarea id="reg-goal" placeholder="I tailor the session to what most attendees say here."></textarea>
+        <div class="err">Please answer this one, it is the part I actually use.</div>
       </div>
       <button class="btn-primary" type="submit" id="reg-submit">Save my spot</button>
       <p class="why">We use your name, email and phone only to send you the joining link and reminders for this workshop.</p>
@@ -410,12 +427,13 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
 <script>
 const REGISTER_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-register";
 
-/* Both sessions start at 1:00 PM Central. Stored as UTC because the two dates straddle the
-   end of daylight saving, so Oct 24 is UTC-5 and Nov 7 is UTC-6. */
-const SESSIONS = {
-  "apps-vs-real-life-2026-10-24": {start: new Date("2026-10-24T18:00:00Z"), label: "Saturday, October 24"},
-  "apps-vs-real-life-2026-11-07": {start: new Date("2026-11-07T19:00:00Z"), label: "Saturday, November 7"},
-};
+const NEXT_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-seats";
+
+/* Only the next session is ever offered. The date is resolved from the server so that when
+   one session passes the page rolls to the following one with no edit and no stale date.
+   The hardcoded fallback is the Oct 24 session (UTC-5; the November one is UTC-6 because
+   it falls after daylight saving ends). */
+let SESSION = {slug: "apps-vs-real-life-2026-10-24", start: new Date("2026-10-24T18:00:00Z")};
 
 const $$ = (s) => Array.from(document.querySelectorAll(s));
 const T0 = Date.now();
@@ -428,23 +446,39 @@ function cap(event, props, leaving) {
   try { posthog.capture(event, props || {}, leaving ? {send_instantly: true, transport: 'sendBeacon'} : undefined); } catch (e) {}
 }
 
-/* Show both times in the visitor's own zone when it is not Central, so nobody has to do
-   the maths. The paid page shipped broken for days because this threw on a missing node,
-   so every lookup here is guarded. */
-(function localTimes() {
+/* Render the session date everywhere it appears, in the visitor's own zone. Every lookup
+   is guarded: the paid page shipped broken for days because this threw on a missing node. */
+function renderWhen() {
   try {
+    const d = SESSION.start;
+    const dayShort = new Intl.DateTimeFormat("en-US", {weekday: "short", month: "short", day: "numeric"}).format(d);
+    const dayLong = new Intl.DateTimeFormat("en-US", {weekday: "long", month: "long", day: "numeric"}).format(d);
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-    const fmt = (d) => new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "2-digit", timeZoneName: "short"}).format(d);
     const central = /Chicago|Winnipeg|Mexico_City|Regina/.test(tz);
-    if (central) return;
-    const a = SESSIONS["apps-vs-real-life-2026-10-24"].start;
-    const b = SESSIONS["apps-vs-real-life-2026-11-07"].start;
-    $$(".js-t1").forEach((n) => n.textContent = fmt(a));
-    $$(".js-t2").forEach((n) => n.textContent = fmt(b));
-    $$(".js-s1").forEach((n) => n.textContent = fmt(a) + " · 1 hour");
-    $$(".js-s2").forEach((n) => n.textContent = fmt(b) + " · 1 hour");
+    const time = central
+      ? "1:00 PM CT"
+      : new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "2-digit", timeZoneName: "short"}).format(d);
+    const timeLong = central
+      ? "1:00 PM Central"
+      : new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "2-digit", timeZoneName: "short"}).format(d);
+    $$(".js-date").forEach((n) => n.textContent = dayShort);
+    $$(".js-time").forEach((n) => n.textContent = time);
+    $$(".js-when-short").forEach((n) => n.textContent = dayShort);
+    $$(".js-when-long").forEach((n) => n.textContent = dayLong + ", " + timeLong);
   } catch (e) {}
-})();
+}
+renderWhen();
+
+fetch(NEXT_URL)
+  .then((r) => r.json())
+  .then((d) => {
+    if (d && d.ok && d.slug && d.starts_at) {
+      SESSION = {slug: d.slug, start: new Date(d.starts_at)};
+      renderWhen();
+      cap('session_loaded', {session: d.slug});
+    }
+  })
+  .catch(() => {});
 
 const $modal = () => document.getElementById("reg-modal");
 
@@ -478,12 +512,6 @@ function toast(msg) {
   });
   $modal().addEventListener("click", (e) => { if (e.target === $modal()) closeReg("backdrop"); });
 
-  // Highlight the chosen session row.
-  $$("#sessions input").forEach((i) => i.addEventListener("change", () => {
-    $$(".sess").forEach((s) => s.classList.toggle("on", s.contains(document.querySelector("#sessions input:checked"))));
-    cap('session_picked', {session: i.value});
-  }));
-
   const mark = (id, bad) => document.getElementById(id).classList.toggle("bad", bad);
 
   form.addEventListener("submit", function (e) {
@@ -491,16 +519,22 @@ function toast(msg) {
     const name = document.getElementById("reg-name").value.trim();
     const email = document.getElementById("reg-email").value.trim();
     const phone = document.getElementById("reg-phone").value.trim();
-    const picked = document.querySelector("#sessions input:checked");
-    const slug = picked ? picked.value : "";
+    const age = document.getElementById("reg-age").value.trim();
+    const situation = document.getElementById("reg-situation").value;
+    const goal = document.getElementById("reg-goal").value.trim();
 
     const badName = name.length < 2;
     const badEmail = !/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/.test(email);
     const badPhone = phone.replace(/\D/g, "").length < 7;
+    const n = parseInt(age, 10);
+    const badAge = !(n >= 18 && n <= 99);
+    const badSituation = !situation;
+    const badGoal = goal.length < 3;
     mark("fld-name", badName); mark("fld-email", badEmail); mark("fld-phone", badPhone);
-    if (badName || badEmail || badPhone || !slug) {
-      cap('register_form_invalid', {name: badName, email: badEmail, phone: badPhone});
-      const first = document.querySelector(".fld.bad input");
+    mark("fld-age", badAge); mark("fld-situation", badSituation); mark("fld-goal", badGoal);
+    if (badName || badEmail || badPhone || badAge || badSituation || badGoal) {
+      cap('register_form_invalid', {name: badName, email: badEmail, phone: badPhone, age: badAge, situation: badSituation, goal: badGoal});
+      const first = document.querySelector(".fld.bad input, .fld.bad select, .fld.bad textarea");
       if (first) first.focus();
       return;
     }
@@ -511,18 +545,22 @@ function toast(msg) {
     fetch(REGISTER_URL, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({name: name, email: email, phone: phone, event_slug: slug}),
+      body: JSON.stringify({
+        name: name, email: email, phone: phone, event_slug: SESSION.slug,
+        intake: {age: age, situation: situation, goal: goal},
+      }),
     })
       .then((r) => r.json())
       .then((d) => {
         if (!d || !d.ok) throw new Error((d && d.error) || "registration failed");
         REGISTERED = true;
-        const s = SESSIONS[slug];
-        document.querySelector(".js-done-when").textContent = s ? s.label + " at 1:00 PM Central" : "the workshop";
+        document.querySelector(".js-done-when").textContent =
+          new Intl.DateTimeFormat("en-US", {weekday: "long", month: "long", day: "numeric"}).format(SESSION.start)
+          + " at 1:00 PM Central";
         document.getElementById("reg-form").hidden = true;
         document.getElementById("reg-done").hidden = false;
         cap('registered', {
-          session: slug, where: REG_CTX.where, already: Boolean(d.already),
+          session: SESSION.slug, where: REG_CTX.where, already: Boolean(d.already),
           seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL,
         }, true);
         try { posthog.identify(email, {email: email, name: name}); } catch (err) {}
