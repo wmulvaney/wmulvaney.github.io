@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex" />
 <meta name="theme-color" content="#040b12" />
-<title>Dating Discipline Workshop · William Mulvaney</title>
-<meta name="description" content="A live 2-hour workshop on how to meet women in real life and go on more dates. Saturday, October 17, 1:00 PM Central." />
-<meta property="og:title" content="Dating Discipline Workshop" />
-<meta property="og:description" content="How to meet women in real life and go on more dates. Live workshop, Saturday, October 17." />
+<title>The Better Option Than Dating Apps &middot; Free Workshop</title>
+<meta name="description" content="A free one hour workshop on meeting women in real life instead of on apps. Saturday, October 24 or Saturday, November 7, 1:00 PM Central." />
+<meta property="og:title" content="Stop swiping. Start dating." />
+<meta property="og:description" content="A free one hour live workshop on meeting women in real life instead of on apps." />
 <meta property="og:image" content="https://williammulvaney.com/workshop/img/approach.jpg" />
 <link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
 <link rel="apple-touch-icon" href="/willpower_logo.svg" />
@@ -199,19 +199,29 @@
   .modal .btn-primary { width: 100%; margin-top: 4px; }
   .modal .btn-primary[disabled] { opacity: 0.6; }
   .modal .why { font-size: 11px; color: var(--faint); line-height: 1.6; margin: 14px 0 0; }
-  .modal-card.wide { max-width: 560px; }
-  /* Stripe's own panel is rounded inside the frame, so the frame is rounded to match
-     rather than showing square white corners against the dark modal. */
-  #checkout-panel { min-height: 320px; border-radius: 10px; overflow: hidden; }
   #checkout-panel iframe { border-radius: 10px; }
-  /* Mounted early and clipped. Stripe only renders in real layout, so this cannot be
-     display:none, visibility:hidden or moved off-screen: all three render nothing. */
-  #lead-pay.prerender { height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
-  .pay-back { background: none; border: none; color: var(--faint); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 0 14px; }
   .pay-back:hover { color: var(--text); }
-  .pay-wait { color: var(--muted); font-size: 13px; padding: 40px 0; text-align: center; }
   @media (max-width: 520px) { .modal-card { padding: 26px 18px 20px; } .modal h3 { font-size: 22px; } }
+
+  /* ---- free session picker + done screen ---- */
+  .sessions { display: grid; gap: 10px; margin-bottom: 16px; }
+  .sess { display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); padding: 14px; cursor: pointer; transition: border-color 140ms ease, background 140ms ease; }
+  .sess:hover { border-color: var(--border-strong); }
+  .sess input { accent-color: var(--accent); width: 18px; height: 18px; flex: none; }
+  .sess.on { border-color: var(--accent); background: var(--accent-soft); }
+  .sess b { display: block; font-size: 15px; font-weight: 700; }
+  .sess > span > span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .fld.bad .sessions { outline: 1px solid #f87171; outline-offset: 4px; }
+  .done { text-align: center; padding: 10px 0 4px; }
+  .done .tick { width: 54px; height: 54px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+  .done p { font-size: 14px; color: var(--muted); line-height: 1.7; margin: 0 0 10px; }
+  .done .when { color: var(--text); font-weight: 700; }
+  .datechips { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 16px; }
+  .datechip { border: 1px solid var(--border-strong); padding: 10px 14px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .datechip b { color: var(--accent); }
+  .freetag { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; padding: 7px 12px; display: inline-block; }
 </style>
+
 <!-- Meta Pixel -->
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -221,621 +231,353 @@ t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '526303911209957');
 fbq('track', 'PageView');
-fbq('track', 'ViewContent', {content_name: 'Dating Discipline Workshop', content_type: 'product', value: 29.00, currency: 'USD'});
+fbq('track', 'ViewContent', {content_name: 'Free Workshop: Better Than Dating Apps', content_type: 'product'});
 </script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=526303911209957&ev=PageView&noscript=1"/></noscript>
+
 <!-- PostHog analytics (start) -->
 <script>
 !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
 posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
-posthog.register({funnel_product: 'workshop', funnel_page: 'landing'});
+posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
 </script>
 <!-- PostHog analytics (end) -->
 </head>
 <body>
 <div class="wrap">
 
-<a class="home-link" href="https://williammulvaney.com/" aria-label="William Mulvaney home"><img src="willpower_logo.svg" alt="William Mulvaney" /></a>
-
 <!-- ================= HERO ================= -->
 <section class="hero">
   <div>
-    <div class="kicker">Live workshop · <span class="js-when">Saturday, October 17 · 1:00 PM Central</span></div>
-    <h1>Dating Discipline Workshop</h1>
-    <p class="h1-sub">How to meet women in real life and go on more dates</p>
-    <p class="lede">A 2-hour live workshop on meeting women in real life, asking them out, and going on more dates. You leave with the process I use and your own 90-day plan.</p>
+    <a class="home-link" aria-label="William Mulvaney home" href="https://williammulvaney.com/"><img src="/willpower_logo.svg" alt="" /></a>
+    <div class="eyebrow">Free live workshop &middot; 1 hour</div>
+    <h1>Stop swiping.<br/>Start dating.</h1>
+    <p class="sub">The better option than dating apps</p>
+    <p class="lede">One hour, live, on meeting women in real life. So you stop competing with every other man on an app and start talking to the woman who is actually in front of you.</p>
     <div class="facts">
-      <span class="fact">2 hours</span>
-      <span class="fact">Live workshop</span>
+      <span class="fact">1 hour</span>
+      <span class="fact">Live</span>
       <span class="fact">Q&amp;A included</span>
-      <span class="fact">Leave with a 90-day plan</span>
     </div>
-    <div class="price-line"><span class="price-big js-price">$29</span><span class="strike js-strike">$49</span><span class="price-note js-price-note">early bird</span></div>
-    <div class="deadline js-deadline">The first 50 seats are $29</div>
-    <button class="btn-primary js-buy" onclick="register('hero')">Save my seat · $29</button>
-    <p class="fine">Can't make it? Reach out up until 24 hours before and you get a full refund.</p>
+    <div class="datechips">
+      <span class="datechip"><b>Sat Oct 24</b> &middot; <span class="js-t1">1:00 PM CT</span></span>
+      <span class="datechip"><b>Sat Nov 7</b> &middot; <span class="js-t2">1:00 PM CT</span></span>
+    </div>
+    <span class="freetag">Free</span>
+    <div style="margin-top:18px"><button class="btn-primary js-buy" onclick="openReg('hero')">Save my spot</button></div>
+    <p class="fine">Pick whichever Saturday works. No card, no obligation.</p>
   </div>
   <div class="hero-photo">
-    <div class="badge">Live · Oct 17</div>
+    <div class="badge">Free &middot; 1 hour</div>
     <img src="img/approach.jpg" alt="William talking with a woman on a sidewalk while walking his dog" />
   </div>
 </section>
 
-<!-- ================= CLARIFY ================= -->
-<div class="divider-lbl">Why you're reading this</div>
+<!-- ================= THE APPS ================= -->
+<div class="divider-lbl">The apps</div>
 <section class="with-img">
   <div>
-  <h2>You are here for one of these reasons.</h2>
-  <ul class="checks" style="max-width:640px">
-    <li>You are lonely, and you are tired of being lonely</li>
-    <li>You want to be dating more, or dating better women than you are now</li>
-    <li>You see women you would like to meet almost every week and you walk past them</li>
-    <li>The apps are not working, and the few matches you get go nowhere</li>
-    <li>You feel like time is getting away from you, and you do not want another year to look like the last one</li>
-    <li>You are not sure what you would even do differently on your own</li>
-  </ul>
+    <h2>Dating apps suck. Need I say more?</h2>
+    <p class="body">The apps are designed to make money off of you and keep you coming back. On them, you are one of many desperate men hoping she will do you the favour of going on one date with you.</p>
+    <p class="body">Meanwhile, you do not even know if she wants to date. She might just want a free dinner.</p>
   </div>
-  <img class="sect-img" src="img/scene-walk-past.jpg" alt="A man glancing back at a woman he just walked past on a city sidewalk" loading="lazy" />
+  <img class="sect-img" src="img/app-profile.jpg" alt="A dating app profile on a phone" loading="lazy" />
 </section>
 
-<!-- ================= LABEL ================= -->
-<div class="divider-lbl">Why you're stuck</div>
+<!-- ================= A BETTER WAY ================= -->
+<div class="divider-lbl">A better way</div>
+<section>
+  <h2 style="text-align:center">Skip the line. Talk to her in real life.</h2>
+  <div class="steps">
+    <div class="step"><div class="num">1</div><h3>You choose who you talk to.</h3><p>Not whoever an algorithm decides to show you. The woman you noticed at the coffee shop, the grocery store, or on the trail.</p></div>
+    <div class="step"><div class="num">2</div><h3>She gets to see the real you.</h3><p>Your energy, your humour, how you carry yourself. Not just your looks in six photos.</p></div>
+    <div class="step"><div class="num">3</div><h3>You stand out.</h3><p>Almost no guy does this anymore. When you do, you are the only one.</p></div>
+    <div class="step"><div class="num">4</div><h3>It is completely free.</h3><p>No subscriptions, no boosts, no premium tier.</p></div>
+    <div class="step"><div class="num">5</div><h3>You build real confidence.</h3><p>Every conversation is proof you can do something hard. That confidence shows up everywhere in your life, and it is extremely attractive.</p></div>
+  </div>
+</section>
+
+<!-- ================= THE REAL PROBLEM ================= -->
+<div class="divider-lbl">The real problem</div>
 <section class="with-img flip">
   <div>
-    <h2>You want more out of your life. You just don't believe in yourself enough yet to go get it alone.</h2>
-    <p class="body">I have been there. Most men are at some point. The difference is how long they stay, because some men stay there for good.</p>
+    <h2>You're scared. And guess what, that's normal.</h2>
+    <p class="body">Every guy is terrified of doing this, which is exactly what makes you stand out so much once you can.</p>
+    <p class="body">I used to be terrified at the thought of talking to an attractive stranger. You just have to trust that a process that has worked before will work for you.</p>
   </div>
-  <img class="sect-img" src="img/scene-kitchen.jpg" alt="A man sitting alone at his kitchen table in the evening" loading="lazy" />
+  <img class="sect-img" src="img/scene-walk-past.jpg" alt="A man walking past a woman on a street" loading="lazy" />
 </section>
 
-<!-- ================= OVERVIEW ================= -->
-<div class="divider-lbl">Why it hasn't worked yet</div>
+<!-- ================= WHAT CHANGES ================= -->
+<section class="cta-band" style="margin-top:12px">
+  <h2 style="text-align:center">If you follow this process, you will actually do it.</h2>
+  <p class="body" style="text-align:center;max-width:620px;margin-left:auto;margin-right:auto">Not read about it. Not think about it for another year. When you see a beautiful woman, you will walk up and talk to her.</p>
+  <ul class="checks" style="max-width:460px;margin:22px auto 0">
+    <li>You'll know what to say, and when to say it</li>
+    <li>You'll become "rejection-proof"</li>
+    <li>You'll be more confident and attractive</li>
+  </ul>
+  <div style="text-align:center;margin-top:26px"><button class="btn-primary js-buy" onclick="openReg('middle')">Save my spot</button></div>
+</section>
+
+<!-- ================= SHOW ME ================= -->
+<div class="divider-lbl">Show me</div>
 <section class="with-img">
   <div>
-    <p class="body"><b>You have not collected any evidence.</b> You haven't seen real life evidence that the woman you are interested in could be interested in you too.</p>
-    <p class="body"><b>What has worked has never been consistent.</b> A good date here, a girl who liked you there, mostly from circumstance, so it feels more like luck than something you can repeat on purpose.</p>
-    <p class="body"><b>And pretending it is not a problem does not solve it.</b> Telling yourself you are just busy, or that you will deal with it later, makes sure the problem doesn't go away.</p>
+    <h2>I did it. That means you can too.</h2>
+    <p class="body">When I first saw Carsyn, I thought she was way out of my league. I walked up and talked to her anyway, because I had built myself into a confident and comfortable man through real-life experiences, not books, podcasts or reels.</p>
+    <p class="body">I was never a "natural". I was the guy who always chickened out. What I learned over time is that confidence is a skill you can build. I learned it the hard way so I could give you a clearer path, without all the trial and error.</p>
   </div>
-  <img class="sect-img" src="img/scene-edge.jpg" alt="A man standing at the edge of a group at a party" loading="lazy" />
-</section>
-
-<!-- ================= SELL ================= -->
-<div class="divider-lbl">90 days from now</div>
-<section class="centered">
-  <h2>If it could happen for me, it can happen for you.</h2>
-  <p class="body">I was not a natural at this. I was the guy who rehearsed a sentence ten times and never said it, who avoided eye contact so he would not have to act, who went home and replayed every moment he chickened out.</p>
-  <p class="body">Then I started doing it. And I built a habit, a process: the exact one you'll learn in this workshop.</p>
-</section>
-
-<section class="with-img flip" style="margin-top:8px">
-  <div>
-    <div class="sect-label">Me and Carsyn</div>
-    <p class="body">When I first saw Carsyn, I thought she was way out of my league. But I walked up and talked to her anyway. The rest is history. I'd spent years assuming certain women wouldn't be interested in a guy like me, and selecting myself out because of it.</p>
-    <p class="body">Ninety days from now, you could be walking up to women you would've been too nervous to talk to today. You might be surprised by how it goes.</p>
-    <div class="cta-band" style="margin:22px 0 0; text-align:left">
-      <div class="cta-line" style="justify-content:flex-start"><span class="price-big js-price">$29</span><span class="strike js-strike">$49</span><span class="price-note js-price-note">early bird</span></div>
-      <p class="cta-sub js-seats" style="margin-bottom:14px">The first 50 seats are $29. After that it's $49.</p>
-      <button class="btn-primary js-buy" onclick="register('sell')">Save my seat · $29</button>
-      <p class="fine" style="margin-top:12px"><span class="js-when">Saturday, October 17 · 1:00 PM Central</span> · 2 hours live</p>
-    </div>
-  </div>
-  <img class="sect-img" src="img/couple-crown.jpg" alt="William and Carsyn" loading="lazy" style="aspect-ratio:4/5" />
+  <img class="sect-img" src="img/couple-crown.jpg" alt="William and his girlfriend" loading="lazy" style="aspect-ratio:4/5" />
 </section>
 
 <!-- ================= FAQ ================= -->
 <div class="divider-lbl">FAQ</div>
 <section style="max-width:760px;margin:0 auto">
-  <details><summary>Will this happen overnight?</summary><p>No, it will not happen overnight. But you will start noticing improvements after your first few experiences, and in 90 days you can realistically expect a drastic change in your dating life. The part most guys do not expect: it is exciting and rewarding the whole way through.</p></details>
-  <details><summary>I'm not good looking, and I'm obviously never going to date supermodels. Why would I do this?</summary><p>There are biological realities to physical attraction, and I am not going to tell you otherwise. What surprised me is how much of the rest is in your control, especially as a man.</p><p>Confidence and self-assuredness carry more weight than most guys expect, and they are built through consistent action, not by deciding you have them. You are also in control of your physical attractiveness: training, hygiene, clothes that fit, and a life you actually like will change how you look and how you come across more than you would guess.</p></details>
-  <details><summary>How do I know if this is right for me?</summary><div class="grid-2" style="margin-top:12px">
-  <div class="card">
-    <div class="sect-label">This is for you if</div>
-    <ul class="checks">
-      <li>You want to go on more dates, or find a relationship, and what you are doing isn't getting you there</li>
-      <li>You see women you would like to talk to and don't</li>
-      <li>You get nervous around women you find attractive and want to be comfortable instead</li>
-      <li>You are tired of relying on dating apps</li>
-      <li>You want to be a better man in general, not just with dating</li>
-    </ul>
-  </div>
-  <div class="card">
-    <div class="sect-label">This is not for you if</div>
-    <ul class="checks no">
-      <li>You want scripts, routines, or tricks</li>
-      <li>You are looking for a way to get someone who has said no to change her mind</li>
-    </ul>
-  </div>
-</div></details>
-  <details><summary>What time is it in my time zone?</summary><p class="js-localtime">It starts Saturday, October 17 at 1:00 PM Central.</p></details>
-  <details><summary>Do I need my camera on?</summary><p>No. Camera on is encouraged, especially for the Q&amp;A, but it is up to you.</p></details>
-  <details><summary>What if I can't make it?</summary><p>Reach out up until 24 hours before the workshop and you get a full refund.</p></details>
+  <details><summary>Is it actually free?</summary><div class="ans">Yes. No card, no obligation.</div></details>
+  <details><summary>What if I can't make that date?</summary><div class="ans">There are two sessions, Saturday October 24 and Saturday November 7, both at 1:00 PM Central. Pick whichever one works. If something comes up, just reply to the confirmation email and I'll move you to the other one.</div></details>
+  <details><summary>I'm not outgoing. Is this still for me?</summary><div class="ans">Yes. I wasn't either. You don't need to become a different person. You need reps, and someone helping you make sense of each one.</div></details>
+  <details><summary>I'm not good looking. Why would I do this?</summary><div class="ans">In person, looks are one part of the picture instead of the whole thing. How you carry yourself, how you talk, and whether you're comfortable in your own skin carry more weight than most guys expect, and all of that gets better with practice.</div></details>
+  <details><summary>Is this pickup?</summary><div class="ans">No. No tricks, no routines, no lines. It's learning to walk up to a woman you're interested in and have an honest conversation.</div></details>
 </section>
 
 <!-- ================= CLOSING CTA ================= -->
 <section class="cta-band" style="margin-top:44px">
-  <div class="cta-line"><span class="price-big js-price">$29</span><span class="strike js-strike">$49</span><span class="price-note js-price-note">early bird</span></div>
-  <p class="cta-sub js-seats">The first 50 seats are $29. After that it's $49.</p>
-  <button class="btn-primary js-buy" onclick="register('footer')">Save my seat · $29</button>
-  <p class="fine" style="margin-left:auto;margin-right:auto;text-align:center"><span class="js-when">Saturday, October 17 · 1:00 PM Central</span> · 2 hours live</p>
+  <h2 style="text-align:center">Stop walking past her.</h2>
+  <p class="cta-sub" style="text-align:center">One hour, live, free. Saturday <span class="js-when-both">October 24 or November 7, 1:00 PM Central</span>.</p>
+  <div style="text-align:center"><button class="btn-primary js-buy" onclick="openReg('footer')">Save my spot</button></div>
 </section>
 
 <!-- ================= ABOUT ================= -->
 <div class="divider-lbl">Who am I</div>
 <section class="about">
-  <img src="img/approach-yeti.jpg" alt="William Mulvaney approaching a woman outside a storefront" loading="lazy" />
+  <img src="img/approach-yeti.jpg" alt="William Mulvaney talking with a woman outside a storefront" loading="lazy" />
   <div>
     <h2>William Mulvaney</h2>
     <p class="body">I coach men on dating and fitness and host The Willpower Podcast. I have run a 100 mile ultramarathon, I do standup comedy, and I used to be a software engineer.</p>
-    <p class="body">I have approached over a thousand women, and the first ones were rough. Everything in this workshop is what I actually do, and what I have seen work with the men I coach.</p>
+    <p class="body">I have approached over a thousand women, and the first ones were rough. Everything I coach is what I actually did, and what I have seen work with the men I coach.</p>
   </div>
 </section>
 
-<footer>© William Mulvaney · Coaching</footer>
+<footer>&copy; William Mulvaney &middot; Coaching</footer>
 </div><!-- /wrap -->
 
 <div class="sticky" id="sticky">
-  <div class="s-txt"><b class="js-price">$29</b> <span class="js-sticky-note">early bird</span><br/>Live · <span class="js-when-short">Sat, Oct 17, 1 PM CT</span></div>
-  <button class="btn-primary js-buy" onclick="register('sticky')">Save my seat</button>
+  <div class="s-txt"><b>Free</b> &middot; 1 hour<br/>Sat <span class="js-when-short">Oct 24 or Nov 7</span></div>
+  <button class="btn-primary js-buy" onclick="openReg('sticky')">Save my spot</button>
 </div>
-<div class="modal" id="lead-modal" role="dialog" aria-modal="true" aria-labelledby="lead-title">
+
+<div class="modal" id="reg-modal" role="dialog" aria-modal="true" aria-labelledby="reg-title">
   <div class="modal-card">
-    <button class="modal-close" type="button" onclick="closeLead()" aria-label="Close">&times;</button>
-    <h3 id="lead-title">Save your seat</h3>
-    <form id="lead-form" novalidate>
+    <button class="modal-close" type="button" onclick="closeReg()" aria-label="Close">&times;</button>
+    <h3 id="reg-title">Save your spot</h3>
+    <form id="reg-form" novalidate>
+      <div class="fld" id="fld-session">
+        <label>Which session?</label>
+        <div class="sessions" id="sessions">
+          <label class="sess on"><input type="radio" name="session" value="apps-vs-real-life-2026-10-24" checked /><span><b>Saturday, October 24</b><span class="js-s1">1:00 PM Central &middot; 1 hour</span></span></label>
+          <label class="sess"><input type="radio" name="session" value="apps-vs-real-life-2026-11-07" /><span><b>Saturday, November 7</b><span class="js-s2">1:00 PM Central &middot; 1 hour</span></span></label>
+        </div>
+      </div>
       <div class="fld" id="fld-name">
-        <label for="lead-name">Your name</label>
-        <input id="lead-name" name="name" type="text" autocomplete="name" placeholder="First and last" />
+        <label for="reg-name">Your name</label>
+        <input id="reg-name" type="text" autocomplete="name" placeholder="First and last" />
         <div class="err">Please enter your name.</div>
       </div>
       <div class="fld" id="fld-email">
-        <label for="lead-email">Email</label>
-        <input id="lead-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" />
+        <label for="reg-email">Email</label>
+        <input id="reg-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" />
         <div class="err">Please enter a valid email.</div>
       </div>
       <div class="fld" id="fld-phone">
-        <label for="lead-phone">Phone</label>
-        <input id="lead-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(555) 555-5555" />
+        <label for="reg-phone">Phone</label>
+        <input id="reg-phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(555) 555-5555" />
         <div class="err">Please enter your phone number.</div>
       </div>
-      <div class="fld" id="fld-goal">
-        <label for="lead-goal">If this workshop goes really well, what would you want to be different afterward?</label>
-        <textarea id="lead-goal" name="goal" placeholder="I tailor the workshop to what most attendees say here."></textarea>
-        <div class="err">Please answer this one, it is the part I actually use.</div>
-      </div>
-      <button class="btn-primary" type="submit" id="lead-submit">Reserve seat</button>
+      <button class="btn-primary" type="submit" id="reg-submit">Save my spot</button>
       <p class="why">We use your name, email and phone only to send you the joining link and reminders for this workshop.</p>
     </form>
-    <div id="lead-pay" hidden>
-      <button type="button" class="pay-back" onclick="backToForm()">&larr; Back</button>
-      <p class="pay-wait" id="pay-wait">Loading secure checkout...</p>
-      <div id="checkout-panel"></div>
+    <div id="reg-done" class="done" hidden>
+      <div class="tick">&#10003;</div>
+      <h3>You're in.</h3>
+      <p>Your spot is saved for <span class="when js-done-when"></span>.</p>
+      <p>The joining link is in your inbox now, along with a calendar invite. If it is not there in a few minutes, check your spam folder.</p>
+      <button class="btn-primary" type="button" onclick="closeReg()" style="margin-top:12px">Done</button>
     </div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
-
-<script src="https://js.stripe.com/v3/"></script>
 <script>
-/* ---------------- event config ----------------
-   Keep in sync with the workshop_events row (dating-discipline-2026-10) that
-   the confirmation and reminder emails read. */
-const EVENT = {
-  start: new Date("2026-10-17T18:00:00Z"),          // Sat Oct 17, 1:00 PM CDT
-  earlyBirdEnds: new Date("2026-10-05T05:00:00Z"),  // end of Sun Oct 4, Central
-  closes: new Date("2026-10-17T05:00:00Z"),         // end of Fri Oct 16, Central (day before)
+const REGISTER_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-register";
+
+/* Both sessions start at 1:00 PM Central. Stored as UTC because the two dates straddle the
+   end of daylight saving, so Oct 24 is UTC-5 and Nov 7 is UTC-6. */
+const SESSIONS = {
+  "apps-vs-real-life-2026-10-24": {start: new Date("2026-10-24T18:00:00Z"), label: "Saturday, October 24"},
+  "apps-vs-real-life-2026-11-07": {start: new Date("2026-11-07T19:00:00Z"), label: "Saturday, November 7"},
 };
-// Stripe Payment Links (metadata product=workshop, event=dating-discipline-2026-10).
-const STRIPE_EARLY_URL = "https://buy.stripe.com/6oU5kE4T81QZ3Os9ZpfjG0l";
-const STRIPE_STANDARD_URL = "https://buy.stripe.com/9B6cN63P42V34SwfjJfjG0m";
 
-// Early bird is the first 50 seats, not a date. SEATS comes from the
-// workshop-seats function; until it answers we show the early bird price.
-let SEATS = null;
-function tier(now) {
-  if (now >= EVENT.closes) return "closed";
-  if (SEATS && SEATS.tier) return SEATS.tier;
-  return "early";
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+const T0 = Date.now();
+let MAX_SCROLL = 0;
+let REG_CTX = {where: "hero"};
+let REGISTERED = false;
+
+function secondsOnPage() { return Math.round((Date.now() - T0) / 1000); }
+function cap(event, props, leaving) {
+  try { posthog.capture(event, props || {}, leaving ? {send_instantly: true, transport: 'sendBeacon'} : undefined); } catch (e) {}
 }
-const $$ = sel => document.querySelectorAll(sel);
-function setText(sel, txt) { $$(sel).forEach(el => el.textContent = txt); }
 
-function render() {
-  const now = new Date();
-  const t = tier(now);
-  const price = t === "standard" ? 49 : 29;
-  setText(".js-price", "$" + price);
-  $$(".js-strike").forEach(el => el.style.display = t === "early" ? "" : "none");
-  setText(".js-price-note", t === "early" ? "early bird" : t === "standard" ? "per seat" : "");
-  setText(".js-sticky-note", t === "early" ? "early bird" : "");
-  const left = SEATS && typeof SEATS.early_left === "number" ? SEATS.early_left : null;
-  const dl = document.querySelector(".js-deadline");
-  if (t === "early") {
-    dl.textContent = (left !== null && left <= 20)
-      ? `${left} of the 50 early bird seats left · then $49`
-      : "The first 50 seats are $29 · then $49";
-  } else if (t === "standard") {
-    dl.textContent = "The first 50 seats are gone · registration closes Friday, October 16";
-  } else { dl.textContent = "Registration is closed"; dl.classList.add("closed"); }
-  setText(".js-seats", t === "early"
-    ? ((left !== null && left <= 20) ? `Only ${left} of the 50 early bird seats are left.` : "The first 50 seats are $29. After that it's $49.")
-    : t === "standard" ? "The early bird seats are gone. Registration closes Friday, October 16."
-    : "Registration is closed.");
-  // the tier chips only exist if the price-box layout is on the page
-  const chipEarly = document.querySelector(".js-tier-early");
-  const chipStd = document.querySelector(".js-tier-std");
-  if (chipEarly) { chipEarly.classList.toggle("now", t === "early"); chipEarly.classList.toggle("past", t !== "early"); }
-  if (chipStd) chipStd.classList.toggle("now", t === "standard");
-  $$(".js-buy").forEach(b => {
-    if (t === "closed") { b.disabled = true; b.textContent = "Registration closed"; }
-    else if (b.closest("#sticky")) b.textContent = "Save my seat";
-    else b.textContent = "Save my seat · $" + price;
-  });
-  if (t === "closed") { const bar = document.getElementById("sticky"); if (bar) bar.remove(); }
-  // Show the start time in the visitor's own time zone, with Central in parentheses.
+/* Show both times in the visitor's own zone when it is not Central, so nobody has to do
+   the maths. The paid page shipped broken for days because this threw on a missing node,
+   so every lookup here is guarded. */
+(function localTimes() {
   try {
-    const f = (opts, tz) => new Intl.DateTimeFormat(undefined, tz ? { ...opts, timeZone: tz } : opts).format(EVENT.start);
-    const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const isCentral = localTz === "America/Chicago";
-    const localDay = f({ weekday: "long", month: "long", day: "numeric" });
-    const localTime = f({ hour: "numeric", minute: "2-digit", timeZoneName: "short" });
-    const centralTime = f({ hour: "numeric", minute: "2-digit" }, "America/Chicago") + " Central";
-    const suffix = isCentral ? "" : ` (${centralTime})`;
-    setText(".js-when", `${localDay} · ${localTime}${suffix}`);
-    setText(".js-when-short", `${f({ weekday: "short", month: "short", day: "numeric" })}, ${localTime}`);
-    setText(".js-localtime", `It starts ${localDay} at ${localTime}` + (isCentral ? " (your time zone)." : `, which is ${centralTime}.`));
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    const fmt = (d) => new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "2-digit", timeZoneName: "short"}).format(d);
+    const central = /Chicago|Winnipeg|Mexico_City|Regina/.test(tz);
+    if (central) return;
+    const a = SESSIONS["apps-vs-real-life-2026-10-24"].start;
+    const b = SESSIONS["apps-vs-real-life-2026-11-07"].start;
+    $$(".js-t1").forEach((n) => n.textContent = fmt(a));
+    $$(".js-t2").forEach((n) => n.textContent = fmt(b));
+    $$(".js-s1").forEach((n) => n.textContent = fmt(a) + " · 1 hour");
+    $$(".js-s2").forEach((n) => n.textContent = fmt(b) + " · 1 hour");
   } catch (e) {}
-}
-render();
+})();
 
-// Ask the server how many early bird seats are left, then re-render.
-fetch("https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-seats")
-  .then(r => r.json())
-  .then(d => {
-    if (d && d.ok) {
-      SEATS = d;
-      render();
-      cap("workshop_seats_loaded", {tier: d.tier, early_left: d.early_left, sold: d.sold});
-    } else {
-      cap("workshop_seats_error", {reason: (d && d.error) || "not ok"});
-    }
-  })
-  .catch((e) => cap("workshop_seats_error", {reason: String(e)}));
+const $modal = () => document.getElementById("reg-modal");
 
-/* Clicking a CTA no longer jumps straight to Stripe. It opens a short qualifying
-   form, and the lead is stored BEFORE payment, so the people who drop at checkout
-   are captured instead of lost. checkout_click still fires here and still means the
-   same thing it always did (someone asked to buy), so the history stays comparable;
-   lead_submitted is the new step between it and the purchase. */
-const LEAD_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-lead";
-const CHECKOUT_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-checkout";
-/* Publishable key, safe to expose. While this is empty the modal keeps the old behaviour
-   and redirects to the Stripe payment link, so checkout is never blocked by it. */
-const STRIPE_PK = "pk_live_51QTR4JLAJgldTRcOz6n2VevgGNzM7LEwGjDMtqs0AMt6k7aM9tGS7EAQeP2AqUnS4Gl59Z4RavVyDVGHCGlKbokD00Vtvq3kWR";
-let CHECKOUT = null;        // the one Embedded Checkout object for this modal session
-let CHECKOUT_EMAIL = null;  // the email its session was created with
-let LEAD_ID = null;         // written once; going back and forward must not write a second
-let SESSION = null;         // in-flight or resolved {email, promise} from the warm-up
-let LEAD_CTX = {where: "hero", tier: "early", price: 29};
-
-function register(where) {
-  const t = tier(new Date());
-  if (t === "closed") return;
-  const price = t === "early" ? 29 : 49;
-  LEAD_CTX = {where: where, tier: t, price: price};
-  try { fbq('track', 'InitiateCheckout', {value: price, currency: 'USD', content_name: 'Dating Discipline Workshop'}); } catch (e) {}
-  cap('checkout_click', {
-    tier: 'workshop_' + t, price: price, where: where,
-    early_left: SEATS ? SEATS.early_left : null,
-    seconds_on_page: secondsOnPage(),
-    max_scroll_pct: MAX_SCROLL,
-  }, true);
-  if (!(t === "early" ? STRIPE_EARLY_URL : STRIPE_STANDARD_URL)) {
-    toast("Registration opens shortly. Check back soon."); return;
-  }
-  openLead();
-}
-
-const $modal = () => document.getElementById("lead-modal");
-
-function openLead() {
-  const m = $modal();
-  m.classList.add("open");
+function openReg(where) {
+  REG_CTX = {where: where};
+  cap('register_click', {where: where, seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL}, true);
+  try { fbq('track', 'InitiateCheckout', {content_name: 'Free Workshop'}); } catch (e) {}
+  $modal().classList.add("open");
   document.body.style.overflow = "hidden";
-  cap('lead_form_open', {where: LEAD_CTX.where, tier: 'workshop_' + LEAD_CTX.tier});
-  setTimeout(() => { const f = document.getElementById("lead-name"); if (f) f.focus(); }, 60);
+  setTimeout(() => { const f = document.getElementById("reg-name"); if (f && !REGISTERED) f.focus(); }, 60);
 }
 
-function closeLead(reason) {
-  // The checkout instance is deliberately kept: reopening the modal should not pay the
-  // load cost again, and the lead has already been written.
-  document.getElementById("lead-pay").classList.add("prerender");
-  document.getElementById("lead-form").hidden = false;
-  document.querySelector(".modal-card").classList.remove("wide");
-  const sb = document.getElementById("lead-submit");
-  if (sb) { sb.disabled = false; sb.textContent = "Reserve seat"; }
+function closeReg(reason) {
   $modal().classList.remove("open");
   document.body.style.overflow = "";
-  cap('lead_form_abandon', {where: LEAD_CTX.where, reason: reason || "closed"});
+  if (!REGISTERED) cap('register_form_abandon', {where: REG_CTX.where, reason: reason || "closed"});
 }
 
-function goToStripe(leadId, email) {
-  const base = LEAD_CTX.tier === "early" ? STRIPE_EARLY_URL : STRIPE_STANDARD_URL;
-  const q = [];
-  if (email) q.push("prefilled_email=" + encodeURIComponent(email));
-  if (leadId) q.push("client_reference_id=" + encodeURIComponent(leadId));
-  window.location.href = base + (q.length ? "?" + q.join("&") : "");
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 3200);
 }
 
-/* Checkout is created AND mounted while they are still filling the form, then simply
-   revealed on submit. The panel is clipped to 1px rather than hidden, because Stripe
-   renders nothing in display:none, visibility:hidden or an off-screen container. */
-function warmSession(email) {
-  if (!STRIPE_PK || typeof Stripe === "undefined") return null;
-  if (!SESSION || SESSION.email !== email) {
-    SESSION = {
-      email: email,
-      promise: fetch(CHECKOUT_URL, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({lead_id: LEAD_ID || "", email: email, tier: LEAD_CTX.tier === "early" ? "early_bird" : "standard"}),
-      }).then((r) => r.json()).catch(() => null),
-    };
-  }
-  return SESSION.promise;
-}
-
-let MOUNTING = null;
-
-/* Get a mounted checkout for this email. Safe to call repeatedly. */
-function ensureCheckout(email) {
-  if (CHECKOUT && CHECKOUT_EMAIL === email) return Promise.resolve(true);
-  if (MOUNTING && MOUNTING.email === email) return MOUNTING.promise;
-
-  const run = (async () => {
-    if (CHECKOUT) {                 // email changed: the old session is for the wrong address
-      try { CHECKOUT.destroy(); } catch (e) {}
-      CHECKOUT = null; CHECKOUT_EMAIL = null;
-      document.getElementById("checkout-panel").innerHTML = "";
-      const w0 = document.getElementById("pay-wait");
-      if (w0) w0.hidden = false;
-    }
-    const d = await warmSession(email);
-    if (!d || !d.ok || !d.client_secret) return false;
-
-    const pay = document.getElementById("lead-pay");
-    pay.classList.add("prerender");
-    pay.hidden = false;             // must be in layout for Stripe to draw
-
-    const stripe = Stripe(STRIPE_PK);
-    CHECKOUT = await stripe.initEmbeddedCheckout({clientSecret: d.client_secret});
-    CHECKOUT_EMAIL = email;
-    CHECKOUT.mount("#checkout-panel");
-    const w = document.getElementById("pay-wait");
-    if (w) w.hidden = true;
-    return true;
-  })();
-
-  MOUNTING = {email: email, promise: run.catch((e) => {
-    cap('checkout_mount_failed', {reason: String(e).slice(0, 200)});
-    return false;
-  })};
-  return MOUNTING.promise;
-}
-
-/* Reveal the already-mounted checkout. Returns false so the caller can fall back. */
-async function openCheckout(leadId, email) {
-  const ok = await ensureCheckout(email);
-  if (!ok) return false;
-  document.getElementById("lead-form").hidden = true;
-  const pay = document.getElementById("lead-pay");
-  pay.hidden = false;
-  pay.classList.remove("prerender");
-  document.querySelector(".modal-card").classList.add("wide");
-  cap('checkout_mounted', {where: LEAD_CTX.where, tier: 'workshop_' + LEAD_CTX.tier, price: LEAD_CTX.price});
-  return true;
-}
-
-function backToForm() {
-  const pay = document.getElementById("lead-pay");
-  pay.classList.add("prerender");   // keep it mounted and rendered, just clipped again
-  document.querySelector(".modal-card").classList.remove("wide");
-  document.getElementById("lead-form").hidden = false;
-  const btn = document.getElementById("lead-submit");
-  btn.disabled = false; btn.textContent = "Reserve seat";
-  cap('checkout_back_to_form', {where: LEAD_CTX.where});
-}
-
-(function leadForm() {
-  const form = document.getElementById("lead-form");
+(function regForm() {
+  const form = document.getElementById("reg-form");
   if (!form) return;
 
-  // Escape closes, and so does clicking the backdrop outside the card.
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && $modal().classList.contains("open")) closeLead("escape");
+    if (e.key === "Escape" && $modal().classList.contains("open")) closeReg("escape");
   });
-  $modal().addEventListener("click", (e) => { if (e.target === $modal()) closeLead("backdrop"); });
+  $modal().addEventListener("click", (e) => { if (e.target === $modal()) closeReg("backdrop"); });
 
-  // Start the Stripe session as soon as the email is usable, so the round trip overlaps
-  // with them filling in the phone and the goal instead of delaying the button.
-  const emailEl = document.getElementById("lead-email");
-  const tryWarm = () => {
-    const v = emailEl.value.trim();
-    if (/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/.test(v)) ensureCheckout(v);
-  };
-  emailEl.addEventListener("blur", tryWarm);
-  emailEl.addEventListener("change", tryWarm);
+  // Highlight the chosen session row.
+  $$("#sessions input").forEach((i) => i.addEventListener("change", () => {
+    $$(".sess").forEach((s) => s.classList.toggle("on", s.contains(document.querySelector("#sessions input:checked"))));
+    cap('session_picked', {session: i.value});
+  }));
 
   const mark = (id, bad) => document.getElementById(id).classList.toggle("bad", bad);
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    const name = document.getElementById("lead-name").value.trim();
-    const email = document.getElementById("lead-email").value.trim();
-    const phone = document.getElementById("lead-phone").value.trim();
-    const goal = document.getElementById("lead-goal").value.trim();
+    const name = document.getElementById("reg-name").value.trim();
+    const email = document.getElementById("reg-email").value.trim();
+    const phone = document.getElementById("reg-phone").value.trim();
+    const picked = document.querySelector("#sessions input:checked");
+    const slug = picked ? picked.value : "";
 
-    // The goal question is required again (Will, 2026-10-01), after a day optional in which
-    // 3 of 4 leads left it blank and none bought. Trading lead volume for lead quality.
-    // The email pattern requires a letters-only TLD: "jims30688@gmail.com7" passed the
-    // looser version on 2026-09-30 and was undeliverable, so that lead could never be
-    // contacted by email.
     const badName = name.length < 2;
     const badEmail = !/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/.test(email);
     const badPhone = phone.replace(/\D/g, "").length < 7;
-    const badGoal = goal.length < 3;
-    mark("fld-name", badName); mark("fld-email", badEmail);
-    mark("fld-phone", badPhone); mark("fld-goal", badGoal);
-    if (badName || badEmail || badPhone || badGoal) {
-      cap('lead_form_invalid', {name: badName, email: badEmail, phone: badPhone, goal: badGoal});
-      const first = document.querySelector(".fld.bad input, .fld.bad textarea");
+    mark("fld-name", badName); mark("fld-email", badEmail); mark("fld-phone", badPhone);
+    if (badName || badEmail || badPhone || !slug) {
+      cap('register_form_invalid', {name: badName, email: badEmail, phone: badPhone});
+      const first = document.querySelector(".fld.bad input");
       if (first) first.focus();
       return;
     }
 
-    const btn = document.getElementById("lead-submit");
-    btn.disabled = true; btn.textContent = "One moment...";
+    const btn = document.getElementById("reg-submit");
+    btn.disabled = true; btn.textContent = "Saving your spot...";
 
-    cap(LEAD_ID ? 'lead_resubmitted' : 'lead_submitted', {
-      where: LEAD_CTX.where, tier: 'workshop_' + LEAD_CTX.tier, price: LEAD_CTX.price,
-      answered_goal: goal.length > 2,
-      seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL,
-    }, true);
-    try { posthog.identify(email, {email: email, name: name}); } catch (err) {}
-    try { fbq('track', 'Lead', {value: LEAD_CTX.price, currency: 'USD', content_name: 'Dating Discipline Workshop'}); } catch (err) {}
-
-    const payload = {
-      name: name, email: email, phone: phone, goal: goal,
-      price_tier: LEAD_CTX.tier === "early" ? "early_bird" : "standard",
-      where: LEAD_CTX.where,
-      referrer: document.referrer || null,
-      utm_source: new URLSearchParams(location.search).get("utm_source"),
-    };
-
-    // Lead write and checkout run in PARALLEL, not one after the other. The session is
-    // usually already warm from the email field, so this is close to instant.
-    // Every failure path falls back to the hosted payment link: a problem with our own
-    // endpoint, Stripe.js or the session must never be the reason someone cannot pay.
-    // 8s ceiling so a hung request cannot strand a buyer on this form.
-    let done = false;
-    const fallback = () => { if (!done) { done = true; goToStripe(LEAD_ID, email); } };
-    const timer = setTimeout(fallback, 8000);
-
-    // Written once per modal session. Going back and submitting again must not create a
-    // second row, which is exactly what the old sequential version did.
-    const leadWrite = LEAD_ID
-      ? Promise.resolve(LEAD_ID)
-      : fetch(LEAD_URL, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify(payload),
-          keepalive: true,
-        })
-          .then((r) => r.json())
-          .then((d) => { if (d && d.ok) LEAD_ID = d.id; return LEAD_ID; })
-          .catch(() => null);
-
-    if (!STRIPE_PK || typeof Stripe === "undefined") {
-      leadWrite.then(fallback);
-    } else {
-      Promise.all([leadWrite, openCheckout(null, email)])
-        .then(([, ok]) => { if (ok) { done = true; clearTimeout(timer); } else { fallback(); } })
-        .catch(fallback);
-    }
+    fetch(REGISTER_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({name: name, email: email, phone: phone, event_slug: slug}),
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d || !d.ok) throw new Error((d && d.error) || "registration failed");
+        REGISTERED = true;
+        const s = SESSIONS[slug];
+        document.querySelector(".js-done-when").textContent = s ? s.label + " at 1:00 PM Central" : "the workshop";
+        document.getElementById("reg-form").hidden = true;
+        document.getElementById("reg-done").hidden = false;
+        cap('registered', {
+          session: slug, where: REG_CTX.where, already: Boolean(d.already),
+          seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL,
+        }, true);
+        try { posthog.identify(email, {email: email, name: name}); } catch (err) {}
+        try { fbq('track', 'CompleteRegistration', {content_name: 'Free Workshop', status: true}); } catch (err) {}
+      })
+      .catch((err) => {
+        btn.disabled = false; btn.textContent = "Save my spot";
+        toast("Something went wrong. Please try again.");
+        cap('register_failed', {reason: String(err).slice(0, 200)});
+      });
   });
 })();
 
-// Sticky mobile bar once the hero button scrolls away.
-(function () {
-  const bar = document.getElementById("sticky");
-  const heroBtn = document.querySelector(".hero .js-buy");
-  if (!bar || !heroBtn || !("IntersectionObserver" in window)) return;
-  new IntersectionObserver(([e]) => bar.classList.toggle("show", !e.isIntersecting && e.boundingClientRect.top < 0)).observe(heroBtn);
-})();
-
-/* ---------------- analytics ----------------
-   PostHog already logs the pageview and pageleave. These add the things that
-   tell us WHY the page does or does not convert: how far people read, which
-   objections they open, which CTA they saw, and what the price state was. */
-const T0 = Date.now();
-let MAX_SCROLL = 0;
-function secondsOnPage() { return Math.round((Date.now() - T0) / 1000); }
-function cap(event, props, leaving) {
-  try {
-    posthog.capture(event, props || {}, leaving ? {send_instantly: true, transport: 'sendBeacon'} : undefined);
-  } catch (e) {}
-}
-
+/* Scroll depth, section views and CTA impressions, same shape as the paid page so the
+   two can be compared. */
 (function analytics() {
-  // how far down the page people actually get
-  const marks = [25, 50, 75, 90];
-  const seen = {};
+  const marks = [25, 50, 75, 90]; const seen = {};
   function onScroll() {
     const h = document.documentElement.scrollHeight - window.innerHeight;
     const pct = h > 0 ? Math.min(100, Math.round((window.scrollY / h) * 100)) : 100;
     if (pct > MAX_SCROLL) MAX_SCROLL = pct;
-    marks.forEach(function (m) {
-      if (pct >= m && !seen[m]) { seen[m] = 1; cap('scroll_depth', {depth: m}); }
-    });
+    marks.forEach((m) => { if (pct >= m && !seen[m]) { seen[m] = 1; cap('scroll_depth', {depth: m}); } });
   }
-  window.addEventListener('scroll', onScroll, {passive: true});
+  window.addEventListener("scroll", onScroll, {passive: true});
   onScroll();
 
-  // which sections were actually reached, named by their divider label
-  if ('IntersectionObserver' in window) {
-    const sectionSeen = {};
-    const io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        const name = (e.target.textContent || '').trim();
-        if (!name || sectionSeen[name]) return;
-        sectionSeen[name] = 1;
-        cap('section_view', {section: name, seconds_on_page: secondsOnPage()});
-      });
-    }, {threshold: 0.6});
-    document.querySelectorAll('.divider-lbl').forEach(function (el) { io.observe(el); });
+  if ("IntersectionObserver" in window) {
+    const secIo = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { cap('section_view', {section: e.target.textContent.trim(), seconds_on_page: secondsOnPage()}); secIo.unobserve(e.target); }
+    }), {threshold: 0.6});
+    $$(".divider-lbl").forEach((n) => secIo.observe(n));
 
-    // did they ever actually see a buy button
-    const ctaSeen = {};
-    const ctaIo = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        const where = e.target.getAttribute('onclick') || '';
-        const which = (where.match(/register\('([^']+)'\)/) || [null, 'unknown'])[1];
-        if (ctaSeen[which]) return;
-        ctaSeen[which] = 1;
-        cap('cta_view', {where: which, seconds_on_page: secondsOnPage()});
-      });
-    }, {threshold: 0.9});
-    document.querySelectorAll('.js-buy').forEach(function (el) { ctaIo.observe(el); });
+    const ctaIo = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { cap('cta_view', {where: e.target.getAttribute("onclick") || ""}); ctaIo.unobserve(e.target); }
+    }), {threshold: 0.9});
+    $$(".js-buy").forEach((n) => ctaIo.observe(n));
   }
 
-  // which objections people open, in order
-  let faqOrder = 0;
-  document.querySelectorAll('details').forEach(function (d) {
-    d.addEventListener('toggle', function () {
-      if (!d.open) return;
-      faqOrder += 1;
-      const q = (d.querySelector('summary') || {}).textContent || '';
-      cap('faq_open', {question: q.trim(), order: faqOrder, seconds_on_page: secondsOnPage()});
-    });
-  });
+  $$("details").forEach((d, i) => d.addEventListener("toggle", () => {
+    if (d.open) cap('faq_open', {question: d.querySelector("summary").textContent.trim(), order: i + 1});
+  }));
 
-  // one summary event on the way out, so drop-off is one query instead of three
-  window.addEventListener('pagehide', function () {
-    cap('workshop_page_exit', {
-      max_scroll_pct: MAX_SCROLL,
-      seconds_on_page: secondsOnPage(),
-      faq_opened: faqOrder,
-      tier: SEATS ? SEATS.tier : 'unknown',
-    }, true);
-  });
+  window.addEventListener("pagehide", () => cap('page_exit', {
+    max_scroll_pct: MAX_SCROLL, seconds_on_page: secondsOnPage(), registered: REGISTERED,
+  }, true));
 })();
 
-function toast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg; t.classList.add("show");
-  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 2800);
-}
+/* Sticky bar once the hero CTA scrolls away. */
+(function () {
+  const bar = document.getElementById("sticky");
+  const heroBtn = document.querySelector(".hero .js-buy");
+  if (!bar || !heroBtn || !("IntersectionObserver" in window)) return;
+  new IntersectionObserver((es) => es.forEach((e) => bar.classList.toggle("show", !e.isIntersecting)),
+    {threshold: 0}).observe(heroBtn);
+})();
 </script>
 </body>
 </html>
