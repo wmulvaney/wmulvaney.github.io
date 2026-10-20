@@ -172,8 +172,30 @@
   @media (min-width: 760px) {
     .with-img { grid-template-columns: minmax(0, 1fr) 340px; }
     .with-img.flip { grid-template-columns: 340px minmax(0, 1fr); }
-    .with-img.flip .sect-img { order: -1; }
+    .with-img.flip .sect-img, .with-img.flip .phone { order: -1; }
   }
+  /* phone mockup: the profile scrolls inside the screen, a finger drags it up.
+     Same markup and keyframes as /dating-coaching so both pages behave identically. */
+  .phone { width: 100%; max-width: 280px; margin: 0 auto; padding: 11px; background: #111820; border: 1px solid var(--border-strong); border-radius: 44px; box-shadow: var(--shadow), inset 0 0 0 2px rgba(255,255,255,0.04); }
+  .phone-screen { position: relative; aspect-ratio: 9 / 19.5; border-radius: 34px; overflow: hidden; background: #fff; }
+  .phone-screen::before { content: ""; position: absolute; z-index: 3; top: 9px; left: 50%; width: 30%; height: 22px; transform: translateX(-50%); background: #000; border-radius: 12px; }
+  .phone-screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; animation: profile-scroll 8s ease-in-out infinite; }
+  .finger { position: absolute; z-index: 4; left: 58%; top: 74%; opacity: 0; pointer-events: none; animation: finger-swipe 8s ease-in-out infinite; }
+  .finger .touch { position: absolute; left: -17px; top: -17px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.45); border: 2px solid rgba(255,255,255,0.85); box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
+  .finger .hand { position: absolute; left: -14px; top: -6px; font-size: 40px; line-height: 1; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35)); }
+  @keyframes profile-scroll {
+    0%, 14% { object-position: 50% 0%; }
+    52%, 82% { object-position: 50% 100%; }
+    96%, 100% { object-position: 50% 0%; }
+  }
+  @keyframes finger-swipe {
+    0%, 8% { opacity: 0; transform: translateY(16px); }
+    14% { opacity: 1; transform: translateY(0); }
+    52% { opacity: 1; transform: translateY(-190px); }
+    60%, 100% { opacity: 0; transform: translateY(-190px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .phone-screen img, .finger { animation: none; } }
+  @media (max-width: 759px) { .phone { max-width: 250px; } }
   .sect-img { width: 100%; max-width: 340px; margin: 0 auto; display: block; border: 1px solid var(--border-strong); aspect-ratio: 4 / 5; object-fit: cover; }
   @media (max-width: 759px) { .sect-img { max-width: 100%; aspect-ratio: 3 / 2; } }
   footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
@@ -282,7 +304,12 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
     <p class="body">The apps are designed to make money off of you and keep you coming back. On them, you are one of many desperate men hoping she will do you the favour of going on one date with you.</p>
     <p class="body">Meanwhile, you do not even know if she wants to date. She might just want a free dinner.</p>
   </div>
-  <img class="sect-img" src="img/app-profile.jpg" alt="A dating app profile on a phone" loading="lazy" />
+  <div class="phone" role="img" aria-label="A dating app profile being scrolled on a phone: Ashley, 25, only taking 6 feet and up seriously">
+    <div class="phone-screen">
+      <img src="img/app-profile.jpg" alt="" loading="lazy" />
+      <div class="finger" aria-hidden="true"><span class="touch"></span><span class="hand">&#128070;</span></div>
+    </div>
+  </div>
 </section>
 
 <!-- ================= A BETTER WAY ================= -->
