@@ -6,10 +6,10 @@
 <meta name="robots" content="noindex" />
 <meta name="theme-color" content="#040b12" />
 <title>The Better Option Than Dating Apps &middot; Free Workshop</title>
-<meta name="description" content="A free one hour workshop on meeting women in real life instead of on apps. Saturday, October 24 or Saturday, November 7, 1:00 PM Central." />
+<meta name="description" content="A free one hour workshop on meeting women in real life instead of on apps. Sunday, November 1, 1:00 PM Central." />
 <meta property="og:title" content="Stop swiping. Start dating." />
 <meta property="og:description" content="A free one hour live workshop on meeting women in real life instead of on apps." />
-<meta property="og:image" content="https://williammulvaney.com/workshop/img/approach.jpg" />
+<meta property="og:image" content="https://williammulvaney.com/workshop/img/approach-labeled.jpg" />
 <link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
 <link rel="apple-touch-icon" href="/willpower_logo.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -243,7 +243,7 @@
   .datechips { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 16px; }
   .datechip { border: 1px solid var(--border-strong); padding: 10px 14px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
   .datechip b { color: var(--accent); }
-  .freetag { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; padding: 7px 12px; display: inline-block; }
+  .fact-free { background: var(--accent); border-color: var(--accent); color: #fff; }
 </style>
 
 <!-- Meta Pixel -->
@@ -279,20 +279,19 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
     <p class="sub">The better option than dating apps</p>
     <p class="lede">One hour, live, on meeting women in real life. So you stop competing with every other man on an app and start talking to the woman who is actually in front of you.</p>
     <div class="facts">
+      <span class="fact fact-free">Free</span>
       <span class="fact">1 hour</span>
       <span class="fact">Live</span>
       <span class="fact">Q&amp;A included</span>
     </div>
     <div class="datechips">
-      <span class="datechip"><b class="js-date">Sat Oct 24</b> &middot; <span class="js-time">1:00 PM CT</span></span>
+      <span class="datechip"><b class="js-date">Sun Nov 1</b> &middot; <span class="js-time">1:00 PM CT</span></span>
     </div>
-    <span class="freetag">Free</span>
     <div style="margin-top:18px"><button class="btn-primary js-buy" onclick="openReg('hero')">Save my spot</button></div>
-    <p class="fine">Pick whichever Saturday works. No card, no obligation.</p>
   </div>
   <div class="hero-photo">
     <div class="badge">Free &middot; 1 hour</div>
-    <img src="img/approach.jpg" alt="William talking with a woman on a sidewalk while walking his dog" />
+    <img src="img/approach-labeled.jpg" alt="William talking with a woman on a sidewalk while walking his dog, with arrows labelled &quot;a cute stranger&quot; pointing at her and &quot;this could be you&quot; pointing at him" />
   </div>
 </section>
 
@@ -372,7 +371,7 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
 <!-- ================= CLOSING CTA ================= -->
 <section class="cta-band" style="margin-top:44px">
   <h2 style="text-align:center">Stop walking past her.</h2>
-  <p class="cta-sub" style="text-align:center">One hour, live, free. <span class="js-when-long">Saturday, October 24, 1:00 PM Central</span>.</p>
+  <p class="cta-sub" style="text-align:center">One hour, live, free. <span class="js-when-long">Sunday, November 1, 1:00 PM Central</span>.</p>
   <div style="text-align:center"><button class="btn-primary js-buy" onclick="openReg('footer')">Save my spot</button></div>
 </section>
 
@@ -391,7 +390,7 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
 </div><!-- /wrap -->
 
 <div class="sticky" id="sticky">
-  <div class="s-txt"><b>Free</b> &middot; 1 hour<br/><span class="js-when-short">Sat Oct 24</span></div>
+  <div class="s-txt"><b>Free</b> &middot; 1 hour<br/><span class="js-when-short">Sun Nov 1</span></div>
   <button class="btn-primary js-buy" onclick="openReg('sticky')">Save my spot</button>
 </div>
 
@@ -400,7 +399,7 @@ posthog.register({funnel_product: 'workshop_free', funnel_page: 'landing'});
     <button class="modal-close" type="button" onclick="closeReg()" aria-label="Close">&times;</button>
     <h3 id="reg-title">Save your spot</h3>
     <form id="reg-form" novalidate>
-      <p class="why" style="margin:0 0 18px"><span class="js-when-long">Saturday, October 24, 1:00 PM Central</span> &middot; 1 hour &middot; free</p>
+      <p class="why" style="margin:0 0 18px"><span class="js-when-long">Sunday, November 1, 1:00 PM Central</span> &middot; 1 hour &middot; free</p>
       <div class="fld" id="fld-name">
         <label for="reg-name">Your name</label>
         <input id="reg-name" type="text" autocomplete="name" placeholder="First and last" />
@@ -458,9 +457,9 @@ const NEXT_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop
 
 /* Only the next session is ever offered. The date is resolved from the server so that when
    one session passes the page rolls to the following one with no edit and no stale date.
-   The hardcoded fallback is the Oct 24 session (UTC-5; the November one is UTC-6 because
-   it falls after daylight saving ends). */
-let SESSION = {slug: "apps-vs-real-life-2026-10-24", start: new Date("2026-10-24T18:00:00Z")};
+   The hardcoded fallback is the Nov 1 session, stored as 19:00Z because 1pm Central that
+   day is CST: daylight saving ends at 2am the same morning. */
+let SESSION = {slug: "apps-vs-real-life-2026-11-01", start: new Date("2026-11-01T19:00:00Z")};
 
 const $$ = (s) => Array.from(document.querySelectorAll(s));
 const T0 = Date.now();
