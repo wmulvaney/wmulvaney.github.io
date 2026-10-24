@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#040b12" />
+<meta name="robots" content="noindex" />
+<title>Welcome · William Mulvaney Coaching</title>
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="apple-touch-icon" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #040b12;
+    --surface: rgba(10, 26, 39, 0.72);
+    --surface-strong: #0a1a27;
+    --card-2: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.22);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.55);
+    --faint: rgba(255, 255, 255, 0.32);
+    --accent: #479dc2;
+    --accent-press: #3a7e9b;
+    --accent-soft: rgba(71, 157, 194, 0.12);
+    --ok: #4ade80;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 45% at 75% -10%, rgba(71, 157, 194, 0.14), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 10% 110%, rgba(71, 157, 194, 0.07), transparent 60%);
+  }
+  .wrap { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; padding: 48px 20px 80px; }
+  .kicker { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(71, 157, 194, 0.9); margin-bottom: 12px; }
+  h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(28px, 5vw, 40px); line-height: 1.12; color: #fff; margin: 0 0 14px; letter-spacing: -0.01em; }
+  .lede { color: var(--muted); font-size: 15.5px; line-height: 1.7; margin: 0 0 28px; }
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 26px 24px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  label { display: block; font-size: 10px; color: var(--muted); margin-bottom: 8px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+  input[type="text"], input[type="email"], select, textarea {
+    width: 100%; background: var(--card-2); border: 1px solid rgba(255, 255, 255, 0.16); color: var(--text);
+    padding: 13px 14px; font-size: 16px; font-family: var(--font-ui); margin-bottom: 16px;
+    border-radius: 0; outline: none; transition: border-color 150ms ease;
+  }
+  select { appearance: none; -webkit-appearance: none; }
+  input::placeholder, textarea::placeholder { color: var(--faint); }
+  textarea { resize: vertical; min-height: 90px; line-height: 1.55; }
+  input:focus, select:focus, textarea:focus { border-color: rgba(71, 157, 194, 0.7); }
+  button, .btn {
+    font-family: var(--font-ui); cursor: pointer; border: 1px solid transparent; border-radius: 0;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 16px 28px; transition: all 160ms ease; display: inline-block; text-decoration: none; text-align: center;
+  }
+  button:active, .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover:not(:disabled) { background: var(--accent-press); border-color: var(--accent-press); }
+  .btn-primary:disabled { opacity: 0.55; cursor: default; }
+  .btn-secondary { background: transparent; color: rgba(255, 255, 255, 0.72); border: 1px solid rgba(255, 255, 255, 0.22); }
+  .btn-secondary:hover { color: #fff; border-color: rgba(255, 255, 255, 0.5); }
+  .btn-block { display: block; width: 100%; }
+  .hp { position: absolute; left: -9999px; opacity: 0; height: 0; overflow: hidden; }
+  .done-ic { font-size: 40px; color: var(--ok); margin-bottom: 10px; }
+  .next { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 14px; line-height: 1.6; color: var(--muted); }
+  .next:last-of-type { border-bottom: none; }
+  .next .n { flex: none; width: 26px; height: 26px; border: 1px solid rgba(71, 157, 194, 0.5); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px; }
+  .next b { color: var(--text); }
+  .row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .row > * { flex: 1; min-width: 180px; }
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px);
+    background: #b04a3c; color: #fff; font-weight: 700; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 13px 24px; box-shadow: var(--shadow); opacity: 0; pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease; z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  footer { margin-top: 60px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; }
+</style>
+<!-- PostHog analytics (start) -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
+posthog.register({funnel_product: 'dating', funnel_price: 9, funnel_page: 'start'});
+</script>
+<!-- PostHog analytics (end) -->
+</head>
+<body>
+<div class="wrap">
+
+  <div id="formView">
+    <div class="kicker">Payment received · one more step</div>
+    <h1>Let's set up your 12 weeks.</h1>
+    <p class="lede">Two minutes. Your answers go straight to me and shape how I coach you, so be specific and be honest.</p>
+    <div class="card">
+      <label for="f-name">Name</label>
+      <input type="text" id="f-name" placeholder="First name is fine" autocomplete="name" />
+      <label for="f-email">Email (the one you used at checkout)</label>
+      <input type="email" id="f-email" placeholder="you@example.com" autocomplete="email" />
+      <label for="f-phone">Phone number</label>
+      <input type="text" id="f-phone" inputmode="tel" placeholder="So I can text you" autocomplete="tel" />
+      <label for="f-city">City</label>
+      <input type="text" id="f-city" placeholder="e.g. Austin" autocomplete="address-level2" />
+      <label for="f-state">State</label>
+      <input type="text" id="f-state" placeholder="e.g. TX" autocomplete="address-level1" />
+      <label for="f-goal">What does your ideal dating life look like?</label>
+      <textarea id="f-goal" placeholder="Get specific. Who do you want to be able to walk up to, where, and what happens next?"></textarea>
+      <label for="f-stick">What's stopped you so far?</label>
+      <textarea id="f-stick" placeholder="Freezing up? Never trying? Starting strong and fading?"></textarea>
+      <label for="f-freq">If you see an attractive woman in public, how often do you go talk to her?</label>
+      <select id="f-freq">
+        <option>Never</option>
+        <option>Almost never</option>
+        <option>Sometimes</option>
+        <option>About half the time</option>
+        <option>Almost always</option>
+      </select>
+      <label for="f-notes">Anything else I should know?</label>
+      <textarea id="f-notes" placeholder="Schedule constraints, past experience, anything relevant (optional)"></textarea>
+      <div class="hp"><label for="f-web">Website</label><input type="text" id="f-web" tabindex="-1" autocomplete="off" /></div>
+      <button class="btn-primary btn-block" id="goBtn" onclick="submitForm()">Finish setup</button>
+    </div>
+  </div>
+
+  <div id="doneView" style="display:none">
+    <div class="done-ic">✓</div>
+    <div class="kicker">You're in</div>
+    <h1>Check your email.</h1>
+    <p class="lede" id="doneLede">Your welcome email has the app link and the guide. Here's what happens next:</p>
+    <div class="card">
+      <div class="next"><span class="n">1</span><span><b>Your 12 weeks start Monday<span id="startMonday"></span>.</b> That gives me time to review your goals and set up your plan.</span></div>
+      <div class="next"><span class="n">2</span><span><b>Open the app</b> and sign in with your checkout email. No password, we email you a code. It walks you through all 12 weeks, day by day.</span></div>
+      <div class="next"><span class="n">3</span><span><b>Download the guide (PDF)</b>, included free with your coaching. The link is below and in your email.</span></div>
+      <div class="next"><span class="n">4</span><span><b>Will will reach out to you via email and/or text in the next few days</b>, so keep an eye out.</span></div>
+    </div>
+    <div class="row">
+      <a class="btn btn-primary" href="https://coaching.williammulvaney.com/">Open the app</a>
+      <a class="btn btn-secondary" id="guideBtn" href="#" style="display:none">Download the guide (PDF)</a>
+    </div>
+  </div>
+
+  <footer>© William Mulvaney · Coaching</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const FN_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/confidence-onboard";
+const sessionId = new URLSearchParams(location.search).get("session_id") || "";
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove("show"), 3200);
+}
+async function submitForm() {
+  const v = id => (document.getElementById(id).value || "").trim();
+  if (!v("f-name")) { toast("Add your name"); return; }
+  if (!v("f-email") || !v("f-email").includes("@")) { toast("Add the email you used at checkout"); return; }
+  if (!v("f-phone")) { toast("Add your phone number"); return; }
+  if (!v("f-goal")) { toast("Tell me your 12-week goal"); return; }
+  const btn = document.getElementById("goBtn");
+  btn.disabled = true; btn.textContent = "Setting up…";
+  try {
+    const res = await fetch(FN_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        kind: "personal_coaching",
+        name: v("f-name"), email: v("f-email"), phone: v("f-phone"),
+        city: [v("f-city"), v("f-state")].filter(Boolean).join(", "),
+        goal: v("f-goal"), sticking_point: v("f-stick"),
+        frequency: v("f-freq"), notes: v("f-notes"),
+        session_id: sessionId, website: v("f-web"),
+      }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out.ok) throw new Error(out.error || "request failed");
+    if (!out.emailed && !out.merged) document.getElementById("doneLede").textContent = "You're all set. Here's what happens next:";
+    if (out.guide_url) {
+      const g = document.getElementById("guideBtn");
+      g.href = out.guide_url; g.style.display = "";
+    }
+    document.getElementById("startMonday").textContent = out.start_monday ? ", " + out.start_monday : "";
+    document.getElementById("formView").style.display = "none";
+    document.getElementById("doneView").style.display = "";
+    window.scrollTo(0, 0);
+  } catch (e) {
+    console.error(e);
+    btn.disabled = false; btn.textContent = "Finish setup";
+    toast("Something went wrong. Try again, or email me.");
+  }
+}
+</script>
+<!-- PostHog funnel events (start) -->
+<script>
+(function () {
+  var STEPS = {1: 'landing', 2: 'question', 3: 'offers', 4: 'application', 5: 'thanks'};
+  function cap(ev, props, leaving) {
+    try { posthog.capture(ev, props || {}, leaving ? {send_instantly: true, transport: 'sendBeacon'} : undefined); } catch (e) {}
+  }
+  function wrap(name, fn) {
+    var orig = window[name];
+    if (typeof orig !== 'function') return;
+    window[name] = function () { fn.apply(null, arguments); return orig.apply(this, arguments); };
+  }
+  wrap('v1go', function (step, choice) { cap('funnel_step', {step: step, step_name: STEPS[step] || String(step), choice: choice || null}); });
+  wrap('goGuideCheckout', function () { cap('checkout_click', {tier: 'guide'}, true); });
+  wrap('buyPersonal', function () { cap('checkout_click', {tier: 'personal_coaching'}, true); });
+  wrap('appSubmit', function () { cap('application_submit', {tier: 'one_on_one'}); });
+  wrap('submitForm', function () { cap('intake_submit'); });
+  if ('start' === 'download') cap('guide_purchased', {value: 9, currency: 'USD'});
+})();
+</script>
+<!-- PostHog funnel events (end) -->
+</body>
+</html>

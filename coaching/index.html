@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#040b12" />
+<title>Work With Me · William Mulvaney</title>
+<meta name="description" content="Coaching for men: dating, fitness, discipline, and the things men carry without talking about. Book a free intro call." />
+<meta property="og:title" content="Work with William Mulvaney" />
+<meta property="og:description" content="Coaching for men: dating, fitness, discipline, and the things men carry without talking about." />
+<meta property="og:image" content="https://williammulvaney.com/coaching/img/spartan-stone.jpg" />
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="apple-touch-icon" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Same design language as /workshop and the guide pages: near-black navy stage,
+     steel-blue accent, Playfair Display headings, Space Grotesk UI, square corners. */
+  :root {
+    --bg: #040b12;
+    --surface: rgba(10, 26, 39, 0.72);
+    --surface-strong: #0a1a27;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.22);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.58);
+    --faint: rgba(255, 255, 255, 0.34);
+    --accent: #479dc2;
+    --accent-press: #3a7e9b;
+    --accent-soft: rgba(71, 157, 194, 0.12);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 45% at 75% -10%, rgba(71, 157, 194, 0.14), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 10% 110%, rgba(71, 157, 194, 0.07), transparent 60%);
+  }
+  .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 24px 20px 110px; }
+  .home-link { display: inline-block; margin: 6px 0 4px; }
+  .home-link img { height: 42px; width: auto; display: block; opacity: 0.9; filter: brightness(0) invert(1); }
+
+  .kicker { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(71, 157, 194, 0.95); margin-bottom: 14px; line-height: 1.8; }
+  h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(34px, 5.6vw, 54px); line-height: 1.06; color: #fff; margin: 0 0 10px; letter-spacing: -0.01em; }
+  .h1-sub { font-family: var(--font-display); font-weight: 700; font-size: clamp(19px, 2.6vw, 25px); line-height: 1.3; color: rgba(255,255,255,0.8); margin: 0 0 18px; }
+  h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(24px, 3.5vw, 32px); color: #fff; margin: 0 0 14px; line-height: 1.2; }
+  .lede { color: var(--muted); font-size: 16px; line-height: 1.7; max-width: 560px; margin: 0 0 22px; }
+  p.body { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 640px; margin: 0 0 16px; }
+  p.body b { color: var(--text); font-weight: 600; }
+
+  .hero { display: grid; grid-template-columns: 1fr; gap: 34px; align-items: center; padding: 40px 0 20px; }
+  @media (min-width: 780px) { .hero { grid-template-columns: minmax(0, 1fr) 340px; } }
+  .hero-photo { position: relative; width: 100%; max-width: 340px; margin: 0 auto; aspect-ratio: 4 / 5; border: 1px solid var(--border-strong); box-shadow: var(--shadow); overflow: hidden; }
+  .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 50%; display: block; }
+
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+  .fact { border: 1px solid var(--border-strong); padding: 8px 12px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
+
+  .btn {
+    font-family: var(--font-ui); cursor: pointer; border: 1px solid transparent; border-radius: 0;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 17px 30px; transition: all 160ms ease; display: inline-block; text-decoration: none; text-align: center;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-press); border-color: var(--accent-press); }
+  .fine { font-size: 12px; color: var(--faint); line-height: 1.6; margin-top: 12px; max-width: 460px; }
+
+  .divider-lbl { color: var(--faint); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin: 56px 0 28px; display: flex; align-items: center; gap: 12px; }
+  .divider-lbl::before, .divider-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.09); }
+
+  .with-img { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
+  @media (min-width: 760px) {
+    .with-img { grid-template-columns: minmax(0, 1fr) 340px; }
+    .with-img.flip { grid-template-columns: 340px minmax(0, 1fr); }
+    .with-img.flip .sect-img { order: -1; }
+  }
+  .sect-img { width: 100%; max-width: 340px; margin: 0 auto; display: block; border: 1px solid var(--border-strong); aspect-ratio: 4 / 5; object-fit: cover; }
+  @media (max-width: 759px) { .sect-img { max-width: 100%; aspect-ratio: 3 / 2; } }
+  .sect-label { font-size: 10px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: 0.22em; margin: 0 0 12px; }
+
+  /* numbered reasons */
+  .reasons { display: grid; gap: 0; border-top: 1px solid var(--border); }
+  .rs { display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .rs .n { font-family: var(--font-display); font-weight: 900; font-size: 24px; color: var(--accent); line-height: 1; }
+  .rs .t { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 5px; line-height: 1.4; }
+  .rs .d { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+  ul.checks { list-style: none; margin: 0 0 18px; padding: 0; }
+  ul.checks li { padding: 8px 0 8px 30px; position: relative; font-size: 15.5px; line-height: 1.55; color: var(--text); }
+  ul.checks li::before { content: "✓"; position: absolute; left: 0; top: 8px; color: var(--accent); font-weight: 800; }
+
+  .promise { border: 1px solid rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.10), var(--surface)); padding: 26px 24px 10px; }
+
+  /* proof photos */
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 640px; margin: 22px auto 0; }
+  .pair img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border: 1px solid var(--border-strong); display: block; }
+  @media (min-width: 760px) { .centered { text-align: center; } .centered .body { margin-left: auto; margin-right: auto; } }
+
+  .cta-band { text-align: center; border: 1px solid rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.12), var(--surface)); padding: 30px 22px; margin: 44px 0; }
+  .cta-band h3 { font-family: var(--font-display); font-weight: 700; font-size: 23px; color: #fff; margin: 0 0 8px; line-height: 1.25; }
+  .cta-band .cta-sub { color: var(--muted); font-size: 14px; margin: 0 auto 18px; max-width: 460px; line-height: 1.6; }
+
+  /* about */
+  .about { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
+  @media (min-width: 720px) { .about { grid-template-columns: 220px 1fr; } }
+  @media (max-width: 719px) { .about { justify-items: center; text-align: center; } }
+  .about img { width: 100%; max-width: 260px; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 30%; border: 1px solid var(--border-strong); display: block; }
+
+  /* faq */
+  details { border-bottom: 1px solid var(--border); padding: 16px 0; }
+  details summary { cursor: pointer; list-style: none; font-size: 15px; font-weight: 600; color: #fff; display: flex; justify-content: space-between; gap: 16px; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after { content: "+"; color: var(--accent); font-weight: 700; }
+  details[open] summary::after { content: "–"; }
+  details p { margin: 10px 0 0; font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* sticky bar: every screen size, once the hero button has scrolled away */
+  .sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(4, 11, 18, 0.94); border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); transform: translateY(110%); transition: transform 200ms ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .sticky.show { transform: none; }
+  .in-apply .sticky.show { transform: translateY(110%); }
+  .sticky-in { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .sticky .s-txt { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .sticky .s-txt b { color: #fff; font-size: 14px; }
+  .sticky .btn-primary { padding: 13px 18px; white-space: nowrap; }
+  @media (max-width: 400px) { .sticky .btn-primary { padding: 13px 12px; letter-spacing: 0.12em; } }
+
+  footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
+  /* video slot: drop an <iframe> or <video> inside .vsl and delete .vsl-empty */
+  .vsl { position: relative; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--border-strong); background: var(--surface-strong); box-shadow: var(--shadow); overflow: hidden; margin: 0 0 28px; }
+  @supports not (aspect-ratio: 1 / 1) {
+    .vsl { height: 0; padding-top: 56.25%; }
+    @media (max-width: 619px) { .vsl.has-photos { padding-top: 133.33%; } }
+  }
+  .vsl iframe, .vsl video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+  .vsl-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--faint); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
+  .vsl-empty .play { width: 64px; height: 64px; border: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: center; }
+  .vsl-empty .play::before { content: ""; margin-left: 5px; border-style: solid; border-width: 11px 0 11px 18px; border-color: transparent transparent transparent rgba(255,255,255,0.5); }
+  /* photo collage in the video slot until the VSL replaces it */
+  .vsl-photos { position: absolute; inset: 0; display: grid; gap: 1px; background: var(--border-strong);
+    grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "a b b c" "a d e c"; }
+  .vsl-photos .tile { min-width: 0; min-height: 0; background-size: cover; background-repeat: no-repeat; background-color: var(--surface-strong); }
+  .vsl-photos .p-a { grid-area: a; } .vsl-photos .p-b { grid-area: b; } .vsl-photos .p-c { grid-area: c; }
+  .vsl-photos .p-d { grid-area: d; } .vsl-photos .p-e { grid-area: e; }
+  @media (max-width: 619px) {
+    .vsl.has-photos { aspect-ratio: 3 / 4; }
+    .vsl-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr));
+      grid-template-areas: "b b" "a d" "c e"; }
+  }
+  .hero-top { padding: 34px 0 0; }
+  .hero-top .lede { max-width: 640px; }
+
+  /* four focus areas */
+  .areas { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 720px) { .areas { grid-template-columns: 1fr 1fr; } }
+  .area { border: 1px solid var(--border); background: var(--surface); padding: 22px 22px 18px; }
+  .area .n { font-family: var(--font-display); font-weight: 900; font-size: 22px; color: var(--accent); line-height: 1; margin-bottom: 12px; }
+  .area h3 { font-family: var(--font-display); font-weight: 700; font-size: 21px; color: #fff; margin: 0 0 8px; line-height: 1.25; }
+  .area p { font-size: 14.5px; color: var(--muted); line-height: 1.7; margin: 0; }
+  .area.deep { border-color: rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.10), var(--surface)); }
+  /* intake form + calendar (same form styling as /book) */
+  .card { background: var(--surface-strong); border: 1px solid var(--border-strong); box-shadow: var(--shadow); padding: 26px 24px 24px; }
+  .qblock { margin-bottom: 26px; }
+  .q { font-family: var(--font-display); font-weight: 700; font-size: clamp(18px, 2.6vw, 21px); line-height: 1.25; color: #fff; margin: 0 0 12px; }
+  .qsub { color: var(--muted); font-size: 14px; line-height: 1.55; margin: -4px 0 14px; }
+  .opt-tag { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin-left: 6px; }
+  .row2 { display: grid; grid-template-columns: 1fr; gap: 0 14px; }
+  @media (min-width: 620px) { .row2 { grid-template-columns: 1fr 1fr; } }
+  input[type=text], input[type=email], input[type=tel], input[type=number], textarea {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 0;
+    color: var(--text); font-family: var(--font-ui); font-size: 16px; padding: 14px; transition: border-color 140ms ease;
+  }
+  textarea { min-height: 120px; resize: vertical; line-height: 1.5; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.28); }
+  .bad input, .bad textarea, .bad .checkline { border-color: #f87171; }
+  .bad .opt { border-color: rgba(248,113,113,0.6); }
+  .err { display: none; font-size: 12px; color: #f87171; margin-top: 8px; }
+  .bad .err { display: block; }
+  .opts { display: grid; gap: 8px; }
+  .opts.multi { grid-template-columns: 1fr; }
+  @media (min-width: 620px) { .opts.multi { grid-template-columns: 1fr 1fr; } }
+  .opt { text-align: left; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text); font-family: var(--font-ui); font-size: 15px; padding: 14px 16px; cursor: pointer; transition: all 140ms ease; border-radius: 0; line-height: 1.4; }
+  .opt:hover { border-color: rgba(71, 157, 194, 0.6); }
+  .opt.on { border-color: var(--accent); background: var(--accent-soft); }
+  .checkline { display: flex; gap: 12px; align-items: flex-start; background: rgba(255,255,255,0.04); border: 1px solid var(--border); padding: 14px 16px; cursor: pointer; font-size: 15px; line-height: 1.5; color: var(--text); }
+  .checklist { display: grid; gap: 8px; }
+  .other-text { margin-top: 8px; }
+  .checkline input { flex: none; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+  .btn-primary[disabled] { opacity: 0.6; cursor: default; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .linkish { background: none; border: none; color: var(--faint); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 0; cursor: pointer; display: block; margin: 8px auto 0; }
+  .linkish:hover { color: var(--text); }
+  /* Google's booking page is light, so it sits on a white panel */
+  .cal-wrap { position: relative; border: 1px solid var(--border-strong); background: #fff; box-shadow: var(--shadow); }
+  .cal-wrap::before { content: "Loading calendar..."; position: absolute; top: 60px; left: 0; right: 0; text-align: center; color: #888; font-size: 13px; }
+  .cal-wrap iframe { position: relative; display: block; width: 100%; height: 760px; border: 0; }
+  @media (max-width: 619px) { .cal-wrap iframe { height: 900px; } }
+  .fallback { font-size: 12px; color: var(--faint); margin-top: 12px; text-align: center; }
+  .fallback a { color: var(--accent); }
+  #apply { scroll-margin-top: 16px; max-width: 760px; margin: 0 auto; }
+</style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '526303911209957');
+fbq('track', 'PageView');
+fbq('track', 'ViewContent', {content_name: 'Work With Me', content_category: 'coaching'});
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=526303911209957&ev=PageView&noscript=1"/></noscript>
+<!-- PostHog analytics (start) -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
+posthog.register({funnel_product: 'work_with_me', funnel_page: 'landing'});
+</script>
+<!-- PostHog analytics (end) -->
+</head>
+<body>
+<div class="wrap">
+
+<a class="home-link" href="https://williammulvaney.com/" aria-label="William Mulvaney home"><img src="/dating-coaching/willpower_logo.svg" alt="William Mulvaney" /></a>
+
+<!-- ================= HERO + VSL ================= -->
+<section class="hero-top">
+  <div class="kicker">Coaching for men</div>
+  <h1>Work with me.</h1>
+  <p class="h1-sub">Dating, fitness, discipline, and whatever else you're stuck on.</p>
+
+  <div class="vsl has-photos">
+    <!-- VSL: paste the video embed here (YouTube/Vimeo iframe or <video>), then delete the .vsl-photos div and the has-photos class -->
+    <div class="vsl-photos">
+      <div class="tile p-a" role="img" aria-label="William carrying a stone during a Spartan race" style="background-image:url('/coaching/img/spartan-stone.jpg');background-position:50% 35%"></div>
+      <div class="tile p-b" role="img" aria-label="William with his jiu-jitsu coaches and teammates" style="background-image:url('/coaching/img/jiu-jitsu.jpg');background-position:50% 45%"></div>
+      <div class="tile p-c" role="img" aria-label="William running past a statue in Bali" style="background-image:url('/coaching/img/running.jpg');background-position:78% 60%"></div>
+      <div class="tile p-d" role="img" aria-label="William and his girlfriend on a hike" style="background-image:url('/coaching/img/couple.jpg');background-position:62% 40%"></div>
+      <div class="tile p-e" role="img" aria-label="William and his girlfriend smiling in an elevator" style="background-image:url('/coaching/img/couple-2.jpg');background-position:55% 55%"></div>
+    </div>
+  </div>
+
+  <p class="lede">Coaching for men in their 20s and 30s who are ready to build a life they're proud of. Apply for a free intro call. We'll look at where you are, where you want to be, and what's getting in the way.</p>
+  <div class="facts">
+    <span class="fact">Free intro call</span>
+    <span class="fact">1-on-1 or group</span>
+    <span class="fact">No obligation</span>
+  </div>
+  <a class="btn btn-primary js-book" data-where="hero" href="#apply">Apply for a free intro call</a>
+</section>
+
+<!-- ================= WHAT WE WORK ON ================= -->
+<div class="divider-lbl">What we work on</div>
+<section>
+  <h2>Most men aren't stuck in one area. It's all connected.</h2>
+  <p class="body">When your health slips, your confidence goes with it. When you're not keeping promises to yourself, it shows up in your dating life. We work on the whole picture, starting with whatever matters most to you right now.</p>
+  <div class="areas" style="margin-top:22px">
+    <div class="area">
+      <div class="n">01</div>
+      <h3>Dating</h3>
+      <p>Get comfortable meeting women in real life and go on dates with women you're actually interested in. No apps required, no lines, no tricks. Just reps and someone helping you make sense of each one.</p>
+    </div>
+    <div class="area">
+      <div class="n">02</div>
+      <h3>Fitness</h3>
+      <p>Build a routine you'll keep. Training, food, and sleep that fit your real schedule, so you look and feel different in months, not years.</p>
+    </div>
+    <div class="area">
+      <div class="n">03</div>
+      <h3>Discipline</h3>
+      <p>Do what you said you'd do. Habits, structure, and someone holding you to it, so your goals stop living in your notes app.</p>
+    </div>
+    <div class="area deep">
+      <div class="n">04</div>
+      <h3>The things you don't talk about</h3>
+      <p>Stress, loneliness, a breakup you haven't gotten over, pressure about money or work, feeling behind where you think you should be. Most men carry this stuff alone and never say it out loud. On our calls, you can.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <h3>Not sure where to start?</h3>
+  <p class="cta-sub">That's what the intro call is for. We'll figure out what to work on first.</p>
+  <a class="btn btn-primary js-book" data-where="areas" href="#apply">Apply for a free intro call</a>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<div class="divider-lbl">How it works</div>
+<section>
+  <h2>Simple process.</h2>
+  <div class="reasons">
+    <div class="rs"><div class="n">1</div><div><div class="t">Apply for a free intro call.</div><div class="d">Answer a few quick questions, then pick a time that works for you. It's just a conversation, no pitch you have to sit through.</div></div></div>
+    <div class="rs"><div class="n">2</div><div><div class="t">We map out where you are.</div><div class="d">What's going well, what isn't, and what you want your life to look like.</div></div></div>
+    <div class="rs"><div class="n">3</div><div><div class="t">We plan out your next step.</div><div class="d">You leave the call with a clear plan for what to do next, whether or not we keep working together.</div></div></div>
+    <div class="rs"><div class="n">4</div><div><div class="t">We continue working together, if it makes sense.</div><div class="d">Depending on what fits you best, that's either 1-on-1 coaching with me or a coaching group with other men working on the same things. Either way, you get a plan built around your life and someone in your corner who expects you to show up.</div></div></div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<div class="divider-lbl">Who am I</div>
+<section class="about">
+  <img src="/dating-coaching/img/headshot.jpg" alt="William Mulvaney" loading="lazy" style="object-position:50% 35%" />
+  <div>
+    <h2>William Mulvaney</h2>
+    <p class="body">I coach men on dating, fitness, and discipline, and I host The Willpower Podcast. I've run a 100 mile ultramarathon, I do stand-up comedy, and I used to be a software engineer.</p>
+    <p class="body">I wasn't a natural at any of this. <b>Everything I coach is what I actually did, and what I've seen work with the men I coach.</b></p>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<div class="divider-lbl">FAQ</div>
+<section style="max-width:760px;margin:0 auto">
+  <details><summary>Who is this for?</summary><p>Men, mostly in their 20s and 30s, who know they're capable of more and are ready to put in the work. You don't need to have it figured out. You just need to want to change something.</p></details>
+  <details><summary>Is the intro call actually free?</summary><p>Yes. No card, no obligation.</p></details>
+  <details><summary>Do I need to want help with everything on this page?</summary><p>No. Some men come in for one thing. Others want to work on all of it. We start with what matters most to you.</p></details>
+  <details><summary>Is this therapy?</summary><p>No. I'm a coach, not a licensed therapist. Coaching is about where you are now and what you do next. If something comes up that a therapist is better suited for, I'll tell you.</p></details>
+  <details><summary>What does coaching cost?</summary><p>We'll go over it on the intro call if it looks like a fit. No pressure either way.</p></details>
+</section>
+
+<!-- ================= APPLY + CALENDAR ================= -->
+<div class="divider-lbl">Apply</div>
+<section id="apply">
+  <div id="intake">
+    <h2>Apply for a free intro call.</h2>
+    <p class="body">Answer a few quick questions so I come prepared. Once you submit, you'll pick a time right here.</p>
+    <form class="card" id="form" novalidate autocomplete="on" style="margin-top:20px">
+      <div id="fields"></div>
+      <div class="hp" aria-hidden="true"><input type="text" id="website" tabindex="-1" autocomplete="off" /></div>
+      <button type="submit" class="btn btn-primary" id="submit" style="width:100%">See available times</button>
+    </form>
+  </div>
+
+  <div id="booking" hidden>
+    <h2>Pick a time<span id="first-name"></span>.</h2>
+    <p class="body">Grab a time that works and I'll see you on the call.</p>
+    <div class="cal-wrap" style="margin-top:20px"><iframe id="cal-frame" title="Book an intro call with William Mulvaney" loading="lazy"></iframe></div>
+    <p class="fallback">Calendar not loading? <a href="https://calendar.app.google/8rFifwNA37CAEYmH8" target="_blank" rel="noopener">Open it in a new tab</a>.</p>
+    <button type="button" class="linkish" id="edit">&larr; Edit my answers</button>
+  </div>
+</section>
+
+<footer>© William Mulvaney · Coaching</footer>
+</div><!-- /wrap -->
+
+<div class="sticky" id="sticky">
+  <div class="sticky-in">
+    <div class="s-txt"><b>Free intro call</b><br/>With Will</div>
+    <a class="btn btn-primary js-book" data-where="sticky" href="#apply">Apply now</a>
+  </div>
+</div>
+
+<script>
+const T0 = Date.now();
+let MAX_SCROLL = 0;
+function secondsOnPage() { return Math.round((Date.now() - T0) / 1000); }
+function cap(event, props, leaving) {
+  try { posthog.capture(event, props || {}, leaving ? {send_instantly: true, transport: 'sendBeacon'} : undefined); } catch (e) {}
+}
+
+document.querySelectorAll('.js-book').forEach(function (a) {
+  a.addEventListener('click', function () {
+    const where = a.getAttribute('data-where');
+    try { fbq('track', 'InitiateCheckout', {content_name: 'intro-call', content_category: where}); } catch (e) {}
+    cap('cta_click', {where: where, seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL}, true);
+  });
+});
+
+// Sticky bar once the hero button scrolls away.
+(function () {
+  const bar = document.getElementById('sticky');
+  const heroBtn = document.querySelector('.hero-top .js-book');
+  if (!bar || !heroBtn || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver(([e]) => bar.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(heroBtn);
+})();
+
+/* ---------- Intake, then calendar ----------
+   Same flow as /book: the calendar unlocks once the questions are answered, and the
+   answers go to discovery-application (stored + emailed to Will) with form "coaching". */
+const APPLY_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/discovery-application";
+const CAL_EMBED = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0kLWdlhwzA92gMdXpA6rQpipMbwamcm1z0P2qSunfGdGyGqb9jrTFrxL5EhJjankwQk6NhaGZs?gv=true";
+const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/;
+const INVEST_OPTS = [
+  "I can comfortably invest $1,000+ USD in myself",
+  "It's a stretch, but $1,000+ USD isn't out of my budget",
+  "That's out of budget, but I could invest ~$200 USD in myself",
+  "I can't invest much right now",
+];
+const FIELDS = [
+  {key: "name", q: "What's your name?", type: "text", ph: "First and last", ac: "name", pair: 1},
+  {key: "email", q: "What's your email?", type: "email", ph: "you@example.com", ac: "email", pair: 2,
+    check: v => EMAIL_RE.test(v) || "Please enter a valid email."},
+  {key: "phone", q: "Phone number", type: "tel", ph: "(555) 555-5555", ac: "tel", pair: 1,
+    check: v => /^\d{10,15}$/.test(v.replace(/\D/g, "")) || "Please enter a valid phone number."},
+  {key: "age", q: "How old are you?", type: "number", ph: "Age", pair: 2,
+    check: v => (+v >= 16 && +v <= 99) || "Please enter your age."},
+  {key: "location", q: "Where do you live?", type: "text", ph: "City, state", ac: "address-level2"},
+  {key: "focus", q: "What do you want to work on?", sub: "Check all that apply.", type: "checklist",
+    opts: ["Dating", "Fitness", "General discipline / following through", "Career / business", "Social life", "Other"]},
+  {key: "why_now", q: "Why is right now a good time to start coaching?", type: "textarea",
+    ph: "Be as specific as you can."},
+  {key: "life", q: "What do you do for work? What do you do for fun?", type: "textarea", ph: "A couple of sentences is plenty."},
+  {key: "invest", q: "Can you comfortably invest in yourself right now?", sub: "Think coaching, a gym membership, new clothes.", type: "choice", opts: INVEST_OPTS},
+  {key: "else", q: "What else should I know about you?", type: "textarea", ph: "Optional", optional: true},
+  {key: "text_ok", q: "Confirming your call", type: "check",
+    text: "Will will text you to confirm your call time. I understand that I must respond via text or my spot will be given up."},
+];
+const A = {};
+const $ = id => document.getElementById(id);
+const esc = v => String(v).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+function fieldHtml(f) {
+  const id = "f-" + f.key;
+  if (f.type === "choice" || f.type === "multi") {
+    return `<div class="opts${f.type === "multi" ? " multi" : ""}" data-key="${f.key}" data-type="${f.type}">` +
+      f.opts.map(o => `<button type="button" class="opt" data-v="${esc(o)}" aria-pressed="false">${esc(o)}</button>`).join("") + `</div>`;
+  }
+  if (f.type === "checklist") {
+    return `<div class="checklist">` + f.opts.map((o, n) => `<label class="checkline"><input type="checkbox" name="${f.key}" value="${esc(o)}" id="${n ? "" : id}" /><span>${esc(o)}</span></label>`).join("") +
+      `</div><input type="text" id="${id}-other" class="other-text" placeholder="What else do you want to work on?" hidden />`;
+  }
+  if (f.type === "check") return `<label class="checkline"><input type="checkbox" id="${id}" /><span>${esc(f.text)}</span></label>`;
+  if (f.type === "textarea") return `<textarea id="${id}" placeholder="${esc(f.ph)}"></textarea>`;
+  const extra = f.type === "number" ? ' inputmode="numeric" min="16" max="99"' : f.type === "email" ? ' inputmode="email"' : f.type === "tel" ? ' inputmode="tel"' : "";
+  return `<input id="${id}" type="${f.type}" placeholder="${esc(f.ph)}"${f.ac ? ` autocomplete="${f.ac}"` : ""}${extra} />`;
+}
+function block(f) {
+  return `<div class="qblock"><div class="q"><label for="f-${f.key}">${esc(f.q)}${f.optional ? ' <span class="opt-tag">Optional</span>' : ""}</label></div>` +
+    (f.sub ? `<p class="qsub">${esc(f.sub)}</p>` : "") +
+    `<div id="fw-${f.key}">${fieldHtml(f)}<div class="err" id="err-${f.key}"></div></div></div>`;
+}
+// Short fields sit two to a row on wider screens.
+let html = "";
+for (let k = 0; k < FIELDS.length; k++) {
+  const f = FIELDS[k], g = FIELDS[k + 1];
+  if (f.pair === 1 && g && g.pair === 2) { html += `<div class="row2">${block(f)}${block(g)}</div>`; k++; }
+  else html += block(f);
+}
+$("fields").innerHTML = html;
+
+document.querySelectorAll(".opts").forEach(g => g.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
+  const key = g.getAttribute("data-key");
+  if (g.getAttribute("data-type") === "multi") b.classList.toggle("on");
+  else g.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === b));
+  g.querySelectorAll(".opt").forEach(x => x.setAttribute("aria-pressed", x.classList.contains("on")));
+  A[key] = [...g.querySelectorAll(".opt.on")].map(x => x.getAttribute("data-v")).join(", ");
+  $("fw-" + key).classList.remove("bad");
+  cap("intake_question_answered", {key: key});
+})));
+
+// Checklist: "Other" opens a text field, and its text rides along in the answer.
+const otherChecked = key => !!document.querySelector(`input[name="${key}"][value="Other"]:checked`);
+function checklistValue(key) {
+  return [...document.querySelectorAll(`input[name="${key}"]:checked`)].map(c => {
+    if (c.value !== "Other") return c.value;
+    const t = $("f-" + key + "-other").value.trim();
+    return t ? "Other: " + t : "Other";
+  }).join(", ");
+}
+document.querySelectorAll('input[name="focus"]').forEach(c => c.addEventListener("change", () => {
+  const other = $("f-focus-other");
+  other.hidden = !otherChecked("focus");
+  if (c.value === "Other" && c.checked) other.focus();
+  $("fw-focus").classList.remove("bad");
+}));
+
+let STARTED = false;
+$("form").addEventListener("focusin", () => { if (!STARTED) { STARTED = true; cap("intake_started", {seconds_on_page: secondsOnPage()}); } });
+// Enter in a short field moves on instead of submitting.
+$("form").addEventListener("keydown", e => {
+  if (e.key !== "Enter" || e.target.tagName !== "INPUT") return;
+  e.preventDefault();
+  const all = [...$("form").querySelectorAll("input:not(#website), textarea, .opt")];
+  const nxt = all[all.indexOf(e.target) + 1];
+  if (nxt) nxt.focus();
+});
+
+$("form").addEventListener("submit", e => {
+  e.preventDefault();
+  let first = null;
+  FIELDS.forEach(f => {
+    if (f.type === "check") A[f.key] = $("f-" + f.key).checked ? "yes" : "";
+    else if (f.type === "checklist") A[f.key] = checklistValue(f.key);
+    else if (f.type !== "choice" && f.type !== "multi") A[f.key] = $("f-" + f.key).value.trim();
+    const v = A[f.key] || "";
+    let msg = null;
+    if (f.type === "checklist" && otherChecked(f.key) && !$("f-" + f.key + "-other").value.trim()) msg = "Tell me what else you want to work on.";
+    else if (!v) msg = f.optional ? null : f.type === "choice" || f.type === "multi" || f.type === "checklist" ? "Please pick at least one." : f.type === "check" ? "Please check the box to continue." : "Please answer this one.";
+    else if (f.check) { const r = f.check(v); if (r !== true) msg = r; }
+    $("fw-" + f.key).classList.toggle("bad", !!msg);
+    $("err-" + f.key).textContent = msg || "";
+    if (msg && !first) first = f;
+  });
+  if (first) {
+    cap("intake_invalid", {first: first.key});
+    $("fw-" + first.key).scrollIntoView({behavior: "smooth", block: "center"});
+    return;
+  }
+  submit();
+});
+
+let APP_ID = null;
+function submit() {
+  const btn = $("submit");
+  btn.disabled = true; btn.textContent = "One moment...";
+  try { posthog.identify(A.email, {email: A.email, name: A.name}); } catch (e) {}
+  // Meta events by the investment answer, same as /book:
+  //   $1,000+ -> Lead + SubmitApplication, ~$200 -> Lead, can't invest -> nothing.
+  const at = INVEST_OPTS.indexOf(A.invest);
+  if (at !== 3) { try { fbq('track', 'Lead', {content_name: 'intro-call'}); } catch (e) {} }
+  if (at === 0 || at === 1) { try { fbq('track', 'SubmitApplication', {content_name: 'intro-call-qualified'}); } catch (e) {} }
+  cap("intake_submitted", {invest: A.invest, focus: A.focus, seconds_on_page: secondsOnPage()}, true);
+
+  const answers = {form: "coaching"};
+  FIELDS.forEach(f => { if (f.key !== "name" && f.key !== "email" && A[f.key]) answers[f.key] = A[f.key]; });
+  const qs = new URLSearchParams(location.search);
+  // The calendar opens whatever happens here: a problem on our side must never be
+  // the reason someone cannot book. 6s ceiling so a hung request cannot strand them.
+  const req = fetch(APPLY_URL, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      stage: "submitted", name: A.name, email: A.email, answers,
+      website: $("website").value,
+      referrer: document.referrer || null,
+      utm_source: qs.get("utm_source") || qs.get("c"),
+    }),
+    keepalive: true,
+  }).then(r => r.json()).then(d => { if (d && d.ok) APP_ID = d.id; else cap("intake_save_failed", {reason: d && d.error}); })
+    .catch(e => cap("intake_save_failed", {reason: String(e)}));
+  Promise.race([req, new Promise(r => setTimeout(r, 6000))]).then(showCalendar);
+}
+
+function showCalendar() {
+  if (!$("cal-frame").src) $("cal-frame").src = CAL_EMBED;
+  $("intake").hidden = true;
+  $("booking").hidden = false;
+  $("first-name").textContent = A.name ? ", " + A.name.split(" ")[0] : "";
+  $("apply").scrollIntoView({block: "start"});
+  try { sessionStorage.setItem("coaching_intake_done", "1"); } catch (e) {}
+  cap("calendar_shown", {});
+}
+$("edit").addEventListener("click", () => {
+  $("booking").hidden = true;
+  $("intake").hidden = false;
+  const btn = $("submit"); btn.disabled = false; btn.textContent = "See available times";
+  try { sessionStorage.removeItem("coaching_intake_done"); } catch (e) {}
+  $("apply").scrollIntoView({block: "start"});
+});
+// A refresh after submitting goes straight back to the calendar.
+try { if (sessionStorage.getItem("coaching_intake_done")) showCalendar(); } catch (e) {}
+
+// Hide the sticky bar while the form or calendar is on screen.
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(([e]) => document.body.classList.toggle('in-apply', e.isIntersecting), {threshold: 0}).observe($("apply"));
+}
+
+(function analytics() {
+  const marks = [25, 50, 75, 90];
+  const seen = {};
+  function onScroll() {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = h > 0 ? Math.min(100, Math.round((window.scrollY / h) * 100)) : 100;
+    if (pct > MAX_SCROLL) MAX_SCROLL = pct;
+    marks.forEach(function (m) { if (pct >= m && !seen[m]) { seen[m] = 1; cap('scroll_depth', {depth: m}); } });
+  }
+  window.addEventListener('scroll', onScroll, {passive: true});
+  onScroll();
+
+  let faqOrder = 0;
+  document.querySelectorAll('details').forEach(function (d) {
+    d.addEventListener('toggle', function () {
+      if (!d.open) return;
+      faqOrder += 1;
+      cap('faq_open', {question: ((d.querySelector('summary') || {}).textContent || '').trim(), order: faqOrder});
+    });
+  });
+
+  window.addEventListener('pagehide', function () {
+    cap('coaching_page_exit', {max_scroll_pct: MAX_SCROLL, seconds_on_page: secondsOnPage(), faq_opened: faqOrder}, true);
+  });
+})();
+</script>
+</body>
+</html>
