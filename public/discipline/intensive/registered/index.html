@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#040b12" />
+<meta name="robots" content="noindex" />
+<title>Registered &middot; Phone Discipline Intensive</title>
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/discipline/discipline.css" />
+<style>
+  .wrap { max-width: 560px; padding-top: 48px; }
+  .done-ic { font-size: 40px; color: #4ade80; margin: 26px 0 10px; }
+  .card p { margin: 0 0 14px; font-size: 14px; line-height: 1.65; color: var(--muted); }
+  .card p:last-child { margin-bottom: 0; }
+  .card b { color: var(--text); }
+</style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '526303911209957');
+fbq('track', 'PageView');
+// Stripe redirects here after payment; ?tier= comes from the Payment Link's success URL.
+var WS_PRICE = /[?&]tier=standard/.test(location.search) ? 49 : 29;
+fbq('track', 'Purchase', {value: WS_PRICE, currency: 'USD', content_name: 'Phone Discipline Intensive'});
+</script>
+<!-- PostHog analytics (start) -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
+posthog.register({funnel_product: 'phone_intensive', funnel_page: 'registered'});
+</script>
+<!-- PostHog analytics (end) -->
+</head>
+<body>
+<div class="wrap">
+  <a class="home-link" href="https://williammulvaney.com/" aria-label="William Mulvaney home"><img src="/willpower_logo.svg" alt="William Mulvaney" /></a>
+  <div class="done-ic">&#10003;</div>
+  <div class="kicker" style="margin-top:0">You're registered</div>
+  <h1 style="font-size:clamp(28px,5vw,40px)">Your seat is saved.</h1>
+  <p class="lede">Phone Discipline Intensive &middot; Saturday, November 14 &middot; 1:00 PM Central &middot; 2 hours, live.</p>
+  <div class="card">
+    <p><b>1. Check your email.</b> Your confirmation is on its way, with a calendar link. Check spam if it isn't there in a few minutes.</p>
+    <p><b>2. Look at your screen time.</b> Before Saturday, open Screen Time (iPhone) or Digital Wellbeing (Android) and note your daily average and pickups. Honest numbers make the session about you.</p>
+    <p><b>3. Show up live, with your phone.</b> We set it up together. Your joining link is in your confirmation email, and comes again the day before and an hour before we start.</p>
+  </div>
+  <p class="fine" style="text-align:center;margin-top:24px">Questions, or need a refund? Reply to your confirmation email. Refunds are available until 24 hours before the workshop.</p>
+  <footer>&copy; William Mulvaney &middot; Coaching</footer>
+</div>
+<script>
+try { posthog.capture('workshop_registered', {value: WS_PRICE, currency: 'USD', event: 'phone-discipline-intensive-2026-11-14'}); } catch (e) {}
+</script>
+</body>
+</html>
