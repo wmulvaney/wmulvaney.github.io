@@ -88,6 +88,7 @@
   .btn-primary[disabled] { background: transparent; color: var(--faint); border-color: var(--border-strong); cursor: default; }
   .fine { font-size: 12px; color: var(--faint); line-height: 1.6; margin-top: 12px; max-width: 460px; }
 
+  .wrap > section:not(.hero) { margin-top: 64px; }
   .divider-lbl { color: var(--faint); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin: 56px 0 28px; display: flex; align-items: center; gap: 12px; }
   .divider-lbl::before, .divider-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.09); }
 
@@ -250,7 +251,9 @@
   .rail { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 0 16px; margin: 0 -20px; padding-left: 20px; padding-right: 20px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
   .rail::-webkit-scrollbar { height: 6px; }
   .rail::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); }
-  .ep { scroll-snap-align: start; flex: 0 0 230px; background: var(--surface); border: 1px solid var(--border); padding: 16px 16px 14px; text-decoration: none; display: flex; flex-direction: column; transition: border-color 140ms ease; }
+  .ep { scroll-snap-align: start; flex: 0 0 230px; background: var(--surface); border: 1px solid var(--border); padding: 0 0 14px; text-decoration: none; display: flex; flex-direction: column; transition: border-color 140ms ease; overflow: hidden; }
+  .ep .ep-img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .ep .ep-n, .ep .ep-t, .ep .ep-d { margin-left: 14px; margin-right: 14px; }
   .ep:hover { border-color: var(--accent); }
   .ep .ep-n { font-family: var(--font-display); font-weight: 900; font-size: 20px; color: var(--accent); line-height: 1; margin-bottom: 10px; }
   .ep .ep-t { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.4; margin-bottom: 10px; flex: 1; }
@@ -263,6 +266,40 @@
   .quote { border: 1px solid var(--border); border-left: 2px solid var(--accent); background: var(--surface); padding: 20px 20px 18px; }
   .quote p { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--text); }
   .quote cite { display: block; margin-top: 12px; font-style: normal; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+
+  /* --- the molecule --- */
+  .mol { width: 100%; max-width: 300px; margin: 0 auto; display: block; }
+  .mol svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .mol .cap { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); text-align: center; margin-top: 10px; }
+
+  /* --- the loop: four steps lit in turn, and the one place the workshop steps in --- */
+  .loop { display: grid; grid-template-columns: 1fr; gap: 8px; align-items: center; margin-top: 30px; }
+  @media (min-width: 720px) { .loop { grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; gap: 10px; margin-top: 50px; } }
+  .lstep { position: relative; background: var(--surface); border: 1px solid var(--border); padding: 16px 14px; font-size: 14px; line-height: 1.4; color: var(--text); animation: lit 8s linear infinite; animation-delay: calc(var(--i) * 2s); }
+  .lstep .ln { display: block; font-family: var(--font-display); font-weight: 900; font-size: 20px; color: var(--accent); margin-bottom: 6px; line-height: 1; }
+  @keyframes lit { 0%, 22% { border-color: var(--accent); background: var(--accent-soft); } 26%, 100% { border-color: var(--border); background: var(--surface); } }
+  .larrow, .lcut { text-align: center; font-size: 22px; line-height: 1; color: var(--faint); position: relative; }
+  .larrow .h, .lcut .h { display: none; } .larrow .v, .lcut .v { display: inline; }
+  @media (min-width: 720px) { .larrow .h, .lcut .h { display: inline; } .larrow .v, .lcut .v { display: none; } }
+  .lcut { color: var(--accent); }
+  @media (min-width: 720px) { .lcut { align-self: stretch; display: flex; align-items: center; justify-content: center; } }
+  .lcut .lbl { display: block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); white-space: nowrap; margin-top: 4px; }
+  @media (min-width: 720px) { .lcut .lbl { position: absolute; left: 50%; transform: translateX(-50%); top: -26px; margin: 0; } }
+  .lback { text-align: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-top: 6px; }
+  @media (min-width: 720px) { .lback { grid-column: 1 / -1; } }
+  .lcall { max-width: 640px; margin: 22px auto 0; border: 1px solid rgba(71, 157, 194, 0.55); border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 16px 18px; font-size: 14.5px; line-height: 1.65; color: var(--muted); }
+  .lcall b { color: #fff; font-weight: 600; }
+  @media (prefers-reduced-motion: reduce) { .lstep { animation: none; } .lstep[style*="--i:0"] { border-color: var(--accent); background: var(--accent-soft); } }
+
+  /* --- Brendan: the still, a play button, and the quote under it --- */
+  .testi-wrap { position: relative; max-width: 340px; margin: 0 auto; cursor: pointer; }
+  .play { position: absolute; inset: 0; margin: auto; width: 76px; height: 76px; border-radius: 50%; background: rgba(4, 11, 18, 0.62); border: 2px solid #fff; padding: 0; transition: transform 160ms ease, background 160ms ease; }
+  .play::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-38%, -50%); border-left: 24px solid #fff; border-top: 14px solid transparent; border-bottom: 14px solid transparent; }
+  .testi-wrap:hover .play { transform: scale(1.06); background: var(--accent); border-color: var(--accent); }
+  .testi-wrap.on .play { display: none; }
+  .bigq { max-width: 520px; margin: 22px auto 0; padding: 0; border: 0; text-align: center; }
+  .bigq p { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(18px, 2.4vw, 22px); line-height: 1.45; color: #fff; }
+  .bigq cite { display: block; margin-top: 12px; font-style: normal; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
 
 </style>
 
@@ -318,80 +355,113 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 </section>
 
 <!-- ================= THE PROBLEM ================= -->
-<div class="divider-lbl">The problem</div>
 <section class="with-img">
   <div>
-    <h2>Nothing you do feels like it counts.</h2>
-    <p class="body">You get through the day. Messages, the thing you watch, bed. None of it took anything out of you and none of it gave anything back.</p>
+    <h2>Dopamine is the problem.</h2>
+    <p class="body">It is the motivation molecule. It is what makes you want to do anything at all. And most of yours is being spent on things you never wanted to be motivated toward.</p>
   </div>
-  <img class="sect-img" src="img/morning.jpg" alt="A man sitting on the edge of his bed in the morning, staring at the floor" loading="lazy" />
+  <figure class="mol" aria-label="The dopamine molecule">
+    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skeletal structure of dopamine: a benzene ring with two hydroxyl groups and an ethylamine chain">
+      <g fill="none" stroke="#479dc2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="110,74 70,97 70,143 110,166 150,143 150,97"/>
+        <line x1="79" y1="103" x2="79" y2="137"/>
+        <line x1="106" y1="81" x2="79" y2="97" transform="translate(0,0)" opacity="0"/>
+        <line x1="116" y1="80" x2="143" y2="96" transform="translate(-5,6)"/>
+        <line x1="116" y1="160" x2="143" y2="144" transform="translate(-5,-6)"/>
+        <line x1="70" y1="97" x2="38" y2="79"/>
+        <line x1="70" y1="143" x2="38" y2="161"/>
+        <polyline points="150,97 190,74 230,97 270,74"/>
+      </g>
+      <g fill="#fff" font-family="'Space Grotesk',sans-serif" font-size="16" font-weight="600">
+        <text x="30" y="75" text-anchor="end">HO</text>
+        <text x="30" y="170" text-anchor="end">HO</text>
+        <text x="276" y="79">NH<tspan font-size="11" dy="4">2</tspan></text>
+      </g>
+    </svg>
+    <figcaption class="cap">Dopamine &middot; C<sub>8</sub>H<sub>11</sub>NO<sub>2</sub></figcaption>
+  </figure>
+</section>
+<section>
+  <h2 style="text-align:center">Here is what that looks like.</h2>
+  <div class="loop" aria-label="The loop: sit down, reach for phone, keep scrolling, put it off, repeat">
+    <div class="lstep" style="--i:0"><span class="ln">1</span>You sit down to do something</div>
+    <div class="lcut"><span class="h">&rarr;</span><span class="v">&darr;</span><span class="lbl">We step in here</span></div>
+    <div class="lstep" style="--i:1"><span class="ln">2</span>You reach for your phone</div>
+    <div class="larrow"><span class="h">&rarr;</span><span class="v">&darr;</span></div>
+    <div class="lstep" style="--i:2"><span class="ln">3</span>You keep scrolling</div>
+    <div class="larrow"><span class="h">&rarr;</span><span class="v">&darr;</span></div>
+    <div class="lstep" style="--i:3"><span class="ln">4</span>You put the task off</div>
+    <div class="lback">&#8635; Same thing tomorrow</div>
+  </div>
+  <div class="lcall"><b>The Dopamine Off-Ramp starts between 1 and 2.</b> Close one exit: one rule for where the phone lives, decided once, so it is out of reach when you sit down. The pull still shows up. It stops winning every time.</div>
 </section>
 
-<!-- ================= YOU DO THIS ================= -->
-<div class="divider-lbl">Be honest</div>
-<section class="with-img flip">
-  <div>
-    <h2>You do this.</h2>
-    <ul class="youdo">
-      <li>You open your phone to check one thing and look up forty minutes later.</li>
-      <li>There is something you have been "about to start" for over a year.</li>
-      <li>You are more tired after a day of doing nothing than after a day of work.</li>
-      <li>You know exactly what you would tell a friend to do. You do not do it.</li>
-      <li>You have deleted the apps before. They came back.</li>
-      <li>You say tomorrow, and you mean it every time.</li>
-    </ul>
-    <p class="body" style="margin-top:18px"><b>Sound familiar?</b></p>
-  </div>
-  <img class="sect-img" src="img/doing-nothing.jpg" alt="A man slumped on a couch in a dark room, lit only by his phone" loading="lazy" />
+<!-- ================= WHO THIS IS FOR ================= -->
+<section style="max-width:620px;margin:64px auto 0">
+  <h2>This is for you if</h2>
+  <ul class="youdo">
+    <li>You open your phone to check one thing and look up forty minutes later.</li>
+    <li>There is something you have been "about to start" for over a year.</li>
+    <li>You are more tired after a day of doing nothing than after a day of work.</li>
+    <li>You know exactly what you would tell a friend to do. You do not do it.</li>
+    <li>You have deleted the apps before. They came back.</li>
+    <li>You say tomorrow, and you mean it every time.</li>
+  </ul>
+  <p class="body" style="margin-top:18px"><b>Sound familiar?</b></p>
 </section>
 
 <!-- ================= WHERE YOU COULD BE ================= -->
-<div class="divider-lbl">Three months from now</div>
-<section class="with-img">
-  <div>
-    <h2>The day counted.</h2>
-    <ul class="checks">
-      <li>You start things without an hour of talking yourself into it</li>
-      <li>The phone stops deciding how your day goes</li>
-      <li>The things you said you would do this year are getting done</li>
-      <li>You go to bed knowing the day was yours</li>
-    </ul>
-    <div style="margin-top:26px"><button class="btn-primary js-buy" onclick="openReg('middle')">Save my spot</button></div>
-  </div>
-  <img class="sect-img" src="img/absorbed.jpg" alt="A man working at a desk at night, absorbed in what he is doing" loading="lazy" />
+<section class="centered">
+  <h2>Your time is spent meaningfully.</h2>
+  <ul class="checks" style="max-width:480px;margin:0 auto;text-align:left">
+    <li>You start things without an hour of talking yourself into it</li>
+    <li>The phone stops deciding how your day goes</li>
+    <li>The things you said you would do this year are getting done</li>
+    <li>You go to bed knowing the day was yours</li>
+  </ul>
+  <div style="margin-top:28px"><button class="btn-primary js-buy" onclick="openReg('middle')">Save my spot</button></div>
 </section>
 
 <!-- ================= PROOF ================= -->
-<div class="divider-lbl">Proof</div>
 <section class="centered">
-  <h2>Brendan, six weeks in.</h2>
-  <video class="testi" src="img/testimonial.mp4" poster="img/testimonial-poster.jpg" controls preload="none" playsinline></video>
+  <div class="testi-wrap" id="testi" onclick="playTesti()">
+    <video class="testi" src="img/testimonial.mp4" poster="img/testimonial-poster.jpg" preload="none" playsinline></video>
+    <button class="play" type="button" aria-label="Play Brendan's video"></button>
+  </div>
+  <blockquote class="bigq"><p>"He doesn't get upset with you or show any sort of frustration or judgment when you make a mistake. He says, okay, well, what can we do next?"</p><cite>Brendan, client and good friend</cite></blockquote>
 
-  <h2 style="margin-top:56px">I have been taking this apart in public every week for over two years.</h2>
-  <div class="pod-head">
+</section>
+<section class="with-img flip" style="margin-top:60px">
+  <div>
+    <h2>I have been taking this apart in public every week for over two years.</h2>
+    <div class="pod-head" style="justify-content:flex-start">
     <div class="pod-stat">123<span>Episodes</span></div>
     <div class="pod-stat">2024<span>Every week since</span></div>
     <div class="pod-stat">1:1<span>Clients each week</span></div>
   </div>
+  </div>
+  <img class="sect-img" src="img/will-podcast.jpg" alt="William recording The Willpower Podcast" loading="lazy" />
+</section>
+<section class="centered" style="margin-top:28px">
   <div class="rail" id="ep-rail">
-    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/124--I-Did-a-10-Day-Silent-Retreat--Heres-What-Science-Says-About-Meditation-e3qsda0" target="_blank" rel="noopener"><div class="ep-n">#124</div><div class="ep-t">I Did a 10-Day Silent Retreat. Here's What Science Says About Meditation</div><div class="ep-d">Oct 2026</div></a>
-    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/123--Science-Says-Your-Gratitude-List-Is-Wasting-Your-Time-e3qgf4b" target="_blank" rel="noopener"><div class="ep-n">#123</div><div class="ep-t">Science Says Your Gratitude List Is Wasting Your Time</div><div class="ep-d">Oct 2026</div></a>
-    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/122--Stop-Quitting-with-this-Ancient-Japanese-Concept-e3q3h5u" target="_blank" rel="noopener"><div class="ep-n">#122</div><div class="ep-t">Stop Quitting with this Ancient Japanese Concept</div><div class="ep-d">Oct 2026</div></a>
-    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/121--28-minutes-to-build-a-gym-routine-that-finally-sticks-e3pl22m" target="_blank" rel="noopener"><div class="ep-n">#121</div><div class="ep-t">28 minutes to build a gym routine that finally sticks</div><div class="ep-d">Sep 2026</div></a>
-    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/120--Produce-like-the-greats--starting-with-10-minutes-today-e3p9prc" target="_blank" rel="noopener"><div class="ep-n">#120</div><div class="ep-t">Produce like the greats, starting with 10 minutes today</div><div class="ep-d">Sep 2026</div></a>
-    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/118--The-secret-to-personal-growth-in-2026-e3ojroo" target="_blank" rel="noopener"><div class="ep-n">#118</div><div class="ep-t">The secret to "personal growth" in 2026</div><div class="ep-d">Sep 2026</div></a>
-    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/114--Mental-Trojan-Horses-are-destroying-your-willpower--Heres-what-you-can-do-about-it-e3naodl" target="_blank" rel="noopener"><div class="ep-n">#114</div><div class="ep-t">Mental Trojan Horses are destroying your willpower</div><div class="ep-d">Aug 2026</div></a>
-    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/111--If-your-motivation-comes-from-screens-and-stimulants--listen-to-this-e3mdgin" target="_blank" rel="noopener"><div class="ep-n">#111</div><div class="ep-t">If your motivation comes from screens and stimulants, listen to this</div><div class="ep-d">Jul 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/124--I-Did-a-10-Day-Silent-Retreat--Heres-What-Science-Says-About-Meditation-e3qsda0" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/124.jpg" alt="" loading="lazy" /><div class="ep-n">#124</div><div class="ep-t">I Did a 10-Day Silent Retreat. Here's What Science Says About Meditation</div><div class="ep-d">Oct 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/123--Science-Says-Your-Gratitude-List-Is-Wasting-Your-Time-e3qgf4b" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/123.jpg" alt="" loading="lazy" /><div class="ep-n">#123</div><div class="ep-t">Science Says Your Gratitude List Is Wasting Your Time</div><div class="ep-d">Oct 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/122--Stop-Quitting-with-this-Ancient-Japanese-Concept-e3q3h5u" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/122.jpg" alt="" loading="lazy" /><div class="ep-n">#122</div><div class="ep-t">Stop Quitting with this Ancient Japanese Concept</div><div class="ep-d">Oct 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/121--28-minutes-to-build-a-gym-routine-that-finally-sticks-e3pl22m" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/121.jpg" alt="" loading="lazy" /><div class="ep-n">#121</div><div class="ep-t">28 minutes to build a gym routine that finally sticks</div><div class="ep-d">Sep 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/120--Produce-like-the-greats--starting-with-10-minutes-today-e3p9prc" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/120.jpg" alt="" loading="lazy" /><div class="ep-n">#120</div><div class="ep-t">Produce like the greats, starting with 10 minutes today</div><div class="ep-d">Sep 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/118--The-secret-to-personal-growth-in-2026-e3ojroo" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/118.jpg" alt="" loading="lazy" /><div class="ep-n">#118</div><div class="ep-t">The secret to "personal growth" in 2026</div><div class="ep-d">Sep 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/114--Mental-Trojan-Horses-are-destroying-your-willpower--Heres-what-you-can-do-about-it-e3naodl" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/114.jpg" alt="" loading="lazy" /><div class="ep-n">#114</div><div class="ep-t">Mental Trojan Horses are destroying your willpower</div><div class="ep-d">Aug 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/111--If-your-motivation-comes-from-screens-and-stimulants--listen-to-this-e3mdgin" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/111.jpg" alt="" loading="lazy" /><div class="ep-n">#111</div><div class="ep-t">If your motivation comes from screens and stimulants, listen to this</div><div class="ep-d">Jul 2026</div></a>
   </div>
   <p class="rail-hint">Scroll for more &rarr;</p>
   <div style="margin-top:26px"><button class="btn-primary js-buy" onclick="openReg('proof')">Save my spot</button></div>
 </section>
 
 <!-- ================= FAQ ================= -->
-<div class="divider-lbl">FAQ</div>
-<section style="max-width:760px;margin:0 auto">
+<section style="max-width:760px;margin:64px auto 0">
   <details><summary>Is it actually free?</summary><div class="ans">Yes. No card, no obligation.</div></details>
-  <details><summary>What if I can't make that date?</summary><div class="ans">Reply to your confirmation email and I'll move you to the next session.</div></details>
+  <details><summary>Where is it?</summary><div class="ans">Online, live. The link is in your confirmation email the moment you register, and I send it again an hour before we start.</div></details>
+  <details><summary>Do I need to bring anything?</summary><div class="ans">A pen and paper. You will write down one thing before the hour is over.</div></details>
   <details><summary>How long is it?</summary><div class="ans">One hour, live, with time for questions at the end.</div></details>
   <details><summary>Do I have to be on camera?</summary><div class="ans">No. Plenty of guys just listen.</div></details>
 </section>
@@ -404,7 +474,6 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 </section>
 
 <!-- ================= ABOUT ================= -->
-<div class="divider-lbl">Who am I</div>
 <section class="about">
   <img src="img/spartan.jpg" alt="William Mulvaney at a Spartan race" loading="lazy" style="object-position:50% 20%" />
   <div>
@@ -553,6 +622,13 @@ function closeReg(reason) {
   if (!REGISTERED) cap('register_form_abandon', {where: REG_CTX.where, reason: reason || "closed"});
 }
 
+function playTesti() {
+  const w = document.getElementById("testi"); const v = w && w.querySelector("video");
+  if (!v) return;
+  w.classList.add("on"); v.controls = true; v.play();
+  cap('testimonial_play', {seconds_on_page: secondsOnPage()});
+}
+
 function toast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
@@ -685,40 +761,16 @@ function toast(msg) {
     {threshold: 0}).observe(heroBtn);
 })();
 
-/* The eight cards in the rail are baked into the HTML so the section is never empty.
-   If the feed answers, they are swapped for whatever is actually newest, so the page
-   does not go stale between edits. Any failure leaves the baked-in cards alone. */
-(function podcastRail() {
-  const rail = document.getElementById("ep-rail");
-  if (!rail) return;
-  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+/* The cards are built by hand with YouTube thumbnails. The podcast feed only refreshes the
+   episode count, so the number stays right without an edit. */
+(function podcastCount() {
+  const stat = document.querySelector(".pod-stat");
+  if (!stat) return;
   fetch("https://anchor.fm/s/f40349c8/podcast/rss")
     .then((r) => r.text())
     .then((text) => {
-      const xml = new DOMParser().parseFromString(text, "application/xml");
-      const items = Array.from(xml.getElementsByTagName("item"));
-      if (items.length < 8) return;
-      const cards = items.slice(0, 8).map((it) => {
-        const title = (it.getElementsByTagName("title")[0] || {}).textContent || "";
-        const link = (it.getElementsByTagName("link")[0] || {}).textContent || "";
-        const d = new Date((it.getElementsByTagName("pubDate")[0] || {}).textContent || "");
-        /* Titles arrive as "#124 — Real title"; the number is its own element on the card. */
-        const m = title.match(/^#(\d+)\s*[—–-]\s*(.+)$/);
-        if (!m || !link) return null;
-        const a = document.createElement("a");
-        a.className = "ep"; a.href = link; a.target = "_blank"; a.rel = "noopener";
-        const n = document.createElement("div"); n.className = "ep-n"; n.textContent = "#" + m[1];
-        const t = document.createElement("div"); t.className = "ep-t"; t.textContent = m[2];
-        const dd = document.createElement("div"); dd.className = "ep-d";
-        dd.textContent = isNaN(d) ? "" : MONTHS[d.getMonth()] + " " + d.getFullYear();
-        a.appendChild(n); a.appendChild(t); a.appendChild(dd);
-        return a;
-      }).filter(Boolean);
-      if (cards.length < 8) return;
-      rail.textContent = "";
-      cards.forEach((c) => rail.appendChild(c));
-      const stat = document.querySelector(".pod-stat");
-      if (stat && items.length) stat.childNodes[0].nodeValue = String(items.length);
+      const n = new DOMParser().parseFromString(text, "application/xml").getElementsByTagName("item").length;
+      if (n >= 100) stat.childNodes[0].nodeValue = String(n);
     })
     .catch(() => {});
 })();
