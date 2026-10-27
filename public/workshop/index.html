@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#040b12" />
+<title>Dopamine by Design &middot; Free Workshop</title>
+<meta name="description" content="A free one hour workshop on building self-control, cutting out what wastes your time, and spending your days on something that matters. Saturday, November 7, 1:00 PM Central." />
+<meta property="og:title" content="Dopamine by Design" />
+<meta property="og:description" content="A free one hour live workshop on building self-control and stopping the things that waste your time." />
+<meta property="og:image" content="https://williammulvaney.com/workshop/img/og.jpg" />
+<link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
+<link rel="apple-touch-icon" href="/willpower_logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Same design language as the guide pages (/approaching, /gym-routine):
+     near-black navy stage, steel-blue accent, Playfair Display headings,
+     Space Grotesk UI, letter-spaced uppercase labels, thin alpha borders, square corners. */
+  :root {
+    --bg: #040b12;
+    --surface: rgba(10, 26, 39, 0.72);
+    --surface-strong: #0a1a27;
+    --card-2: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.22);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.58);
+    --faint: rgba(255, 255, 255, 0.34);
+    --accent: #479dc2;
+    --accent-press: #3a7e9b;
+    --accent-soft: rgba(71, 157, 194, 0.12);
+    --ok: #4ade80;
+    --warn: #fbbf24;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 45% at 75% -10%, rgba(71, 157, 194, 0.14), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 10% 110%, rgba(71, 157, 194, 0.07), transparent 60%);
+  }
+  .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 24px 20px 110px; }
+  .home-link { display: inline-block; margin: 6px 0 4px; }
+  .home-link img { height: 42px; width: auto; display: block; opacity: 0.9; filter: brightness(0) invert(1); }
+
+  .kicker { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(71, 157, 194, 0.95); margin-bottom: 14px; line-height: 1.8; }
+  h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(32px, 5.4vw, 52px); line-height: 1.08; color: #fff; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .h1-sub { font-family: var(--font-display); font-weight: 700; font-size: clamp(19px, 2.6vw, 25px); line-height: 1.3; color: rgba(255,255,255,0.8); margin: 0 0 18px; }
+  h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(23px, 3.4vw, 31px); color: #fff; margin: 0 0 14px; line-height: 1.2; }
+  .lede { color: var(--muted); font-size: 16px; line-height: 1.7; max-width: 560px; margin: 0 0 22px; }
+  p.body { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 640px; margin: 0 0 16px; }
+  p.body b { color: var(--text); font-weight: 600; }
+
+  .hero { display: grid; grid-template-columns: 1fr; gap: 34px; align-items: center; padding: 40px 0 20px; }
+  @media (min-width: 780px) { .hero { grid-template-columns: minmax(0, 1fr) 340px; } }
+  .hero-photo { cursor: pointer; transition: transform 160ms ease, box-shadow 160ms ease; position: relative; width: 100%; max-width: 340px; margin: 0 auto; aspect-ratio: 4 / 5; border: 1px solid var(--border-strong); box-shadow: var(--shadow); overflow: hidden; transform: rotate(1.4deg); }
+  .hero-photo:hover { transform: rotate(1.4deg) scale(1.015); }
+  .hero-photo:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 50%; display: block; }
+  .hero-photo .badge { position: absolute; top: 12px; right: 12px; z-index: 2; background: var(--accent); color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 6px 10px; }
+
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+  .fact { border: 1px solid var(--border-strong); padding: 8px 12px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
+
+  .price-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px; margin: 0 0 8px; }
+  .price-big { font-family: var(--font-display); font-weight: 900; font-size: 44px; color: #fff; line-height: 1; }
+  .strike { text-decoration: line-through; color: var(--faint); font-size: 20px; font-weight: 500; }
+  .price-note { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
+  .deadline { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--warn); margin: 0 0 18px; line-height: 1.7; }
+  .deadline.closed { color: var(--faint); }
+
+  button, .btn {
+    font-family: var(--font-ui); cursor: pointer; border: 1px solid transparent; border-radius: 0;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 17px 30px; transition: all 160ms ease; display: inline-block; text-decoration: none; text-align: center;
+  }
+  button:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-press); border-color: var(--accent-press); }
+  .btn-primary[disabled] { background: transparent; color: var(--faint); border-color: var(--border-strong); cursor: default; }
+  .fine { font-size: 12px; color: var(--faint); line-height: 1.6; margin-top: 12px; max-width: 460px; }
+
+  .divider-lbl { color: var(--faint); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin: 56px 0 28px; display: flex; align-items: center; gap: 12px; }
+  .divider-lbl::before, .divider-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.09); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 24px 22px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .card.hot { border-color: rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.10), var(--surface)); }
+  .sect-label { font-size: 10px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: 0.22em; margin: 0 0 12px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 720px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+
+  /* agenda */
+  .agenda { display: grid; gap: 0; border-top: 1px solid var(--border); }
+  .ag { display: grid; grid-template-columns: 48px 1fr; gap: 14px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+  .ag .n { font-family: var(--font-display); font-weight: 900; font-size: 26px; color: var(--accent); line-height: 1; }
+  .ag .t { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.4; }
+  .ag .d { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+  /* steps */
+  .step .num { font-family: var(--font-display); font-weight: 900; font-size: 34px; color: var(--accent); line-height: 1; margin-bottom: 12px; }
+  .step .t { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .step .d { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  ul.checks { list-style: none; margin: 0; padding: 0; }
+  ul.checks li { padding: 7px 0 7px 28px; position: relative; font-size: 14.5px; line-height: 1.55; color: var(--muted); }
+  ul.checks li::before { content: "✓"; position: absolute; left: 0; top: 7px; color: var(--accent); font-weight: 800; }
+  ul.checks.no li::before { content: "×"; color: var(--faint); }
+  ul.checks li b { color: var(--text); font-weight: 600; }
+
+  /* receipts */
+  .proof { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: center; justify-items: center; max-width: 900px; margin: 0 auto; }
+  @media (min-width: 780px) { .proof { grid-template-columns: auto auto auto; justify-content: center; } }
+  .proof .p-imgs { justify-content: center; }
+  @media (min-width: 760px) { .centered { text-align: center; } .centered .body { margin-left: auto; margin-right: auto; } }
+  /* the proof strip is too small to read on a phone, so it is desktop only */
+  @media (max-width: 759px) { .desktop-only { display: none; } }
+  .p-imgs { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
+  .p-imgs .pz { position: relative; aspect-ratio: 3 / 4; overflow: hidden; border: 1px solid var(--border-strong); background: var(--surface-strong); }
+  .p-imgs .pz img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transform-origin: var(--zx, 50%) var(--zy, 50%); transform: scale(var(--zs, 1)); }
+  .flow-arrow { color: var(--accent); font-size: 24px; background: var(--bg); border: 1px solid rgba(71, 157, 194, 0.45); width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; justify-self: center; transform: rotate(90deg); }
+  @media (min-width: 780px) { .flow-arrow { transform: none; } }
+  .p-note { text-align: center; font-size: 12.5px; color: var(--faint); margin-top: 16px; line-height: 1.6; }
+
+  /* about */
+  .about { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
+  @media (min-width: 720px) { .about { grid-template-columns: 220px 1fr; } }
+  /* on a phone the photo and copy stack, so centre them */
+  @media (max-width: 719px) { .about { justify-items: center; text-align: center; } .about img { margin: 0 auto; } }
+  .about img { width: 100%; max-width: 260px; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 30%; border: 1px solid var(--border-strong); display: block; }
+
+  /* price box */
+  .pricebox { max-width: 560px; margin: 0 auto; text-align: center; }
+  .pricebox .price-line { justify-content: center; }
+  .tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 20px; text-align: left; }
+  .tierchip { border: 1px solid var(--border); padding: 12px 14px; }
+  .tierchip.now { border-color: rgba(71, 157, 194, 0.7); background: var(--accent-soft); }
+  .tierchip.past { opacity: 0.45; }
+  .tierchip .tn { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
+  .tierchip .tp { font-family: var(--font-display); font-weight: 900; font-size: 24px; color: #fff; }
+  .tierchip .td { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .pricebox .btn-primary { width: 100%; }
+
+  /* faq */
+  details { border-bottom: 1px solid var(--border); padding: 16px 0; }
+  details summary { cursor: pointer; list-style: none; font-size: 15px; font-weight: 600; color: #fff; display: flex; justify-content: space-between; gap: 16px; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after { content: "+"; color: var(--accent); font-weight: 700; }
+  details[open] summary::after { content: "–"; }
+  details p { margin: 10px 0 0; font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* sticky mobile bar */
+  .sticky { cursor: pointer; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(4, 11, 18, 0.94); border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: space-between; gap: 12px; transform: translateY(110%); transition: transform 200ms ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .sticky.show { transform: none; }
+  .sticky .s-txt { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .sticky .s-txt b { color: #fff; font-size: 15px; }
+  .sticky .btn-primary { padding: 13px 18px; white-space: nowrap; }
+  @media (min-width: 780px) { .sticky { display: none; } }
+
+  .cta-band { text-align: center; border: 1px solid rgba(71, 157, 194, 0.55); background: linear-gradient(180deg, rgba(71, 157, 194, 0.12), var(--surface)); padding: 30px 22px; margin: 44px 0; }
+  .cta-band .cta-line { display: flex; align-items: baseline; justify-content: center; gap: 12px; margin-bottom: 6px; }
+  .cta-band .cta-sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+  .with-img { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: center; }
+  @media (min-width: 760px) {
+    .with-img { grid-template-columns: minmax(0, 1fr) 340px; }
+    .with-img.flip { grid-template-columns: 340px minmax(0, 1fr); }
+    .with-img.flip .sect-img, .with-img.flip .phone { order: -1; }
+  }
+  .sect-img { width: 100%; max-width: 340px; margin: 0 auto; display: block; border: 1px solid var(--border-strong); aspect-ratio: 4 / 5; object-fit: cover; }
+  @media (max-width: 759px) { .sect-img { max-width: 100%; aspect-ratio: 3 / 2; } }
+  footer { margin-top: 70px; text-align: center; color: var(--faint); font-size: 11px; letter-spacing: 0.1em; line-height: 2; }
+  .toast { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%) translateY(20px); background: var(--accent); color: #fff; font-weight: 700; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; padding: 13px 24px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 100; max-width: calc(100vw - 32px); text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---- Qualifying step shown before checkout ---- */
+  .modal { position: fixed; inset: 0; z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); overflow-y: auto; background: rgba(2, 6, 10, 0.82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .modal.open { display: flex; }
+  .modal-card { position: relative; width: 100%; max-width: 480px; margin: auto; background: var(--surface-strong); border: 1px solid var(--border-strong); box-shadow: var(--shadow); padding: 30px 26px 26px; }
+  .modal-close { position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--faint); font-size: 22px; line-height: 1; padding: 8px 12px; letter-spacing: 0; }
+  .modal-close:hover { color: var(--text); }
+  .modal h3 { font-family: var(--font-display); font-weight: 900; font-size: 25px; line-height: 1.2; margin: 0 0 22px; }
+  .fld { margin-bottom: 15px; }
+  .fld label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); margin-bottom: 7px; }
+  .fld input, .fld textarea, .fld select { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 0; color: var(--text); font-family: var(--font-ui); font-size: 15px; padding: 13px 14px; transition: border-color 140ms ease; }
+  .fld textarea { min-height: 88px; resize: vertical; line-height: 1.5; }
+  .fld input:focus, .fld textarea:focus, .fld select:focus { outline: none; border-color: var(--accent); }
+  .fld select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, rgba(255,255,255,0.45) 50%), linear-gradient(135deg, rgba(255,255,255,0.45) 50%, transparent 50%); background-position: calc(100% - 20px) 21px, calc(100% - 14px) 21px; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; }
+  .fld select option { background: var(--surface-strong); color: var(--text); }
+  .fld input::placeholder, .fld textarea::placeholder { color: rgba(255,255,255,0.28); }
+  .fld.bad input, .fld.bad textarea, .fld.bad select { border-color: #f87171; }
+  .fld .err { display: none; font-size: 11px; color: #f87171; margin-top: 6px; letter-spacing: 0.04em; }
+  .fld.bad .err { display: block; }
+  .modal .btn-primary { width: 100%; margin-top: 4px; }
+  .modal .btn-primary[disabled] { opacity: 0.6; }
+  .modal .why { font-size: 11px; color: var(--faint); line-height: 1.6; margin: 14px 0 0; }
+  #checkout-panel iframe { border-radius: 10px; }
+  .pay-back:hover { color: var(--text); }
+  @media (max-width: 520px) { .modal-card { padding: 26px 18px 20px; } .modal h3 { font-size: 22px; } }
+
+  /* ---- free session picker + done screen ---- */
+  .sessions { display: grid; gap: 10px; margin-bottom: 16px; }
+  .sess { display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); padding: 14px; cursor: pointer; transition: border-color 140ms ease, background 140ms ease; }
+  .sess:hover { border-color: var(--border-strong); }
+  .sess input { accent-color: var(--accent); width: 18px; height: 18px; flex: none; }
+  .sess.on { border-color: var(--accent); background: var(--accent-soft); }
+  .sess b { display: block; font-size: 15px; font-weight: 700; }
+  .sess > span > span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .fld.bad .sessions { outline: 1px solid #f87171; outline-offset: 4px; }
+  .done { text-align: center; padding: 10px 0 4px; }
+  .done .tick { width: 54px; height: 54px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+  .done p { font-size: 14px; color: var(--muted); line-height: 1.7; margin: 0 0 10px; }
+  .done .when { color: var(--text); font-weight: 700; }
+  .datechips { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 16px; }
+  .datechip { border: 1px solid var(--border-strong); padding: 10px 14px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .datechip b { color: var(--accent); }
+  .fact-free { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* --- Rules this page needs that the dating page's markup never had.
+         The hero holds a silent looping clip instead of a photo. --- */
+  .hero-photo video { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; display: block; }
+  .eyebrow { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(71, 157, 194, 0.95); margin-bottom: 14px; line-height: 1.8; }
+  p.sub { font-family: var(--font-display); font-weight: 700; font-size: clamp(19px, 2.6vw, 25px); line-height: 1.3; color: rgba(255,255,255,0.8); margin: 0 0 18px; }
+  .steps { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 26px; }
+  @media (min-width: 720px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+  .step { background: var(--surface); border: 1px solid var(--border); padding: 22px 20px; }
+  .step h3 { font-size: 15px; font-weight: 600; color: #fff; margin: 0 0 6px; line-height: 1.4; }
+  .step p { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin: 0; }
+  details .ans { margin: 10px 0 0; font-size: 14px; color: var(--muted); line-height: 1.7; }
+</style>
+
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '526303911209957');
+fbq('track', 'PageView');
+fbq('track', 'ViewContent', {content_name: 'Free Workshop: Dopamine by Design', content_type: 'product'});
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=526303911209957&ev=PageView&noscript=1"/></noscript>
+
+<!-- PostHog analytics (start) -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags on onFeatureFlags onSessionId identify setPersonProperties group resetGroups reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_nBqs5dQxiZ6ZmY5YGtamGBt9nz2k5s2Q5bygq2MvuNd2', {api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true});
+/* Own funnel_product: this project shares a PostHog project with the dating funnels, so
+   every report has to be able to separate them. */
+posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
+</script>
+<!-- PostHog analytics (end) -->
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div>
+    <a class="home-link" aria-label="William Mulvaney home" href="https://williammulvaney.com/"><img src="/willpower_logo.svg" alt="" /></a>
+    <div class="eyebrow">Free live workshop &middot; 1 hour</div>
+    <h1>Dopamine by Design</h1>
+    <p class="sub">Build self-control, stop doing things that waste your time, and live a more meaningful life.</p>
+    <p class="lede">One hour, live, on why your day keeps getting away from you and what to actually do about it. You will leave with something you can use that night, not a list of apps to delete.</p>
+    <div class="facts">
+      <span class="fact fact-free">Free</span>
+      <span class="fact">1 hour</span>
+      <span class="fact">Live</span>
+      <span class="fact">Q&amp;A included</span>
+    </div>
+    <div class="datechips">
+      <span class="datechip"><b class="js-date">Sat Nov 7</b> &middot; <span class="js-time">1:00 PM CT</span></span>
+    </div>
+    <div style="margin-top:18px"><button class="btn-primary js-buy" onclick="openReg('hero')">Save my spot</button></div>
+  </div>
+  <div class="hero-photo" role="button" tabindex="0" aria-label="Save your spot for the free workshop" onclick="openReg('hero-photo')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openReg('hero-photo');}">
+    <div class="badge">Free &middot; 1 hour</div>
+    <video src="img/ultra.mp4" poster="img/ultra-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="William running at midnight, mile 77 of a 100 mile ultramarathon"></video>
+  </div>
+</section>
+
+<!-- ================= THE PROBLEM ================= -->
+<div class="divider-lbl">The problem</div>
+<section class="centered">
+  <h2>You already know what you should be doing.</h2>
+  <p class="body">That is the part that stings. You are not confused about what matters to you. You have had the list for months. And the day still disappears into things you would not have picked if anyone had stopped and asked you.</p>
+  <p class="body">Then it is 11pm, you did not do the thing, and you tell yourself tomorrow. Some part of you already knows how tomorrow goes.</p>
+  <p class="body">After enough days like that it stops feeling like a scheduling problem and starts feeling like a verdict on you. That is the part nobody warns you about. <b>Wasted time is not just lost hours. It is the slow sense that your life is going on without you in it.</b></p>
+</section>
+
+<!-- ================= A BETTER WAY ================= -->
+<div class="divider-lbl">A better way</div>
+<section>
+  <h2 style="text-align:center">Set the day up so you do not have to win an argument with yourself.</h2>
+  <div class="steps">
+    <div class="step"><div class="num">1</div><h3>Decide before you are tired.</h3><p>A choice you make in advance costs you almost nothing. The same choice at 9pm costs you everything you have left.</p></div>
+    <div class="step"><div class="num">2</div><h3>Make the easy thing harder.</h3><p>Most of what eats your evening is just whatever was closest to hand. Change what is within reach and most of the fight never starts.</p></div>
+    <div class="step"><div class="num">3</div><h3>Learn what quitting feels like.</h3><p>The moment before you give in has a signature you can recognise. Once you can name it while it is happening, it stops making the decision for you.</p></div>
+    <div class="step"><div class="num">4</div><h3>Put something back.</h3><p>Nothing holds if you only take things away. You have to replace the hour with something that actually gives you something.</p></div>
+    <div class="step"><div class="num">5</div><h3>Count reps, not streaks.</h3><p>A streak breaks once and takes your motivation with it. Reps just add up. A bad week does not erase the work before it.</p></div>
+  </div>
+</section>
+
+<!-- ================= THE REAL PROBLEM ================= -->
+<div class="divider-lbl">The real problem</div>
+<section class="with-img flip">
+  <div>
+    <h2>It is not that you lack willpower.</h2>
+    <p class="body">Self-control gets talked about like a trait you were either issued at birth or not. That framing is useless, because it turns every bad day into evidence that you are the wrong kind of person.</p>
+    <p class="body">In practice it behaves like a skill. It responds to how you set things up, how often you practise, and how fast you get back after you slip.</p>
+    <p class="body"><b>I am not going to give you a neuroscience lecture.</b> I am going to show you what actually changes what you do, because that is the part you can use on Monday.</p>
+  </div>
+  <img class="sect-img" src="img/bench.jpg" alt="William pressing a loaded barbell in a gym" loading="lazy" />
+</section>
+
+<!-- ================= WHAT CHANGES ================= -->
+<section class="cta-band" style="margin-top:12px">
+  <h2 style="text-align:center">If you follow this, your week starts looking different.</h2>
+  <p class="body" style="text-align:center;max-width:620px;margin-left:auto;margin-right:auto">Not through a 5am routine and not by deleting every app on your phone. By deciding how the day goes before the day starts.</p>
+  <ul class="checks" style="max-width:480px;margin:22px auto 0">
+    <li>You'll know why you quit, and what to do in that exact moment</li>
+    <li>You'll stop negotiating with yourself every single evening</li>
+    <li>You'll get hours back, and spend them on something you would defend</li>
+  </ul>
+  <div style="text-align:center;margin-top:26px"><button class="btn-primary js-buy" onclick="openReg('middle')">Save my spot</button></div>
+</section>
+
+<!-- ================= SHOW ME ================= -->
+<div class="divider-lbl">Show me</div>
+<section class="centered">
+  <h2>None of this came naturally to me.</h2>
+  <p class="body">I have finished a 100 mile ultramarathon, I compete in jiu jitsu, and I get in the cold water in the middle of winter. I do not do any of that because I was built differently. I do it because I got specific about how my days are set up, and because I stopped treating one bad hour as proof of anything.</p>
+  <p class="body">Before this I was a software engineer who spent plenty of evenings telling himself he would start tomorrow. What I teach is what got me out of that.</p>
+  <div class="p-imgs" style="max-width:620px;margin:26px auto 0">
+    <div class="pz"><img src="img/ultra-poster.jpg" alt="Running at midnight, mile 77 of a 100 mile ultramarathon" loading="lazy" /></div>
+    <div class="pz"><img src="img/jiujitsu.jpg" alt="Competing in a jiu jitsu match" loading="lazy" /></div>
+    <div class="pz"><img src="img/plunge.jpg" alt="Sitting in an outdoor cold plunge in winter" loading="lazy" /></div>
+  </div>
+  <p class="p-note">Mile 77, somewhere after midnight. A jiu jitsu match. The cold tub in winter.</p>
+</section>
+
+<!-- ================= FAQ ================= -->
+<div class="divider-lbl">FAQ</div>
+<section style="max-width:760px;margin:0 auto">
+  <details><summary>Is it actually free?</summary><div class="ans">Yes. No card, no obligation.</div></details>
+  <details><summary>What if I can't make that date?</summary><div class="ans">Reply to your confirmation email and I'll move you to the next session.</div></details>
+  <details><summary>Is this just "delete your apps"?</summary><div class="ans">No. Taking things away is one small piece and it falls apart on its own. Most of the hour is about what you put in place instead.</div></details>
+  <details><summary>Do I need to know anything about dopamine?</summary><div class="ans">No, and you won't get a lecture on brain chemistry. The name is about designing your day on purpose rather than letting whatever is easiest decide it for you.</div></details>
+  <details><summary>I've tried habit systems before and they didn't stick.</summary><div class="ans">Most of them ask you to be disciplined first and promise the payoff later. This goes the other way. You set the day up so the right thing is also the easy thing, and you treat a slip as information instead of failure.</div></details>
+  <details><summary>Is this about productivity?</summary><div class="ans">Only partly. Getting more done is a side effect. The point is spending your time on things you'd still be glad about a year from now.</div></details>
+</section>
+
+<!-- ================= CLOSING CTA ================= -->
+<section class="cta-band" style="margin-top:44px">
+  <h2 style="text-align:center">Stop losing the day.</h2>
+  <p class="cta-sub" style="text-align:center">One hour, live, free. <span class="js-when-long">Saturday, November 7, 1:00 PM Central</span>.</p>
+  <div style="text-align:center"><button class="btn-primary js-buy" onclick="openReg('footer')">Save my spot</button></div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<div class="divider-lbl">Who am I</div>
+<section class="about">
+  <img src="img/headshot.jpg" alt="William Mulvaney" loading="lazy" />
+  <div>
+    <h2>William Mulvaney</h2>
+    <p class="body">I coach men on discipline, dating and fitness, and I host The Willpower Podcast. I have run a 100 mile ultramarathon, I do standup comedy, and I used to be a software engineer.</p>
+    <p class="body">Everything I teach is what I actually use. I am not interested in handing you a system that only works for people who already have their life in order.</p>
+  </div>
+</section>
+
+<footer>&copy; William Mulvaney &middot; Coaching</footer>
+</div><!-- /wrap -->
+
+<div class="sticky" id="sticky" role="button" tabindex="0" aria-label="Save your spot for the free workshop" onclick="openReg('sticky')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openReg('sticky');}">
+  <div class="s-txt"><b>Free</b> &middot; 1 hour<br/><span class="js-when-short">Sat Nov 7</span></div>
+  <button class="btn-primary js-buy" tabindex="-1" onclick="event.stopPropagation(); openReg('sticky')">Save my spot</button>
+</div>
+
+<div class="modal" id="reg-modal" role="dialog" aria-modal="true" aria-labelledby="reg-title">
+  <div class="modal-card">
+    <button class="modal-close" type="button" onclick="closeReg()" aria-label="Close">&times;</button>
+    <h3 id="reg-title">Save your spot</h3>
+    <form id="reg-form" novalidate>
+      <p class="why" style="margin:0 0 18px"><span class="js-when-long">Saturday, November 7, 1:00 PM Central</span> &middot; 1 hour &middot; free</p>
+      <div class="fld" id="fld-name">
+        <label for="reg-name">Your name</label>
+        <input id="reg-name" type="text" autocomplete="name" placeholder="First and last" />
+        <div class="err">Please enter your name.</div>
+      </div>
+      <div class="fld" id="fld-email">
+        <label for="reg-email">Email</label>
+        <input id="reg-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" />
+        <div class="err">Please enter a valid email.</div>
+      </div>
+      <div class="fld" id="fld-phone">
+        <label for="reg-phone">Phone</label>
+        <input id="reg-phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(555) 555-5555" />
+        <div class="err">Please enter your phone number.</div>
+      </div>
+      <div class="fld" id="fld-age">
+        <label for="reg-age">Age</label>
+        <input id="reg-age" type="number" inputmode="numeric" min="18" max="99" placeholder="e.g. 32" />
+        <div class="err">Please enter your age.</div>
+      </div>
+      <div class="fld" id="fld-situation">
+        <label for="reg-situation">Where are you at right now?</label>
+        <select id="reg-situation">
+          <option value="">Choose one</option>
+          <option>I lose most of my free time to my phone</option>
+          <option>I start things and stop a few days in</option>
+          <option>Work takes everything and there's nothing left after</option>
+          <option>I'm doing fine, but drifting with no direction</option>
+          <option>There's one specific thing I keep avoiding</option>
+        </select>
+        <div class="err">Please pick one.</div>
+      </div>
+      <div class="fld" id="fld-goal">
+        <label for="reg-goal">What would you want to be different after this?</label>
+        <textarea id="reg-goal" placeholder="I do my best to address everyone's specific struggles, if possible"></textarea>
+        <div class="err">Please answer this one, it is the part I actually use.</div>
+      </div>
+      <button class="btn-primary" type="submit" id="reg-submit">Save my spot</button>
+      <p class="why">We use your name, email and phone only to send you the joining link and reminders for this workshop.</p>
+    </form>
+    <div id="reg-done" class="done" hidden>
+      <div class="tick">&#10003;</div>
+      <h3>You're in.</h3>
+      <p>Your spot is saved for <span class="when js-done-when"></span>.</p>
+      <p>The joining link is in your inbox now, along with a calendar invite. If it is not there in a few minutes, check your spam folder.</p>
+      <button class="btn-primary" type="button" onclick="closeReg()" style="margin-top:12px">Done</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const REGISTER_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-register";
+
+const NEXT_URL = "https://mfypsmmsczaxrubajzxm.supabase.co/functions/v1/workshop-seats?series=dopamine";
+
+/* Only the next session is ever offered. The date is resolved from the server so that when
+   one session passes the page rolls to the following one with no edit and no stale date.
+   The series filter matters: the dating and phone workshops live in the same table, and
+   without it this page would happily advertise one of theirs.
+   The hardcoded fallback is the Nov 7 session, stored as 19:00Z because 1pm Central in
+   November is CST. */
+let SESSION = {slug: "dopamine-by-design-2026-11-07", start: new Date("2026-11-07T19:00:00Z")};
+
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+const T0 = Date.now();
+let MAX_SCROLL = 0;
+let REG_CTX = {where: "hero"};
+let REGISTERED = false;
+
+function secondsOnPage() { return Math.round((Date.now() - T0) / 1000); }
+function cap(event, props, leaving) {
+  try { posthog.capture(event, props || {}, leaving ? {send_instantly: true, transport: 'sendBeacon'} : undefined); } catch (e) {}
+}
+
+/* Render the session date everywhere it appears, in the visitor's own zone. Every lookup
+   is guarded: the paid page shipped broken for days because this threw on a missing node. */
+function renderWhen() {
+  try {
+    const d = SESSION.start;
+    const dayShort = new Intl.DateTimeFormat("en-US", {weekday: "short", month: "short", day: "numeric"}).format(d);
+    const dayLong = new Intl.DateTimeFormat("en-US", {weekday: "long", month: "long", day: "numeric"}).format(d);
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    const central = /Chicago|Winnipeg|Mexico_City|Regina/.test(tz);
+    const time = central
+      ? "1:00 PM CT"
+      : new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "2-digit", timeZoneName: "short"}).format(d);
+    const timeLong = central
+      ? "1:00 PM Central"
+      : new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "2-digit", timeZoneName: "short"}).format(d);
+    $$(".js-date").forEach((n) => n.textContent = dayShort);
+    $$(".js-time").forEach((n) => n.textContent = time);
+    $$(".js-when-short").forEach((n) => n.textContent = dayShort);
+    $$(".js-when-long").forEach((n) => n.textContent = dayLong + ", " + timeLong);
+  } catch (e) {}
+}
+renderWhen();
+
+fetch(NEXT_URL)
+  .then((r) => r.json())
+  .then((d) => {
+    if (d && d.ok && d.slug && d.starts_at) {
+      SESSION = {slug: d.slug, start: new Date(d.starts_at)};
+      renderWhen();
+      cap('session_loaded', {session: d.slug});
+    }
+  })
+  .catch(() => {});
+
+const $modal = () => document.getElementById("reg-modal");
+
+function openReg(where) {
+  REG_CTX = {where: where};
+  cap('register_click', {where: where, seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL}, true);
+  try { fbq('track', 'InitiateCheckout', {content_name: 'Free Workshop: Dopamine by Design'}); } catch (e) {}
+  $modal().classList.add("open");
+  document.body.style.overflow = "hidden";
+  setTimeout(() => { const f = document.getElementById("reg-name"); if (f && !REGISTERED) f.focus(); }, 60);
+}
+
+function closeReg(reason) {
+  $modal().classList.remove("open");
+  document.body.style.overflow = "";
+  if (!REGISTERED) cap('register_form_abandon', {where: REG_CTX.where, reason: reason || "closed"});
+}
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 3200);
+}
+
+(function regForm() {
+  const form = document.getElementById("reg-form");
+  if (!form) return;
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && $modal().classList.contains("open")) closeReg("escape");
+  });
+  $modal().addEventListener("click", (e) => { if (e.target === $modal()) closeReg("backdrop"); });
+
+  const mark = (id, bad) => document.getElementById(id).classList.toggle("bad", bad);
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const name = document.getElementById("reg-name").value.trim();
+    const email = document.getElementById("reg-email").value.trim();
+    const phone = document.getElementById("reg-phone").value.trim();
+    const age = document.getElementById("reg-age").value.trim();
+    const situation = document.getElementById("reg-situation").value;
+    const goal = document.getElementById("reg-goal").value.trim();
+
+    const badName = name.length < 2;
+    const badEmail = !/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/.test(email);
+    const badPhone = phone.replace(/\D/g, "").length < 7;
+    const n = parseInt(age, 10);
+    const badAge = !(n >= 18 && n <= 99);
+    const badSituation = !situation;
+    const badGoal = goal.length < 3;
+    mark("fld-name", badName); mark("fld-email", badEmail); mark("fld-phone", badPhone);
+    mark("fld-age", badAge); mark("fld-situation", badSituation); mark("fld-goal", badGoal);
+    if (badName || badEmail || badPhone || badAge || badSituation || badGoal) {
+      cap('register_form_invalid', {name: badName, email: badEmail, phone: badPhone, age: badAge, situation: badSituation, goal: badGoal});
+      const first = document.querySelector(".fld.bad input, .fld.bad select, .fld.bad textarea");
+      if (first) first.focus();
+      return;
+    }
+
+    const btn = document.getElementById("reg-submit");
+    btn.disabled = true; btn.textContent = "Saving your spot...";
+
+    /* One id for both copies of CompleteRegistration (this pixel and the server's Conversions
+       API event) so Meta counts the signup once. The _fbp/_fbc cookies help it match the
+       server copy to the ad click. */
+    const eventId = "reg-" + (window.crypto && crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(36).slice(2));
+    const cookie = (k) => { const m = document.cookie.match(new RegExp("(?:^|; )" + k + "=([^;]*)")); return m ? decodeURIComponent(m[1]) : null; };
+    const fbclid = new URLSearchParams(location.search).get("fbclid");
+    const fbc = cookie("_fbc") || (fbclid ? "fb.1." + Date.now() + "." + fbclid : null);
+
+    fetch(REGISTER_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        name: name, email: email, phone: phone, event_slug: SESSION.slug,
+        intake: {age: age, situation: situation, goal: goal},
+        event_id: eventId, fbp: cookie("_fbp"), fbc: fbc, source_url: location.href,
+      }),
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d || !d.ok) throw new Error((d && d.error) || "registration failed");
+        REGISTERED = true;
+        document.querySelector(".js-done-when").textContent =
+          new Intl.DateTimeFormat("en-US", {weekday: "long", month: "long", day: "numeric"}).format(SESSION.start)
+          + " at 1:00 PM Central";
+        document.getElementById("reg-form").hidden = true;
+        document.getElementById("reg-done").hidden = false;
+        cap('registered', {
+          session: SESSION.slug, where: REG_CTX.where, already: Boolean(d.already),
+          seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL,
+        }, true);
+        try { posthog.identify(email, {email: email, name: name}); } catch (err) {}
+        /* A repeat signup is not a new conversion, and the server sends nothing for it either. */
+        if (!d.already) {
+          try { fbq('track', 'CompleteRegistration', {content_name: 'Free Workshop: Dopamine by Design', status: true}, {eventID: eventId}); } catch (err) {}
+        }
+      })
+      .catch((err) => {
+        btn.disabled = false; btn.textContent = "Save my spot";
+        toast("Something went wrong. Please try again.");
+        cap('register_failed', {reason: String(err).slice(0, 200)});
+      });
+  });
+})();
+
+/* Scroll depth, section views and CTA impressions, same shape as the paid page so the
+   two can be compared. */
+(function analytics() {
+  const marks = [25, 50, 75, 90]; const seen = {};
+  function onScroll() {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = h > 0 ? Math.min(100, Math.round((window.scrollY / h) * 100)) : 100;
+    if (pct > MAX_SCROLL) MAX_SCROLL = pct;
+    marks.forEach((m) => { if (pct >= m && !seen[m]) { seen[m] = 1; cap('scroll_depth', {depth: m}); } });
+  }
+  window.addEventListener("scroll", onScroll, {passive: true});
+  onScroll();
+
+  if ("IntersectionObserver" in window) {
+    const secIo = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { cap('section_view', {section: e.target.textContent.trim(), seconds_on_page: secondsOnPage()}); secIo.unobserve(e.target); }
+    }), {threshold: 0.6});
+    $$(".divider-lbl").forEach((n) => secIo.observe(n));
+
+    const ctaIo = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { cap('cta_view', {where: e.target.getAttribute("onclick") || ""}); ctaIo.unobserve(e.target); }
+    }), {threshold: 0.9});
+    $$(".js-buy").forEach((n) => ctaIo.observe(n));
+  }
+
+  $$("details").forEach((d, i) => d.addEventListener("toggle", () => {
+    if (d.open) cap('faq_open', {question: d.querySelector("summary").textContent.trim(), order: i + 1});
+  }));
+
+  window.addEventListener("pagehide", () => cap('page_exit', {
+    max_scroll_pct: MAX_SCROLL, seconds_on_page: secondsOnPage(), registered: REGISTERED,
+  }, true));
+})();
+
+/* Sticky bar once the hero CTA scrolls away. */
+(function () {
+  const bar = document.getElementById("sticky");
+  const heroBtn = document.querySelector(".hero .js-buy");
+  if (!bar || !heroBtn || !("IntersectionObserver" in window)) return;
+  new IntersectionObserver((es) => es.forEach((e) => bar.classList.toggle("show", !e.isIntersecting)),
+    {threshold: 0}).observe(heroBtn);
+})();
+</script>
+</body>
+</html>
