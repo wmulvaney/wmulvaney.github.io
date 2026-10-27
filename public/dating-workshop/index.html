@@ -9,7 +9,7 @@
 <meta name="description" content="A free one hour workshop on meeting women in real life instead of on apps. Sunday, November 1, 1:00 PM Central." />
 <meta property="og:title" content="Stop swiping. Start dating." />
 <meta property="og:description" content="A free one hour live workshop on meeting women in real life instead of on apps." />
-<meta property="og:image" content="https://williammulvaney.com/workshop/img/approach-labeled.jpg" />
+<meta property="og:image" content="https://williammulvaney.com/dating-workshop/img/approach-labeled.jpg" />
 <link rel="icon" type="image/svg+xml" href="/willpower_logo.svg" />
 <link rel="apple-touch-icon" href="/willpower_logo.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -568,12 +568,21 @@ function toast(msg) {
     const btn = document.getElementById("reg-submit");
     btn.disabled = true; btn.textContent = "Saving your spot...";
 
+    /* One id for both copies of CompleteRegistration (this pixel and the server's Conversions
+       API event) so Meta counts the signup once. The _fbp/_fbc cookies help it match the
+       server copy to the ad click. */
+    const eventId = "reg-" + (window.crypto && crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(36).slice(2));
+    const cookie = (k) => { const m = document.cookie.match(new RegExp("(?:^|; )" + k + "=([^;]*)")); return m ? decodeURIComponent(m[1]) : null; };
+    const fbclid = new URLSearchParams(location.search).get("fbclid");
+    const fbc = cookie("_fbc") || (fbclid ? "fb.1." + Date.now() + "." + fbclid : null);
+
     fetch(REGISTER_URL, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         name: name, email: email, phone: phone, event_slug: SESSION.slug,
         intake: {age: age, situation: situation, goal: goal},
+        event_id: eventId, fbp: cookie("_fbp"), fbc: fbc, source_url: location.href,
       }),
     })
       .then((r) => r.json())
@@ -590,7 +599,10 @@ function toast(msg) {
           seconds_on_page: secondsOnPage(), max_scroll_pct: MAX_SCROLL,
         }, true);
         try { posthog.identify(email, {email: email, name: name}); } catch (err) {}
-        try { fbq('track', 'CompleteRegistration', {content_name: 'Free Workshop', status: true}); } catch (err) {}
+        /* A repeat signup is not a new conversion, and the server sends nothing for it either. */
+        if (!d.already) {
+          try { fbq('track', 'CompleteRegistration', {content_name: 'Free Workshop', status: true}, {eventID: eventId}); } catch (err) {}
+        }
       })
       .catch((err) => {
         btn.disabled = false; btn.textContent = "Save my spot";
