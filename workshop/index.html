@@ -65,6 +65,7 @@
   .hero-photo:hover { transform: scale(1.015); }
   .hero-photo:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
   .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 50%; display: block; }
+  .hero-cap { max-width: 340px; margin: 12px auto 0; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.5; }
   .hero-photo .badge { position: absolute; top: 12px; right: 12px; z-index: 2; background: var(--accent); color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 6px 10px; }
 
   .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
@@ -89,6 +90,8 @@
   .fine { font-size: 12px; color: var(--faint); line-height: 1.6; margin-top: 12px; max-width: 460px; }
 
   .wrap > section:not(.hero) { margin-top: 64px; }
+  .sep { border: 0; height: 1px; background: rgba(255, 255, 255, 0.14); margin: 64px 0 0; }
+  .wrap > .sep + section { margin-top: 48px; }
   .divider-lbl { color: var(--faint); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin: 56px 0 28px; display: flex; align-items: center; gap: 12px; }
   .divider-lbl::before, .divider-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.09); }
 
@@ -348,13 +351,17 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
     </div>
     <div style="margin-top:18px"><button class="btn-primary js-buy" onclick="openReg('hero')">Save my spot</button></div>
   </div>
+  <div>
   <div class="hero-photo" role="button" tabindex="0" aria-label="Save your spot for the free workshop" onclick="openReg('hero-photo')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openReg('hero-photo');}">
     <div class="badge">Free &middot; 1 hour</div>
     <video src="img/ultra.mp4" poster="img/ultra-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="William running at midnight, mile 77 of a 100 mile ultramarathon"></video>
   </div>
+  <p class="hero-cap">Learn how I do things like 100 mile ultras.</p>
+  </div>
 </section>
 
 <!-- ================= THE PROBLEM ================= -->
+<hr class="sep" />
 <section class="with-img">
   <div>
     <h2>Dopamine is the problem.</h2>
@@ -395,20 +402,22 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
   </div>
 </section>
 
+<hr class="sep" />
 <!-- ================= WHO THIS IS FOR ================= -->
-<section style="max-width:620px;margin:64px auto 0">
+<section style="max-width:620px;margin-left:auto;margin-right:auto">
   <h2>This is for you if</h2>
   <ul class="youdo">
     <li>Your life feels like it should mean more than it does.</li>
     <li>You spend more time scrolling and on mindless stuff than you would like.</li>
     <li>You have tried everything the internet has to offer.</li>
   </ul>
-  <p class="body" style="margin-top:18px"><b>Sound familiar?</b></p>
+  <p class="body" style="margin-top:22px"><b>This life is available for you.</b></p>
 </section>
 
+<hr class="sep" />
 <!-- ================= WHERE YOU COULD BE ================= -->
 <section class="centered">
-  <h2>Your time is spent meaningfully.</h2>
+  <h2>Imagine spending your time meaningfully.</h2>
   <ul class="checks" style="max-width:480px;margin:0 auto;text-align:left">
     <li>You start things without an hour of talking yourself into it</li>
     <li>The phone stops deciding how your day goes</li>
@@ -418,25 +427,24 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
   <div style="margin-top:28px"><button class="btn-primary js-buy" onclick="openReg('middle')">Save my spot</button></div>
 </section>
 
+<hr class="sep" />
 <!-- ================= PROOF ================= -->
 <section class="centered">
   <div class="testi-wrap" id="testi" onclick="playTesti()">
     <video class="testi" src="img/testimonial.mp4" poster="img/testimonial-poster.jpg" preload="none" playsinline></video>
     <button class="play" type="button" aria-label="Play Brendan's video"></button>
   </div>
-  <blockquote class="bigq"><p>"He doesn't get upset with you or show any sort of frustration or judgment when you make a mistake. He says, okay, well, what can we do next?"</p><cite>Brendan, client and good friend</cite></blockquote>
+  <blockquote class="bigq"><p>"He brings an extremely to the point, what can you do right now? How can you figure this out? Okay, what are you going to do now?"</p><cite>Brendan, client and good friend</cite></blockquote>
 
 </section>
-<section class="with-img flip" style="margin-top:60px">
-  <div>
-    <h2>I have been taking this apart in public every week for over two years.</h2>
-    <div class="pod-head" style="justify-content:flex-start">
+<hr class="sep" />
+<section class="centered">
+  <h2>I've been working on this for a while now.</h2>
+  <div class="pod-head">
     <div class="pod-stat">123<span>Episodes</span></div>
     <div class="pod-stat">2024<span>Every week since</span></div>
     <div class="pod-stat">1:1<span>Clients each week</span></div>
   </div>
-  </div>
-  <img class="sect-img" src="img/will-podcast.jpg" alt="William recording The Willpower Podcast" loading="lazy" />
 </section>
 <section class="centered" style="margin-top:28px">
   <div class="rail" id="ep-rail">
@@ -449,11 +457,14 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
     <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/114--Mental-Trojan-Horses-are-destroying-your-willpower--Heres-what-you-can-do-about-it-e3naodl" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/114.jpg" alt="" loading="lazy" /><div class="ep-n">#114</div><div class="ep-t">Mental Trojan Horses are destroying your willpower</div><div class="ep-d">Aug 2026</div></a>
     <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/111--If-your-motivation-comes-from-screens-and-stimulants--listen-to-this-e3mdgin" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/111.jpg" alt="" loading="lazy" /><div class="ep-n">#111</div><div class="ep-t">If your motivation comes from screens and stimulants, listen to this</div><div class="ep-d">Jul 2026</div></a>
   </div>
+  <p class="body" style="margin-top:30px">Every week on the podcast I dig into one piece of this: motivation, habits, attention, follow-through. What I learn there gets distilled into one clear process, and that process is what I walk you through in this hour.</p>
   <div style="margin-top:26px"><button class="btn-primary js-buy" onclick="openReg('proof')">Save my spot</button></div>
 </section>
 
+<hr class="sep" />
 <!-- ================= FAQ ================= -->
-<section style="max-width:760px;margin:64px auto 0">
+<section style="max-width:760px;margin-left:auto;margin-right:auto">
+  <h2>FAQ</h2>
   <details><summary>Is it actually free?</summary><div class="ans">Yes. No card, no obligation.</div></details>
   <details><summary>Where is it?</summary><div class="ans">Online, live. The link is in your confirmation email the moment you register, and I send it again an hour before we start.</div></details>
   <details><summary>Do I need to bring anything?</summary><div class="ans">A pen and paper for taking notes.</div></details>
@@ -468,6 +479,7 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
   <div style="text-align:center"><button class="btn-primary js-buy" onclick="openReg('footer')">Save my spot</button></div>
 </section>
 
+<hr class="sep" />
 <!-- ================= ABOUT ================= -->
 <section class="about">
   <img src="img/spartan.jpg" alt="William Mulvaney at a Spartan race" loading="lazy" style="object-position:50% 20%" />
