@@ -237,6 +237,7 @@
   /* --- diagrams: one simple picture per section instead of a block of text --- */
   .figure { margin: 26px auto 0; max-width: 620px; }
   .figure svg { width: 100%; height: auto; display: block; }
+  .testi { width: 100%; display: block; border: 1px solid var(--border-strong); background: #000; }
   .figure figcaption { font-size: 12.5px; color: var(--faint); text-align: center; margin-top: 12px; line-height: 1.6; }
 
   /* --- podcast carousel --- */
@@ -295,7 +296,7 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
     <div class="eyebrow">Free live workshop &middot; 1 hour</div>
     <h1>Dopamine by Design</h1>
     <p class="sub">Build self-control, stop doing things that waste your time, and live a more meaningful life.</p>
-    <p class="lede">One hour, live, on why your evenings keep disappearing and what it takes to get them back. I have spent over two years on this question, and I work on it with men every week.</p>
+    <p class="lede">One hour, live, on why nothing feels worth doing anymore and how men get that back. I have spent over two years on this question, and I work on it with men every week.</p>
     <div class="facts">
       <span class="fact fact-free">Free</span>
       <span class="fact">1 hour</span>
@@ -314,88 +315,62 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 </section>
 
 <!-- ================= YOU ARE STRUGGLING ================= -->
-<div class="divider-lbl">Where your time goes</div>
-<section class="centered">
-  <h2>You know what you want to do with your evening.</h2>
-  <p class="body" style="margin-left:auto;margin-right:auto">And then it is 11pm again.</p>
-  <figure class="figure">
-    <svg viewBox="0 0 620 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two bars comparing an evening as planned against the evening that actually happened. The planned bar gives most of the time to the thing that matters. The actual bar is almost entirely taken up by the phone, leaving twenty minutes.">
-      <text x="0" y="14" fill="rgba(255,255,255,0.34)" font-family="'Space Grotesk',sans-serif" font-size="11" letter-spacing="2.2">WHAT YOU PLANNED</text>
-      <rect x="0" y="26" width="72" height="46" fill="rgba(255,255,255,0.08)"/>
-      <text x="36" y="54" fill="rgba(255,255,255,0.5)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="middle">Dinner</text>
-      <rect x="76" y="26" width="462" height="46" fill="#479dc2"/>
-      <text x="307" y="54" fill="#fff" font-family="'Space Grotesk',sans-serif" font-size="12.5" font-weight="600" text-anchor="middle">The thing that actually matters to you</text>
-      <rect x="542" y="26" width="78" height="46" fill="rgba(255,255,255,0.08)"/>
-      <text x="581" y="54" fill="rgba(255,255,255,0.5)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="middle">Sleep</text>
-
-      <text x="0" y="112" fill="rgba(255,255,255,0.34)" font-family="'Space Grotesk',sans-serif" font-size="11" letter-spacing="2.2">WHAT HAPPENED</text>
-      <rect x="0" y="124" width="72" height="46" fill="rgba(255,255,255,0.08)"/>
-      <text x="36" y="152" fill="rgba(255,255,255,0.5)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="middle">Dinner</text>
-      <rect x="76" y="124" width="430" height="46" fill="rgba(255,255,255,0.055)" stroke="rgba(255,255,255,0.14)" stroke-dasharray="3 3"/>
-      <text x="291" y="152" fill="rgba(255,255,255,0.46)" font-family="'Space Grotesk',sans-serif" font-size="12.5" text-anchor="middle">Gone</text>
-      <rect x="510" y="124" width="28" height="46" fill="#479dc2"/>
-      <rect x="542" y="124" width="78" height="46" fill="rgba(255,255,255,0.08)"/>
-      <text x="581" y="152" fill="rgba(255,255,255,0.5)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="middle">Sleep</text>
-
-      <line x1="0" y1="192" x2="620" y2="192" stroke="rgba(255,255,255,0.09)"/>
-      <text x="0" y="212" fill="rgba(255,255,255,0.34)" font-family="'Space Grotesk',sans-serif" font-size="11">6 PM</text>
-      <text x="310" y="212" fill="rgba(255,255,255,0.34)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="middle">9 PM</text>
-      <text x="620" y="212" fill="rgba(255,255,255,0.34)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="end">12 AM</text>
-    </svg>
-    <figcaption>Same evening, every week.</figcaption>
-  </figure>
+<div class="divider-lbl">The part nobody says out loud</div>
+<section class="with-img">
+  <div>
+    <h2>Nothing you do feels like it counts.</h2>
+    <p class="body">You get through the day. You answer the messages, you watch the thing, you go to bed. None of it took anything out of you and none of it gave anything back.</p>
+    <p class="body">You still have the list. The things you said you would do this year. You have not touched them, and being busy was never the reason.</p>
+    <p class="body"><b>The things that should feel good stopped feeling like much of anything.</b> What is left is whatever is closest and cheapest, and you reach for it without deciding to.</p>
+  </div>
+  <img class="sect-img" src="img/doing-nothing.jpg" alt="A man slumped on a couch in a dark room, lit only by his phone" loading="lazy" />
 </section>
 
 <!-- ================= I UNDERSTAND ================= -->
 <div class="divider-lbl">I get it</div>
 <section class="with-img flip">
   <div>
-    <h2>I have lost plenty of evenings the same way.</h2>
-    <p class="body">Anyone who tells you they always feel like doing the hard thing is lying to you.</p>
-    <p class="body">What I will say is that the gap between the man you are on a good day and the man you are on a bad one is smaller than it feels at 11pm. Most men I talk to are closer than they think, and they have no idea, because nobody has ever shown them where they actually stand.</p>
+    <h2>I did not get here by being motivated.</h2>
+    <p class="body">Anyone who tells you they always feel like doing the hard thing is lying to you. I have never once wanted to start.</p>
+    <p class="body">What I had to learn was how to want things again when nothing felt worth wanting. That part took me years and a lot of being wrong about it, and it is the part almost nobody is actually talking about.</p>
   </div>
-  <img class="sect-img" src="img/bench.jpg" alt="William pressing a loaded barbell in a gym" loading="lazy" />
+  <img class="sect-img" src="img/spartan.jpg" alt="William carrying a stone at a Spartan race" loading="lazy" />
 </section>
 
 <!-- ================= WHERE YOU COULD BE ================= -->
 <div class="divider-lbl">Where this goes</div>
-<section class="centered">
-  <h2>What a week looks like when the evening belongs to you.</h2>
-  <figure class="figure">
-    <svg viewBox="0 0 620 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Seven days of the week, each showing a filled block of reclaimed evening time, adding up to about fourteen hours a week.">
-      <g font-family="'Space Grotesk',sans-serif">
-        <rect x="0"   y="24" width="76" height="76" fill="#479dc2"/><text x="38"  y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">MON</text>
-        <rect x="90"  y="24" width="76" height="76" fill="#479dc2"/><text x="128" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">TUE</text>
-        <rect x="180" y="24" width="76" height="76" fill="#479dc2"/><text x="218" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">WED</text>
-        <rect x="270" y="24" width="76" height="76" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.14)" stroke-dasharray="3 3"/><text x="308" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">THU</text>
-        <rect x="360" y="24" width="76" height="76" fill="#479dc2"/><text x="398" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">FRI</text>
-        <rect x="450" y="24" width="76" height="76" fill="#479dc2"/><text x="488" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">SAT</text>
-        <rect x="540" y="24" width="76" height="76" fill="#479dc2"/><text x="578" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">SUN</text>
-        <text x="308" y="70" fill="rgba(255,255,255,0.4)" font-size="11" text-anchor="middle">off day</text>
-        <text x="310" y="132" fill="#fff" font-family="'Playfair Display',Georgia,serif" font-size="27" font-weight="900" text-anchor="middle">12 hours</text>
-        <text x="310" y="154" fill="rgba(255,255,255,0.58)" font-size="13" text-anchor="middle">back, every week, on whatever you pick</text>
-      </g>
-    </svg>
-    <figcaption>A missed day stays a missed day. It does not cost you the week.</figcaption>
-  </figure>
-  <ul class="checks" style="max-width:480px;margin:30px auto 0;text-align:left">
-    <li>You sit down and start, without the hour of talking yourself into it</li>
-    <li>You stop ending the night annoyed at yourself</li>
-    <li>You get to the weekend with something to show for the week</li>
-  </ul>
-  <div style="margin-top:28px"><button class="btn-primary js-buy" onclick="openReg('middle')">Save my spot</button></div>
+<section class="with-img">
+  <div>
+    <h2>What it is like to want things again.</h2>
+    <p class="body">This is the part worth having. The feeling that what you are doing is yours, and that it is going somewhere.</p>
+    <ul class="checks" style="margin-top:20px">
+      <li>You start without the hour of talking yourself into it</li>
+      <li>The things you care about stop being things you will get to later</li>
+      <li>You stop going to bed annoyed at yourself</li>
+      <li>Your own life stops feeling like something happening to you</li>
+    </ul>
+    <div style="margin-top:26px"><button class="btn-primary js-buy" onclick="openReg('middle')">Save my spot</button></div>
+  </div>
+  <img class="sect-img" src="img/absorbed.jpg" alt="A man working at a desk at night, absorbed in what he is doing" loading="lazy" />
 </section>
 
 <!-- ================= PROOF ================= -->
-<div class="divider-lbl">Why this will work</div>
+<div class="divider-lbl">Why listen to me</div>
 <section class="centered">
-  <h2>I have been studying this every week for over two years.</h2>
+  <h2>Here is a guy I work with.</h2>
+  <figure class="figure" style="max-width:560px">
+    <video class="testi" src="img/testimonial.mp4" poster="img/testimonial-poster.jpg" controls preload="none" playsinline></video>
+    <figcaption>Coaching client, 55 seconds.</figcaption>
+  </figure>
+  <blockquote class="quote" style="max-width:560px;margin:26px auto 0;text-align:left"><p>"He doesn't show any sort of frustration or judgment when you make a mistake. He says, okay, well, what can we do next?"</p></blockquote>
+
+  <h2 style="margin-top:56px">And I have been taking this apart in public for over two years.</h2>
   <div class="pod-head">
     <div class="pod-stat">123<span>Episodes</span></div>
     <div class="pod-stat">2024<span>Every week since</span></div>
     <div class="pod-stat">1:1<span>Clients each week</span></div>
   </div>
-  <p class="body" style="margin:18px auto 0">The Willpower Podcast is where I take this apart in public, through the research and through long conversations with people who study it and people who have lived it.</p>
+  <p class="body" style="margin:18px auto 0">The Willpower Podcast, through the research and through long conversations with people who study this and people who have lived it.</p>
   <div class="rail" id="ep-rail">
     <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/124--I-Did-a-10-Day-Silent-Retreat--Heres-What-Science-Says-About-Meditation-e3qsda0" target="_blank" rel="noopener"><div class="ep-n">#124</div><div class="ep-t">I Did a 10-Day Silent Retreat. Here's What Science Says About Meditation</div><div class="ep-d">Oct 2026</div></a>
     <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/123--Science-Says-Your-Gratitude-List-Is-Wasting-Your-Time-e3qgf4b" target="_blank" rel="noopener"><div class="ep-n">#123</div><div class="ep-t">Science Says Your Gratitude List Is Wasting Your Time</div><div class="ep-d">Oct 2026</div></a>
@@ -407,12 +382,7 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
     <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/111--If-your-motivation-comes-from-screens-and-stimulants--listen-to-this-e3mdgin" target="_blank" rel="noopener"><div class="ep-n">#111</div><div class="ep-t">If your motivation comes from screens and stimulants, listen to this</div><div class="ep-d">Jul 2026</div></a>
   </div>
   <p class="rail-hint">Scroll for more &rarr;</p>
-
-  <div class="quotes">
-    <blockquote class="quote"><p>"He brings an extremely to the point, what can you do right now, how can you figure this out, what are you going to do now, attitude. It is helpful short term and it is sustainable."</p><cite>Coaching client</cite></blockquote>
-    <blockquote class="quote"><p>"He doesn't show any sort of frustration or judgment when you make a mistake. He says, okay, well, what can we do next?"</p><cite>Coaching client</cite></blockquote>
-  </div>
-  <div style="margin-top:30px"><button class="btn-primary js-buy" onclick="openReg('proof')">Save my spot</button></div>
+  <div style="margin-top:26px"><button class="btn-primary js-buy" onclick="openReg('proof')">Save my spot</button></div>
 </section>
 
 <!-- ================= FAQ ================= -->
@@ -426,7 +396,7 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 
 <!-- ================= CLOSING CTA ================= -->
 <section class="cta-band" style="margin-top:44px">
-  <h2 style="text-align:center">Stop losing the evening.</h2>
+  <h2 style="text-align:center">You can want things again.</h2>
   <p class="cta-sub" style="text-align:center">One hour, live, free. <span class="js-when-long">Saturday, November 7, 1:00 PM Central</span>.</p>
   <div style="text-align:center"><button class="btn-primary js-buy" onclick="openReg('footer')">Save my spot</button></div>
 </section>
@@ -444,7 +414,7 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 <div class="p-imgs" style="max-width:620px;margin:26px auto 0">
   <div class="pz"><img src="img/ultra-poster.jpg" alt="Running at night during a 100 mile ultramarathon" loading="lazy" /></div>
   <div class="pz"><img src="img/jiujitsu.jpg" alt="Competing in a jiu jitsu match" loading="lazy" /></div>
-  <div class="pz"><img src="img/plunge.jpg" alt="Sitting in an outdoor cold plunge" loading="lazy" /></div>
+  <div class="pz"><img src="img/plunge.jpg" alt="In an outdoor cold plunge" loading="lazy" /></div>
 </div>
 
 <footer>&copy; William Mulvaney &middot; Coaching</footer>
