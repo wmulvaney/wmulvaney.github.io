@@ -234,6 +234,32 @@
   .step h3 { font-size: 15px; font-weight: 600; color: #fff; margin: 0 0 6px; line-height: 1.4; }
   .step p { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin: 0; }
   details .ans { margin: 10px 0 0; font-size: 14px; color: var(--muted); line-height: 1.7; }
+  /* --- diagrams: one simple picture per section instead of a block of text --- */
+  .figure { margin: 26px auto 0; max-width: 620px; }
+  .figure svg { width: 100%; height: auto; display: block; }
+  .figure figcaption { font-size: 12.5px; color: var(--faint); text-align: center; margin-top: 12px; line-height: 1.6; }
+
+  /* --- podcast carousel --- */
+  .pod-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 20px; justify-content: center; margin-bottom: 6px; }
+  .pod-stat { font-family: var(--font-display); font-weight: 900; font-size: 40px; color: #fff; line-height: 1; }
+  .pod-stat span { font-size: 13px; font-family: var(--font-ui); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); display: block; margin-top: 6px; }
+  .rail { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 0 16px; margin: 0 -20px; padding-left: 20px; padding-right: 20px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .rail::-webkit-scrollbar { height: 6px; }
+  .rail::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); }
+  .ep { scroll-snap-align: start; flex: 0 0 230px; background: var(--surface); border: 1px solid var(--border); padding: 16px 16px 14px; text-decoration: none; display: flex; flex-direction: column; transition: border-color 140ms ease; }
+  .ep:hover { border-color: var(--accent); }
+  .ep .ep-n { font-family: var(--font-display); font-weight: 900; font-size: 20px; color: var(--accent); line-height: 1; margin-bottom: 10px; }
+  .ep .ep-t { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.4; margin-bottom: 10px; flex: 1; }
+  .ep .ep-d { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .rail-hint { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); text-align: center; margin: 0; }
+
+  /* --- testimonial --- */
+  .quotes { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 26px; }
+  @media (min-width: 760px) { .quotes { grid-template-columns: 1fr 1fr; } }
+  .quote { border: 1px solid var(--border); border-left: 2px solid var(--accent); background: var(--surface); padding: 20px 20px 18px; }
+  .quote p { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--text); }
+  .quote cite { display: block; margin-top: 12px; font-style: normal; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+
 </style>
 
 <!-- Meta Pixel -->
@@ -269,7 +295,7 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
     <div class="eyebrow">Free live workshop &middot; 1 hour</div>
     <h1>Dopamine by Design</h1>
     <p class="sub">Build self-control, stop doing things that waste your time, and live a more meaningful life.</p>
-    <p class="lede">One hour, live, on why your day keeps getting away from you and what to actually do about it. You will leave with something you can use that night, not a list of apps to delete.</p>
+    <p class="lede">One hour, live, on why your evenings keep disappearing and what it takes to get them back. I have spent over two years on this question, and I work on it with men every week.</p>
     <div class="facts">
       <span class="fact fact-free">Free</span>
       <span class="fact">1 hour</span>
@@ -287,64 +313,106 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
   </div>
 </section>
 
-<!-- ================= THE PROBLEM ================= -->
-<div class="divider-lbl">The problem</div>
+<!-- ================= YOU ARE STRUGGLING ================= -->
+<div class="divider-lbl">Where your time goes</div>
 <section class="centered">
-  <h2>You already know what you should be doing.</h2>
-  <p class="body">That is the part that stings. You are not confused about what matters to you. You have had the list for months. And the day still disappears into things you would not have picked if anyone had stopped and asked you.</p>
-  <p class="body">Then it is 11pm, you did not do the thing, and you tell yourself tomorrow. Some part of you already knows how tomorrow goes.</p>
-  <p class="body">After enough days like that it stops feeling like a scheduling problem and starts feeling like a verdict on you. That is the part nobody warns you about. <b>Wasted time is not just lost hours. It is the slow sense that your life is going on without you in it.</b></p>
+  <h2>You know what you want to do with your evening.</h2>
+  <p class="body" style="margin-left:auto;margin-right:auto">And then it is 11pm again.</p>
+  <figure class="figure">
+    <svg viewBox="0 0 620 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two bars comparing an evening as planned against the evening that actually happened. The planned bar gives most of the time to the thing that matters. The actual bar is almost entirely taken up by the phone, leaving twenty minutes.">
+      <text x="0" y="14" fill="rgba(255,255,255,0.34)" font-family="'Space Grotesk',sans-serif" font-size="11" letter-spacing="2.2">WHAT YOU PLANNED</text>
+      <rect x="0" y="26" width="72" height="46" fill="rgba(255,255,255,0.08)"/>
+      <text x="36" y="54" fill="rgba(255,255,255,0.5)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="middle">Dinner</text>
+      <rect x="76" y="26" width="462" height="46" fill="#479dc2"/>
+      <text x="307" y="54" fill="#fff" font-family="'Space Grotesk',sans-serif" font-size="12.5" font-weight="600" text-anchor="middle">The thing that actually matters to you</text>
+      <rect x="542" y="26" width="78" height="46" fill="rgba(255,255,255,0.08)"/>
+      <text x="581" y="54" fill="rgba(255,255,255,0.5)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="middle">Sleep</text>
+
+      <text x="0" y="112" fill="rgba(255,255,255,0.34)" font-family="'Space Grotesk',sans-serif" font-size="11" letter-spacing="2.2">WHAT HAPPENED</text>
+      <rect x="0" y="124" width="72" height="46" fill="rgba(255,255,255,0.08)"/>
+      <text x="36" y="152" fill="rgba(255,255,255,0.5)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="middle">Dinner</text>
+      <rect x="76" y="124" width="430" height="46" fill="rgba(255,255,255,0.055)" stroke="rgba(255,255,255,0.14)" stroke-dasharray="3 3"/>
+      <text x="291" y="152" fill="rgba(255,255,255,0.46)" font-family="'Space Grotesk',sans-serif" font-size="12.5" text-anchor="middle">Gone</text>
+      <rect x="510" y="124" width="28" height="46" fill="#479dc2"/>
+      <rect x="542" y="124" width="78" height="46" fill="rgba(255,255,255,0.08)"/>
+      <text x="581" y="152" fill="rgba(255,255,255,0.5)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="middle">Sleep</text>
+
+      <line x1="0" y1="192" x2="620" y2="192" stroke="rgba(255,255,255,0.09)"/>
+      <text x="0" y="212" fill="rgba(255,255,255,0.34)" font-family="'Space Grotesk',sans-serif" font-size="11">6 PM</text>
+      <text x="310" y="212" fill="rgba(255,255,255,0.34)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="middle">9 PM</text>
+      <text x="620" y="212" fill="rgba(255,255,255,0.34)" font-family="'Space Grotesk',sans-serif" font-size="11" text-anchor="end">12 AM</text>
+    </svg>
+    <figcaption>Same evening, every week.</figcaption>
+  </figure>
 </section>
 
-<!-- ================= A BETTER WAY ================= -->
-<div class="divider-lbl">A better way</div>
-<section>
-  <h2 style="text-align:center">Set the day up so you do not have to win an argument with yourself.</h2>
-  <div class="steps">
-    <div class="step"><div class="num">1</div><h3>Decide before you are tired.</h3><p>A choice you make in advance costs you almost nothing. The same choice at 9pm costs you everything you have left.</p></div>
-    <div class="step"><div class="num">2</div><h3>Make the easy thing harder.</h3><p>Most of what eats your evening is just whatever was closest to hand. Change what is within reach and most of the fight never starts.</p></div>
-    <div class="step"><div class="num">3</div><h3>Learn what quitting feels like.</h3><p>The moment before you give in has a signature you can recognise. Once you can name it while it is happening, it stops making the decision for you.</p></div>
-    <div class="step"><div class="num">4</div><h3>Put something back.</h3><p>Nothing holds if you only take things away. You have to replace the hour with something that actually gives you something.</p></div>
-    <div class="step"><div class="num">5</div><h3>Count reps, not streaks.</h3><p>A streak breaks once and takes your motivation with it. Reps just add up. A bad week does not erase the work before it.</p></div>
-  </div>
-</section>
-
-<!-- ================= THE REAL PROBLEM ================= -->
-<div class="divider-lbl">The real problem</div>
+<!-- ================= I UNDERSTAND ================= -->
+<div class="divider-lbl">I get it</div>
 <section class="with-img flip">
   <div>
-    <h2>It is not that you lack willpower.</h2>
-    <p class="body">Self-control gets talked about like a trait you were either issued at birth or not. That framing is useless, because it turns every bad day into evidence that you are the wrong kind of person.</p>
-    <p class="body">In practice it behaves like a skill. It responds to how you set things up, how often you practise, and how fast you get back after you slip.</p>
-    <p class="body"><b>I am not going to give you a neuroscience lecture.</b> I am going to show you what actually changes what you do, because that is the part you can use on Monday.</p>
+    <h2>I have lost plenty of evenings the same way.</h2>
+    <p class="body">Anyone who tells you they always feel like doing the hard thing is lying to you.</p>
+    <p class="body">What I will say is that the gap between the man you are on a good day and the man you are on a bad one is smaller than it feels at 11pm. Most men I talk to are closer than they think, and they have no idea, because nobody has ever shown them where they actually stand.</p>
   </div>
   <img class="sect-img" src="img/bench.jpg" alt="William pressing a loaded barbell in a gym" loading="lazy" />
 </section>
 
-<!-- ================= WHAT CHANGES ================= -->
-<section class="cta-band" style="margin-top:12px">
-  <h2 style="text-align:center">If you follow this, your week starts looking different.</h2>
-  <p class="body" style="text-align:center;max-width:620px;margin-left:auto;margin-right:auto">Not through a 5am routine and not by deleting every app on your phone. By deciding how the day goes before the day starts.</p>
-  <ul class="checks" style="max-width:480px;margin:22px auto 0">
-    <li>You'll know why you quit, and what to do in that exact moment</li>
-    <li>You'll stop negotiating with yourself every single evening</li>
-    <li>You'll get hours back, and spend them on something you would defend</li>
+<!-- ================= WHERE YOU COULD BE ================= -->
+<div class="divider-lbl">Where this goes</div>
+<section class="centered">
+  <h2>What a week looks like when the evening belongs to you.</h2>
+  <figure class="figure">
+    <svg viewBox="0 0 620 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Seven days of the week, each showing a filled block of reclaimed evening time, adding up to about fourteen hours a week.">
+      <g font-family="'Space Grotesk',sans-serif">
+        <rect x="0"   y="24" width="76" height="76" fill="#479dc2"/><text x="38"  y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">MON</text>
+        <rect x="90"  y="24" width="76" height="76" fill="#479dc2"/><text x="128" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">TUE</text>
+        <rect x="180" y="24" width="76" height="76" fill="#479dc2"/><text x="218" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">WED</text>
+        <rect x="270" y="24" width="76" height="76" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.14)" stroke-dasharray="3 3"/><text x="308" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">THU</text>
+        <rect x="360" y="24" width="76" height="76" fill="#479dc2"/><text x="398" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">FRI</text>
+        <rect x="450" y="24" width="76" height="76" fill="#479dc2"/><text x="488" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">SAT</text>
+        <rect x="540" y="24" width="76" height="76" fill="#479dc2"/><text x="578" y="16" fill="rgba(255,255,255,0.34)" font-size="11" text-anchor="middle">SUN</text>
+        <text x="308" y="70" fill="rgba(255,255,255,0.4)" font-size="11" text-anchor="middle">off day</text>
+        <text x="310" y="132" fill="#fff" font-family="'Playfair Display',Georgia,serif" font-size="27" font-weight="900" text-anchor="middle">12 hours</text>
+        <text x="310" y="154" fill="rgba(255,255,255,0.58)" font-size="13" text-anchor="middle">back, every week, on whatever you pick</text>
+      </g>
+    </svg>
+    <figcaption>A missed day stays a missed day. It does not cost you the week.</figcaption>
+  </figure>
+  <ul class="checks" style="max-width:480px;margin:30px auto 0;text-align:left">
+    <li>You sit down and start, without the hour of talking yourself into it</li>
+    <li>You stop ending the night annoyed at yourself</li>
+    <li>You get to the weekend with something to show for the week</li>
   </ul>
-  <div style="text-align:center;margin-top:26px"><button class="btn-primary js-buy" onclick="openReg('middle')">Save my spot</button></div>
+  <div style="margin-top:28px"><button class="btn-primary js-buy" onclick="openReg('middle')">Save my spot</button></div>
 </section>
 
-<!-- ================= SHOW ME ================= -->
-<div class="divider-lbl">Show me</div>
+<!-- ================= PROOF ================= -->
+<div class="divider-lbl">Why this will work</div>
 <section class="centered">
-  <h2>None of this came naturally to me.</h2>
-  <p class="body">I have finished a 100 mile ultramarathon, I compete in jiu jitsu, and I get in the cold water in the middle of winter. I do not do any of that because I was built differently. I do it because I got specific about how my days are set up, and because I stopped treating one bad hour as proof of anything.</p>
-  <p class="body">Before this I was a software engineer who spent plenty of evenings telling himself he would start tomorrow. What I teach is what got me out of that.</p>
-  <div class="p-imgs" style="max-width:620px;margin:26px auto 0">
-    <div class="pz"><img src="img/ultra-poster.jpg" alt="Running at midnight, mile 77 of a 100 mile ultramarathon" loading="lazy" /></div>
-    <div class="pz"><img src="img/jiujitsu.jpg" alt="Competing in a jiu jitsu match" loading="lazy" /></div>
-    <div class="pz"><img src="img/plunge.jpg" alt="Sitting in an outdoor cold plunge in winter" loading="lazy" /></div>
+  <h2>I have been studying this every week for over two years.</h2>
+  <div class="pod-head">
+    <div class="pod-stat">123<span>Episodes</span></div>
+    <div class="pod-stat">2024<span>Every week since</span></div>
+    <div class="pod-stat">1:1<span>Clients each week</span></div>
   </div>
-  <p class="p-note">Mile 77, somewhere after midnight. A jiu jitsu match. The cold tub in winter.</p>
+  <p class="body" style="margin:18px auto 0">The Willpower Podcast is where I take this apart in public, through the research and through long conversations with people who study it and people who have lived it.</p>
+  <div class="rail" id="ep-rail">
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/124--I-Did-a-10-Day-Silent-Retreat--Heres-What-Science-Says-About-Meditation-e3qsda0" target="_blank" rel="noopener"><div class="ep-n">#124</div><div class="ep-t">I Did a 10-Day Silent Retreat. Here's What Science Says About Meditation</div><div class="ep-d">Oct 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/123--Science-Says-Your-Gratitude-List-Is-Wasting-Your-Time-e3qgf4b" target="_blank" rel="noopener"><div class="ep-n">#123</div><div class="ep-t">Science Says Your Gratitude List Is Wasting Your Time</div><div class="ep-d">Oct 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/122--Stop-Quitting-with-this-Ancient-Japanese-Concept-e3q3h5u" target="_blank" rel="noopener"><div class="ep-n">#122</div><div class="ep-t">Stop Quitting with this Ancient Japanese Concept</div><div class="ep-d">Oct 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/121--28-minutes-to-build-a-gym-routine-that-finally-sticks-e3pl22m" target="_blank" rel="noopener"><div class="ep-n">#121</div><div class="ep-t">28 minutes to build a gym routine that finally sticks</div><div class="ep-d">Sep 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/120--Produce-like-the-greats--starting-with-10-minutes-today-e3p9prc" target="_blank" rel="noopener"><div class="ep-n">#120</div><div class="ep-t">Produce like the greats, starting with 10 minutes today</div><div class="ep-d">Sep 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/118--The-secret-to-personal-growth-in-2026-e3ojroo" target="_blank" rel="noopener"><div class="ep-n">#118</div><div class="ep-t">The secret to "personal growth" in 2026</div><div class="ep-d">Sep 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/114--Mental-Trojan-Horses-are-destroying-your-willpower--Heres-what-you-can-do-about-it-e3naodl" target="_blank" rel="noopener"><div class="ep-n">#114</div><div class="ep-t">Mental Trojan Horses are destroying your willpower</div><div class="ep-d">Aug 2026</div></a>
+    <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/111--If-your-motivation-comes-from-screens-and-stimulants--listen-to-this-e3mdgin" target="_blank" rel="noopener"><div class="ep-n">#111</div><div class="ep-t">If your motivation comes from screens and stimulants, listen to this</div><div class="ep-d">Jul 2026</div></a>
+  </div>
+  <p class="rail-hint">Scroll for more &rarr;</p>
+
+  <div class="quotes">
+    <blockquote class="quote"><p>"He brings an extremely to the point, what can you do right now, how can you figure this out, what are you going to do now, attitude. It is helpful short term and it is sustainable."</p><cite>Coaching client</cite></blockquote>
+    <blockquote class="quote"><p>"He doesn't show any sort of frustration or judgment when you make a mistake. He says, okay, well, what can we do next?"</p><cite>Coaching client</cite></blockquote>
+  </div>
+  <div style="margin-top:30px"><button class="btn-primary js-buy" onclick="openReg('proof')">Save my spot</button></div>
 </section>
 
 <!-- ================= FAQ ================= -->
@@ -352,15 +420,13 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 <section style="max-width:760px;margin:0 auto">
   <details><summary>Is it actually free?</summary><div class="ans">Yes. No card, no obligation.</div></details>
   <details><summary>What if I can't make that date?</summary><div class="ans">Reply to your confirmation email and I'll move you to the next session.</div></details>
-  <details><summary>Is this just "delete your apps"?</summary><div class="ans">No. Taking things away is one small piece and it falls apart on its own. Most of the hour is about what you put in place instead.</div></details>
-  <details><summary>Do I need to know anything about dopamine?</summary><div class="ans">No, and you won't get a lecture on brain chemistry. The name is about designing your day on purpose rather than letting whatever is easiest decide it for you.</div></details>
-  <details><summary>I've tried habit systems before and they didn't stick.</summary><div class="ans">Most of them ask you to be disciplined first and promise the payoff later. This goes the other way. You set the day up so the right thing is also the easy thing, and you treat a slip as information instead of failure.</div></details>
-  <details><summary>Is this about productivity?</summary><div class="ans">Only partly. Getting more done is a side effect. The point is spending your time on things you'd still be glad about a year from now.</div></details>
+  <details><summary>How long is it?</summary><div class="ans">One hour, live, with time for questions at the end.</div></details>
+  <details><summary>Do I have to be on camera?</summary><div class="ans">No. Plenty of guys just listen.</div></details>
 </section>
 
 <!-- ================= CLOSING CTA ================= -->
 <section class="cta-band" style="margin-top:44px">
-  <h2 style="text-align:center">Stop losing the day.</h2>
+  <h2 style="text-align:center">Stop losing the evening.</h2>
   <p class="cta-sub" style="text-align:center">One hour, live, free. <span class="js-when-long">Saturday, November 7, 1:00 PM Central</span>.</p>
   <div style="text-align:center"><button class="btn-primary js-buy" onclick="openReg('footer')">Save my spot</button></div>
 </section>
@@ -371,10 +437,15 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
   <img src="img/headshot.jpg" alt="William Mulvaney" loading="lazy" />
   <div>
     <h2>William Mulvaney</h2>
-    <p class="body">I coach men on discipline, dating and fitness, and I host The Willpower Podcast. I have run a 100 mile ultramarathon, I do standup comedy, and I used to be a software engineer.</p>
-    <p class="body">Everything I teach is what I actually use. I am not interested in handing you a system that only works for people who already have their life in order.</p>
+    <p class="body">I coach men on discipline, dating and fitness, and I host The Willpower Podcast.</p>
+    <p class="body">I have finished a 100 mile ultramarathon, I compete in jiu jitsu, and I do standup comedy. Before this I was a software engineer.</p>
   </div>
 </section>
+<div class="p-imgs" style="max-width:620px;margin:26px auto 0">
+  <div class="pz"><img src="img/ultra-poster.jpg" alt="Running at night during a 100 mile ultramarathon" loading="lazy" /></div>
+  <div class="pz"><img src="img/jiujitsu.jpg" alt="Competing in a jiu jitsu match" loading="lazy" /></div>
+  <div class="pz"><img src="img/plunge.jpg" alt="Sitting in an outdoor cold plunge" loading="lazy" /></div>
+</div>
 
 <footer>&copy; William Mulvaney &middot; Coaching</footer>
 </div><!-- /wrap -->
@@ -645,6 +716,44 @@ function toast(msg) {
   if (!bar || !heroBtn || !("IntersectionObserver" in window)) return;
   new IntersectionObserver((es) => es.forEach((e) => bar.classList.toggle("show", !e.isIntersecting)),
     {threshold: 0}).observe(heroBtn);
+})();
+
+/* The eight cards in the rail are baked into the HTML so the section is never empty.
+   If the feed answers, they are swapped for whatever is actually newest, so the page
+   does not go stale between edits. Any failure leaves the baked-in cards alone. */
+(function podcastRail() {
+  const rail = document.getElementById("ep-rail");
+  if (!rail) return;
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  fetch("https://anchor.fm/s/f40349c8/podcast/rss")
+    .then((r) => r.text())
+    .then((text) => {
+      const xml = new DOMParser().parseFromString(text, "application/xml");
+      const items = Array.from(xml.getElementsByTagName("item"));
+      if (items.length < 8) return;
+      const cards = items.slice(0, 8).map((it) => {
+        const title = (it.getElementsByTagName("title")[0] || {}).textContent || "";
+        const link = (it.getElementsByTagName("link")[0] || {}).textContent || "";
+        const d = new Date((it.getElementsByTagName("pubDate")[0] || {}).textContent || "");
+        /* Titles arrive as "#124 — Real title"; the number is its own element on the card. */
+        const m = title.match(/^#(\d+)\s*[—–-]\s*(.+)$/);
+        if (!m || !link) return null;
+        const a = document.createElement("a");
+        a.className = "ep"; a.href = link; a.target = "_blank"; a.rel = "noopener";
+        const n = document.createElement("div"); n.className = "ep-n"; n.textContent = "#" + m[1];
+        const t = document.createElement("div"); t.className = "ep-t"; t.textContent = m[2];
+        const dd = document.createElement("div"); dd.className = "ep-d";
+        dd.textContent = isNaN(d) ? "" : MONTHS[d.getMonth()] + " " + d.getFullYear();
+        a.appendChild(n); a.appendChild(t); a.appendChild(dd);
+        return a;
+      }).filter(Boolean);
+      if (cards.length < 8) return;
+      rail.textContent = "";
+      cards.forEach((c) => rail.appendChild(c));
+      const stat = document.querySelector(".pod-stat");
+      if (stat && items.length) stat.childNodes[0].nodeValue = String(items.length);
+    })
+    .catch(() => {});
 })();
 </script>
 </body>
