@@ -237,7 +237,10 @@
   /* --- diagrams: one simple picture per section instead of a block of text --- */
   .figure { margin: 26px auto 0; max-width: 620px; }
   .figure svg { width: 100%; height: auto; display: block; }
-  .testi { width: 100%; display: block; border: 1px solid var(--border-strong); background: #000; }
+  .testi { width: 100%; max-width: 340px; margin: 0 auto; display: block; border: 1px solid var(--border-strong); background: #000; aspect-ratio: 9 / 16; }
+  ul.youdo { list-style: none; margin: 0; padding: 0; }
+  ul.youdo li { padding: 9px 0 9px 26px; position: relative; font-size: 15px; line-height: 1.55; color: var(--text); border-bottom: 1px solid var(--border); }
+  ul.youdo li::before { content: ""; position: absolute; left: 0; top: 17px; width: 10px; height: 10px; background: var(--accent); }
   .figure figcaption { font-size: 12.5px; color: var(--faint); text-align: center; margin-top: 12px; line-height: 1.6; }
 
   /* --- podcast carousel --- */
@@ -296,7 +299,7 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
     <div class="eyebrow">Free live workshop &middot; 1 hour</div>
     <h1>Dopamine by Design</h1>
     <p class="sub">Build self-control, stop doing things that waste your time, and live a more meaningful life.</p>
-    <p class="lede">One hour, live, on why nothing feels worth doing anymore and how men get that back. I have spent over two years on this question, and I work on it with men every week.</p>
+    <p class="lede">One hour, live, on why you keep choosing the things that waste your time, and how to stop.</p>
     <div class="facts">
       <span class="fact fact-free">Free</span>
       <span class="fact">1 hour</span>
@@ -314,40 +317,44 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
   </div>
 </section>
 
-<!-- ================= YOU ARE STRUGGLING ================= -->
-<div class="divider-lbl">The part nobody says out loud</div>
+<!-- ================= THE PROBLEM ================= -->
+<div class="divider-lbl">The problem</div>
 <section class="with-img">
   <div>
     <h2>Nothing you do feels like it counts.</h2>
-    <p class="body">You get through the day. You answer the messages, you watch the thing, you go to bed. None of it took anything out of you and none of it gave anything back.</p>
-    <p class="body">You still have the list. The things you said you would do this year. You have not touched them, and being busy was never the reason.</p>
-    <p class="body"><b>The things that should feel good stopped feeling like much of anything.</b> What is left is whatever is closest and cheapest, and you reach for it without deciding to.</p>
+    <p class="body">You get through the day. Messages, the thing you watch, bed. None of it took anything out of you and none of it gave anything back.</p>
+  </div>
+  <img class="sect-img" src="img/morning.jpg" alt="A man sitting on the edge of his bed in the morning, staring at the floor" loading="lazy" />
+</section>
+
+<!-- ================= YOU DO THIS ================= -->
+<div class="divider-lbl">Be honest</div>
+<section class="with-img flip">
+  <div>
+    <h2>You do this.</h2>
+    <ul class="youdo">
+      <li>You open your phone to check one thing and look up forty minutes later.</li>
+      <li>There is something you have been "about to start" for over a year.</li>
+      <li>You are more tired after a day of doing nothing than after a day of work.</li>
+      <li>You know exactly what you would tell a friend to do. You do not do it.</li>
+      <li>You have deleted the apps before. They came back.</li>
+      <li>You say tomorrow, and you mean it every time.</li>
+    </ul>
+    <p class="body" style="margin-top:18px"><b>Sound familiar?</b></p>
   </div>
   <img class="sect-img" src="img/doing-nothing.jpg" alt="A man slumped on a couch in a dark room, lit only by his phone" loading="lazy" />
 </section>
 
-<!-- ================= I UNDERSTAND ================= -->
-<div class="divider-lbl">I get it</div>
-<section class="with-img flip">
-  <div>
-    <h2>I did not get here by being motivated.</h2>
-    <p class="body">Anyone who tells you they always feel like doing the hard thing is lying to you. I have never once wanted to start.</p>
-    <p class="body">What I had to learn was how to want things again when nothing felt worth wanting. That part took me years and a lot of being wrong about it, and it is the part almost nobody is actually talking about.</p>
-  </div>
-  <img class="sect-img" src="img/spartan.jpg" alt="William carrying a stone at a Spartan race" loading="lazy" />
-</section>
-
 <!-- ================= WHERE YOU COULD BE ================= -->
-<div class="divider-lbl">Where this goes</div>
+<div class="divider-lbl">Three months from now</div>
 <section class="with-img">
   <div>
-    <h2>What it is like to want things again.</h2>
-    <p class="body">This is the part worth having. The feeling that what you are doing is yours, and that it is going somewhere.</p>
-    <ul class="checks" style="margin-top:20px">
-      <li>You start without the hour of talking yourself into it</li>
-      <li>The things you care about stop being things you will get to later</li>
-      <li>You stop going to bed annoyed at yourself</li>
-      <li>Your own life stops feeling like something happening to you</li>
+    <h2>The day counted.</h2>
+    <ul class="checks">
+      <li>You start things without an hour of talking yourself into it</li>
+      <li>The phone stops deciding how your day goes</li>
+      <li>The things you said you would do this year are getting done</li>
+      <li>You go to bed knowing the day was yours</li>
     </ul>
     <div style="margin-top:26px"><button class="btn-primary js-buy" onclick="openReg('middle')">Save my spot</button></div>
   </div>
@@ -355,22 +362,17 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 </section>
 
 <!-- ================= PROOF ================= -->
-<div class="divider-lbl">Why listen to me</div>
+<div class="divider-lbl">Proof</div>
 <section class="centered">
-  <h2>Here is a guy I work with.</h2>
-  <figure class="figure" style="max-width:560px">
-    <video class="testi" src="img/testimonial.mp4" poster="img/testimonial-poster.jpg" controls preload="none" playsinline></video>
-    <figcaption>Coaching client, 55 seconds.</figcaption>
-  </figure>
-  <blockquote class="quote" style="max-width:560px;margin:26px auto 0;text-align:left"><p>"He doesn't show any sort of frustration or judgment when you make a mistake. He says, okay, well, what can we do next?"</p></blockquote>
+  <h2>Brendan, six weeks in.</h2>
+  <video class="testi" src="img/testimonial.mp4" poster="img/testimonial-poster.jpg" controls preload="none" playsinline></video>
 
-  <h2 style="margin-top:56px">And I have been taking this apart in public for over two years.</h2>
+  <h2 style="margin-top:56px">I have been taking this apart in public every week for over two years.</h2>
   <div class="pod-head">
     <div class="pod-stat">123<span>Episodes</span></div>
     <div class="pod-stat">2024<span>Every week since</span></div>
     <div class="pod-stat">1:1<span>Clients each week</span></div>
   </div>
-  <p class="body" style="margin:18px auto 0">The Willpower Podcast, through the research and through long conversations with people who study this and people who have lived it.</p>
   <div class="rail" id="ep-rail">
     <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/124--I-Did-a-10-Day-Silent-Retreat--Heres-What-Science-Says-About-Meditation-e3qsda0" target="_blank" rel="noopener"><div class="ep-n">#124</div><div class="ep-t">I Did a 10-Day Silent Retreat. Here's What Science Says About Meditation</div><div class="ep-d">Oct 2026</div></a>
     <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/123--Science-Says-Your-Gratitude-List-Is-Wasting-Your-Time-e3qgf4b" target="_blank" rel="noopener"><div class="ep-n">#123</div><div class="ep-t">Science Says Your Gratitude List Is Wasting Your Time</div><div class="ep-d">Oct 2026</div></a>
@@ -396,7 +398,7 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 
 <!-- ================= CLOSING CTA ================= -->
 <section class="cta-band" style="margin-top:44px">
-  <h2 style="text-align:center">You can want things again.</h2>
+  <h2 style="text-align:center">Stop wasting your time.</h2>
   <p class="cta-sub" style="text-align:center">One hour, live, free. <span class="js-when-long">Saturday, November 7, 1:00 PM Central</span>.</p>
   <div style="text-align:center"><button class="btn-primary js-buy" onclick="openReg('footer')">Save my spot</button></div>
 </section>
@@ -404,18 +406,13 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 <!-- ================= ABOUT ================= -->
 <div class="divider-lbl">Who am I</div>
 <section class="about">
-  <img src="img/headshot.jpg" alt="William Mulvaney" loading="lazy" />
+  <img src="img/spartan.jpg" alt="William Mulvaney at a Spartan race" loading="lazy" style="object-position:50% 20%" />
   <div>
     <h2>William Mulvaney</h2>
     <p class="body">I coach men on discipline, dating and fitness, and I host The Willpower Podcast.</p>
     <p class="body">I have finished a 100 mile ultramarathon, I compete in jiu jitsu, and I do standup comedy. Before this I was a software engineer.</p>
   </div>
 </section>
-<div class="p-imgs" style="max-width:620px;margin:26px auto 0">
-  <div class="pz"><img src="img/ultra-poster.jpg" alt="Running at night during a 100 mile ultramarathon" loading="lazy" /></div>
-  <div class="pz"><img src="img/jiujitsu.jpg" alt="Competing in a jiu jitsu match" loading="lazy" /></div>
-  <div class="pz"><img src="img/plunge.jpg" alt="In an outdoor cold plunge" loading="lazy" /></div>
-</div>
 
 <footer>&copy; William Mulvaney &middot; Coaching</footer>
 </div><!-- /wrap -->
