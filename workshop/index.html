@@ -362,6 +362,19 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 
 <!-- ================= THE PROBLEM ================= -->
 <hr class="sep" />
+<section>
+  <h2 style="text-align:center">Here's what usually happens</h2>
+  <div class="loop" aria-label="The loop: sit down, reach for phone, keep scrolling, put it off, repeat">
+    <div class="lstep" style="--i:0"><span class="ln">1</span>You sit down to do something</div>
+    <div class="larrow"><span class="h">&rarr;</span><span class="v">&darr;</span></div>
+    <div class="lstep" style="--i:1"><span class="ln">2</span>You reach for your phone</div>
+    <div class="larrow"><span class="h">&rarr;</span><span class="v">&darr;</span></div>
+    <div class="lstep" style="--i:2"><span class="ln">3</span>You check one thing</div>
+    <div class="larrow"><span class="h">&rarr;</span><span class="v">&darr;</span></div>
+    <div class="lstep" style="--i:3"><span class="ln">4</span>The longer you're on it, the less motivated you feel to go back</div>
+    <div class="lback">&#8635; Same thing tomorrow</div>
+  </div>
+</section>
 <section class="with-img">
   <div>
     <h2>Dopamine is the problem.</h2>
@@ -387,19 +400,6 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
     </svg>
     <figcaption class="cap">Dopamine &middot; C<sub>8</sub>H<sub>11</sub>NO<sub>2</sub></figcaption>
   </figure>
-</section>
-<section>
-  <h2 style="text-align:center">Here's what usually happens</h2>
-  <div class="loop" aria-label="The loop: sit down, reach for phone, keep scrolling, put it off, repeat">
-    <div class="lstep" style="--i:0"><span class="ln">1</span>You sit down to do something</div>
-    <div class="larrow"><span class="h">&rarr;</span><span class="v">&darr;</span></div>
-    <div class="lstep" style="--i:1"><span class="ln">2</span>You reach for your phone</div>
-    <div class="larrow"><span class="h">&rarr;</span><span class="v">&darr;</span></div>
-    <div class="lstep" style="--i:2"><span class="ln">3</span>You check one thing</div>
-    <div class="larrow"><span class="h">&rarr;</span><span class="v">&darr;</span></div>
-    <div class="lstep" style="--i:3"><span class="ln">4</span>The longer you're on it, the less motivated you feel to go back</div>
-    <div class="lback">&#8635; Same thing tomorrow</div>
-  </div>
 </section>
 
 <hr class="sep" />
@@ -440,11 +440,6 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
 <hr class="sep" />
 <section class="centered">
   <h2>I've been working on this for a while now.</h2>
-  <div class="pod-head">
-    <div class="pod-stat">123<span>Episodes</span></div>
-    <div class="pod-stat">2024<span>Every week since</span></div>
-    <div class="pod-stat">1:1<span>Clients each week</span></div>
-  </div>
 </section>
 <section class="centered" style="margin-top:28px">
   <div class="rail" id="ep-rail">
@@ -457,7 +452,7 @@ posthog.register({funnel_product: 'workshop_dopamine', funnel_page: 'landing'});
     <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/114--Mental-Trojan-Horses-are-destroying-your-willpower--Heres-what-you-can-do-about-it-e3naodl" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/114.jpg" alt="" loading="lazy" /><div class="ep-n">#114</div><div class="ep-t">Mental Trojan Horses are destroying your willpower</div><div class="ep-d">Aug 2026</div></a>
     <a class="ep" href="https://podcasters.spotify.com/pod/show/william-mulvaney/episodes/111--If-your-motivation-comes-from-screens-and-stimulants--listen-to-this-e3mdgin" target="_blank" rel="noopener"><img class="ep-img" src="img/ep/111.jpg" alt="" loading="lazy" /><div class="ep-n">#111</div><div class="ep-t">If your motivation comes from screens and stimulants, listen to this</div><div class="ep-d">Jul 2026</div></a>
   </div>
-  <p class="body" style="margin-top:30px">Every week on the podcast I dig into one piece of this: motivation, habits, attention, follow-through. What I learn there gets distilled into one clear process, and that process is what I walk you through in this hour.</p>
+  <p class="body" style="margin-top:30px">Everything I have learned doing the podcast comes down to one clear process. That process is what you get in this hour.</p>
   <div style="margin-top:26px"><button class="btn-primary js-buy" onclick="openReg('proof')">Save my spot</button></div>
 </section>
 
@@ -770,17 +765,6 @@ function toast(msg) {
 
 /* The cards are built by hand with YouTube thumbnails. The podcast feed only refreshes the
    episode count, so the number stays right without an edit. */
-(function podcastCount() {
-  const stat = document.querySelector(".pod-stat");
-  if (!stat) return;
-  fetch("https://anchor.fm/s/f40349c8/podcast/rss")
-    .then((r) => r.text())
-    .then((text) => {
-      const n = new DOMParser().parseFromString(text, "application/xml").getElementsByTagName("item").length;
-      if (n >= 100) stat.childNodes[0].nodeValue = String(n);
-    })
-    .catch(() => {});
-})();
 </script>
 </body>
 </html>
